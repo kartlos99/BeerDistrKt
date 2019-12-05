@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cardCornerRadius">8dp</dimen>
+    <dimen name="lowElevation">4dp</dimen>
+    <dimen name="plius_minus_TextSize">18sp</dimen>
+    <dimen name="miniBtnSize">44dp</dimen>
+    <dimen name="miniBtnWideSize">50dp</dimen>
+    <dimen name="textsize_2">12sp</dimen>
+    <dimen name="textsize_3">18sp</dimen>
+    <dimen name="textsize_4">24sp</dimen>
+    <dimen name="header_hiegth">172dp</dimen>
+    <dimen name="buttonMargin">4sp</dimen>
+    <dimen name="main_btn_hor_margin">12dp</dimen>
+    <dimen name="main_btn_hor_margin_half">6dp</dimen>
+</resources>
