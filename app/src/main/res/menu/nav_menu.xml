@@ -1,4 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/m_addobj"
+            android:checked="false"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/add_object" />
 
+        <item
+            android:id="@+id/m_adduser"
+            android:checked="false"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/add_user" />
+
+        <item
+            android:id="@+id/m_users_list"
+            android:checked="false"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/userslist" />
+
+        <item
+            android:id="@+id/m_addbeer"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/add_beer" />
+
+        <item
+            android:id="@+id/m_sawyobi"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/sawyobi"/>
+
+        <item
+            android:id="@+id/m_sys_clear"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/ssysclear"/>
+
+        <item
+            android:id="@+id/m_ch_pass"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/change_pass"/>
+
+        <item
+            android:id="@+id/m_logout"
+            android:checked="false"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/logout" />
+
+    </group>
 </menu>
