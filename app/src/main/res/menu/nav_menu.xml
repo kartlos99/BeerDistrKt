@@ -20,7 +20,7 @@
             android:title="@string/userslist" />
 
         <item
-            android:id="@+id/m_addbeer"
+            android:id="@+id/addBeerFragment"
             android:icon="@drawable/beer_icon"
             android:title="@string/add_beer" />
 
