@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import retrofit2.Call
 import retrofit2.Response

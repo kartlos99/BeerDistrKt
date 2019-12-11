@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".sawyobi.SawyobiListFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linear_title_sawy_detail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="0dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="30"
+                android:text="@string/text_tarigi"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="20"
+                android:text="@string/beer"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:layout_weight="18"
+                android:text="@string/chamotana"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:textAlignment="center"
+                android:layout_weight="18"
+                android:text="@string/wageba"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/list_sawyobi_detaluri"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_title_sawy_detail"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

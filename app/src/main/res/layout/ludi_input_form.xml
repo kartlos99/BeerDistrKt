@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardBackgroundColor="@color/colorCardview"
+    app:cardCornerRadius="@dimen/cardCornerRadius"
+    app:cardElevation="@dimen/lowElevation"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/t_mitana_ludi"
+    app:layout_constraintVertical_bias="0.0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_add_Beer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_beerleft"
+            android:layout_width="88dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_arrow_left"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba" />
+
+        <Button
+            android:id="@+id/btn_beerright"
+            android:layout_width="88dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba" />
+
+
+        <TextView
+            android:id="@+id/t_ludisDasaxeleba"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/btn_beerleft"
+            app:layout_constraintRight_toLeftOf="@+id/btn_beerright"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/t_k30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/_30litri"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintEnd_toStartOf="@id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
+
+        <Button
+            android:id="@+id/btn_k30_dec"
+            android:layout_width="@dimen/miniBtnWideSize"
+            android:layout_height="@dimen/miniBtnSize"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/minusi"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/t_k30" />
+
+        <EditText
+            android:id="@+id/edit_K30Count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/default_0"
+            android:inputType="numberDecimal"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toRightOf="@+id/btn_k30_dec"
+            app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc"
+            app:layout_constraintTop_toTopOf="@+id/btn_k30_dec"
+            tools:ignore="Autofill" />
+
+        <Button
+            android:id="@+id/btn_k30_inc"
+            android:layout_width="@dimen/miniBtnWideSize"
+            android:layout_height="@dimen/miniBtnSize"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/pliusi"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintRight_toLeftOf="@+id/guideline4"
+            app:layout_constraintTop_toTopOf="@+id/btn_k30_dec" />
+
+
+        <TextView
+            android:id="@+id/t_k50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/_50litri"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
+
+        <Button
+            android:id="@+id/btn_k50_dec"
+            android:layout_width="@dimen/miniBtnWideSize"
+            android:layout_height="@dimen/miniBtnSize"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/minusi"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/t_k50" />
+
+        <EditText
+            android:id="@+id/edit_K50Count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/default_0"
+            android:inputType="numberDecimal"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toRightOf="@+id/btn_k50_dec"
+            app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc"
+            app:layout_constraintTop_toTopOf="@+id/btn_k50_dec"
+            tools:ignore="Autofill" />
+
+        <Button
+            android:id="@+id/btn_k50_inc"
+            android:layout_width="@dimen/miniBtnWideSize"
+            android:layout_height="@dimen/miniBtnSize"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/pliusi"
+            android:textSize="@dimen/plius_minus_TextSize"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_k50_dec" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".sawyobi.SawyobiFragment">
+
+
+    <ScrollView
+        android:id="@+id/scrool_sawyobi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context="com.example.kdiakonidze.beerapeni.SawyobiPage">
+
+            <TextView
+                android:id="@+id/t_savse_kasrebi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/savse"
+                android:textSize="@dimen/textsize_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="124dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox_sawyobi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="352dp" />
+
+            <include
+                android:id="@+id/card_nashti_savse"
+                layout="@layout/show_total_form"/>
+
+            <TextView
+                android:id="@+id/t_chamotana"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/chamotana"
+                android:textSize="@dimen/textsize_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_nashti_savse"
+                tools:layout_editor_absoluteX="119dp" />
+
+            <LinearLayout
+                android:id="@+id/chamotana_box"
+                android:layout_width="0dp"
+                android:layout_height="170dp"
+                android:paddingBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/t_chamotana"
+                tools:layout_editor_absoluteX="0dp">
+
+                <include
+                    android:id="@+id/card_chamotana"
+                    layout="@layout/ludi_input_form" />
+            </LinearLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_anotherBeer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:src="@drawable/ic_add_24dp"
+                android:backgroundTint="@color/fab_addbeer_color"
+                app:backgroundTintMode="src_over"
+                app:fabSize="mini"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chamotana_box" />
+
+            <LinearLayout
+                android:id="@+id/linear_conteiner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:background="@drawable/temp_beer_cont_rect"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_anotherBeer"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constr_carieli_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_conteiner"
+                tools:layout_editor_absoluteX="0dp">
+
+
+                <TextView
+                    android:id="@+id/t_carieli_kasrebi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/carieli"
+                    android:textSize="@dimen/textsize_3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteX="105dp" />
+
+                <Button
+                    android:id="@+id/btn_emptyK_list"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@string/list"
+                    android:textSize="@dimen/textsize_2"
+                    android:height="12dp"
+                    android:background="#00008088"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_nashti_carieli"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardBackgroundColor="@color/colorCardview_green"
+                    app:cardCornerRadius="@dimen/cardCornerRadius"
+                    app:cardElevation="@dimen/lowElevation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/t_carieli_kasrebi"
+                    tools:layout_editor_absoluteX="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cont_saleslist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/t_nashti_carieli"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/nashti"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/textsize_3"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteX="163dp" />
+
+                        <TextView
+                            android:id="@+id/t_empty_k30"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/_30litri"
+                            android:textSize="@dimen/textsize_3"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
+                            app:layout_constraintTop_toBottomOf="@+id/t_nashti_carieli" />
+
+                        <TextView
+                            android:id="@+id/t_empty_k50"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/_50litri"
+                            android:textSize="@dimen/textsize_3"
+                            app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/t_empty_k30" />
+
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_p3_kasr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.5"
+                            tools:layout_editor_absoluteX="192dp"
+                            tools:layout_editor_absoluteY="401dp" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/t_wageba"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/wageba"
+                    android:textSize="@dimen/textsize_3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_nashti_carieli"
+                    tools:layout_editor_absoluteX="132dp" />
+
+                <LinearLayout
+                    android:id="@+id/wageba_box"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/t_wageba"
+                    tools:layout_editor_absoluteX="0dp">
+
+                    <include
+                        android:id="@+id/card_wageba"
+                        layout="@layout/ludi_input_form" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btn_change_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/drois_archeva"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constr_carieli_box"
+                tools:layout_editor_absoluteX="230dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/t_mitana_comment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:nextFocusLeft="@+id/btn_beerInputDone"
+                android:nextFocusUp="@+id/e_TakeMoney"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_change_date"
+                tools:layout_editor_absoluteX="0dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/comment"
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_sawyobi_chawera"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/chawera"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/t_mitana_comment"
+                tools:layout_editor_absoluteX="8dp" />
+
+            <TextView
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_sawyobi_chawera"
+                android:text="@string/ganmarteba1"
+                android:textSize="@dimen/textsize_2"
+                android:layout_margin="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
