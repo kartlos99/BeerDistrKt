@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".sales.SalesFragment">
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:id="@+id/scroll_main">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/t_tarigi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/day_realizacia"
+                android:textSize="@dimen/textsize_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="196dp" />
+
+            <Button
+                android:id="@+id/btn_tarigi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:drawableEnd="@drawable/calendar_icon"
+                app:layout_constraintEnd_toStartOf="@+id/btn_day_forward"
+                app:layout_constraintStart_toEndOf="@+id/btn_day_back"
+                app:layout_constraintTop_toBottomOf="@+id/t_tarigi"
+                app:layout_constraintVertical_bias="0.0"
+                tools:layout_editor_absoluteX="97dp" />
+
+            <Button
+                android:id="@+id/btn_day_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_arrow_left"
+                android:text="@string/back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btn_tarigi"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <Button
+                android:id="@+id/btn_day_forward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:text="@string/forward"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_day_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btn_tarigi" />
+
+            <TextView
+                android:id="@+id/t_distributori"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/distributorebi"
+                android:textSize="@dimen/textsize_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_tarigi" />
+
+            <Spinner
+                android:id="@+id/sp_distributori"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/t_distributori"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/t_distributori"
+                app:layout_constraintTop_toTopOf="@+id/t_distributori" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_sales"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="@color/colorCardview"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/lowElevation"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sp_distributori"
+
+                >
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cont_saleslist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/t_gayidvebi"
+                        android:layout_width="352dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/gayidvebi"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/textsize_4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="16dp" />
+
+                    <com.example.beerdistrkt.customView.NonScrollListView
+                        android:id="@+id/sales_list1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/t_gayidvebi"
+                        tools:layout_editor_absoluteX="8dp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_kasrebi_p3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="@color/colorCardview"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/lowElevation"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView_sales"
+                app:layout_constraintVertical_bias="0.0">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/t_p3_kasrebi"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/kasri"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/textsize_4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:lineSpacingExtra="5dp"
+                        android:padding="6dp"
+                        android:text="@string/kasri_inout"
+                        android:textAlignment="textEnd"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+
+                    <TextView
+                        android:id="@+id/t_p3_k30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/_30litri"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
+                        app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
+                        app:layout_constraintTop_toBottomOf="@+id/t_p3_kasrebi" />
+
+                    <TextView
+                        android:id="@+id/t_p3_k50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/_50litri"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/t_p3_k30" />
+
+                    <TextView
+                        android:id="@+id/t_p3_k30_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/highlight_rect"
+                        android:lineSpacingExtra="5dp"
+                        android:padding="8dp"
+                        android:textAlignment="center"
+                        android:text="@string/_30_n30"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintHorizontal_bias="0.507"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
+                        app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
+                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+
+                    <TextView
+                        android:id="@+id/t_p3_k50_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:background="@drawable/highlight_rect"
+                        android:lineSpacingExtra="5dp"
+                        android:padding="8dp"
+                        android:textAlignment="center"
+                        android:text="@string/_50litri"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintHorizontal_bias="0.507"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline_p3_kasr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.7"
+                        tools:layout_editor_absoluteX="266dp"
+                        tools:layout_editor_absoluteY="198dp" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline_p3_kasr_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.4"
+                        tools:layout_editor_absoluteX="155dp"
+                        tools:layout_editor_absoluteY="198dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_shemosavali_p3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/colorCardview"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/lowElevation"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView_kasrebi_p3"
+                app:layout_constraintVertical_bias="0.0">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/t_p3_shemosavali"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/price"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/t_p3_lari"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/lari"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintStart_toEndOf="@id/t_p3_lari_count"
+                        app:layout_constraintTop_toTopOf="@+id/t_p3_lari_count"
+                        tools:layout_editor_absoluteX="111dp" />
+
+
+                    <TextView
+                        android:id="@+id/t_p3_lari_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:background="@drawable/highlight_rect"
+                        android:padding="6dp"
+                        android:text="@string/default_0"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintEnd_toEndOf="@+id/t_p3_shemosavali"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/guideline3"
+                        app:layout_constraintStart_toStartOf="@+id/t_p3_shemosavali"
+                        app:layout_constraintTop_toBottomOf="@+id/t_p3_shemosavali" />
+
+                    <TextView
+                        android:id="@+id/ttt_agebuli"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="48dp"
+                        android:text="@string/taken"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/t_agebuli_tanxa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:background="@drawable/highlight_rect"
+                        android:padding="6dp"
+                        android:text="@string/default_0"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintEnd_toEndOf="@+id/ttt_agebuli"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/ttt_agebuli"
+                        app:layout_constraintTop_toBottomOf="@+id/ttt_agebuli" />
+
+                    <TextView
+                        android:id="@+id/t_l2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/lari"
+                        android:textSize="@dimen/textsize_3"
+                        app:layout_constraintStart_toEndOf="@id/t_agebuli_tanxa"
+                        app:layout_constraintTop_toTopOf="@+id/t_p3_lari_count"
+                        tools:layout_editor_absoluteX="295dp" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5"
+                        tools:layout_editor_absoluteX="192dp"
+                        tools:layout_editor_absoluteY="314dp" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <Button
+                android:id="@+id/btn_xarjebi"
+                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="8dp"
+                android:text="@string/add_xarji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/btn_xarj_expand"
+                app:layout_constraintTop_toTopOf="@id/btn_xarjebi"
+                app:layout_constraintStart_toEndOf="@id/btn_xarjebi"
+                android:backgroundTint="@android:color/transparent"
+                android:src="@drawable/ic_arrow_down_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/xarjebi"
+                app:layout_constraintTop_toTopOf="@id/t_xarj_sum"
+                app:layout_constraintEnd_toStartOf="@id/t_xarj_sum"
+                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/t_xarj_sum"
+                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"
+                android:padding="6dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="0"
+                android:textSize="@dimen/textsize_3"
+                android:background="@drawable/highlight_rect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/xelze_tanxa"
+                app:layout_constraintTop_toTopOf="@id/t_xelze"
+                app:layout_constraintEnd_toStartOf="@id/t_xelze"
+                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/t_xelze"
+                app:layout_constraintTop_toBottomOf="@id/t_xarj_sum"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"
+                android:padding="6dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="0"
+                android:textSize="@dimen/textsize_3"
+                android:background="@drawable/highlight_rect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/linear_xarjebi"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/t_xelze"
+                android:background="@drawable/temp_beer_cont_rect"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</layout>

@@ -6,23 +6,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.utils.MyKeys
 import retrofit2.Call
 import retrofit2.Response
 
 class OrdersViewModel : ViewModel() {
     // TODO: Implement the ViewModel
-
     private val _response = MutableLiveData<String>()
     val response: LiveData<String>
         get() = _response
 
     init {
         Log.d(TAG, "init")
-
     }
 
     fun btn1click(){
         getData()
+
     }
 
     private fun getData() {

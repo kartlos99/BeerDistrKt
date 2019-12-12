@@ -18,14 +18,24 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_homeFragment_to_addBeerFragment"
-            app:destination="@id/addBeerFragment" />
+            android:id="@+id/action_homeFragment_to_objListFragment"
+            app:destination="@id/objListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_salesFragment"
+            app:destination="@id/salesFragment" />
     </fragment>
     <fragment
         android:id="@+id/ordersFragment"
         android:name="com.example.beerdistrkt.fragment.OrdersFragment"
         android:label="orders_fragment"
-        tools:layout="@layout/orders_fragment" />
+        tools:layout="@layout/orders_fragment" >
+        <action
+            android:id="@+id/action_ordersFragment_to_objListFragment"
+            app:destination="@id/objListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
         android:name="com.example.beerdistrkt.fragment.AddBeerFragment"
@@ -69,4 +79,44 @@
         android:name="com.example.beerdistrkt.sawyobi.SawyobiListFragment"
         android:label="sawyobi_list_fragment"
         tools:layout="@layout/sawyobi_list_fragment" />
+    <fragment
+        android:id="@+id/objListFragment"
+        android:name="com.example.beerdistrkt.objList.ObjListFragment"
+        android:label="obj_list_fragment"
+        tools:layout="@layout/obj_list_fragment" >
+        <action
+            android:id="@+id/action_objListFragment_to_amonaweriFragment"
+            app:destination="@id/amonaweriFragment" />
+        <action
+            android:id="@+id/action_objListFragment_to_addDeliveryFragment"
+            app:destination="@id/addDeliveryFragment" />
+        <action
+            android:id="@+id/action_objListFragment_to_addOrdersFragment"
+            app:destination="@id/addOrdersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/salesFragment"
+        android:name="com.example.beerdistrkt.sales.SalesFragment"
+        android:label="sales_fragment"
+        tools:layout="@layout/sales_fragment" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.beerdistrkt.login.LoginFragment"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment" />
+    <fragment
+        android:id="@+id/amonaweriFragment"
+        android:name="com.example.beerdistrkt.amonaweri.AmonaweriFragment"
+        android:label="amonaweri_fragment"
+        tools:layout="@layout/amonaweri_fragment" />
+    <fragment
+        android:id="@+id/addDeliveryFragment"
+        android:name="com.example.beerdistrkt.mitana.AddDeliveryFragment"
+        android:label="add_delivery_fragment"
+        tools:layout="@layout/add_delivery_fragment" />
+    <fragment
+        android:id="@+id/addOrdersFragment"
+        android:name="com.example.beerdistrkt.orders.AddOrdersFragment"
+        android:label="add_orders_fragment"
+        tools:layout="@layout/add_orders_fragment" />
 </navigation>

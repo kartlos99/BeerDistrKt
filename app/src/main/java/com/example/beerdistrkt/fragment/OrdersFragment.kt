@@ -30,13 +30,8 @@ class OrdersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         vBinding = OrdersFragmentBinding.inflate(inflater)
-
         vBinding.lifecycleOwner = this
-
         vBinding.viewModel = viewModel
-        vBinding.btnAddOrder.setOnClickListener{
-            viewModel.btn1click()
-        }
 
         return vBinding.root
     }
