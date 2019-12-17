@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".objList.ObjListFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.beerdistrkt.objList.ObjListViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchV_objlist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:queryHint="ფილტრი"
-            android:id="@+id/searchV_objlist"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
+            android:elevation="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
         </androidx.appcompat.widget.SearchView>
@@ -26,10 +30,49 @@
             android:id="@+id/objListView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchV_objlist">
+        </ListView>
+
+        <ProgressBar
+            android:id="@+id/progresBarObjList"
+            android:visibility="gone"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchV_objlist" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/cardRect"-->
+<!--            android:layout_width="112dp"-->
+<!--            android:layout_height="77dp"-->
+<!--            android:layout_marginTop="44dp"-->
+<!--            android:outlineAmbientShadowColor="#1c1"-->
+<!--            android:outlineSpotShadowColor="#a2a"-->
+<!--            app:cardBackgroundColor="#ab2"-->
+<!--            app:cardCornerRadius="6dp"-->
+<!--            app:cardElevation="4dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--        </androidx.cardview.widget.CardView>-->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sddf ddfg sds"
+            android:onClick="@{() -> viewModel.delOneObj()}"
+            android:layout_marginTop="66dp"
+            android:layout_marginStart="77dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import android.util.Log
+import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -43,4 +44,7 @@ interface ApeniApiService {
 
     @GET("get_users.php")
     fun getProperties(): Call<List<User>>
+
+    @GET("get_obieqts.php")
+    fun getObieqts(): Call<List<Obieqti>>
 }

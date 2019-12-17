@@ -1,7 +1,5 @@
 package com.example.beerdistrkt.models
 
-import java.io.Serializable
-import java.util.*
 
 data class Amonaweri(
     var tarigi: String? = null,
@@ -15,7 +13,7 @@ data class Amonaweri(
     var id: Int = 0
 )
 
-data class Obieqti(var dasaxeleba: String) : Serializable {
+data class Obieqti(var dasaxeleba: String) {
     var adress: String? = null
     var tel: String? = null
     var comment: String? = null
@@ -26,7 +24,11 @@ data class Obieqti(var dasaxeleba: String) : Serializable {
     var valiM: Int? = null
     var valiK30: Int? = null
     var valiK50: Int? = null
-    var fasebi = ArrayList<Float>()
+    var fasebi : FloatArray? = null
+
+//    override fun toString(): String {
+//        return "Obieqti(dasaxeleba='$dasaxeleba', adress=$adress, tel=$tel, comment=$comment, sk=$sk, sakpiri=$sakpiri, chek=$chek, id=$id, valiM=$valiM, valiK30=$valiK30, valiK50=$valiK50, fasebi=${fasebi?.contentToString()})"
+//    }
 
     override fun toString(): String {
         return dasaxeleba
