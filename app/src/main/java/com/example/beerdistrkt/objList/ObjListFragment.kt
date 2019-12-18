@@ -48,17 +48,7 @@ class ObjListFragment : Fragment() {
             Log.d("____size_______", it.size.toString())
             showObieqts(it)
         }
-//        objListObserver.onChanged(mutableListOf(Obieqti("rame saxeli")))
-//        viewModel.objList.observe(this, objListObserver)
         viewModel.obieqtsList.observe(this, objListObserver)
-        viewModel.isUpdating.observe(this, Observer {
-            if(it){
-                vBinding.progresBarObjList.visibility = View.VISIBLE
-            }else{
-                vBinding.progresBarObjList.visibility = View.GONE
-            }
-        })
-
     }
 
     private fun showObieqts(list: List<Obieqti>) {
