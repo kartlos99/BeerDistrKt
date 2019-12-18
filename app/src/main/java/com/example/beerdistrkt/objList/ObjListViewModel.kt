@@ -1,52 +1,44 @@
 package com.example.beerdistrkt.objList
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.beerdistrkt.db.ApeniDataBase
+import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Response
 
-class ObjListViewModel : ViewModel() {
+class ObjListViewModel(
+    val database: ApeniDatabaseDao,
+    application: Application
+) : ViewModel() {
 
-    val isUpdating = MutableLiveData<Boolean>()
-
-    private val _objList = MutableLiveData<MutableList<Obieqti>>()
-    val objList: LiveData<MutableList<Obieqti>>
-        get() = _objList
+    val obieqtsList = database.getAllObieqts()
+    private val job = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
         Log.d(TAG, "init_Obj_List")
-        getObjects()
     }
 
     fun delOneObj() {
-        _objList.value?.removeAt(2)
-        _objList.value = _objList.value
+        // just test
+        CoroutineScope(Dispatchers.IO).launch {
+            database.insertObiecti(Obieqti("NEW_TEST_OBJ_KT"))
+        }
+//        _objList.value?.removeAt(2)
+//        _objList.value = _objList.value
     }
 
-    private fun getObjects() {
-        isUpdating.value = true
-        ApeniApiService.get().getObieqts().enqueue(object : retrofit2.Callback<List<Obieqti>> {
-            override fun onFailure(call: Call<List<Obieqti>>, t: Throwable) {
-                isUpdating.value = false
-                Log.d(TAG, "fail ${t.message}")
-            }
-
-            override fun onResponse(call: Call<List<Obieqti>>, response: Response<List<Obieqti>>) {
-                Log.d(TAG, "respOK")
-                isUpdating.value = false
-                response.body()?.let {
-                    if (it.isNotEmpty()) {
-                        Log.d("____size___VM____", it.size.toString())
-                        _objList.value = it as MutableList<Obieqti>
-                        Log.d(TAG, it.firstOrNull().toString())
-                    }
-                }
-            }
-        })
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
     }
 
     companion object {

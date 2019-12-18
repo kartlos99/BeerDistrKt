@@ -7,11 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
+import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.viewmodel.HomeViewModel
+import com.example.beerdistrkt.viewmodel.HomeViewModelFactory
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
@@ -29,6 +32,19 @@ class HomeFragment : Fragment(), View.OnClickListener {
         vBinding = HomeFragmentBinding.inflate(inflater)
 //        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.home_fragment, container, false)
+
+        val application = requireNotNull(this.activity).application
+
+        val dataSource = ApeniDataBase.getInstance(application).apeniDataBaseDao
+
+        val viewModelFactory = HomeViewModelFactory(dataSource, application)
+
+        val HomeViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java)
+
+        vBinding.setLifecycleOwner(this)
+
+//        vBinding.sleepTrackerViewModel = sleepTrackerViewModel
 
         vBinding.btnShekvetebi.setOnClickListener(this)
         vBinding.btnMitana.setOnClickListener(this)

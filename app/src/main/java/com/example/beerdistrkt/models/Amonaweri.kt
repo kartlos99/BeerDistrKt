@@ -1,5 +1,9 @@
 package com.example.beerdistrkt.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 
 data class Amonaweri(
     var tarigi: String? = null,
@@ -13,18 +17,33 @@ data class Amonaweri(
     var id: Int = 0
 )
 
-data class Obieqti(var dasaxeleba: String) {
+@Entity(tableName = "obieqts_table")
+data class Obieqti(
+    @ColumnInfo
+    var dasaxeleba: String
+) {
+    @ColumnInfo
     var adress: String? = null
+    @ColumnInfo
     var tel: String? = null
+    @ColumnInfo
     var comment: String? = null
+    @ColumnInfo
     var sk: String? = null
+    @ColumnInfo
     var sakpiri: String? = null
+    @ColumnInfo
     var chek: String? = null
+    @PrimaryKey
     var id: Int? = null
+    @ColumnInfo
     var valiM: Int? = null
+    @ColumnInfo
     var valiK30: Int? = null
+    @ColumnInfo
     var valiK50: Int? = null
-    var fasebi : FloatArray? = null
+
+//    var fasebi : FloatArray? = null
 
 //    override fun toString(): String {
 //        return "Obieqti(dasaxeleba='$dasaxeleba', adress=$adress, tel=$tel, comment=$comment, sk=$sk, sakpiri=$sakpiri, chek=$chek, id=$id, valiM=$valiM, valiK30=$valiK30, valiK50=$valiK50, fasebi=${fasebi?.contentToString()})"
