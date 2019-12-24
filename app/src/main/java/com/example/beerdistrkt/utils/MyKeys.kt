@@ -1,5 +1,9 @@
 package com.example.beerdistrkt.utils
 
+const val MDEBAREOBA = "mdeb"
+const val MITANA = "mde1b"
+const val AMONAWERI = "m12deb"
+
 class MyKeys {
     companion object{
         const val COMMENT_OBJ_ORDER = "O"

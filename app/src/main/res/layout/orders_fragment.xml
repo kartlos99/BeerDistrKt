@@ -8,7 +8,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.beerdistrkt.viewmodel.OrdersViewModel" />
+            type="com.example.beerdistrkt.fragPages.orders.OrdersViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

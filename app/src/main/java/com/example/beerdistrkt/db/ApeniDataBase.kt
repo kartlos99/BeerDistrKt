@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.beerdistrkt.models.Obieqti
 
-@Database(entities = [Obieqti::class], version = 1)
+@Database(entities = [Obieqti::class], version = 1, exportSchema = false)
 abstract class ApeniDataBase : RoomDatabase() {
 
     abstract val apeniDataBaseDao: ApeniDatabaseDao
