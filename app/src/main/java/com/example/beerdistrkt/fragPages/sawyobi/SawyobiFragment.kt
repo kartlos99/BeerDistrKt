@@ -2,10 +2,10 @@ package com.example.beerdistrkt.fragPages.sawyobi
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 
 import com.example.beerdistrkt.R
 
@@ -21,6 +21,7 @@ class SawyobiFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.sawyobi_fragment, container, false)
     }
 
@@ -30,4 +31,13 @@ class SawyobiFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.sawyobi_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        view!!.findNavController().navigate(SawyobiFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+        return super.onOptionsItemSelected(item)
+    }
 }

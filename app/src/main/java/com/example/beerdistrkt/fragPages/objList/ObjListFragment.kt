@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.adapters.ObjListAdapter
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.utils.ADD_ORDER
+import com.example.beerdistrkt.utils.AMONAWERI
+import com.example.beerdistrkt.utils.MITANA
 
 class ObjListFragment : Fragment() {
 
@@ -46,6 +51,14 @@ class ObjListFragment : Fragment() {
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
         Log.d("arg", args.directionTo)
+
+        vBinding.objListView.setOnItemClickListener { parent, view, position, id ->
+            when(args.directionTo){
+                ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment())
+                MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddDeliveryFragment())
+                AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAmonaweriFragment())
+            }
+        }
 
         return vBinding.root
     }

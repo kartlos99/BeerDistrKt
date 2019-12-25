@@ -14,16 +14,14 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.HomeFragmentDirections
+import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MDEBAREOBA
-import com.example.beerdistrkt.utils.MyKeys
+import com.example.beerdistrkt.utils.MITANA
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
     companion object {
         fun newInstance() = HomeFragment()
-
-        const val MITANA = "mitana"
-        const val AMONAWERI = "amonaweri"
     }
 
     private lateinit var vBinding: HomeFragmentBinding

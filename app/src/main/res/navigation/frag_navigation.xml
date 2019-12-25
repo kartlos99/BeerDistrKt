@@ -86,13 +86,16 @@
         tools:layout="@layout/obj_list_fragment" >
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
-            app:destination="@id/amonaweriFragment" />
+            app:destination="@id/amonaweriFragment"
+            app:popUpTo="@+id/homeFragment" />
         <action
             android:id="@+id/action_objListFragment_to_addDeliveryFragment"
-            app:destination="@id/addDeliveryFragment" />
+            app:destination="@id/addDeliveryFragment"
+            app:popUpTo="@+id/homeFragment" />
         <action
             android:id="@+id/action_objListFragment_to_addOrdersFragment"
-            app:destination="@id/addOrdersFragment" />
+            app:destination="@id/addOrdersFragment"
+            app:popUpTo="@+id/ordersFragment" />
         <argument
             android:name="directionTo"
             app:argType="string" />

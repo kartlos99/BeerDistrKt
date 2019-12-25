@@ -1,11 +1,12 @@
 package com.example.beerdistrkt.utils
 
 const val MDEBAREOBA = "mdeb"
-const val MITANA = "mde1b"
-const val AMONAWERI = "m12deb"
+const val MITANA = "mitana"
+const val AMONAWERI = "amonaweri"
+const val ADD_ORDER = "add_order"
 
 class MyKeys {
-    companion object{
+    companion object {
         const val COMMENT_OBJ_ORDER = "O"
         const val COMMENT_OBJ_DELIVERY = "D"
         const val COMMENT_OBJ_K_OUT = "K"

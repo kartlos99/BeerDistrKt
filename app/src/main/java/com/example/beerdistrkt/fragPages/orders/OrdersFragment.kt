@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
+import com.example.beerdistrkt.utils.ADD_ORDER
 
 class OrdersFragment : Fragment() {
 
@@ -31,6 +33,10 @@ class OrdersFragment : Fragment() {
         vBinding = OrdersFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
         vBinding.viewModel = viewModel
+        vBinding.btnAddOrder.setOnClickListener {
+            it.findNavController().navigate(OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
+                ADD_ORDER))
+        }
 
         return vBinding.root
     }
