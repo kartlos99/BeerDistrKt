@@ -37,7 +37,9 @@ class SawyobiFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        view!!.findNavController().navigate(SawyobiFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+        when(item.itemId){
+            R.id.sawyobiDetail -> view!!.findNavController().navigate(SawyobiFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+        }
         return super.onOptionsItemSelected(item)
     }
 }
