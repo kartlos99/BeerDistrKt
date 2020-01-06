@@ -14,13 +14,13 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Response
 
-class ObjListViewModel(
-    val database: ApeniDatabaseDao,
-    application: Application
-) : ViewModel() {
+class ObjListViewModel : ViewModel() {
 
+    private val database: ApeniDatabaseDao = ApeniDataBase.getInstance().apeniDataBaseDao
     val obieqtsList = database.getAllObieqts()
+
     private val job = Job()
+    private val ioScope = CoroutineScope(Dispatchers.IO + job)
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
@@ -29,8 +29,12 @@ class ObjListViewModel(
 
     fun delOneObj() {
         // just test
-        CoroutineScope(Dispatchers.IO).launch {
-            database.insertObiecti(Obieqti("NEW_TEST_OBJ_KT"))
+//        CoroutineScope(Dispatchers.IO).launch {
+//            database.insertObiecti(Obieqti("NEW_TEST_OBJ_KT"))
+//        }
+        ioScope.launch {
+            val objectWithPrices = database.getObiectsWithPrices(27)
+            Log.d("--------------", objectWithPrices.toString())
         }
 //        _objList.value?.removeAt(2)
 //        _objList.value = _objList.value

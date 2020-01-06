@@ -9,9 +9,13 @@ import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.beerdistrkt.databinding.ActivityMainBinding
+import com.example.beerdistrkt.db.ApeniDataBase
+import com.example.beerdistrkt.db.ApeniDatabaseDao
+import com.example.beerdistrkt.network.ApeniApiService
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        ApeniDataBase.initialize(this)
+        ApeniApiService.initialize(this)
         drawerLayout = vBinding.drawerLayout
 
         val toolBar = vBinding.toolBar

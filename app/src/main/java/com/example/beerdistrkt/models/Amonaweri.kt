@@ -1,8 +1,6 @@
 package com.example.beerdistrkt.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 
 data class Amonaweri(
@@ -54,3 +52,13 @@ data class Obieqti(
     }
 
 }
+
+data class ObiectWithPrices(
+    @Embedded
+    val obieqti: Obieqti,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "objID"
+    )
+    val prices: List<ObjToBeerPrice>
+)

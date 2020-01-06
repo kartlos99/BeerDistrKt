@@ -21,8 +21,7 @@ import com.example.beerdistrkt.utils.MITANA
 class ObjListFragment : Fragment() {
 
     companion object {
-        fun newInstance() =
-            ObjListFragment()
+        fun newInstance() = ObjListFragment()
     }
 
     private lateinit var viewModel: ObjListViewModel
@@ -35,17 +34,7 @@ class ObjListFragment : Fragment() {
         vBinding = ObjListFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
 
-        val application = requireNotNull(this.activity).application
-
-        val dataSource = ApeniDataBase.getInstance(application).apeniDataBaseDao
-
-        val viewModelFactory =
-            ObjListViewModelFactory(
-                dataSource,
-                application
-            )
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ObjListViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ObjListViewModel::class.java)
         vBinding.viewModel = viewModel
 
         val argsBundle = arguments ?: Bundle()
@@ -53,10 +42,14 @@ class ObjListFragment : Fragment() {
         Log.d("arg", args.directionTo)
 
         vBinding.objListView.setOnItemClickListener { parent, view, position, id ->
-            when(args.directionTo){
-                ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment())
-                MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddDeliveryFragment())
-                AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAmonaweriFragment())
+            val clientObject= vBinding.objListView.adapter.getItem(position) as Obieqti
+            clientObject.id?.let {
+                when(args.directionTo){
+                    ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment(it))
+                    MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddDeliveryFragment(it))
+                    AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAmonaweriFragment(it))
+//                    else -> // show toast
+                }
             }
         }
 

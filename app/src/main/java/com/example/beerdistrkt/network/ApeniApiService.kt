@@ -3,6 +3,7 @@ package com.example.beerdistrkt.network
 import android.content.Context
 import android.util.Log
 import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.User
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -19,10 +20,13 @@ interface ApeniApiService {
 
         const val BASE_URL = "https://apeni.ge/andr_app_links/"
 
-        fun get(context: Context? = null): ApeniApiService {
+        fun initialize(context: Context){
             if (instance == null){
                 instance = create(context)
             }
+        }
+
+        fun get(): ApeniApiService {
             return instance!!
         }
 
@@ -47,4 +51,7 @@ interface ApeniApiService {
 
     @GET("get_obieqts.php")
     fun getObieqts(): Call<List<Obieqti>>
+
+    @GET("get_fasebi.php")
+    fun getPrices(): Call<List<ObjToBeerPrice>>
 }

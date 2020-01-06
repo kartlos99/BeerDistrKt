@@ -36,18 +36,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
 //        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.home_fragment, container, false)
 
-        val application = requireNotNull(this.activity).application
-
-        val dataSource = ApeniDataBase.getInstance(application).apeniDataBaseDao
-
-        val viewModelFactory = HomeViewModelFactory(dataSource, application)
-
-        val HomeViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java)
+//        val application = requireNotNull(this.activity).application
 
         vBinding.setLifecycleOwner(this)
-
-//        vBinding.sleepTrackerViewModel = sleepTrackerViewModel
 
         vBinding.btnShekvetebi.setOnClickListener(this)
         vBinding.btnMitana.setOnClickListener(this)

@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.ObjToBeerPrice
 
-@Database(entities = [Obieqti::class], version = 1, exportSchema = false)
+@Database(entities = [Obieqti::class, ObjToBeerPrice::class], version = 3, exportSchema = false)
 abstract class ApeniDataBase : RoomDatabase() {
 
     abstract val apeniDataBaseDao: ApeniDatabaseDao
@@ -16,7 +17,7 @@ abstract class ApeniDataBase : RoomDatabase() {
         @Volatile
         private var INSTANCE: ApeniDataBase? = null
 
-        fun getInstance(context: Context): ApeniDataBase {
+        fun initialize(context: Context){
             synchronized(this) {
                 var instance = INSTANCE
 
@@ -30,8 +31,11 @@ abstract class ApeniDataBase : RoomDatabase() {
                         .build()
                     INSTANCE = instance
                 }
-                return instance
             }
+        }
+
+        fun getInstance(): ApeniDataBase {
+            return INSTANCE!!
         }
     }
 }

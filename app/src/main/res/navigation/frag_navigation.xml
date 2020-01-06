@@ -114,15 +114,27 @@
         android:id="@+id/amonaweriFragment"
         android:name="com.example.beerdistrkt.fragPages.amonaweri.AmonaweriFragment"
         android:label="amonaweri_fragment"
-        tools:layout="@layout/amonaweri_fragment" />
+        tools:layout="@layout/amonaweri_fragment" >
+        <argument
+            android:name="clientObjectID"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
         android:name="com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment"
         android:label="add_delivery_fragment"
-        tools:layout="@layout/add_delivery_fragment" />
+        tools:layout="@layout/add_delivery_fragment" >
+        <argument
+            android:name="clientObjectID"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/addOrdersFragment"
         android:name="com.example.beerdistrkt.fragPages.orders.AddOrdersFragment"
         android:label="add_orders_fragment"
-        tools:layout="@layout/add_orders_fragment" />
+        tools:layout="@layout/add_orders_fragment" >
+        <argument
+            android:name="clientObjectID"
+            app:argType="integer" />
+    </fragment>
 </navigation>
