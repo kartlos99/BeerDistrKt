@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import android.util.Log
+import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.User
@@ -11,6 +12,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 
 interface ApeniApiService {
@@ -54,4 +56,7 @@ interface ApeniApiService {
 
     @GET("get_fasebi.php")
     fun getPrices(): Call<List<ObjToBeerPrice>>
+
+    @GET("get_amonaweri_m.php")
+    fun getAmonaweriM(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<List<Amonaweri>>
 }

@@ -5,6 +5,16 @@ const val MITANA = "mitana"
 const val AMONAWERI = "amonaweri"
 const val ADD_ORDER = "add_order"
 
+const val TITLE_0 = "დავალიანება"
+const val TITLE_1 = "კასრი"
+const val LOCATION = "location"
+const val OBJ_ID = "id"
+
+const val M_PAGE = 0
+const val K_PAGE = 1
+
+const val ACCURACY = 0.001F
+
 class MyKeys {
     companion object {
         const val COMMENT_OBJ_ORDER = "O"

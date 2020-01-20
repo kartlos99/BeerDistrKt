@@ -38,7 +38,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
 //        val application = requireNotNull(this.activity).application
 
-        vBinding.setLifecycleOwner(this)
+        vBinding.lifecycleOwner = this
 
         vBinding.btnShekvetebi.setOnClickListener(this)
         vBinding.btnMitana.setOnClickListener(this)

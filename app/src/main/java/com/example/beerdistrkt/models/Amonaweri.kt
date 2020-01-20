@@ -1,17 +1,28 @@
 package com.example.beerdistrkt.models
 
 import androidx.room.*
+import com.squareup.moshi.Json
 
 
 data class Amonaweri(
+    @Json(name = "dt")
     var tarigi: String? = null,
+
     var comment: String? = null,
     var k_in: Float = 0f,
     var k_out: Float = 0f,
-    var k_balance: Float = 0f,
+
+//    @Json(name = "bal")
+//    var k_balance: Float = 0f,
+
+    @Json(name = "pr")
     var price: Float = 0f,
+
     var pay: Float = 0f,
+
+    @Json(name = "bal")
     var balance: Float = 0f,
+
     var id: Int = 0
 )
 
