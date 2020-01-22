@@ -123,6 +123,18 @@
             app:layout_constraintTop_toBottomOf="@+id/lin_shek_list_titles"
             app:layout_constraintVertical_bias="0.0" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:padding="10dp"
+            android:paddingTop="-20dp"
+            android:paddingBottom="-20dp"
+            android:background="@color/colorCardview"
+            android:id="@+id/testRecycler"
+            app:layout_constraintTop_toBottomOf="@+id/lin_shek_list_titles"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
