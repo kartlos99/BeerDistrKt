@@ -59,4 +59,7 @@ interface ApeniApiService {
 
     @GET("get_amonaweri_m.php")
     fun getAmonaweriM(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<List<Amonaweri>>
+
+    @GET("get_amonaweri_k.php")
+    fun getAmonaweriK(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<List<Amonaweri>>
 }

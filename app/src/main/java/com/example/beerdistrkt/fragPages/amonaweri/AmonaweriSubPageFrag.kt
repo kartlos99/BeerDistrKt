@@ -51,7 +51,8 @@ class AmonaweriSubPageFrag : Fragment() {
 
         pagePos = arguments?.getInt(LOCATION) ?: 0
         val objID = arguments?.getInt(OBJ_ID) ?: 0
-        viewModel.requestAmonaweriList(gasagzavniTarigi, objID)
+        vBinding.progressBarAmonaweri.visibility = View.VISIBLE
+        viewModel.requestAmonaweriList(gasagzavniTarigi, objID, pagePos)
 
         return vBinding.root
     }
@@ -60,13 +61,14 @@ class AmonaweriSubPageFrag : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.amonaweriLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.progressBarAmonaweri.visibility = View.GONE
             amonaweriListAdapter = AmonaweriAdapter(context, it, pagePos, false)
             vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
         })
     }
 
     fun dataRefresh(a: String, b: Int) {
-        viewModel.requestAmonaweriList(a, b)
+        viewModel.requestAmonaweriList(a, b, 0)
         Log.d("subPageFr on Refresh", "size $a - $b" )
     }
 
