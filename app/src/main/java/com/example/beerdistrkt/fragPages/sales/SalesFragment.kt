@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.SalesFragmentBinding
+import kotlinx.android.synthetic.main.sales_fragment.*
 
 class SalesFragment : Fragment() {
 
@@ -15,13 +17,17 @@ class SalesFragment : Fragment() {
         fun newInstance() = SalesFragment()
     }
 
+    private lateinit var vBinding: SalesFragmentBinding
     private lateinit var viewModel: SalesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.sales_fragment, container, false)
+        vBinding = SalesFragmentBinding.inflate(inflater)
+
+
+        return vBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

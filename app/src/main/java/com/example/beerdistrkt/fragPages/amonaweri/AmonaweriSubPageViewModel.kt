@@ -4,18 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
-import retrofit2.Call
-import retrofit2.Response
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AmonaweriSubPageViewModel : ViewModel() {
+class AmonaweriSubPageViewModel : BaseViewModel() {
 
     private val _amonaweriLiveData = MutableLiveData<List<Amonaweri>>()
     val amonaweriLiveData: LiveData<List<Amonaweri>>
@@ -33,47 +32,23 @@ class AmonaweriSubPageViewModel : ViewModel() {
     }
 
     fun getAmonaweriM(date: String, id: Int) {
-        ApeniApiService.get().getAmonaweriM(date, id)
-            .enqueue(object : retrofit2.Callback<List<Amonaweri>> {
-                override fun onFailure(call: Call<List<Amonaweri>>, t: Throwable) {
-                    Log.d(TAG, "fail ${t.message}")
-                }
-                override fun onResponse(
-                    call: Call<List<Amonaweri>>,
-                    response: Response<List<Amonaweri>>
-                ) {
-                    response.let {
-                        val resp = response.body()
-                        resp?.let {
-                            amonaweriDataList.addAll(it)
-                            changeDataStructure(isGrouped)
-                        }
-                        Log.d(TAG, "size ${resp?.size} - " + resp!![1].toString())
-                    }
-                }
-            })
+        sendRequest(
+            ApeniApiService.getInstance().getAmonaweriM(date, id),
+            success = {
+                amonaweriDataList.addAll(it)
+                changeDataStructure(isGrouped)
+            }
+        )
     }
 
     fun getAmonaweriK(date: String, id: Int) {
-        ApeniApiService.get().getAmonaweriK(date, id)
-            .enqueue(object : retrofit2.Callback<List<Amonaweri>> {
-                override fun onFailure(call: Call<List<Amonaweri>>, t: Throwable) {
-                    Log.d(TAG, "fail ${t.message}")
-                }
-                override fun onResponse(
-                    call: Call<List<Amonaweri>>,
-                    response: Response<List<Amonaweri>>
-                ) {
-                    response.let {
-                        val resp = response.body()
-                        resp?.let {
-                            amonaweriDataList.addAll(it)
-                            changeDataStructure(isGrouped)
-                        }
-                        Log.d(TAG, "size ${resp?.size} - " + resp!![1].toString())
-                    }
-                }
-            })
+        sendRequest(
+            ApeniApiService.getInstance().getAmonaweriK(date, id),
+            success = {
+                amonaweriDataList.addAll(it)
+                changeDataStructure(isGrouped)
+            }
+        )
     }
 
     fun changeDataStructure(grouped: Boolean) {
@@ -82,6 +57,7 @@ class AmonaweriSubPageViewModel : ViewModel() {
         }else{
             _amonaweriLiveData.value = amonaweriDataList
         }
+        isGrouped = grouped
     }
 
     val dateFormat = SimpleDateFormat("yyyy-MM-dd")

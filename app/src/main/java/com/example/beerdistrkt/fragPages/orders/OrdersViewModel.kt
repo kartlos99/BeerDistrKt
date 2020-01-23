@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.utils.MyKeys
 import retrofit2.Call
 import retrofit2.Response
 
@@ -27,7 +26,7 @@ class OrdersViewModel : ViewModel() {
 
     private fun getData() {
         _response.value = "GetDaTAAAAA"
-        ApeniApiService.get().getProperties().enqueue(object : retrofit2.Callback<List<User>>{
+        ApeniApiService.getInstance().getUsersList().enqueue(object : retrofit2.Callback<List<User>>{
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 Log.d(TAG, "fail")
                 _response.value = "Fail ${t.message}"

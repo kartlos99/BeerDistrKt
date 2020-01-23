@@ -2,10 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import android.util.Log
-import com.example.beerdistrkt.models.Amonaweri
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.ObjToBeerPrice
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
@@ -28,7 +25,7 @@ interface ApeniApiService {
             }
         }
 
-        fun get(): ApeniApiService {
+        fun getInstance(): ApeniApiService {
             return instance!!
         }
 
@@ -49,7 +46,7 @@ interface ApeniApiService {
 
 
     @GET("get_users.php")
-    fun getProperties(): Call<List<User>>
+    fun getUsersList(): Call<List<User>>
 
     @GET("get_obieqts.php")
     fun getObieqts(): Call<List<Obieqti>>
@@ -62,4 +59,8 @@ interface ApeniApiService {
 
     @GET("get_amonaweri_k.php")
     fun getAmonaweriK(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<List<Amonaweri>>
+
+    @GET("get_ludi_list.php")
+    fun getBeerList(): Call<List<BeerModel>>
+
 }

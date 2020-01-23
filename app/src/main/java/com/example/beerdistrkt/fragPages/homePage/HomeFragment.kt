@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 
 import com.example.beerdistrkt.R
@@ -18,6 +20,7 @@ import com.example.beerdistrkt.fragPages.homePage.HomeFragmentDirections
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MDEBAREOBA
 import com.example.beerdistrkt.utils.MITANA
+import kotlin.reflect.jvm.internal.impl.renderer.ClassifierNamePolicy
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
@@ -51,7 +54,21 @@ class HomeFragment : Fragment(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
         viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        viewModel.usersLiveData.observe(this, Observer {
+            it.forEach {user ->
+                Log.d("___User___", user.toString())
+            }
+        })
+        viewModel.beerLiveData.observe(this, Observer {
+            it.forEach {beer ->
+                Log.d("___Beer___", beer.toString())
+            }
+        })
+
+        viewModel.apiFailureMutableLiveData.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(activity, it ?: "sameApiError!" , Toast.LENGTH_LONG).show()
+        })
     }
 
     override fun onClick(view: View?) {

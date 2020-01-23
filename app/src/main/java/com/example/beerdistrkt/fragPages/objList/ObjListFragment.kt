@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.objList
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -79,5 +80,9 @@ class ObjListFragment : Fragment() {
     private fun showObieqts(list: List<Obieqti>) {
         val listAdapter = ObjListAdapter(activity?.applicationContext, list)
         vBinding.objListView.adapter = listAdapter
+    }
+
+    fun Context.isNetAvalable(): Boolean{
+        return true
     }
 }

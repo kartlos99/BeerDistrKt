@@ -1,8 +1,12 @@
 package com.example.beerdistrkt.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 
+@Entity(tableName = "user_table")
 data class User(
+    @PrimaryKey
     val id: String,
     val username: String,
     val name: String,

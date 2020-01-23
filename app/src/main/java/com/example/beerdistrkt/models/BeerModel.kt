@@ -1,13 +1,17 @@
 package com.example.beerdistrkt.models
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import java.io.Serializable
 import java.util.*
 
+@Entity(tableName = "beer_table")
 data class BeerModel (
+    @PrimaryKey
     var id: Int = 0,
     var dasaxeleba: String? = null,
+    @Json(name = "color")
     var displayColor: String? = null,
     var fasi: Double? = null
 )
