@@ -67,9 +67,8 @@ class AmonaweriSubPageFrag : Fragment() {
         })
     }
 
-    fun dataRefresh(a: String, b: Int) {
-        viewModel.requestAmonaweriList(a, b, 0)
-        Log.d("subPageFr on Refresh", "size $a - $b" )
+    fun chengeAmonaweriAppearance(grouped: Boolean) {
+        viewModel.changeDataStructure(grouped)
     }
 
 }

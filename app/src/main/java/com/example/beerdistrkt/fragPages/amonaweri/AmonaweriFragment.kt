@@ -1,20 +1,14 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
-import com.example.beerdistrkt.MainActivity
-import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
 import java.text.SimpleDateFormat
-import java.util.*
 
 class AmonaweriFragment : Fragment() {
 
@@ -51,8 +45,12 @@ class AmonaweriFragment : Fragment() {
         vBinding.tabsAmonaweri.setupWithViewPager(vBinding.viewpagerAmonaweri)
 
         vBinding.btnP4Tarigi.setOnClickListener {
-            val fr1 = pagesAdapter?.fragmentM
-            fr1?.dataRefresh("2020-01-01", 102)
+//            val fr1 = pagesAdapter?.fragmentM
+        }
+
+        vBinding.chkGrAmonaweri.setOnCheckedChangeListener { buttonView, isChecked ->
+            pagesAdapter?.fragmentM?.chengeAmonaweriAppearance(isChecked)
+            pagesAdapter?.fragmentK?.chengeAmonaweriAppearance(isChecked)
         }
     }
 
