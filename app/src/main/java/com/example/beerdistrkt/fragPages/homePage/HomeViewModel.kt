@@ -21,8 +21,6 @@ class HomeViewModel : BaseViewModel() {
         Log.d(TAG, "init")
 //        getObjects()
 //        getPrices()
-//        clearObieqtsList()
-//        clearPrices()
 //        getUsers()
 //        getBeerList()
     }
@@ -71,6 +69,7 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getPrices(),
             success = {
+                clearPrices()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
                         it.forEach { bPrice ->
@@ -88,6 +87,7 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getObieqts(),
             success = {
+                clearObieqtsList()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
                         it.forEach { obieqti ->
