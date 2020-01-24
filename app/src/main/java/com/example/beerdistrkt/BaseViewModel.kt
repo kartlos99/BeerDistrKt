@@ -1,5 +1,6 @@
 package com.example.beerdistrkt
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,7 @@ abstract class BaseViewModel : ViewModel() {
     protected val ioScope = CoroutineScope(Dispatchers.IO + job)
 
     private val _apiFailureMutableLiveData = MutableLiveData<String>()
-    val apiFailureMutableLiveData: LiveData<String>
+    val apiFailureLiveData: LiveData<String>
         get() = _apiFailureMutableLiveData
 
     private fun showOnConnFailureDialog(t: Throwable){
@@ -25,6 +26,7 @@ abstract class BaseViewModel : ViewModel() {
 
     private fun showFailureDialog(throwable: Throwable) {
         _apiFailureMutableLiveData.value = throwable.message
+        Log.d("respFail", throwable.message)
     }
 
     protected fun <T : Any, ApiResponse : Call<T>> sendRequest(

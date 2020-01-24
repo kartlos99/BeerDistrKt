@@ -3,8 +3,11 @@ package com.example.beerdistrkt.network
 import android.content.Context
 import android.util.Log
 import com.example.beerdistrkt.models.*
+import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -63,4 +66,6 @@ interface ApeniApiService {
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<List<BeerModel>>
 
+    @GET("view_sale_day_v2.php")
+    fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<List<Map<String, String>>>
 }

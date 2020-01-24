@@ -1,9 +1,7 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,7 +65,7 @@ class AmonaweriSubPageFrag : Fragment() {
             vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
         })
 
-        viewModel.apiFailureMutableLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.apiFailureLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.progressBarAmonaweri.visibility = View.GONE
             Toast.makeText(activity, it ?: "sameApiError!" , Toast.LENGTH_LONG).show()
         })

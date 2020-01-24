@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import kotlinx.android.synthetic.main.sales_fragment.*
 
@@ -33,7 +35,11 @@ class SalesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SalesViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        viewModel.salesLiveData.observe(viewLifecycleOwner, Observer {
+            val adapter = SalesAdapter(context, it)
+            vBinding.salesList1.adapter = adapter
+        })
     }
 
 }

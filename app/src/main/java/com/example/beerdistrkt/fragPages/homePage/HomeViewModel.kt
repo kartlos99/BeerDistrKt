@@ -2,10 +2,7 @@ package com.example.beerdistrkt.fragPages.homePage
 
 import android.util.Log
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.BeerModel
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.ObjToBeerPrice
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
 import kotlinx.coroutines.*
