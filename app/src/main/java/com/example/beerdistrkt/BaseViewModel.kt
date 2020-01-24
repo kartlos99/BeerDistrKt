@@ -19,17 +19,19 @@ abstract class BaseViewModel : ViewModel() {
     val apiFailureMutableLiveData: LiveData<String>
         get() = _apiFailureMutableLiveData
 
+    private fun showOnConnFailureDialog(t: Throwable){
+        _apiFailureMutableLiveData.value = "check Net. Connection: ${t.message}"
+    }
 
-
-    private fun showConnFailureDialog(throwable: Throwable) {
+    private fun showFailureDialog(throwable: Throwable) {
         _apiFailureMutableLiveData.value = throwable.message
     }
 
     protected fun <T : Any, ApiResponse : Call<T>> sendRequest(
         apiRequest: ApiResponse,
         success: ((data: T) -> Unit),
-        onConnectionFailure: (Throwable) -> Unit = ::showConnFailureDialog,
-        failure: (t: Throwable) -> Unit = ::showConnFailureDialog,
+        onConnectionFailure: (Throwable) -> Unit = ::showOnConnFailureDialog,
+        failure: (t: Throwable) -> Unit = ::showFailureDialog,
         finally: ((success: Boolean) -> Unit)? = null
     ) {
         apiRequest.sendRequest(
