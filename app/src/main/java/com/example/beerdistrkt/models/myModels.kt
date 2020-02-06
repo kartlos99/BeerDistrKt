@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.models
 
+import com.squareup.moshi.Json
 import java.io.Serializable
 import java.util.*
 
@@ -124,8 +125,10 @@ class Totalinout(
 
 class Xarji(
     var comment: String,
+    @Json(name = "distributor_id")
     var distrID: String,
     var id: String,
+    @Json(name = "tanxa")
     var amount: Float
 ) {
 

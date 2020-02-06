@@ -31,7 +31,7 @@ data class ObjToBeerPrice(
 
 data class SaleInfo(
     val beerName: String,
-    val pr: Float,
+    val price: Float,
     val litraji: Int,
     val k30: Float,
     val k50: Float
@@ -48,3 +48,15 @@ data class SaleInfo(
         }
     }
 }
+
+data class DayOutPut(
+    val money: Float,
+    val k30: Float,
+    val k50: Float
+)
+
+data class RealizationDay(
+    val output: DayOutPut,
+    val realizebuli: List<SaleInfo>,
+    val xarji: List<Xarji>
+)

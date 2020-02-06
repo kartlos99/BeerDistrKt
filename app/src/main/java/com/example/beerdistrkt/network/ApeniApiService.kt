@@ -20,7 +20,7 @@ interface ApeniApiService {
     companion object {
         private var instance: ApeniApiService? = null
 
-        const val BASE_URL = "https://apeni.ge/andr_app_links/"
+        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
 
         fun initialize(context: Context){
             if (instance == null){
@@ -67,5 +67,5 @@ interface ApeniApiService {
     fun getBeerList(): Call<List<BeerModel>>
 
     @GET("view_sale_day_v2.php")
-    fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<List<Map<String, String>>>
+    fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<RealizationDay>
 }

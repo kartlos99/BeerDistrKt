@@ -9,7 +9,7 @@ import com.example.beerdistrkt.network.ApeniApiService
 
 class SalesViewModel : BaseViewModel() {
 
-    val TAG = "ordersVM"
+    val TAG = "Sales_VM"
     var k30empty = 0.0f
     var k50empty = 0.0f
     var takeMoney = 0.0f
@@ -25,18 +25,11 @@ class SalesViewModel : BaseViewModel() {
 
     fun getDayInfo() {
         sendRequest(
-            ApeniApiService.getInstance().getDayInfo("2019-07-11", 0),
+            ApeniApiService.getInstance().getDayInfo("2019-05-12", 0),
             success = {
                 val sales: ArrayList<SaleInfo> = ArrayList()
-                for (i in 0..it.size - 3) {
-                    sales.add(SaleInfo.mapToSaleInfo(it[i]))
-                }
-                takeMoney = it[it.size - 2]["money"]?.toFloatOrNull() ?: 0f
-
-                k30empty = it[it.size - 1]["k30"]?.toFloatOrNull() ?: 0f
-                k50empty = it[it.size - 1]["k50"]?.toFloatOrNull() ?: 0f
-
-                _salesMutableLiveData.value = sales
+                Log.d(TAG, it.toString())
+                _salesMutableLiveData.value = it.realizebuli
             },
             finally = {
                 Log.d(TAG, "dayReq $it")
