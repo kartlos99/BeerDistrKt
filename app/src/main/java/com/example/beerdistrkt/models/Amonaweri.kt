@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 
 data class Amonaweri(
     @Json(name = "dt")
-    var tarigi: String? = null,
+    var tarigi: String = "",
 
     var comment: String = "",
     var k_in: Float = 0f,

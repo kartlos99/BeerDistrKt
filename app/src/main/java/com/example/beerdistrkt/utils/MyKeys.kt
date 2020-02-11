@@ -15,6 +15,12 @@ const val K_PAGE = 1
 
 const val ACCURACY = 0.001F
 
+const val MSG_DEL = "გსურთ ჩანაწერის წაშლა?"
+
+const val RESULT = "result"
+const val SUCCESS = "success"
+const val ERROR = "error"
+
 class MyKeys {
     companion object {
         const val COMMENT_OBJ_ORDER = "O"

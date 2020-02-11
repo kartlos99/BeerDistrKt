@@ -3,7 +3,6 @@ package com.example.beerdistrkt.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
-import java.io.Serializable
 import java.util.*
 
 @Entity(tableName = "beer_table")
@@ -31,23 +30,11 @@ data class ObjToBeerPrice(
 
 data class SaleInfo(
     val beerName: String,
-    val price: Float,
+    val price: Double,
     val litraji: Int,
-    val k30: Float,
-    val k50: Float
-) {
-    companion object {
-        fun mapToSaleInfo(map: Map<String, String>): SaleInfo {
-            return SaleInfo(
-                map.get("dasaxeleba") ?: "",
-                map["pr"]?.toFloatOrNull() ?: 0F,
-                map["lt"]?.toFloatOrNull()?.toInt() ?: 0,
-                map["k30"]?.toFloatOrNull() ?: 0F,
-                map["k50"]?.toFloatOrNull() ?: 0F
-            )
-        }
-    }
-}
+    val k30: Double,
+    val k50: Double
+)
 
 data class DayOutPut(
     val money: Float,

@@ -1,16 +1,13 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,8 +57,6 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         isGrouped = grouped
     }
 
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-
     fun groupAmonaweriList(rowList: ArrayList<Amonaweri>): ArrayList<Amonaweri>{
         val groupedList = ArrayList<Amonaweri>()
         var grDate = Date()
@@ -69,7 +64,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
 
         if (rowList.size > 0) {
             try {
-                grDate = dateFormat.parse(rowList[0].tarigi)
+                grDate = dateFormat_desh.parse(rowList[0].tarigi) ?: Date()
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -80,7 +75,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             var k_out = 0.0f
             for (i in rowList.indices) {
                 try {
-                    currRowDate = dateFormat.parse(rowList[i].tarigi)
+                    currRowDate = dateFormat_desh.parse(rowList[i].tarigi) ?: Date()
                 } catch (e: ParseException) {
                     e.printStackTrace()
                 }
@@ -91,7 +86,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     k_out += rowList[i].k_out
                 } else {
                     val currGrRow = Amonaweri()
-                    currGrRow.tarigi = dateFormat.format(grDate)
+                    currGrRow.tarigi = dateFormat_desh.format(grDate)
                     currGrRow.price = pr
                     currGrRow.pay = pay
                     currGrRow.balance = bal
@@ -108,7 +103,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                 }
             }
             val currGrRow = Amonaweri()
-            currGrRow.tarigi = dateFormat.format(grDate)
+            currGrRow.tarigi = dateFormat_desh.format(grDate)
             currGrRow.price = pr
             currGrRow.pay = pay
             currGrRow.balance = bal

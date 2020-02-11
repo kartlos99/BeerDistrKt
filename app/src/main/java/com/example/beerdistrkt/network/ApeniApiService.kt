@@ -3,16 +3,20 @@ package com.example.beerdistrkt.network
 import android.content.Context
 import android.util.Log
 import com.example.beerdistrkt.models.*
-import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+//import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Retrofit
+//import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
+//import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.*
+import java.util.*
 
 
 interface ApeniApiService {
@@ -22,8 +26,8 @@ interface ApeniApiService {
 
         const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
 
-        fun initialize(context: Context){
-            if (instance == null){
+        fun initialize(context: Context) {
+            if (instance == null) {
                 instance = create(context)
             }
         }
@@ -32,13 +36,14 @@ interface ApeniApiService {
             return instance!!
         }
 
-        private fun create(context: Context?): ApeniApiService{
+        private fun create(context: Context?): ApeniApiService {
 
             val moshi = Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
             val retrofit = Retrofit.Builder()
+//                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(BASE_URL)
                 .build()
@@ -68,4 +73,7 @@ interface ApeniApiService {
 
     @GET("view_sale_day_v2.php")
     fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<RealizationDay>
+
+    @POST("del_record_v2.php")
+    fun deleteRecord(@Body del: DeleteRequest): Call<SimpleResponce>
 }

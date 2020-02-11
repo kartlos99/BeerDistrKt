@@ -141,3 +141,15 @@ class Xarji(
                 '}'
     }
 }
+
+data class DeleteRequest(
+    val recordID: String,
+    val table: String,
+    val userID: String
+)
+
+data class SimpleResponce(
+    val result: String,
+    val error: String? = null,
+    val post: String? = null
+)

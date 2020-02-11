@@ -2,6 +2,7 @@ package com.example.beerdistrkt
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.util.Log
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -16,6 +17,7 @@ fun <T: Any>  Call<T>.sendRequest(
 ){
     enqueue(object :Callback<T> {
         override fun onFailure(call: Call<T>, t: Throwable) {
+            Log.d("FailMSG", t.message!!)
             finally?.invoke(false)
             if (t is IOException) {
                 onConnectionFailure(t)
@@ -32,6 +34,7 @@ fun <T: Any>  Call<T>.sendRequest(
                     success(it)
                 }
             }
+            Log.d("Resp_Code__", response.code().toString())
         }
     })
 }

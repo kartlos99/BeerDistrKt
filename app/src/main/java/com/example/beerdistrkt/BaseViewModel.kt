@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import retrofit2.Call
+import java.text.SimpleDateFormat
 
 abstract class BaseViewModel : ViewModel() {
     protected val database: ApeniDatabaseDao = ApeniDataBase.getInstance().apeniDataBaseDao
@@ -26,7 +27,7 @@ abstract class BaseViewModel : ViewModel() {
 
     private fun showFailureDialog(throwable: Throwable) {
         _apiFailureMutableLiveData.value = throwable.message
-        Log.d("respFail", throwable.message)
+        Log.d("respFail", throwable.message!!)
     }
 
     protected fun <T : Any, ApiResponse : Call<T>> sendRequest(
@@ -43,4 +44,8 @@ abstract class BaseViewModel : ViewModel() {
             finally = finally
         )
     }
+
+    val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+    val dateFormat_desh = SimpleDateFormat("yyyy-MM-dd")
+    val dateFormat_2dots = SimpleDateFormat("yyyy:MM:dd")
 }

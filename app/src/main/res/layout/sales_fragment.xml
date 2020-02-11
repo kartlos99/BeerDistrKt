@@ -4,13 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragPages.sales.SalesFragment">
 
+    <data>
 
+        <variable
+            name="viewModel"
+            type="com.example.beerdistrkt.fragPages.sales.SalesViewModel" />
+    </data>
 
     <ScrollView
+        android:id="@+id/scroll_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:id="@+id/scroll_main">
+        android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -35,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:drawableEnd="@drawable/calendar_icon"
+                android:text="@{viewModel.selectedDayLiveData}"
                 app:layout_constraintEnd_toStartOf="@+id/btn_day_forward"
                 app:layout_constraintStart_toEndOf="@+id/btn_day_back"
                 app:layout_constraintTop_toBottomOf="@+id/t_tarigi"
@@ -46,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_arrow_left"
+                android:onClick="@{() -> viewModel.changeDay(-1)}"
                 android:text="@string/back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/btn_tarigi"
@@ -55,8 +62,8 @@
                 android:id="@+id/btn_day_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:drawableEnd="@drawable/ic_arrow_right"
+                android:onClick="@{() -> viewModel.changeDay(1)}"
                 android:text="@string/forward"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_day_back"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -215,8 +222,8 @@
                         android:background="@drawable/highlight_rect"
                         android:lineSpacingExtra="5dp"
                         android:padding="8dp"
-                        android:textAlignment="center"
                         android:text="@string/_30_n30"
+                        android:textAlignment="center"
                         android:textSize="@dimen/textsize_3"
                         app:layout_constraintHorizontal_bias="0.507"
                         app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
@@ -235,8 +242,8 @@
                         android:background="@drawable/highlight_rect"
                         android:lineSpacingExtra="5dp"
                         android:padding="8dp"
+                        android:text="@string/default_0"
                         android:textAlignment="center"
-                        android:text="@string/_50litri"
                         android:textSize="@dimen/textsize_3"
                         app:layout_constraintHorizontal_bias="0.507"
                         app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
@@ -302,17 +309,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/t_p3_lari"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/lari"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintStart_toEndOf="@id/t_p3_lari_count"
-                        app:layout_constraintTop_toTopOf="@+id/t_p3_lari_count"
-                        tools:layout_editor_absoluteX="111dp" />
-
 
                     <TextView
                         android:id="@+id/t_p3_lari_count"
@@ -323,10 +319,10 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
                         android:background="@drawable/highlight_rect"
                         android:padding="6dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:text="@string/default_0"
                         android:textSize="@dimen/textsize_3"
                         app:layout_constraintEnd_toEndOf="@+id/t_p3_shemosavali"
@@ -360,11 +356,11 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
                         android:background="@drawable/highlight_rect"
                         android:padding="6dp"
-                        android:text="@string/default_0"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="@{@string/format_gel(viewModel.realizationDayLiveData.output.money)}"
                         android:textSize="@dimen/textsize_3"
                         app:layout_constraintEnd_toEndOf="@+id/ttt_agebuli"
                         app:layout_constraintLeft_toLeftOf="@+id/guideline3"
@@ -372,16 +368,6 @@
                         app:layout_constraintStart_toStartOf="@+id/ttt_agebuli"
                         app:layout_constraintTop_toBottomOf="@+id/ttt_agebuli" />
 
-                    <TextView
-                        android:id="@+id/t_l2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/lari"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintStart_toEndOf="@id/t_agebuli_tanxa"
-                        app:layout_constraintTop_toTopOf="@+id/t_p3_lari_count"
-                        tools:layout_editor_absoluteX="295dp" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline3"
@@ -400,74 +386,74 @@
 
             <Button
                 android:id="@+id/btn_xarjebi"
-                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="@string/add_xarji"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3" />
 
             <ImageButton
                 android:id="@+id/btn_xarj_expand"
-                app:layout_constraintTop_toTopOf="@id/btn_xarjebi"
-                app:layout_constraintStart_toEndOf="@id/btn_xarjebi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 android:src="@drawable/ic_arrow_down_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:layout_constraintStart_toEndOf="@id/btn_xarjebi"
+                app:layout_constraintTop_toTopOf="@id/btn_xarjebi" />
 
             <TextView
-                android:text="@string/xarjebi"
-                app:layout_constraintTop_toTopOf="@id/t_xarj_sum"
-                app:layout_constraintEnd_toStartOf="@id/t_xarj_sum"
-                android:layout_margin="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/xarjebi"
+                app:layout_constraintEnd_toStartOf="@id/t_xarj_sum"
+                app:layout_constraintTop_toTopOf="@id/t_xarj_sum" />
 
             <TextView
                 android:id="@+id/t_xarj_sum"
-                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:background="@drawable/highlight_rect"
                 android:padding="6dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="0"
                 android:textSize="@dimen/textsize_3"
-                android:background="@drawable/highlight_rect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3" />
 
             <TextView
-                android:text="@string/xelze_tanxa"
-                app:layout_constraintTop_toTopOf="@id/t_xelze"
-                app:layout_constraintEnd_toStartOf="@id/t_xelze"
-                android:layout_margin="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/xelze_tanxa"
+                app:layout_constraintEnd_toStartOf="@id/t_xelze"
+                app:layout_constraintTop_toTopOf="@id/t_xelze" />
 
             <TextView
                 android:id="@+id/t_xelze"
-                app:layout_constraintTop_toBottomOf="@id/t_xarj_sum"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:background="@drawable/highlight_rect"
                 android:padding="6dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="0"
                 android:textSize="@dimen/textsize_3"
-                android:background="@drawable/highlight_rect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/t_xarj_sum" />
 
             <LinearLayout
                 android:id="@+id/linear_xarjebi"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/t_xelze"
-                android:background="@drawable/temp_beer_cont_rect"
-                android:layout_margin="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/temp_beer_cont_rect"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/t_xelze" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
