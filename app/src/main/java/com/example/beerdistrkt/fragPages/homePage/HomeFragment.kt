@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.homePage
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,25 +11,27 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.example.beerdistrkt.BaseFragment
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
 
-class HomeFragment : Fragment(), View.OnClickListener {
+class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     companion object {
         fun newInstance() = HomeFragment()
     }
 
     private lateinit var vBinding: HomeFragmentBinding
-    private lateinit var viewModel: HomeViewModel
+    override val viewModel: HomeViewModel by lazy { ViewModelProviders.of(this)[HomeViewModel::class.java] }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         vBinding = HomeFragmentBinding.inflate(inflater)
 //        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.home_fragment, container, false)
@@ -47,21 +50,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
 
         viewModel.usersLiveData.observe(this, Observer {
             it.forEach {user ->
-//                Log.d("___User___", user.toString())
+                Log.d("___User___", user.toString())
             }
-        })
-        viewModel.beerLiveData.observe(this, Observer {
-            it.forEach {beer ->
-//                Log.d("___Beer___", beer.toString())
-            }
-        })
-
-        viewModel.apiFailureLiveData.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(activity, it ?: "sameApiError!" , Toast.LENGTH_LONG).show()
         })
     }
 

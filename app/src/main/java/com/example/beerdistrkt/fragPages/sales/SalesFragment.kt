@@ -7,10 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.customView.XarjiRowView
@@ -22,8 +21,7 @@ import java.lang.String
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SalesFragment : Fragment() {
-    val dateFormat_desh = SimpleDateFormat("yyyy-MM-dd")
+class SalesFragment : BaseFragment<SalesViewModel>() {
 
     companion object {
         fun newInstance() = SalesFragment()
@@ -31,9 +29,9 @@ class SalesFragment : Fragment() {
     }
 
     private lateinit var vBinding: SalesFragmentBinding
-    private lateinit var viewModel: SalesViewModel
-
-    private var xarjListExpanded = false
+    override val viewModel: SalesViewModel by lazy {
+        ViewModelProviders.of(this)[SalesViewModel::class.java]
+    }
 
     var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDataSelected(year, month, day)
@@ -44,7 +42,6 @@ class SalesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         vBinding = SalesFragmentBinding.inflate(inflater)
-        viewModel = ViewModelProviders.of(this).get(SalesViewModel::class.java)
 
         vBinding.viewModel = viewModel
         vBinding.lifecycleOwner = this
@@ -71,22 +68,20 @@ class SalesFragment : Fragment() {
             vBinding.btnXarjebi.setOnClickListener {
                 val xarjebiDialog = XarjebiDialog(it.context) { comment, amount ->
                     if (amount.isEmpty()) {
-                        Toast.makeText(context, "carieli monacemebi ar inaxeba", Toast.LENGTH_SHORT)
-                            .show()
+                        showToast(getString(R.string.msg_empty_not_saved))
                     } else {
                         try {
                             val am = amount.toFloat()
                             viewModel.addXarji(comment, am.toString())
                         } catch (e: NumberFormatException) {
                             Log.d(TAG, e.toString())
-                            Toast.makeText(context, "araswori formati", Toast.LENGTH_SHORT).show()
+                            showToast(getString(R.string.msg_invalid_format))
                         }
                     }
                 }
                 xarjebiDialog.show(childFragmentManager, "xarjidialogTag")
             }
         }
-
 
         return vBinding.root
     }
@@ -107,13 +102,13 @@ class SalesFragment : Fragment() {
         viewModel.deleteXarjiLiveData.observe(viewLifecycleOwner, Observer {
             when (it.result) {
                 SUCCESS -> {
-                    Toast.makeText(context, "waisala", Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.msg_record_deleted))
                     showXarjList(true)
                     fillPageData()
                     viewModel.deleteXarjiComplited()
                 }
                 ERROR -> {
-                    Toast.makeText(context, "ver waiSala!! ${it.error}", Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.msg_record_not_deleted))
                 }
             }
         })
@@ -123,15 +118,15 @@ class SalesFragment : Fragment() {
         })
 
         viewModel.addXarjiLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.result){
+            when (it.result) {
                 SUCCESS -> {
                     showXarjList(true)
                     fillPageData()
-                    Toast.makeText(context, "daemata!", Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.msg_record_added))
                     viewModel.addXarjiComplited()
                 }
                 ERROR -> {
-                    Toast.makeText(context, "ver daemata!", Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.msg_record_not_added))
                 }
             }
         })
@@ -166,7 +161,7 @@ class SalesFragment : Fragment() {
         vBinding.linearXarjebi.removeAllViews()
         var canDel = false
         if (Session.get().userType == UserType.ADMIN ||
-            viewModel.selectedDayLiveData.value == dateFormat_desh.format(Date())
+            viewModel.selectedDayLiveData.value == dateFormatDash.format(Date())
         ) {
             canDel = true
         }

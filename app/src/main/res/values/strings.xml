@@ -111,6 +111,13 @@
     <string name="loading_title">იტვირთება!</string>
     <string name="loading_text">დაელოდეთ…</string>
 
+    <string name="msg_empty_not_saved">ცარიელი მონაცემები არ ინახება</string>
+    <string name="msg_invalid_format">არასწორი ფორმატი</string>
+    <string name="msg_record_deleted">ჩანაწერი წაიშალა!</string>
+    <string name="msg_record_not_deleted">ჩანაწერი ვერ წაიშალა!</string>
+    <string name="msg_record_added">ჩანაწერი დამატებულია!</string>
+    <string name="msg_record_not_added">ჩანაწერი ვერ დაემატა!</string>
+
     <string name="location_en">tbilisi</string>
     <string name="location_ge">თბილისი</string>
     <string name="msg_not_editable">კახეთის აპლიკაციაში დაფიქსირებულ მონაცემები თბილისიდან არ იცვლება</string>

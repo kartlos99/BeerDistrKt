@@ -21,6 +21,10 @@ abstract class BaseViewModel : ViewModel() {
     val apiFailureLiveData: LiveData<String>
         get() = _apiFailureMutableLiveData
 
+    fun showNetfailMsgComplite(){
+        _apiFailureMutableLiveData.value = ""
+    }
+
     private fun showOnConnFailureDialog(t: Throwable){
         _apiFailureMutableLiveData.value = "check Net. Connection: ${t.message}"
     }
