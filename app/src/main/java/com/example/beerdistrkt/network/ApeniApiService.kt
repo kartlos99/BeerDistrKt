@@ -76,4 +76,12 @@ interface ApeniApiService {
 
     @POST("del_record_v2.php")
     fun deleteRecord(@Body del: DeleteRequest): Call<SimpleResponce>
+
+    @FormUrlEncoded
+    @POST("insert_xarji.php")
+    fun addXarji(
+        @Field("distrid") userID: String,
+        @Field("amount") amount: String,
+        @Field("comment") comment: String
+    ): Call<SimpleResponce>
 }

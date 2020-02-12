@@ -151,5 +151,6 @@ data class DeleteRequest(
 data class SimpleResponce(
     val result: String,
     val error: String? = null,
+    val data: String? = null,
     val post: String? = null
 )

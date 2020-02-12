@@ -20,6 +20,7 @@ const val MSG_DEL = "გსურთ ჩანაწერის წაშლა
 const val RESULT = "result"
 const val SUCCESS = "success"
 const val ERROR = "error"
+const val FINISHED = "finished"
 
 class MyKeys {
     companion object {

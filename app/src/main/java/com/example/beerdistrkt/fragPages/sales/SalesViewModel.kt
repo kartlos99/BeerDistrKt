@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.utils.FINISHED
 import com.example.beerdistrkt.utils.SUCCESS
+import com.example.beerdistrkt.utils.Session
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,6 +27,10 @@ class SalesViewModel : BaseViewModel() {
     private val _deleteXarjiLiveData = MutableLiveData<SimpleResponce>()
     val deleteXarjiLiveData: LiveData<SimpleResponce>
         get() = _deleteXarjiLiveData
+
+    private val _addXarjiLiveData = MutableLiveData<SimpleResponce>()
+    val addXarjiLiveData: LiveData<SimpleResponce>
+        get() = _addXarjiLiveData
 
     private val _xarjiListExpandedLiveData = MutableLiveData<Boolean>()
     val xarjiListExpandedLiveData: LiveData<Boolean>
@@ -131,5 +137,30 @@ class SalesViewModel : BaseViewModel() {
                 Log.d(TAG, "saccsesfuli Deleted = $it")
             }
         )
+    }
+
+    fun addXarji(comment: String, amount: String){
+        Log.d(TAG, " comm $amount")
+        sendRequest(
+            apiRequest = ApeniApiService.getInstance().addXarji(
+                Session.get().userID!!,
+                amount,
+                comment
+            ),
+            success = {
+                if (it.result == SUCCESS){
+                    xarjebi.add(Xarji(comment, Session.get().userID!!, it.data!!, amount = amount.toFloat()))
+                }
+                _addXarjiLiveData.value = it
+            }
+        )
+    }
+
+    fun addXarjiComplited(){
+        _addXarjiLiveData.value = SimpleResponce(FINISHED)
+    }
+
+    fun deleteXarjiComplited(){
+        _deleteXarjiLiveData.value = SimpleResponce(FINISHED)
     }
 }
