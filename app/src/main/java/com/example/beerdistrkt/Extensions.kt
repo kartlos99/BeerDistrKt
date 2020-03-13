@@ -3,6 +3,10 @@ package com.example.beerdistrkt
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.annotation.AnimRes
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,6 +43,23 @@ fun <T: Any>  Call<T>.sendRequest(
     })
 }
 
+inline fun View.animateThis(@AnimRes resId: Int, crossinline onComplete: (() -> Unit)) {
+    val animation = AnimationUtils.loadAnimation(context, resId)
+    animation.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationRepeat(animation: Animation?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+            onComplete.invoke()
+        }
+
+        override fun onAnimationStart(animation: Animation?) {
+
+        }
+    })
+    this.startAnimation(animation)
+}
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
