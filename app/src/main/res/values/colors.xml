@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#C6560A</color>
 
     <color name="colorForText">#223322</color>
     <color name="colorForText_2">#5B5B61</color>
@@ -15,4 +15,9 @@
     <color name="important_info_color">#f95588</color>
     <color name="not_imp_color">#999999</color>
     <color name="fab_addbeer_color">#009688</color>
+    <color name="white">#fff</color>
+    <color name="white_95">#f2f2f2</color>
+    <color name="gray_3">#CFCFCF</color>
+    <color name="beer_bkg">#E8FCFC</color>
+    <color name="beer_stroke_bkg">#CFEAEA</color>
 </resources>

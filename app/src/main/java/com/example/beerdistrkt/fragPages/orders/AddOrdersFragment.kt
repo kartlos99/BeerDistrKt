@@ -12,13 +12,6 @@ import android.widget.TextView
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.animateThis
-import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.db.ApeniDatabaseDao
-import com.example.beerdistrkt.network.ApeniApiService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class AddOrdersFragment : Fragment() {
 
@@ -33,21 +26,26 @@ class AddOrdersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        val beerList = listOf("ლაგერი", "გაუფილტრავი", "თაფილი")
+        var beerPos = 0
+
         val vv = inflater.inflate(R.layout.add_orders_fragment, container, false)
-        val btn1 = vv.findViewById<ImageView>(R.id.btnBeerLeftImg)
-        val btn2 = vv.findViewById<ImageView>(R.id.btnBeerRightImg)
+        val btnBeerLeft = vv.findViewById<ImageView>(R.id.btnBeerLeftImg)
+        val btnBeerRight = vv.findViewById<ImageView>(R.id.btnBeerRightImg)
         val tvtite = vv.findViewById<TextView>(R.id.t_ludisDasaxeleba)
 
-        btn1.setOnClickListener {
-            tvtite.animateThis(R.anim.slide_to_left){
-                tvtite.text = "axali"
-                tvtite.animateThis(R.anim.slide_from_right){}
+        btnBeerLeft.setOnClickListener {
+            tvtite.animateThis(R.anim.slide_to_right){
+                beerPos = (beerList.size + beerPos - 1) % beerList.size
+                tvtite.text = beerList[beerPos]
+                tvtite.animateThis(R.anim.slide_from_left){}
             }
         }
-        btn2.setOnClickListener {
-            tvtite.animateThis(R.anim.slide_to_right){
-                tvtite.text = "ძველი ასდ234"
-                tvtite.animateThis(R.anim.slide_from_left){}
+        btnBeerRight.setOnClickListener {
+            tvtite.animateThis(R.anim.slide_to_left){
+                beerPos = (beerPos + 1) % beerList.size
+                tvtite.text = beerList[beerPos]
+                tvtite.animateThis(R.anim.slide_from_right){}
             }
         }
         return vv

@@ -7,10 +7,11 @@
     <string name="ludsaxarshi">თბილისი</string>
     <string name="text_tarigi">თარიღი</string>
     <string name="shekvetis_damateba">შეკვეთის დამატება</string>
-    <string name="_30litri">30ლ</string>
+    <string name="_20litri">20 ლტ.</string>
+    <string name="_30litri">30 ლტ.</string>
+    <string name="_50litri">50 ლტ.</string>
     <string name="minusi">-</string>
     <string name="pliusi">+</string>
-    <string name="_50litri">50ლ</string>
     <string name="sxva_ludis_damateba">ლუდის სახეობის დამატება</string>
     <string name="dadastureba">შეყვანა</string>
     <string name="wamogebuli_kasrebi">წამოღებული კასრები</string>
@@ -121,4 +122,10 @@
     <string name="location_en">tbilisi</string>
     <string name="location_ge">თბილისი</string>
     <string name="msg_not_editable">კახეთის აპლიკაციაში დაფიქსირებულ მონაცემები თბილისიდან არ იცვლება</string>
+
+<!--    axali app-->
+
+    <string name="can_type">კასრის ზომა</string>
+    <string name="can_count">კასრების რაოდენობა</string>
+    <string name="beer_kind">ლუდის სახეობა</string>
 </resources>

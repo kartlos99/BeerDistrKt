@@ -73,7 +73,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btnBeerLeftImg" />
 
         <Button
-            android:id="@+id/btn_k30_dec"
+            android:id="@+id/btnCanCountDec"
             android:layout_width="@dimen/miniBtnWideSize"
             android:layout_height="@dimen/miniBtnSize"
             android:layout_marginTop="8dp"
@@ -84,19 +84,19 @@
             app:layout_constraintTop_toBottomOf="@+id/t_k30" />
 
         <EditText
-            android:id="@+id/edit_K30Count"
+            android:id="@+id/editCanCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/default_0"
             android:inputType="numberDecimal"
             android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/btn_k30_dec"
-            app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc"
-            app:layout_constraintTop_toTopOf="@+id/btn_k30_dec"
+            app:layout_constraintLeft_toRightOf="@+id/btnCanCountDec"
+            app:layout_constraintRight_toLeftOf="@+id/btnCanCountInc"
+            app:layout_constraintTop_toTopOf="@+id/btnCanCountDec"
             tools:ignore="Autofill" />
 
         <Button
-            android:id="@+id/btn_k30_inc"
+            android:id="@+id/btnCanCountInc"
             android:layout_width="@dimen/miniBtnWideSize"
             android:layout_height="@dimen/miniBtnSize"
             android:layout_marginEnd="8dp"
@@ -104,7 +104,7 @@
             android:text="@string/pliusi"
             android:textSize="@dimen/plius_minus_TextSize"
             app:layout_constraintRight_toLeftOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="@+id/btn_k30_dec" />
+            app:layout_constraintTop_toTopOf="@+id/btnCanCountDec" />
 
 
         <TextView
