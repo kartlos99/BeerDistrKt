@@ -30,6 +30,9 @@ android {
     }
 }
 
+def dotsIndicatorVer = '4.1.2'
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -65,4 +68,5 @@ dependencies {
 
 //    implementation("com.squareup.okhttp3:logging-interceptor:4.3.1")
 
+    implementation "com.tbuonomo.andrui:viewpagerdotsindicator:${dotsIndicatorVer}"
 }

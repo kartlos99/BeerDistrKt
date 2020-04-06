@@ -44,49 +44,68 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/beerRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gr_size_16"
+                        app:layout_constraintTop_toBottomOf="@id/tAddOrderBeerKind" />
+
+                    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                        android:id="@+id/beerListIndicatior"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gr_size_8"
+                        app:dotsColor="@color/beer_stroke_bkg"
+                        app:dotsSize="@dimen/gr_size_4"
+                        app:dotsSpacing="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/beerRecycler"
+                        app:selectedDotColor="@color/colorPrimary" />
+
                     <ImageView
                         android:id="@+id/btnBeerLeftImg"
-                        android:layout_width="@dimen/gr_size_48"
+                        android:layout_width="@dimen/gr_size_24"
                         android:layout_height="@dimen/gr_size_48"
                         android:layout_margin="@dimen/gr_size_8"
-                        android:background="@drawable/bkg_beer_name"
-                        android:elevation="4dp"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_arrow_left"
-                        app:layout_constraintBottom_toBottomOf="@+id/t_ludisDasaxeleba"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_arrow_left_24dp"
+                        android:tint="@color/arrow_color_tr"
+                        app:layout_constraintBottom_toBottomOf="@+id/beerRecycler"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba" />
+                        app:layout_constraintTop_toTopOf="@+id/beerRecycler" />
 
                     <ImageView
                         android:id="@+id/btnBeerRightImg"
-                        android:layout_width="@dimen/gr_size_48"
+                        android:layout_width="@dimen/gr_size_24"
                         android:layout_height="@dimen/gr_size_48"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/bkg_beer_name"
-                        android:elevation="4dp"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_arrow_right"
-                        android:textSize="@dimen/plius_minus_TextSize"
-                        app:layout_constraintBottom_toBottomOf="@+id/t_ludisDasaxeleba"
+                        android:layout_margin="@dimen/gr_size_8"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_arrow_left_24dp"
+                        android:rotation="180"
+                        android:tint="@color/arrow_color_tr"
+                        app:layout_constraintBottom_toBottomOf="@+id/beerRecycler"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/t_ludisDasaxeleba" />
+                        app:layout_constraintTop_toTopOf="@id/beerRecycler" />
 
-                    <TextView
-                        android:id="@+id/t_ludisDasaxeleba"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/gr_size_48"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bkg_beer_name"
-                        android:elevation="3dp"
-                        android:gravity="center"
-                        android:padding="4dp"
-                        android:text="ლაგერი"
-                        android:textStyle="bold"
-                        app:layout_constraintLeft_toRightOf="@+id/btnBeerLeftImg"
-                        app:layout_constraintRight_toLeftOf="@+id/btnBeerRightImg"
-                        app:layout_constraintTop_toBottomOf="@id/tAddOrderBeerKind" />
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/t_ludisDasaxeleba"-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="@dimen/gr_size_48"-->
+                    <!--                        android:layout_marginStart="12dp"-->
+                    <!--                        android:layout_marginTop="12dp"-->
+                    <!--                        android:layout_marginEnd="12dp"-->
+                    <!--                        android:background="@drawable/bkg_beer_name"-->
+                    <!--                        android:elevation="3dp"-->
+                    <!--                        android:gravity="center"-->
+                    <!--                        android:padding="4dp"-->
+                    <!--                        android:text="ლაგერი"-->
+                    <!--                        android:visibility="gone"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        app:layout_constraintLeft_toRightOf="@+id/btnBeerLeftImg"-->
+                    <!--                        app:layout_constraintRight_toLeftOf="@+id/btnBeerRightImg"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/beerListIndicatior" />-->
 
                     <TextView
                         android:id="@+id/addOrderCanTypeTv"
@@ -96,7 +115,7 @@
                         android:text="@string/can_type"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        app:layout_constraintTop_toBottomOf="@+id/btnBeerLeftImg" />
+                        app:layout_constraintTop_toBottomOf="@+id/beerListIndicatior" />
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/addOrdersChipGr"
@@ -222,11 +241,11 @@
                         app:layout_constraintTop_toTopOf="@+id/btnCanCountDec" />
 
                     <View
-                        app:layout_constraintTop_toBottomOf="@id/btnCanCountDec"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:visibility="invisible"
                         android:layout_width="@dimen/gr_size_2"
-                        android:layout_height="@dimen/gr_size_12"/>
+                        android:layout_height="@dimen/gr_size_12"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btnCanCountDec" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

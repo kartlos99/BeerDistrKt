@@ -20,4 +20,5 @@
     <color name="gray_3">#CFCFCF</color>
     <color name="beer_bkg">#E8FCFC</color>
     <color name="beer_stroke_bkg">#CFEAEA</color>
+    <color name="arrow_color_tr">#6054</color>
 </resources>
