@@ -89,24 +89,6 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@id/beerRecycler" />
 
-                    <!--                    <TextView-->
-                    <!--                        android:id="@+id/t_ludisDasaxeleba"-->
-                    <!--                        android:layout_width="0dp"-->
-                    <!--                        android:layout_height="@dimen/gr_size_48"-->
-                    <!--                        android:layout_marginStart="12dp"-->
-                    <!--                        android:layout_marginTop="12dp"-->
-                    <!--                        android:layout_marginEnd="12dp"-->
-                    <!--                        android:background="@drawable/bkg_beer_name"-->
-                    <!--                        android:elevation="3dp"-->
-                    <!--                        android:gravity="center"-->
-                    <!--                        android:padding="4dp"-->
-                    <!--                        android:text="ლაგერი"-->
-                    <!--                        android:visibility="gone"-->
-                    <!--                        android:textStyle="bold"-->
-                    <!--                        app:layout_constraintLeft_toRightOf="@+id/btnBeerLeftImg"-->
-                    <!--                        app:layout_constraintRight_toLeftOf="@+id/btnBeerRightImg"-->
-                    <!--                        app:layout_constraintTop_toBottomOf="@id/beerListIndicatior" />-->
-
                     <TextView
                         android:id="@+id/addOrderCanTypeTv"
                         android:layout_width="match_parent"
@@ -181,7 +163,6 @@
                             app:chipStrokeColor="@color/gray_3"
                             app:chipStrokeWidth="@dimen/gr_size_1" />
 
-
                     </com.google.android.material.chip.ChipGroup>
 
                     <TextView
@@ -194,58 +175,13 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         app:layout_constraintTop_toBottomOf="@+id/addOrdersChipGr" />
 
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/btnCanCountDec"
+                    <com.example.beerdistrkt.customView.NumericEditText
+                        android:id="@+id/countControl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="@dimen/gr_size_64"
-                        android:backgroundTint="@color/beer_bkg"
-                        android:src="@drawable/ic_minus"
-                        android:text="@string/minusi"
-                        android:textSize="@dimen/plius_minus_TextSize"
-                        app:fabSize="mini"
-                        app:layout_constraintEnd_toStartOf="@+id/editCanCount"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/addOrderCanCountTv" />
-
-                    <EditText
-                        android:id="@+id/editCanCount"
-                        android:layout_width="@dimen/gr_size_64"
-                        android:layout_height="0dp"
-                        android:autofillHints="@string/default_0"
-                        android:hint="@string/default_0"
-                        android:inputType="numberDecimal"
-                        android:maxLength="3"
-                        android:textAlignment="center"
-                        app:layout_constraintBottom_toBottomOf="@id/btnCanCountDec"
-                        app:layout_constraintEnd_toStartOf="@+id/btnCanCountInc"
-                        app:layout_constraintHorizontal_chainStyle="spread"
-                        app:layout_constraintStart_toEndOf="@+id/btnCanCountDec"
-                        app:layout_constraintTop_toTopOf="@+id/btnCanCountDec"
-                        tools:ignore="UnusedAttribute" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/btnCanCountInc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/beer_bkg"
-                        android:src="@drawable/ic_add_24dp"
-                        android:textSize="@dimen/plius_minus_TextSize"
-                        android:tint="@color/colorForText"
-                        app:fabSize="mini"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/editCanCount"
-                        app:layout_constraintTop_toTopOf="@+id/btnCanCountDec" />
-
-                    <View
-                        android:layout_width="@dimen/gr_size_2"
-                        android:layout_height="@dimen/gr_size_12"
-                        android:visibility="invisible"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/btnCanCountDec" />
+                        app:layout_constraintTop_toBottomOf="@id/addOrderCanCountTv" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
