@@ -7,6 +7,11 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.annotation.AnimRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import retrofit2.Call
@@ -68,6 +73,28 @@ fun SnapHelper.getSnapPosition(recyclerView: RecyclerView): Int {
     val snapView = findSnapView(layoutManager) ?: return RecyclerView.NO_POSITION
     return layoutManager.getPosition(snapView)
 }
+
+
+class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return creator() as T
+    }
+}
+
+inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
+    return if (creator == null)
+        ViewModelProviders.of(this).get(T::class.java)
+    else
+        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+}
+
+inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creator: (() -> T)? = null): T {
+    return if (creator == null)
+        ViewModelProviders.of(this).get(T::class.java)
+    else
+        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+}
+
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

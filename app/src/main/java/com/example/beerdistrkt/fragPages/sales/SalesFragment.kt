@@ -15,6 +15,7 @@ import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.dialogs.XarjebiDialog
+import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.utils.*
 import java.lang.String
@@ -30,7 +31,8 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
 
     private lateinit var vBinding: SalesFragmentBinding
     override val viewModel: SalesViewModel by lazy {
-        ViewModelProviders.of(this)[SalesViewModel::class.java]
+        getViewModel<SalesViewModel>()
+//        ViewModelProviders.of(this)[SalesViewModel::class.java]
     }
 
     var dateSetListener = OnDateSetListener { _, year, month, day ->
