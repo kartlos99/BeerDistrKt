@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import android.util.Log
+import androidx.room.FtsOptions
 import com.example.beerdistrkt.models.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -24,7 +25,8 @@ interface ApeniApiService {
     companion object {
         private var instance: ApeniApiService? = null
 
-        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
+//        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
+        private const val BASE_URL = "http://192.168.1.104/apeni.localhost.com/tbilisi/mobile/"
 
         fun initialize(context: Context) {
             if (instance == null) {
@@ -84,4 +86,7 @@ interface ApeniApiService {
         @Field("amount") amount: String,
         @Field("comment") comment: String
     ): Call<SimpleResponce>
+
+    @GET("order/getByDate.php")
+    fun getOrders(@Query("date") date: String): Call<DataResponse<List<Order>>>
 }

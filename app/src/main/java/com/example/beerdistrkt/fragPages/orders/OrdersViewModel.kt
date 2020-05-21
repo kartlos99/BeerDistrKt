@@ -3,25 +3,34 @@ package com.example.beerdistrkt.fragPages.orders
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import retrofit2.Call
 import retrofit2.Response
 
-class OrdersViewModel : ViewModel() {
+class OrdersViewModel : BaseViewModel() {
     // TODO: Implement the ViewModel
     private val _response = MutableLiveData<String>()
     val response: LiveData<String>
         get() = _response
 
     init {
-        Log.d(TAG, "init")
+        getOrders()
     }
 
     fun btn1click(){
         getData()
+    }
 
+    private fun getOrders() {
+        sendRequest(
+            ApeniApiService.getInstance().getOrders("2020-04-14"),
+            success = {
+            },
+            failure = {
+            }
+        )
     }
 
     private fun getData() {

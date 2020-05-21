@@ -1,7 +1,6 @@
 package com.example.beerdistrkt.utils
 
 import android.content.Context
-import com.example.beerdistrkt.models.Shekvetebi
 import java.text.DecimalFormat
 import java.util.*
 
