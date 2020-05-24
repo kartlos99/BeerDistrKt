@@ -128,4 +128,5 @@
     <string name="can_type">კასრის ზომა</string>
     <string name="can_count">კასრების რაოდენობა</string>
     <string name="beer_kind">ლუდის სახეობა</string>
+    <string name="img_description">simple description</string>
 </resources>

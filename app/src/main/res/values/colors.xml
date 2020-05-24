@@ -21,4 +21,6 @@
     <color name="beer_bkg">#E8FCFC</color>
     <color name="beer_stroke_bkg">#CFEAEA</color>
     <color name="arrow_color_tr">#6054</color>
+    <color name="base_underline">#000</color>
+    <color name="blue">#06C3CA</color>
 </resources>
