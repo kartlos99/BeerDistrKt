@@ -23,4 +23,6 @@
     <color name="arrow_color_tr">#6054</color>
     <color name="base_underline">#000</color>
     <color name="blue">#06C3CA</color>
+    <color name="completed_green">#26C372</color>
+    <color name="in_complete_order">#e42828</color>
 </resources>
