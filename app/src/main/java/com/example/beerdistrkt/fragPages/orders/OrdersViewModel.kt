@@ -15,6 +15,8 @@ class OrdersViewModel : BaseViewModel() {
     val response: LiveData<String>
         get() = _response
 
+    val ordersLiveData = MutableLiveData<List<Order>>()
+
     init {
         getOrders()
     }
@@ -27,6 +29,7 @@ class OrdersViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getOrders("2020-04-14"),
             success = {
+                ordersLiveData.value = it.data
             },
             failure = {
             }

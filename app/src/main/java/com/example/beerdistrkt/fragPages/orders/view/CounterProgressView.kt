@@ -14,7 +14,15 @@ class CounterProgressView @JvmOverloads constructor(
     init {
         View.inflate(context, R.layout.view_counter_progress, this)
 
-        viewProgress.progress = 5
+        viewProgress.progress = 0
+        countTv.text = ""
+    }
+
+    fun setCountAndProgress(count: Int, progress: Int = 0){
+        countTv.text = count.toString()
+        viewProgress.max = count
+        viewProgress.progress = progress
+        viewProgress.visibility = View.VISIBLE
     }
 
 }

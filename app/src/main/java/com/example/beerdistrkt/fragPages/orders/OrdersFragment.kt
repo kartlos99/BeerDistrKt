@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.adapters.AbsListViewBindingAdapter
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.*
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.BeerAdapter
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
+import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.utils.ADD_ORDER
 import kotlinx.android.synthetic.main.orders_fragment.*
 
@@ -24,12 +26,12 @@ class OrdersFragment : Fragment() {
         fun newInstance() = OrdersFragment()
     }
 
-    //
     private val viewModel: OrdersViewModel by lazy {
         ViewModelProviders.of(this).get(OrdersViewModel::class.java)
     }
 
     private lateinit var vBinding: OrdersFragmentBinding
+    private val ordersAdapter by lazy { OrderAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +40,7 @@ class OrdersFragment : Fragment() {
         vBinding = OrdersFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
         vBinding.viewModel = viewModel
-        vBinding.btnAddOrder.setOnClickListener {
+        vBinding.addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
                 OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
                     ADD_ORDER
@@ -46,7 +48,10 @@ class OrdersFragment : Fragment() {
             )
         }
 
-        val beerList: ArrayList<String> = ArrayList<String>()
+        vBinding.ordersRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        vBinding.ordersRecycler.adapter = ordersAdapter
+
+        /*val beerList: ArrayList<String> = ArrayList<String>()
         beerList.add("-")
         beerList.add("ertI")
         beerList.add("oRi")
@@ -69,21 +74,21 @@ class OrdersFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
             }
-        })
+        })*/
 
 
-        vBinding.btnSetdate.setOnClickListener {
-            val view = snapHelper.findSnapView(vBinding.testRecycler.layoutManager)
-            view?.let {
-                val tv = it.findViewById<TextView>(R.id.tvBeerName)
-                tv?.text =
-                    "oorraaaaA" + vBinding.testRecycler.getChildAdapterPosition(it).toString()
-
-                val layoutManager = vBinding.testRecycler.layoutManager
-                val snapView = snapHelper.findSnapView(layoutManager)
-                snapHelper.calculateDistanceToFinalSnap(layoutManager!!, it)
-                Log.d("testPos", layoutManager.getPosition(it).toString())
-            }
+        vBinding.setDateBtn.setOnClickListener {
+//            val view = snapHelper.findSnapView(vBinding.testRecycler.layoutManager)
+//            view?.let {
+//                val tv = it.findViewById<TextView>(R.id.tvBeerName)
+//                tv?.text =
+//                    "oorraaaaA" + vBinding.testRecycler.getChildAdapterPosition(it).toString()
+//
+//                val layoutManager = vBinding.testRecycler.layoutManager
+//                val snapView = snapHelper.findSnapView(layoutManager)
+//                snapHelper.calculateDistanceToFinalSnap(layoutManager!!, it)
+//                Log.d("testPos", layoutManager.getPosition(it).toString())
+//            }
 
         }
 
@@ -93,6 +98,9 @@ class OrdersFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
+            ordersAdapter.setData(it)
+        })
         Log.d("_KA", "onActivityCreated")
     }
 

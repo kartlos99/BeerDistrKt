@@ -15,8 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btn_addOrder"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addOrderBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -27,127 +27,53 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/t_tarigi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/text_tarigi"
-            android:textSize="24sp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/btn_setdate"
-            app:layout_constraintTop_toBottomOf="@+id/btn_addOrder"
-            app:layout_constraintVertical_bias="0.533" />
 
-        <Button
-            android:id="@+id/btn_setdate"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/setDateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-
             android:drawableEnd="@drawable/calendar_icon"
             android:text="@string/text_tarigi"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_addOrder"
+            app:layout_constraintTop_toBottomOf="@+id/addOrderBtn"
             tools:ignore="RtlHardcoded" />
 
-        <CheckBox
-            android:id="@+id/checkbox_order_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/group"
-            app:layout_constraintBottom_toBottomOf="@id/btn_setdate"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/lin_shek_list_titles"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#ccdad0"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_setdate">
-
-            <TextView
-                android:id="@+id/t_obieqti_orderlist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="40"
-                android:text="@string/obieqti"
-                android:textAlignment="center"
-                android:textColor="@color/colorForText" />
-
-            <TextView
-                android:id="@+id/t_ludi_orderlist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:text="@string/beer"
-                android:textAlignment="center"
-                android:textColor="@color/colorForText" />
-
-            <TextView
-                android:id="@+id/t_k30wont_orderlist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="18"
-                android:text="@string/shekveta_title"
-                android:textAlignment="center"
-                android:textColor="@color/colorForText" />
-
-            <TextView
-                android:id="@+id/t_k50wont_orderlist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="18"
-                android:text="@string/mitana_title"
-                android:textAlignment="center"
-                android:textColor="@color/colorForText" />
-
-        </LinearLayout>
-
-        <ExpandableListView
-            android:id="@+id/list_shekvetebi"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lin_shek_list_titles"
-            app:layout_constraintVertical_bias="0.0" />
-
         <androidx.recyclerview.widget.RecyclerView
-            android:padding="10dp"
-            android:paddingTop="-20dp"
-            android:paddingBottom="-20dp"
-            android:background="@color/colorCardview"
-            android:id="@+id/testRecycler"
-            app:layout_constraintTop_toBottomOf="@+id/lin_shek_list_titles"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/ordersRecycler"
             android:layout_width="match_parent"
-            android:layout_height="150dp"/>
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/gr_size_4"
+            app:layout_constraintTop_toBottomOf="@id/setDateBtn"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.example.beerdistrkt.fragPages.orders.view.OrderView
-            app:layout_constraintTop_toBottomOf="@id/testRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:padding="10dp"-->
+<!--            android:paddingTop="-20dp"-->
+<!--            android:paddingBottom="-20dp"-->
+<!--            android:background="@color/colorCardview"-->
+<!--            android:id="@+id/testRecycler"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/setDateBtn"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="150dp"/>-->
+
+<!--        <com.example.beerdistrkt.fragPages.orders.view.OrderView-->
+<!--            app:layout_constraintTop_toBottomOf="@id/setDateBtn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"/>-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{viewModel.response}"
-            app:layout_constraintBottom_toBottomOf="@+id/list_shekvetebi"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_addOrder" />
+            app:layout_constraintTop_toTopOf="@+id/addOrderBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

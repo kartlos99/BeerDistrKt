@@ -11,8 +11,9 @@
         android:layout_height="match_parent"
         android:max="100"
         android:padding="@dimen/gr_size_1"
-        android:progress="25"
+        android:progress="0"
         android:progressDrawable="@drawable/can_progress_ring"
+        android:visibility="invisible"
         android:rotation="-90" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -21,7 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/gr_size_4"
-        android:background="@drawable/bkg_underline"
-        android:text="28" />
+        android:background="@drawable/bkg_underline"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
