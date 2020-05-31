@@ -14,19 +14,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import com.example.beerdistrkt.models.DataResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
 //<Response : Any, ApiResponse : DataResponse<Response>>
-fun <T: Any>  Call<T>.sendRequest(
-    success: ((data: T) -> Unit),
+fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
+    success: (() -> Unit)? = null,
+    successWithData: ((data: F) -> Unit)? = null,
     failure: ((t: Throwable) -> Unit),
+    authFailure: (() -> Unit)? = null,
+    responseFailure: (code: Int, error: String) -> Unit = { _: Int, _: String -> },
     onConnectionFailure: (Throwable) -> Unit,
     finally: ((success: Boolean) -> Unit)? = null
-){
-    enqueue(object :Callback<T> {
+) {
+    enqueue(object : Callback<T> {
         override fun onFailure(call: Call<T>, t: Throwable) {
             Log.d("FailMSG", t.message!!)
             finally?.invoke(false)
@@ -39,12 +43,31 @@ fun <T: Any>  Call<T>.sendRequest(
 
         override fun onResponse(call: Call<T>, response: Response<T>) {
             finally?.invoke(true)
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
-                body?.let {
-                    success(it)
+                if (body?.success == true) {
+                    success?.invoke()
+                    if (successWithData != null){
+                        if (body.data == null)
+                            responseFailure(DataResponse.ErrorCodeDataIsNull, "Data expected")
+                        else
+                            successWithData(body.data)
+                    }
+                } else {
+                    responseFailure(
+                        body?.errorCode ?: DataResponse.UnknownError,
+                        body?.errorText ?: "Unknown Error")
+                }
+
+            } else {
+
+                if (response.code() == 401 && authFailure != null) {
+                    authFailure.invoke()
+                } else {
+                    responseFailure(response.code(), response.message())
                 }
             }
+
             Log.d("Resp_Code__", response.code().toString())
         }
     })
@@ -97,7 +120,8 @@ inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creato
 
 
 fun Context.isNetworkAvailable(): Boolean {
-    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    val connectivityManager =
+        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
     val activeNetworkInfo = connectivityManager?.activeNetworkInfo
     return activeNetworkInfo != null && activeNetworkInfo.isConnected
 }

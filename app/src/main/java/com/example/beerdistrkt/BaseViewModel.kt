@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
+import com.example.beerdistrkt.models.DataResponse
+import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,34 +19,45 @@ abstract class BaseViewModel : ViewModel() {
     protected val job = Job()
     protected val ioScope = CoroutineScope(Dispatchers.IO + job)
 
-    private val _apiFailureMutableLiveData = MutableLiveData<String>()
-    val apiFailureLiveData: LiveData<String>
+    private val _apiFailureMutableLiveData = MutableLiveData<ApiResponseState<Nothing>>()
+    val apiFailureLiveData: LiveData<ApiResponseState<Nothing>>
         get() = _apiFailureMutableLiveData
 
-    fun showNetfailMsgComplite(){
-        _apiFailureMutableLiveData.value = ""
+    fun showNetworkFailMsgComplete() {
+        _apiFailureMutableLiveData.value = ApiResponseState.Sleep
     }
 
-    private fun showOnConnFailureDialog(t: Throwable){
-        _apiFailureMutableLiveData.value = "check Net. Connection: ${t.message}"
+    private fun showOnConnFailureDialog(t: Throwable) {
+        _apiFailureMutableLiveData.value = ApiResponseState.NoInternetConnection
     }
 
     private fun showFailureDialog(throwable: Throwable) {
-        _apiFailureMutableLiveData.value = throwable.message
-        Log.d("respFail", throwable.message!!)
+        _apiFailureMutableLiveData.value = ApiResponseState.ApiError(999, throwable.message ?: "")
+        Log.d("response_Fail", throwable.message!!)
     }
 
-    protected fun <T : Any, ApiResponse : Call<T>> sendRequest(
+    private fun onResponseFailure(code: Int, error: String) {
+        _apiFailureMutableLiveData.value = ApiResponseState.ApiError(code, error)
+        Log.d("onServer_response_Fail", "Code: $code - Text: $error")
+    }
+
+    protected fun <F : Any, T : DataResponse<F>, ApiResponse : Call<T>> sendRequest(
         apiRequest: ApiResponse,
-        success: ((data: T) -> Unit),
+        success: (() -> Unit)? = null,
+        successWithData: ((data: F) -> Unit)? = null,
         onConnectionFailure: (Throwable) -> Unit = ::showOnConnFailureDialog,
         failure: (t: Throwable) -> Unit = ::showFailureDialog,
+        authFailure: (() -> Unit)? = null,
+        responseFailure: (code: Int, error: String) -> Unit = ::onResponseFailure,
         finally: ((success: Boolean) -> Unit)? = null
     ) {
         apiRequest.sendRequest(
             success = success,
+            successWithData = successWithData,
             onConnectionFailure = onConnectionFailure,
             failure = failure,
+            authFailure = authFailure,
+            responseFailure = responseFailure,
             finally = finally
         )
     }

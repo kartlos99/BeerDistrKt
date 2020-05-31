@@ -7,9 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.FINISHED
 import com.example.beerdistrkt.utils.SUCCESS
 import com.example.beerdistrkt.utils.Session
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,12 +28,12 @@ class SalesViewModel : BaseViewModel() {
     var priceSum = 0.0
     val xarjebi: ArrayList<Xarji> = ArrayList()
 
-    private val _deleteXarjiLiveData = MutableLiveData<SimpleResponce>()
-    val deleteXarjiLiveData: LiveData<SimpleResponce>
+    private val _deleteXarjiLiveData = MutableLiveData<ApiResponseState<String>>()
+    val deleteXarjiLiveData: LiveData<ApiResponseState<String>>
         get() = _deleteXarjiLiveData
 
-    private val _addXarjiLiveData = MutableLiveData<SimpleResponce>()
-    val addXarjiLiveData: LiveData<SimpleResponce>
+    private val _addXarjiLiveData = MutableLiveData<ApiResponseState<String>>()
+    val addXarjiLiveData: LiveData<ApiResponseState<String>>
         get() = _addXarjiLiveData
 
     private val _xarjiListExpandedLiveData = MutableLiveData<Boolean>()
@@ -59,7 +63,7 @@ class SalesViewModel : BaseViewModel() {
         prepearData()
     }
 
-    fun btnXarjExpandClick(){
+    fun btnXarjExpandClick() {
         _xarjiListExpandedLiveData.value = !_xarjiListExpandedLiveData.value!!
     }
 
@@ -91,7 +95,7 @@ class SalesViewModel : BaseViewModel() {
     fun getDayInfo(date: String, distributorID: Int) {
         sendRequest(
             ApeniApiService.getInstance().getDayInfo(date, distributorID),
-            success = {
+            successWithData = {
                 val sales: ArrayList<SaleInfo> = ArrayList()
                 sales.addAll(it.realizebuli)
                 xarjebi.clear()
@@ -120,18 +124,17 @@ class SalesViewModel : BaseViewModel() {
         sendRequest(
             apiRequest = ApeniApiService.getInstance().deleteRecord(request),
             success = {
-                if (it.result == SUCCESS) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        xarjebi.removeIf { x -> x.id == request.recordID }
-                    } else {
-                        for (xarji in xarjebi) {
-                            if (xarji.id == request.recordID) {
-                                xarjebi.remove(xarji)
-                            }
+                Log.d(TAG, "saccsesfuli Deleted")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    xarjebi.removeIf { x -> x.id == request.recordID }
+                } else {
+                    for (xarji in xarjebi) {
+                        if (xarji.id == request.recordID) {
+                            xarjebi.remove(xarji)
                         }
                     }
                 }
-                _deleteXarjiLiveData.value = it
+                _deleteXarjiLiveData.value = ApiResponseState.Success("")
             },
             finally = {
                 Log.d(TAG, "saccsesfuli Deleted = $it")
@@ -139,7 +142,7 @@ class SalesViewModel : BaseViewModel() {
         )
     }
 
-    fun addXarji(comment: String, amount: String){
+    fun addXarji(comment: String, amount: String) {
         Log.d(TAG, " comm $amount")
         sendRequest(
             apiRequest = ApeniApiService.getInstance().addXarji(
@@ -147,20 +150,30 @@ class SalesViewModel : BaseViewModel() {
                 amount,
                 comment
             ),
-            success = {
-                if (it.result == SUCCESS){
-                    xarjebi.add(Xarji(comment, Session.get().userID!!, it.data!!, amount = amount.toFloat()))
-                }
-                _addXarjiLiveData.value = it
+            successWithData = {
+                xarjebi.add(
+                    Xarji(
+                        comment,
+                        Session.get().userID!!,
+                        it.toString(),
+                        amount = amount.toFloat()
+                    )
+                )
+                _addXarjiLiveData.value = ApiResponseState.Success("")
+            },
+            responseFailure = { i: Int, s: String ->
+                _addXarjiLiveData.value = ApiResponseState.ApiError(i, s)
             }
         )
     }
 
-    fun addXarjiComplited(){
-        _addXarjiLiveData.value = SimpleResponce(FINISHED)
+    fun addXarjiComplited() {
+        if (_addXarjiLiveData.value !is ApiResponseState.Sleep)
+            _addXarjiLiveData.value = ApiResponseState.Sleep
     }
 
-    fun deleteXarjiComplited(){
-        _deleteXarjiLiveData.value = SimpleResponce(FINISHED)
+    fun deleteXarjiComplited() {
+        if (_deleteXarjiLiveData.value !is ApiResponseState.Sleep)
+            _deleteXarjiLiveData.value = ApiResponseState.Sleep
     }
 }

@@ -129,4 +129,5 @@
     <string name="can_count">კასრების რაოდენობა</string>
     <string name="beer_kind">ლუდის სახეობა</string>
     <string name="img_description">simple description</string>
+    <string name="error_no_connection">შეამოწმეთ ინტერნეტ კავშირი!</string>
 </resources>

@@ -1,34 +1,26 @@
 package com.example.beerdistrkt.fragPages.orders
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.databinding.adapters.AbsListViewBindingAdapter
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.*
-
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.adapters.BeerAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
+import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ADD_ORDER
-import kotlinx.android.synthetic.main.orders_fragment.*
 
-class OrdersFragment : Fragment() {
+class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     companion object {
         fun newInstance() = OrdersFragment()
     }
 
-    private val viewModel: OrdersViewModel by lazy {
-        ViewModelProviders.of(this).get(OrdersViewModel::class.java)
-    }
+    override val viewModel: OrdersViewModel by lazy { getViewModel<OrdersViewModel>() }
 
     private lateinit var vBinding: OrdersFragmentBinding
     private val ordersAdapter by lazy { OrderAdapter() }

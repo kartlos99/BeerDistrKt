@@ -31,7 +31,7 @@ class HomeViewModel : BaseViewModel() {
     private fun getUsers() {
         sendRequest(
             ApeniApiService.getInstance().getUsersList(),
-            success = {
+            successWithData = {
                 Log.d(TAG, "Users_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -48,7 +48,7 @@ class HomeViewModel : BaseViewModel() {
     private fun getBeerList() {
         sendRequest(
             ApeniApiService.getInstance().getBeerList(),
-            success = {
+            successWithData = {
                 Log.d(TAG, "Users_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -65,7 +65,7 @@ class HomeViewModel : BaseViewModel() {
     private fun getPrices() {
         sendRequest(
             ApeniApiService.getInstance().getPrices(),
-            success = {
+            successWithData = {
                 clearPrices()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -83,7 +83,7 @@ class HomeViewModel : BaseViewModel() {
     private fun getObjects() {
         sendRequest(
             ApeniApiService.getInstance().getObieqts(),
-            success = {
+            successWithData = {
                 clearObieqtsList()
                 if (it.isNotEmpty()) {
                     ioScope.launch {

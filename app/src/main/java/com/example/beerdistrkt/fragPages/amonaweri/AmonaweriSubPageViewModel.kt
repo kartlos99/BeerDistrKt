@@ -31,7 +31,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     fun getAmonaweriM(date: String, id: Int) {
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriM(date, id),
-            success = {
+            successWithData = {
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
             }
@@ -41,7 +41,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     fun getAmonaweriK(date: String, id: Int) {
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriK(date, id),
-            success = {
+            successWithData = {
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
             }

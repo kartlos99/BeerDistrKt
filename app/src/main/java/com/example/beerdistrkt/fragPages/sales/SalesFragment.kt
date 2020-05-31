@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
@@ -18,8 +17,6 @@ import com.example.beerdistrkt.dialogs.XarjebiDialog
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.utils.*
-import java.lang.String
-import java.text.SimpleDateFormat
 import java.util.*
 
 class SalesFragment : BaseFragment<SalesViewModel>() {
@@ -32,7 +29,6 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
     private lateinit var vBinding: SalesFragmentBinding
     override val viewModel: SalesViewModel by lazy {
         getViewModel<SalesViewModel>()
-//        ViewModelProviders.of(this)[SalesViewModel::class.java]
     }
 
     var dateSetListener = OnDateSetListener { _, year, month, day ->
@@ -102,17 +98,17 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
         })
 
         viewModel.deleteXarjiLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.result) {
-                SUCCESS -> {
+            when (it) {
+                is ApiResponseState.Success -> {
                     showToast(getString(R.string.msg_record_deleted))
                     showXarjList(true)
                     fillPageData()
-                    viewModel.deleteXarjiComplited()
                 }
-                ERROR -> {
+                is ApiResponseState.ApiError -> {
                     showToast(getString(R.string.msg_record_not_deleted))
                 }
             }
+            viewModel.deleteXarjiComplited()
         })
 
         viewModel.xarjiListExpandedLiveData.observe(viewLifecycleOwner, Observer {
@@ -120,17 +116,17 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
         })
 
         viewModel.addXarjiLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.result) {
-                SUCCESS -> {
+            when (it) {
+                is ApiResponseState.Success -> {
                     showXarjList(true)
                     fillPageData()
                     showToast(getString(R.string.msg_record_added))
-                    viewModel.addXarjiComplited()
                 }
-                ERROR -> {
+                is ApiResponseState.ApiError -> {
                     showToast(getString(R.string.msg_record_not_added))
                 }
             }
+            viewModel.addXarjiComplited()
         })
     }
 

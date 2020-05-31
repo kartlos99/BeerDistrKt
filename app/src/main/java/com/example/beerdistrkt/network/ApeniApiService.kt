@@ -56,28 +56,28 @@ interface ApeniApiService {
 
 
     @GET("get_users.php")
-    fun getUsersList(): Call<List<User>>
+    fun getUsersList(): Call<DataResponse<List<User>>>
 
     @GET("get_obieqts.php")
-    fun getObieqts(): Call<List<Obieqti>>
+    fun getObieqts(): Call<DataResponse<List<Obieqti>>>
 
     @GET("get_fasebi.php")
-    fun getPrices(): Call<List<ObjToBeerPrice>>
+    fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
     @GET("get_amonaweri_m.php")
-    fun getAmonaweriM(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<List<Amonaweri>>
+    fun getAmonaweriM(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<DataResponse<List<Amonaweri>>>
 
     @GET("get_amonaweri_k.php")
-    fun getAmonaweriK(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<List<Amonaweri>>
+    fun getAmonaweriK(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<DataResponse<List<Amonaweri>>>
 
     @GET("get_ludi_list.php")
-    fun getBeerList(): Call<List<BeerModel>>
+    fun getBeerList(): Call<DataResponse<List<BeerModel>>>
 
     @GET("view_sale_day_v2.php")
-    fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<RealizationDay>
+    fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<DataResponse<RealizationDay>>
 
     @POST("del_record_v2.php")
-    fun deleteRecord(@Body del: DeleteRequest): Call<SimpleResponce>
+    fun deleteRecord(@Body del: DeleteRequest): Call<DataResponse<Any>>
 
     @FormUrlEncoded
     @POST("insert_xarji.php")
@@ -85,7 +85,7 @@ interface ApeniApiService {
         @Field("distrid") userID: String,
         @Field("amount") amount: String,
         @Field("comment") comment: String
-    ): Call<SimpleResponce>
+    ): Call<DataResponse<Int>>
 
     @GET("order/getByDate.php")
     fun getOrders(@Query("date") date: String): Call<DataResponse<List<Order>>>

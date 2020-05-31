@@ -6,4 +6,13 @@ data class DataResponse<T: Any>(
     val errorCode: Int?,
     val data: T?
 ) {
+
+    companion object {
+
+        @JvmField
+        val ErrorCodeDataIsNull = 420
+
+        @JvmField
+        val UnknownError = 999
+    }
 }
