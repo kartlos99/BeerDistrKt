@@ -1,23 +1,16 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
-import android.util.Log
-import androidx.room.FtsOptions
 import com.example.beerdistrkt.models.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 //import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Retrofit
 //import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 //import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
-import java.util.*
 
 
 interface ApeniApiService {
@@ -88,5 +81,5 @@ interface ApeniApiService {
     ): Call<DataResponse<Int>>
 
     @GET("order/getByDate.php")
-    fun getOrders(@Query("date") date: String): Call<DataResponse<List<Order>>>
+    fun getOrders(@Query("date") date: String): Call<DataResponse<List<OrderDTO>>>
 }

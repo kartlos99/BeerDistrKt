@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderItemAdapter
@@ -23,7 +22,7 @@ class OrderView  @JvmOverloads constructor(
     }
 
     fun fillData(order: Order){
-        orderUnitClientNameTv.text = order.clientID.toString()
+        orderUnitClientNameTv.text = order.client.dasaxeleba
         orderUnitCommentImg.visibleIf(!order.comment.isNullOrEmpty())
         orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
 
@@ -32,7 +31,7 @@ class OrderView  @JvmOverloads constructor(
         }
 
         orderItemList.layoutManager = LinearLayoutManager(context)
-        orderItemList.adapter = OrderItemAdapter(itemList)
+        orderItemList.adapter = OrderItemAdapter(itemList.toSortedMap())
     }
 
     override fun onClick(v: View?) {

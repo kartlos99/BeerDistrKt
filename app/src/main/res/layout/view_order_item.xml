@@ -23,10 +23,9 @@
     <View
         android:id="@+id/orderItemNameUnderline"
         android:layout_width="0dp"
-        android:layout_height="@dimen/gr_size_1"
+        android:layout_height="@dimen/gr_size_2"
         android:layout_marginTop="@dimen/gr_size_2"
         android:background="@color/gray_3"
-        android:backgroundTint="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="@id/orderItemNameTv"
         app:layout_constraintStart_toStartOf="@id/orderItemNameTv"
         app:layout_constraintTop_toBottomOf="@id/orderItemNameTv" />

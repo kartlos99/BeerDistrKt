@@ -62,6 +62,11 @@ data class Obieqti(
         return dasaxeleba
     }
 
+    companion object {
+        val emptyModel = Obieqti(
+            dasaxeleba = "abstract client"
+        )
+    }
 }
 
 data class ObiectWithPrices(

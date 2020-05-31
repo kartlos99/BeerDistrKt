@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.orders.view
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,8 @@ class OrderItemView @JvmOverloads constructor(
 
     fun fillData(orderItems: List<Order.Item>) {
 
-        orderItemNameTv.text = orderItems[0].beerID.toString()
+        orderItemNameTv.text = orderItems[0].beer.dasaxeleba ?: ""
+        orderItemNameUnderline.setBackgroundColor(Color.parseColor(orderItems[0].beer.displayColor ?: "#444"))
         orderItems.forEach {
             when (it.canTypeID) {
                 1 -> orderItemCan50.setCountAndProgress(it.count, it.check)
