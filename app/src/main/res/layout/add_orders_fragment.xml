@@ -7,7 +7,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?android:attr/actionBarSize"
         android:focusable="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,8 +15,18 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
+            <TextView
+                android:id="@+id/addOrderClientInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/plius_minus_TextSize"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView_add_Order"
+                android:id="@+id/addOrderOperationalCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -25,17 +34,17 @@
                 app:cardCornerRadius="@dimen/cardCornerRadius"
                 app:cardElevation="@dimen/gr_size_2"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintTop_toBottomOf="@+id/t_orderInfo"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderClientInfo"
                 app:layout_constraintVertical_bias="0.0">
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_add_Order"
+                    android:id="@+id/addOrderOperationalConstraint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/tAddOrderBeerKind"
+                        android:id="@+id/addOrderBeerKindTv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/gr_size_8"
@@ -45,14 +54,14 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/beerRecycler"
+                        android:id="@+id/addOrderBeerRecycler"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/gr_size_16"
-                        app:layout_constraintTop_toBottomOf="@id/tAddOrderBeerKind" />
+                        app:layout_constraintTop_toBottomOf="@id/addOrderBeerKindTv" />
 
                     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-                        android:id="@+id/beerListIndicatior"
+                        android:id="@+id/addOrderBeerListIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/gr_size_8"
@@ -61,7 +70,7 @@
                         app:dotsSpacing="2dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/beerRecycler"
+                        app:layout_constraintTop_toBottomOf="@id/addOrderBeerRecycler"
                         app:selectedDotColor="@color/colorPrimary" />
 
                     <ImageView
@@ -72,22 +81,22 @@
                         android:scaleType="fitXY"
                         android:src="@drawable/ic_arrow_left_24dp"
                         android:tint="@color/arrow_color_tr"
-                        app:layout_constraintBottom_toBottomOf="@+id/beerRecycler"
+                        app:layout_constraintBottom_toBottomOf="@+id/addOrderBeerRecycler"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/beerRecycler" />
+                        app:layout_constraintTop_toTopOf="@+id/addOrderBeerRecycler" />
 
                     <ImageView
                         android:id="@+id/btnBeerRightImg"
                         android:layout_width="@dimen/gr_size_24"
                         android:layout_height="@dimen/gr_size_48"
                         android:layout_margin="@dimen/gr_size_8"
+                        android:rotation="180"
                         android:scaleType="fitXY"
                         android:src="@drawable/ic_arrow_left_24dp"
-                        android:rotation="180"
                         android:tint="@color/arrow_color_tr"
-                        app:layout_constraintBottom_toBottomOf="@+id/beerRecycler"
+                        app:layout_constraintBottom_toBottomOf="@+id/addOrderBeerRecycler"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/beerRecycler" />
+                        app:layout_constraintTop_toTopOf="@id/addOrderBeerRecycler" />
 
                     <TextView
                         android:id="@+id/addOrderCanTypeTv"
@@ -97,16 +106,14 @@
                         android:text="@string/can_type"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        app:layout_constraintTop_toBottomOf="@+id/beerListIndicatior" />
+                        app:layout_constraintTop_toBottomOf="@+id/addOrderBeerListIndicator" />
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/addOrdersChipGr"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/gr_size_40"
                         android:layout_marginVertical="@dimen/gr_size_8"
-
                         android:paddingTop="@dimen/gr_size_4"
-
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/addOrderCanTypeTv"
@@ -176,7 +183,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/addOrdersChipGr" />
 
                     <com.example.beerdistrkt.customView.NumericEditText
-                        android:id="@+id/countControl"
+                        android:id="@+id/addOrderCanCountControl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -184,10 +191,11 @@
                         app:layout_constraintTop_toBottomOf="@id/addOrderCanCountTv" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_anotherBeer"
+                android:id="@+id/addOrderAddItemBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
@@ -197,19 +205,19 @@
                 app:backgroundTintMode="src_over"
                 app:fabSize="mini"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order" />
+                app:layout_constraintTop_toBottomOf="@+id/addOrderOperationalCard" />
 
             <CheckBox
-                android:id="@+id/checkbox_orderchek"
+                android:id="@+id/addOrderCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:checked="true"
-                app:layout_constraintStart_toStartOf="@+id/cardView_add_Order"
-                app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order" />
+                app:layout_constraintStart_toStartOf="@+id/addOrderOperationalCard"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderOperationalCard" />
 
             <LinearLayout
-                android:id="@+id/linear_conteiner"
+                android:id="@+id/addOrderItemsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -217,57 +225,35 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/checkbox_orderchek">
+                app:layout_constraintTop_toBottomOf="@id/addOrderCheckBox">
 
             </LinearLayout>
 
 
-            <Button
-                android:id="@+id/btn_orderDone"
-                android:layout_width="129dp"
-                android:layout_height="61dp"
-                android:layout_margin="30dp"
-                android:layout_marginTop="52dp"
-                android:text="@string/dadastureba"
-                app:layout_constraintHorizontal_bias="0.088"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/e_order_comment" />
-
             <TextView
-                android:id="@+id/t_orderInfo"
+                android:id="@+id/addOrderDistributorTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="@dimen/plius_minus_TextSize"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/t_order_todistr"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="13dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/vis"
                 android:textAlignment="gravity"
 
-                app:layout_constraintBottom_toBottomOf="@+id/sp_order_carrying"
-                app:layout_constraintEnd_toStartOf="@+id/sp_order_carrying"
-                app:layout_constraintTop_toTopOf="@+id/sp_order_carrying" />
+                app:layout_constraintBottom_toBottomOf="@+id/addOrderDistributorSpinner"
+                app:layout_constraintEnd_toStartOf="@+id/addOrderDistributorSpinner"
+                app:layout_constraintTop_toTopOf="@+id/addOrderDistributorSpinner" />
 
             <Spinner
-                android:id="@+id/sp_order_carrying"
+                android:id="@+id/addOrderDistributorSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/gr_size_36"
+                android:minWidth="@dimen/gr_size_48"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linear_conteiner" />
+                app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
 
             <EditText
-                android:id="@+id/e_order_comment"
+                android:id="@+id/addOrderComment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:autofillHints="@string/comment"
@@ -275,8 +261,18 @@
                 android:inputType="text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sp_order_carrying"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderDistributorSpinner"
                 tools:ignore="UnusedAttribute" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addOrderDoneBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_16"
+                android:paddingVertical="@dimen/gr_size_24"
+                android:text="@string/dadastureba"
+                android:textSize="@dimen/sp18"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderComment" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

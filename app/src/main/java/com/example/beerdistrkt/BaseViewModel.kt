@@ -18,6 +18,7 @@ abstract class BaseViewModel : ViewModel() {
     protected val database: ApeniDatabaseDao = ApeniDataBase.getInstance().apeniDataBaseDao
     protected val job = Job()
     protected val ioScope = CoroutineScope(Dispatchers.IO + job)
+    protected val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     private val _apiFailureMutableLiveData = MutableLiveData<ApiResponseState<Nothing>>()
     val apiFailureLiveData: LiveData<ApiResponseState<Nothing>>

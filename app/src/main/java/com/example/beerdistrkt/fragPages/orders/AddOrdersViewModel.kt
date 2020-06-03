@@ -1,26 +1,26 @@
 package com.example.beerdistrkt.fragPages.orders
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.db.ApeniDatabaseDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.example.beerdistrkt.models.ObiectWithPrices
 import kotlinx.coroutines.launch
 
-class AddOrdersViewModel : ViewModel() {
+class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
 
-    private val database: ApeniDatabaseDao = ApeniDataBase.getInstance().apeniDataBaseDao
-    private val job = Job()
-    private val ioScope = CoroutineScope(Dispatchers.IO + job)
+    val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
+    init {
+        Log.d("addOrderVM", clientID.toString())
+        getClient()
+    }
 
-    fun logObjPr(obieqtisID: Int) {
+    private fun getClient(){
         ioScope.launch {
-            val objectWithPrices = database.getObiectsWithPrices(obieqtisID)
-            Log.d("--------------", objectWithPrices.toString())
+            val clientData = database.getObiectsWithPrices(clientID)
+            uiScope.launch {
+                clientLiveData.value = clientData
+            }
         }
     }
 

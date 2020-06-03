@@ -8,14 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.beerdistrkt.BaseFragment
 
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.animateThis
 import com.example.beerdistrkt.getSnapPosition
+import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.example.beerdistrkt.utils.inflate
@@ -24,9 +25,8 @@ import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
 import kotlinx.android.synthetic.main.add_orders_fragment.*
 import kotlinx.android.synthetic.main.add_orders_fragment.view.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
-import kotlinx.android.synthetic.main.orders_fragment.*
 
-class AddOrdersFragment : Fragment() {
+class AddOrdersFragment : BaseFragment<AddOrdersViewModel>() {
 
     companion object {
         fun newInstance() = AddOrdersFragment()
@@ -36,15 +36,19 @@ class AddOrdersFragment : Fragment() {
     private val snapHelper = PagerSnapHelper()
     private val beerAdapter = BeerAdapter()
 
-    private lateinit var viewModel: AddOrdersViewModel
+    private val clientID by lazy {
+        val args = AddOrdersFragmentArgs.fromBundle(arguments ?: Bundle())
+        args.clientObjectID
+    }
+
+    override val viewModel by lazy {
+        getViewModel{ AddOrdersViewModel(clientID) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
 
         val vv = inflater.inflate(R.layout.add_orders_fragment, container, false)
         val btnBeerLeft = vv.findViewById<ImageView>(R.id.btnBeerLeftImg)
@@ -52,32 +56,32 @@ class AddOrdersFragment : Fragment() {
 //        val tvtite = vv.findViewById<TextView>(R.id.t_ludisDasaxeleba)
 
         btnBeerLeft.setOnClickListener {
-            beerPos = (snapHelper.getSnapPosition(beerRecycler) + beerList.size - 1) % beerList.size
-            beerRecycler.smoothScrollToPosition(beerPos)
+            beerPos = (snapHelper.getSnapPosition(addOrderBeerRecycler) + beerList.size - 1) % beerList.size
+            addOrderBeerRecycler.smoothScrollToPosition(beerPos)
         }
         btnBeerRight.setOnClickListener {
-            beerPos = (snapHelper.getSnapPosition(beerRecycler) + 1) % beerList.size
-            beerRecycler.smoothScrollToPosition(beerPos)
+            beerPos = (snapHelper.getSnapPosition(addOrderBeerRecycler) + 1) % beerList.size
+            addOrderBeerRecycler.smoothScrollToPosition(beerPos)
         }
-        vv.beerRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        vv.beerRecycler.adapter = beerAdapter
-        snapHelper.attachToRecyclerView(vv.beerRecycler)
-        vv.beerListIndicatior.pager = getIndicatorPager(vv.beerRecycler)
+        vv.addOrderBeerRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        vv.addOrderBeerRecycler.adapter = beerAdapter
+        snapHelper.attachToRecyclerView(vv.addOrderBeerRecycler)
+        vv.addOrderBeerListIndicator.pager = getIndicatorPager(vv.addOrderBeerRecycler)
         return vv
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(AddOrdersViewModel::class.java)
 
-        val argsBundle = arguments ?: Bundle()
-        val args = AddOrdersFragmentArgs.fromBundle(argsBundle)
-        Log.d("arg", "objID ${args.clientObjectID}")
-        viewModel.logObjPr(args.clientObjectID)
-
+        initViewModel()
 
     }
 
+    private fun initViewModel(){
+        viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
+            addOrderClientInfo.text = "${it.obieqti.dasaxeleba} N:${it.obieqti.id ?: 0}"
+        })
+    }
 
     inner class BeerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
