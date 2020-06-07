@@ -13,6 +13,9 @@ import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ADD_ORDER
+import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.visibleIf
+import kotlinx.android.synthetic.main.orders_fragment.*
 
 class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
@@ -91,7 +94,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
-            ordersAdapter.setData(it)
+            when(it){
+                is ApiResponseState.Success -> ordersAdapter.setData(it.data)
+                is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
+            }
         })
         Log.d("_KA", "onActivityCreated")
     }
