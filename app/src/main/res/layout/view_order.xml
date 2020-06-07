@@ -11,17 +11,17 @@
 
     <LinearLayout
         android:id="@+id/orderUnitBackRoot"
-        android:layout_width="@dimen/gr_size_64"
+        android:layout_width="112dp"
         android:layout_height="match_parent"
         android:background="@color/gray_light"
         android:gravity="end"
-        android:orientation="vertical"
-        android:paddingVertical="@dimen/gr_size_6">
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/gr_size_4">
 
         <ImageButton
             android:id="@+id/orderUnitEditBtn"
-            android:layout_width="@dimen/gr_size_64"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/blue_edit_bkg"
             android:contentDescription="@string/img_description"
@@ -31,8 +31,8 @@
 
         <ImageButton
             android:id="@+id/orderUnitDeleteBtn"
-            android:layout_width="@dimen/gr_size_64"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/red_delete_bkg"
             android:contentDescription="@string/img_description"
@@ -52,9 +52,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/gr_size_12"
-            android:layout_marginTop="@dimen/gr_size_6"
+            android:layout_marginTop="@dimen/gr_size_4"
             android:layout_marginEnd="-8dp"
-            android:layout_marginBottom="@dimen/gr_size_6"
+            android:layout_marginBottom="@dimen/gr_size_4"
             android:background="@drawable/bkg_rounded_white_r8"
             android:clickable="true"
             android:elevation="2dp"
@@ -67,9 +67,9 @@
                 android:id="@+id/orderUnitClientNameTv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_8"
+                android:layout_marginTop="@dimen/gr_size_2"
                 android:layout_marginEnd="@dimen/gr_size_8"
-                android:textSize="@dimen/sp24"
+                android:textSize="@dimen/sp18"
                 app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -94,12 +94,12 @@
                 android:padding="@dimen/gr_size_4"
                 android:src="@drawable/circle"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv" />
+                app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/gr_size_1"
-                android:layout_marginTop="@dimen/gr_size_8"
+                android:layout_marginTop="@dimen/gr_size_6"
                 android:background="@color/gray_3"
                 app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
 
@@ -107,7 +107,7 @@
                 android:id="@+id/orderItemList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_16"
+                android:layout_marginTop="@dimen/gr_size_12"
                 android:layout_marginBottom="@dimen/gr_size_8"
                 android:paddingBottom="@dimen/gr_size_4"
                 app:layout_constraintEnd_toEndOf="parent"

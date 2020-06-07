@@ -3,19 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/orderItemRoot"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/gr_size_40"
-    android:paddingEnd="@dimen/gr_size_4">
+    android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/orderItemNameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/gr_size_8"
-        android:layout_marginBottom="@dimen/gr_size_8"
         android:ellipsize="end"
         android:lines="1"
         android:text="ლაგერი"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,40 +21,40 @@
         android:id="@+id/orderItemNameUnderline"
         android:layout_width="0dp"
         android:layout_height="@dimen/gr_size_2"
-        android:layout_marginTop="@dimen/gr_size_2"
+
         android:background="@color/gray_3"
         app:layout_constraintEnd_toEndOf="@id/orderItemNameTv"
         app:layout_constraintStart_toStartOf="@id/orderItemNameTv"
         app:layout_constraintTop_toBottomOf="@id/orderItemNameTv" />
 
-    <com.example.beerdistrkt.fragPages.orders.view.CounterProgressView
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan10"
-        android:layout_width="@dimen/gr_size_36"
-        android:layout_height="@dimen/gr_size_36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan20"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.beerdistrkt.fragPages.orders.view.CounterProgressView
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan20"
-        android:layout_width="@dimen/gr_size_36"
-        android:layout_height="@dimen/gr_size_36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan30"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.beerdistrkt.fragPages.orders.view.CounterProgressView
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan30"
-        android:layout_width="@dimen/gr_size_36"
-        android:layout_height="@dimen/gr_size_36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan50"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.beerdistrkt.fragPages.orders.view.CounterProgressView
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan50"
-        android:layout_width="@dimen/gr_size_36"
-        android:layout_height="@dimen/gr_size_36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

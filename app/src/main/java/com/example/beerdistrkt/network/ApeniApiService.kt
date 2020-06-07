@@ -19,7 +19,7 @@ interface ApeniApiService {
         private var instance: ApeniApiService? = null
 
 //        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
-        private const val BASE_URL = "http://192.168.1.104/apeni.localhost.com/tbilisi/mobile/"
+        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
 
         fun initialize(context: Context) {
             if (instance == null) {
