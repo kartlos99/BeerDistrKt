@@ -5,6 +5,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
+import com.example.beerdistrkt.storage.ObjectCache
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Response
@@ -20,6 +21,9 @@ class HomeViewModel : BaseViewModel() {
 //        getPrices()
 //        getUsers()
 //        getBeerList()
+        beerLiveData.observeForever {
+            ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
+        }
     }
 
     private fun clearObieqtsList() {
