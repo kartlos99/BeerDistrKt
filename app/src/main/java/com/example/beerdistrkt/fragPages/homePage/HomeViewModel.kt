@@ -4,16 +4,14 @@ import android.util.Log
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.sendRequest
 import com.example.beerdistrkt.storage.ObjectCache
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Response
 
 class HomeViewModel : BaseViewModel() {
 
     val usersLiveData = database.getUsers()
     val beerLiveData = database.getBeerList()
+    val cansLiveData = database.getCansList()
 
     init {
         Log.d(TAG, "init")
@@ -21,8 +19,14 @@ class HomeViewModel : BaseViewModel() {
 //        getPrices()
 //        getUsers()
 //        getBeerList()
+//        getCanTypes()
         beerLiveData.observeForever {
             ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
+        }
+        cansLiveData.observeForever {
+            it.forEach {can ->
+                Log.d("CanS", can.toString())
+            }
         }
     }
 
@@ -100,6 +104,23 @@ class HomeViewModel : BaseViewModel() {
         )
     }
 
+    private fun getCanTypes() {
+        sendRequest(
+            ApeniApiService.getInstance().getCanList(),
+            successWithData = {
+                Log.d(TAG, "Cans_respOK")
+                if (it.isNotEmpty()) {
+                    ioScope.launch {
+                        database.clearCansTable()
+                        it.forEach { can ->
+                            insertCanToDB(can)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
     private fun insertUserToDB(user: User) {
         Log.d(TAG, user.toString())
         database.insertUser(user)
@@ -107,7 +128,7 @@ class HomeViewModel : BaseViewModel() {
 
     private fun insertBeerToDB(beerModel: BeerModel) {
         Log.d(TAG, beerModel.toString())
-        database.insertbeer(beerModel)
+        database.insertBeer(beerModel)
     }
 
     private fun insertObiect(obieqti: Obieqti) {
@@ -117,6 +138,10 @@ class HomeViewModel : BaseViewModel() {
 
     private fun insertBeetPrice(bPrice: ObjToBeerPrice) {
         database.insertBeerPrice(bPrice)
+    }
+
+    private fun insertCanToDB(canModel: CanModel) {
+        database.insertCan(canModel)
     }
 
     private fun clearPrices() {

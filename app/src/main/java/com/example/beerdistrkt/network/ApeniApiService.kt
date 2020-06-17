@@ -66,6 +66,9 @@ interface ApeniApiService {
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<DataResponse<List<BeerModel>>>
 
+    @GET("get_kasri_list.php")
+    fun getCanList(): Call<DataResponse<List<CanModel>>>
+
     @GET("view_sale_day_v2.php")
     fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<DataResponse<RealizationDay>>
 
