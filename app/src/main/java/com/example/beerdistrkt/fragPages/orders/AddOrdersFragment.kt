@@ -5,9 +5,12 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -29,7 +32,8 @@ import kotlinx.android.synthetic.main.add_orders_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 
-class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListener {
+class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListener,
+    AdapterView.OnItemSelectedListener {
 
     companion object {
         fun newInstance() = AddOrdersFragment()
@@ -98,6 +102,14 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             }
 
         })
+
+        val userAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.usersList.map { it.name }
+        )
+        vBinding.addOrderDistributorSpinner.adapter = userAdapter
+        vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
     }
 
     fun getTempOrderItem(): TempOrderItemModel {
@@ -132,10 +144,15 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
             addOrderClientInfo.text = "${it.obieqti.dasaxeleba} N:${it.obieqti.id ?: 0}"
         })
-        viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer{
+        viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer {
             addOrderItemsContainer.removeAllViews()
-            it.forEach {orderItem ->
-                addOrderItemsContainer.addView(TempBeerRowView(context = requireContext(), rowData = orderItem))
+            it.forEach { orderItem ->
+                addOrderItemsContainer.addView(
+                    TempBeerRowView(
+                        context = requireContext(),
+                        rowData = orderItem
+                    )
+                )
             }
         })
     }
@@ -216,5 +233,13 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         if (vBinding.addOrdersChipGr.checkedChipId == View.NO_ID)
             viewModel.setCan(-1)
         checkForm()
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        Log.d("spinner", "noneSelect")
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        Log.d("spinner", viewModel.usersList[position].name)
     }
 }

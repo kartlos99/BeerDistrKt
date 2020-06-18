@@ -26,6 +26,10 @@ class HomeViewModel : BaseViewModel() {
         cansLiveData.observeForever {
             ObjectCache.getInstance().putList(CanModel::class, "canList", it)
         }
+        usersLiveData.observeForever { userList ->
+            ObjectCache.getInstance()
+                .putList(User::class, "userList", userList.sortedBy { it.name })
+        }
     }
 
     private fun clearObieqtsList() {
