@@ -24,9 +24,7 @@ class HomeViewModel : BaseViewModel() {
             ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
         }
         cansLiveData.observeForever {
-            it.forEach {can ->
-                Log.d("CanS", can.toString())
-            }
+            ObjectCache.getInstance().putList(CanModel::class, "canList", it)
         }
     }
 

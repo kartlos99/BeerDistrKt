@@ -11,7 +11,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true">
 
@@ -111,7 +111,7 @@
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/addOrdersChipGr"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/gr_size_40"
+                        android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/gr_size_8"
                         android:paddingTop="@dimen/gr_size_4"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -119,6 +119,23 @@
                         app:layout_constraintTop_toBottomOf="@+id/addOrderCanTypeTv"
                         app:singleLine="false"
                         app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/addOrdersCanChip0"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/gr_size_4"
+                            android:checkable="true"
+                            android:checked="false"
+                            android:elevation="@dimen/gr_size_2"
+                            android:gravity="center_vertical"
+                            android:text="@string/_10litri"
+                            android:textStyle="bold"
+                            app:checkedIcon="@drawable/beer_icon"
+                            app:checkedIconEnabled="true"
+                            app:chipStrokeColor="@color/gray_3"
+                            app:chipStrokeWidth="@dimen/gr_size_1" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/addOrdersCanChip1"
@@ -136,7 +153,6 @@
                             app:checkedIconEnabled="true"
                             app:chipStrokeColor="@color/gray_3"
                             app:chipStrokeWidth="@dimen/gr_size_1" />
-
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/addOrdersCanChip2"
@@ -248,6 +264,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/gr_size_36"
                 android:minWidth="@dimen/gr_size_48"
+                android:spinnerMode="dialog"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
