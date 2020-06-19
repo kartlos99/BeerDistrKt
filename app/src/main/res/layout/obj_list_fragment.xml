@@ -46,32 +46,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <androidx.cardview.widget.CardView-->
-<!--            android:id="@+id/cardRect"-->
-<!--            android:layout_width="112dp"-->
-<!--            android:layout_height="77dp"-->
-<!--            android:layout_marginTop="44dp"-->
-<!--            android:outlineAmbientShadowColor="#1c1"-->
-<!--            android:outlineSpotShadowColor="#a2a"-->
-<!--            app:cardBackgroundColor="#ab2"-->
-<!--            app:cardCornerRadius="6dp"-->
-<!--            app:cardElevation="4dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--        </androidx.cardview.widget.CardView>-->
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="sddf ddfg sds"
-            android:onClick="@{() -> viewModel.delOneObj()}"
-            android:layout_marginTop="66dp"
-            android:layout_marginStart="77dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

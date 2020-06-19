@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.HorizontalScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -117,6 +118,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
         vBinding.addOrderDistributorSpinner.adapter = userAdapter
         vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
+
+        vBinding.addOrderCansScroll.postDelayed(Runnable {
+            vBinding.addOrderCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+        }, 100L)
     }
 
     fun getTempOrderItem(): TempOrderItemModel {
