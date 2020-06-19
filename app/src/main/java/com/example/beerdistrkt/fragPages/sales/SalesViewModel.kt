@@ -8,12 +8,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.FINISHED
-import com.example.beerdistrkt.utils.SUCCESS
 import com.example.beerdistrkt.utils.Session
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -74,7 +69,7 @@ class SalesViewModel : BaseViewModel() {
     }
 
     fun prepearData() {
-        _selectedDayLiveData.value = dateFormat_desh.format(calendar.time)
+        _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         Log.d(TAG, selectedDayLiveData.value!!)
         getDayInfo(selectedDayLiveData.value!!, distr_id)
     }
@@ -86,7 +81,7 @@ class SalesViewModel : BaseViewModel() {
     }
 
     init {
-        _selectedDayLiveData.value = dateFormat_desh.format(calendar.time)
+        _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         _xarjiListExpandedLiveData.value = false
 
         getDayInfo(selectedDayLiveData.value!!, distr_id)

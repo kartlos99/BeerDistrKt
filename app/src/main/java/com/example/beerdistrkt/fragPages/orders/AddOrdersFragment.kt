@@ -1,11 +1,12 @@
 package com.example.beerdistrkt.fragPages.orders
 
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,12 +26,12 @@ import com.example.beerdistrkt.models.TempOrderItemModel
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.example.beerdistrkt.utils.inflate
-import com.google.android.material.chip.Chip
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
 import kotlinx.android.synthetic.main.add_orders_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
+import java.util.*
 
 class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListener,
     AdapterView.OnItemSelectedListener {
@@ -52,6 +53,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     private val clientID by lazy {
         val args = AddOrdersFragmentArgs.fromBundle(arguments ?: Bundle())
         args.clientObjectID
+    }
+
+    private var dateSetListener = OnDateSetListener { _, year, month, day ->
+        viewModel.onOrderDateSelected(year, month, day)
     }
 
 
@@ -91,6 +96,8 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrdersCanChip1.setOnClickListener(this)
         vBinding.addOrdersCanChip2.setOnClickListener(this)
         vBinding.addOrdersCanChip3.setOnClickListener(this)
+        vBinding.addOrderDoneBtn.setOnClickListener(this)
+        vBinding.addOrderOrderDate.setOnClickListener(this)
 
         vBinding.addOrderCanCountControl.editCount.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
@@ -113,7 +120,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     fun getTempOrderItem(): TempOrderItemModel {
-        return TempOrderItemModel(
+        return TempOrderItemModel(0,
             viewModel.beerList[beerPos],
             viewModel.selectedCan!!,
             vBinding.addOrderCanCountControl.amount,
@@ -154,6 +161,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                     )
                 )
             }
+        })
+        viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.addOrderOrderDate.text = it
         })
     }
 
@@ -229,17 +239,30 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             R.id.addOrdersCanChip1 -> viewModel.setCan(2)
             R.id.addOrdersCanChip2 -> viewModel.setCan(1)
             R.id.addOrdersCanChip3 -> viewModel.setCan(0)
+            R.id.addOrderDoneBtn -> viewModel.addOrder(
+                vBinding.addOrderComment.text.toString(),
+                vBinding.addOrderCheckBox.isChecked
+            )
+            R.id.addOrderOrderDate -> {
+                val datePickerDialog = DatePickerDialog(
+                    requireContext(),
+                    dateSetListener,
+                    viewModel.orderDateCalendar.get(Calendar.YEAR),
+                    viewModel.orderDateCalendar.get(Calendar.MONTH),
+                    viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
+                )
+                datePickerDialog.setCancelable(false)
+                datePickerDialog.show()
+            }
         }
         if (vBinding.addOrdersChipGr.checkedChipId == View.NO_ID)
             viewModel.setCan(-1)
         checkForm()
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        Log.d("spinner", "noneSelect")
-    }
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Log.d("spinner", viewModel.usersList[position].name)
+        viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
     }
 }

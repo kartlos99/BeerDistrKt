@@ -64,7 +64,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
 
         if (rowList.size > 0) {
             try {
-                grDate = dateFormat_desh.parse(rowList[0].tarigi) ?: Date()
+                grDate = dateFormatDash.parse(rowList[0].tarigi) ?: Date()
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -75,7 +75,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             var k_out = 0.0f
             for (i in rowList.indices) {
                 try {
-                    currRowDate = dateFormat_desh.parse(rowList[i].tarigi) ?: Date()
+                    currRowDate = dateFormatDash.parse(rowList[i].tarigi) ?: Date()
                 } catch (e: ParseException) {
                     e.printStackTrace()
                 }
@@ -86,7 +86,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     k_out += rowList[i].k_out
                 } else {
                     val currGrRow = Amonaweri()
-                    currGrRow.tarigi = dateFormat_desh.format(grDate)
+                    currGrRow.tarigi = dateFormatDash.format(grDate)
                     currGrRow.price = pr
                     currGrRow.pay = pay
                     currGrRow.balance = bal
@@ -103,7 +103,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                 }
             }
             val currGrRow = Amonaweri()
-            currGrRow.tarigi = dateFormat_desh.format(grDate)
+            currGrRow.tarigi = dateFormatDash.format(grDate)
             currGrRow.price = pr
             currGrRow.pay = pay
             currGrRow.balance = bal

@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.models.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -85,4 +86,7 @@ interface ApeniApiService {
 
     @GET("order/getByDate.php")
     fun getOrders(@Query("date") date: String): Call<DataResponse<List<OrderDTO>>>
+
+    @POST("order/add.php")
+    fun addOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
 }
