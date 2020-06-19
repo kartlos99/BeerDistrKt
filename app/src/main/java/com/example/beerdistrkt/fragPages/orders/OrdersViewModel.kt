@@ -10,6 +10,7 @@ import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.coroutines.launch
+import java.util.*
 
 class OrdersViewModel : BaseViewModel() {
 
@@ -25,8 +26,14 @@ class OrdersViewModel : BaseViewModel() {
     private lateinit var clients: List<Obieqti>
     private lateinit var beers: List<BeerModel>
 
+    var orderDateCalendar: Calendar = Calendar.getInstance()
+
+    private val _orderDayLiveData = MutableLiveData<String>()
+    val orderDayLiveData: LiveData<String>
+        get() = _orderDayLiveData
+
     init {
-        getOrders()
+        getOrders(dateFormatDash.format(orderDateCalendar.time))
         clientsLiveData.observeForever {
             clients = it
         }
@@ -34,13 +41,15 @@ class OrdersViewModel : BaseViewModel() {
             beers = it
             Log.d("Beer", beers.toString())
         }
+        _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
     }
 
 
-    private fun getOrders() {
+    private fun getOrders(date: String) {
+        Log.d(TAG, date)
         ordersLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
-            ApeniApiService.getInstance().getOrders("2020-04-14"),
+            ApeniApiService.getInstance().getOrders(date),
             successWithData = {
                 ordersLiveData.value = ApiResponseState.Success(
                     it.map { orderDTO -> orderDTO.toPm(clients, beers) }
@@ -53,6 +62,12 @@ class OrdersViewModel : BaseViewModel() {
                 ordersLiveData.value = ApiResponseState.Loading(false)
             }
         )
+    }
+
+    fun onDateSelected(year: Int, month: Int, day: Int) {
+        orderDateCalendar.set(year, month, day)
+        _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+        getOrders(dateFormatDash.format(orderDateCalendar.time))
     }
 
 

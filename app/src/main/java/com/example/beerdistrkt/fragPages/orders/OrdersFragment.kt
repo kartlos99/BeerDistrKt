@@ -1,5 +1,7 @@
 package com.example.beerdistrkt.fragPages.orders
 
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.orders_fragment.*
+import java.util.*
 
 class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
@@ -27,6 +30,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     private lateinit var vBinding: OrdersFragmentBinding
     private val ordersAdapter by lazy { OrderAdapter() }
+
+    private var dateSetListener = OnDateSetListener { _, year, month, day ->
+        viewModel.onDateSelected(year, month, day)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +81,15 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
 
         vBinding.setDateBtn.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                dateSetListener,
+                viewModel.orderDateCalendar.get(Calendar.YEAR),
+                viewModel.orderDateCalendar.get(Calendar.MONTH),
+                viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.setCancelable(false)
+            datePickerDialog.show()
 //            val view = snapHelper.findSnapView(vBinding.testRecycler.layoutManager)
 //            view?.let {
 //                val tv = it.findViewById<TextView>(R.id.tvBeerName)
@@ -98,6 +115,9 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 is ApiResponseState.Success -> ordersAdapter.setData(it.data)
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
             }
+        })
+        viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.setDateBtn.text = it
         })
         Log.d("_KA", "onActivityCreated")
     }
