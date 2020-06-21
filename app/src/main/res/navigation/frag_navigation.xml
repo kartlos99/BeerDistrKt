@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_ordersFragment_to_objListFragment"
             app:destination="@id/objListFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_addDeliveryFragment"
+            app:destination="@id/addDeliveryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
@@ -127,6 +130,10 @@
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
+        <argument
+            android:name="orderID"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/addOrdersFragment"

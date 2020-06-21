@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.models.TempOrderItemModel
+import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.view_temp_beer_row.view.*
 
 class TempBeerRowView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
-    val rowData: TempOrderItemModel? = null
+    val rowData: TempBeerItemModel? = null
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     init {
@@ -24,7 +24,7 @@ class TempBeerRowView @JvmOverloads constructor(
             fillData(rowData)
     }
 
-    fun fillData(data: TempOrderItemModel) {
+    fun fillData(data: TempBeerItemModel) {
 
         tempBeerEditBtn.visibleIf(data.onEditClick != null)
         tempBeerInfo.text =

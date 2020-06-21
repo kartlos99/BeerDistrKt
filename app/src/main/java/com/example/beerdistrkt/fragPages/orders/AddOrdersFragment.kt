@@ -23,7 +23,7 @@ import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.models.TempOrderItemModel
+import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.example.beerdistrkt.utils.inflate
@@ -108,7 +108,6 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 checkForm()
             }
-
         })
 
         val userAdapter = ArrayAdapter(
@@ -122,10 +121,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrderCansScroll.postDelayed(Runnable {
             vBinding.addOrderCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
+        checkForm()
     }
 
-    fun getTempOrderItem(): TempOrderItemModel {
-        return TempOrderItemModel(0,
+    fun getTempOrderItem(): TempBeerItemModel {
+        return TempBeerItemModel(0,
             viewModel.beerList[beerPos],
             viewModel.selectedCan!!,
             vBinding.addOrderCanCountControl.amount,
@@ -160,10 +160,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             addOrderItemsContainer.removeAllViews()
             it.forEach { orderItem ->
                 addOrderItemsContainer.addView(
-                    TempBeerRowView(
-                        context = requireContext(),
-                        rowData = orderItem
-                    )
+                    TempBeerRowView(context = requireContext(), rowData = orderItem)
                 )
             }
         })

@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
+import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -89,4 +90,7 @@ interface ApeniApiService {
 
     @POST("order/add.php")
     fun addOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
+
+    @POST("sales/add.php")
+    fun addSales(@Body order: SaleRequestModel): Call<DataResponse<String>>
 }

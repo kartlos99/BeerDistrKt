@@ -11,6 +11,7 @@ class Session {
     var userID: String? = "15"
     val userType: UserType = UserType.ADMIN
 
+    fun getUserID(): Int = userID?.toInt() ?: 0
 
     companion object {
         private var session: Session? = null

@@ -26,8 +26,8 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
     var selectedCan: CanModel? = null
     var selectedDistributorID: Int = 0
 
-    val orderItemsList = mutableListOf<TempOrderItemModel>()
-    val orderItemsLiveData = MutableLiveData<List<TempOrderItemModel>>()
+    val orderItemsList = mutableListOf<TempBeerItemModel>()
+    val orderItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
 
     var orderDateCalendar: Calendar = Calendar.getInstance()
 
@@ -57,21 +57,27 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
             null
     }
 
-    fun addOrderItemToList(item: TempOrderItemModel){
+    fun addOrderItemToList(item: TempBeerItemModel) {
         orderItemsList.add(item)
         orderItemsLiveData.value = orderItemsList
     }
 
-    fun removeOrderItemFromList(item: TempOrderItemModel){
+    fun removeOrderItemFromList(item: TempBeerItemModel) {
         orderItemsList.remove(item)
         orderItemsLiveData.value = orderItemsList
     }
 
-    fun addOrder(comment: String, isChecked: Boolean){
+    fun addOrder(comment: String, isChecked: Boolean) {
 
         val orderRequestModel = OrderRequestModel(
-            0, dateFormatDash.format(orderDateCalendar.time), 1, selectedDistributorID, clientID, comment, Session.get().userID ?: "0",
-            orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0")}
+            0,
+            dateFormatDash.format(orderDateCalendar.time),
+            1,
+            selectedDistributorID,
+            clientID,
+            comment,
+            Session.get().userID ?: "0",
+            orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0") }
         )
 
         sendRequest(
