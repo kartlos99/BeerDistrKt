@@ -60,7 +60,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     private lateinit var vBinding: AddDeliveryFragmentBinding
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -93,12 +92,15 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 checkForm()
             }
         })
+        vBinding.addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isGift = isChecked
+        }
 
         initViewModel()
         checkForm()
     }
 
-    private fun initViewModel(){
+    private fun initViewModel() {
         viewModel.clientLiveData.observeForever {
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
         }
@@ -107,11 +109,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         })
         viewModel.saleItemsLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.addDeliveryTempContainer.removeAllViews()
-            it.forEach {saleItem ->
+            it.forEach { saleItem ->
                 vBinding.addDeliveryTempContainer.addView(
                     TempBeerRowView(context = requireContext(), rowData = saleItem)
                 )
             }
+        })
+        viewModel.saleDayLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.addDeliveryDateBtn.text = it
         })
     }
 
@@ -121,9 +126,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             R.id.addDeliverysCanChip1 -> viewModel.setCan(2)
             R.id.addDeliverysCanChip2 -> viewModel.setCan(1)
             R.id.addDeliverysCanChip3 -> viewModel.setCan(0)
-            R.id.addDeliveryDoneBtn -> viewModel.addDelivery(
-                vBinding.addDeliveryComment.editText?.text.toString()
-            )
+            R.id.addDeliveryDoneBtn -> {
+                collectEmptyBarrels()
+                viewModel.setMoney(vBinding.addDeliveryMoneyEt.text)
+                viewModel.addDelivery(
+                    vBinding.addDeliveryComment.editText?.text.toString()
+                )
+            }
             R.id.addDeliveryDateBtn -> {
                 val datePickerDialog = DatePickerDialog(
                     requireContext(),
@@ -159,6 +168,17 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         checkForm()
     }
 
+    private fun collectEmptyBarrels() {
+        if (vBinding.addDeliveryBarrelOutputCount1.amount > 0)
+            viewModel.addBarrelToList(1, vBinding.addDeliveryBarrelOutputCount1.amount)
+        if (vBinding.addDeliveryBarrelOutputCount2.amount > 0)
+            viewModel.addBarrelToList(2, vBinding.addDeliveryBarrelOutputCount2.amount)
+        if (vBinding.addDeliveryBarrelOutputCount3.amount > 0)
+            viewModel.addBarrelToList(3, vBinding.addDeliveryBarrelOutputCount3.amount)
+        if (vBinding.addDeliveryBarrelOutputCount4.amount > 0)
+            viewModel.addBarrelToList(4, vBinding.addDeliveryBarrelOutputCount4.amount)
+    }
+
     fun getTempSaleItem(): TempBeerItemModel {
         return TempBeerItemModel(0,
 //            viewModel.beerList[beerPos],
@@ -189,21 +209,22 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
 
-
     private fun initBeerRecycler() {
         vBinding.addDeliveryBeerRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         beerAdapter.setData(viewModel.beerList)
         vBinding.addDeliveryBeerRecycler.adapter = beerAdapter
         snapHelper.attachToRecyclerView(vBinding.addDeliveryBeerRecycler)
-        vBinding.addDeliveryBeerListIndicator.pager = getIndicatorPager(vBinding.addDeliveryBeerRecycler)
+        vBinding.addDeliveryBeerListIndicator.pager =
+            getIndicatorPager(vBinding.addDeliveryBeerRecycler)
     }
 
     private fun onStopScroll(pos: Int) {
         beerPos = pos
     }
 
-    inner class BeerAdapter(private var bList: List<BeerModel> = mutableListOf()) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class BeerAdapter(private var bList: List<BeerModel> = mutableListOf()) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             BeerItemViewHolder(parent.inflate(R.layout.beer_item_view))
@@ -211,10 +232,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         override fun getItemCount() = bList.size
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            holder.itemView.tBeerNameItm.text = "${bList[position].dasaxeleba}\n${bList[position].fasi} ₾"
+            holder.itemView.tBeerNameItm.text =
+                "${bList[position].dasaxeleba}\n${bList[position].fasi} ₾"
         }
 
-        fun setData(beerList: List<BeerModel>){
+        fun setData(beerList: List<BeerModel>) {
             bList = beerList
             notifyDataSetChanged()
         }

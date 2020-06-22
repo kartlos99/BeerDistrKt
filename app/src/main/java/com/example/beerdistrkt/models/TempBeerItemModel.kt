@@ -27,13 +27,15 @@ data class TempBeerItemModel(
 
     fun toRequestSaleItem(
         saleDate: String,
-        orderID: Int
+        orderID: Int,
+        isGift: Boolean = false
     ): SaleRequestModel.SaleItem {
+
         return SaleRequestModel.SaleItem(
             ID = ID,
             saleDate = saleDate,
             beerID = beer.id,
-            price = beer.fasi ?: .0,
+            price = if (isGift) 0.0 else beer.fasi ?: .0,
             canTypeID = canType.id,
             count = count,
             orderID = orderID

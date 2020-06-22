@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.fragPages.mitana
 
+import android.text.Editable
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
@@ -27,9 +29,16 @@ class AddDeliveryViewModel(
 
     var selectedCan: CanModel? = null
     var saleDateCalendar: Calendar = Calendar.getInstance()
+    private val _saleDayLiveData = MutableLiveData<String>()
+    val saleDayLiveData: LiveData<String>
+        get() = _saleDayLiveData
 
     val saleItemsList = mutableListOf<TempBeerItemModel>()
     val saleItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
+
+    val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
+    var moneyOut: SaleRequestModel.MoneyOutItem? = null
+    var isGift = false
 
     init {
         // send getDebt request: TODO
@@ -39,7 +48,7 @@ class AddDeliveryViewModel(
         clientLiveData.observeForever {
             attachPrices(it.prices)
         }
-
+        _saleDayLiveData.value = dateFormatDash.format(saleDateCalendar.time)
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
@@ -81,10 +90,15 @@ class AddDeliveryViewModel(
             Session.get().getUserID(),
             deliveryDataComment,
             Session.get().getUserID(),
-            sales = saleItemsList.map { it.toRequestSaleItem(
-                dateFormatDash.format(saleDateCalendar.time),
-                orderID
-            ) }
+            sales = saleItemsList.map {
+                it.toRequestSaleItem(
+                    dateFormatDash.format(saleDateCalendar.time),
+                    orderID,
+                    isGift
+                )
+            },
+            barrels = getEmptyBarrelsList(),
+            money = moneyOut
         )
 
         Log.d(TAG, deliveryDataComment)
@@ -95,13 +109,16 @@ class AddDeliveryViewModel(
                 Log.d(TAG, it)
             },
             finally = {
-                Log.d(TAG, it.toString())
+                Log.d(TAG, "finaly" + it.toString())
+                moneyOut = null
+                barrelOutItems.clear()
             }
         )
     }
 
     fun onSaleDateSelected(year: Int, month: Int, day: Int) {
-        TODO("Not yet implemented")
+        saleDateCalendar.set(year, month, day)
+        _saleDayLiveData.value = dateFormatDash.format(saleDateCalendar.time)
     }
 
     fun removeSaleItemFromList(saleItem: TempBeerItemModel) {
@@ -112,6 +129,33 @@ class AddDeliveryViewModel(
     fun addSaleItemToList(saleItem: TempBeerItemModel) {
         saleItemsList.add(saleItem)
         saleItemsLiveData.value = saleItemsList
+    }
+
+    fun addBarrelToList(barrelType: Int, count: Int) {
+        barrelOutItems.add(
+            SaleRequestModel.BarrelOutItem(
+                0,
+                dateFormatDash.format(saleDateCalendar.time),
+                barrelType,
+                count
+            )
+        )
+    }
+
+    fun getEmptyBarrelsList(): List<SaleRequestModel.BarrelOutItem>? {
+        return if (barrelOutItems.size > 0)
+            barrelOutItems
+        else
+            null
+    }
+
+    fun setMoney(text: Editable?) {
+        if (!text.isNullOrEmpty())
+            moneyOut = SaleRequestModel.MoneyOutItem(
+                0,
+                dateFormatDash.format(saleDateCalendar.time),
+                text.toString().toDouble()
+            )
     }
 
     companion object {

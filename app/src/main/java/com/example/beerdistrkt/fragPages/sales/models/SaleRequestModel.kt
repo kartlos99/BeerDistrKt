@@ -12,7 +12,7 @@ data class SaleRequestModel(
 ) {
 
     data class SaleItem(
-        val ID: Int =0,
+        val ID: Int = 0,
         val saleDate: String? = null,
         val beerID: Int,
 //        val check: Boolean,
@@ -23,14 +23,14 @@ data class SaleRequestModel(
     )
 
     data class BarrelOutItem(
-        val ID: Int =0,
+        val ID: Int = 0,
         val outputDate: String? = null,
         val canTypeID: Int,
         val count: Int
     )
 
     data class MoneyOutItem(
-        val ID: Int =0,
+        val ID: Int = 0,
         val takeMoneyDate: String? = null,
         val amount: Double
     )
