@@ -87,7 +87,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             vBinding.addOrderBeerRecycler.smoothScrollToPosition(beerPos)
         }
         vBinding.addOrderAddItemBtn.setOnClickListener {
-            if (isFormValid()) {
+            if (formIsValid()) {
                 viewModel.addOrderItemToList(getTempOrderItem())
                 resetForm()
             } else
@@ -135,7 +135,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             })
     }
 
-    fun isFormValid(): Boolean {
+    fun formIsValid(): Boolean {
         return vBinding.addOrderCanCountControl.amount > 0 && viewModel.selectedCan != null
     }
 
@@ -146,7 +146,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     fun checkForm() {
-        vBinding.addOrderAddItemBtn.backgroundTintList = if (isFormValid())
+        vBinding.addOrderAddItemBtn.backgroundTintList = if (formIsValid())
             ColorStateList.valueOf(Color.GREEN)
         else
             ColorStateList.valueOf(Color.RED)
@@ -241,10 +241,14 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             R.id.addOrdersCanChip1 -> viewModel.setCan(2)
             R.id.addOrdersCanChip2 -> viewModel.setCan(1)
             R.id.addOrdersCanChip3 -> viewModel.setCan(0)
-            R.id.addOrderDoneBtn -> viewModel.addOrder(
-                vBinding.addOrderComment.text.toString(),
-                vBinding.addOrderCheckBox.isChecked
-            )
+            R.id.addOrderDoneBtn -> {
+                if (formIsValid() && viewModel.orderItemsList.isEmpty())
+                    viewModel.addOrderItemToList(getTempOrderItem())
+                viewModel.addOrder(
+                    vBinding.addOrderComment.text.toString(),
+                    vBinding.addOrderCheckBox.isChecked
+                )
+            }
             R.id.addOrderOrderDate -> {
                 val datePickerDialog = DatePickerDialog(
                     requireContext(),

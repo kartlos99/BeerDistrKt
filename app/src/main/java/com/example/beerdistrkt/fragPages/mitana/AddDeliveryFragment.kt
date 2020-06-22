@@ -127,6 +127,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             R.id.addDeliverysCanChip2 -> viewModel.setCan(1)
             R.id.addDeliverysCanChip3 -> viewModel.setCan(0)
             R.id.addDeliveryDoneBtn -> {
+                if (formIsValid() && viewModel.saleItemsList.isEmpty())
+                    viewModel.addSaleItemToList(getTempSaleItem())
                 collectEmptyBarrels()
                 viewModel.setMoney(vBinding.addDeliveryMoneyEt.text)
                 viewModel.addDelivery(
@@ -155,7 +157,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
             }
             R.id.addDeliveryAddSaleItemBtn -> {
-                if (isFormValid()) {
+                if (formIsValid()) {
                     viewModel.addSaleItemToList(getTempSaleItem())
                     resetForm()
                 } else
@@ -191,7 +193,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             })
     }
 
-    fun isFormValid(): Boolean {
+    fun formIsValid(): Boolean {
         return vBinding.addDeliveryCanCountControl.amount > 0 && viewModel.selectedCan != null
     }
 
@@ -202,7 +204,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     fun checkForm() {
-        vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (isFormValid())
+        vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (formIsValid())
             ColorStateList.valueOf(Color.GREEN)
         else
             ColorStateList.valueOf(Color.RED)
