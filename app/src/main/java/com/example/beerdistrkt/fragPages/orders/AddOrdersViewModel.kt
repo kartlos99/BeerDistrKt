@@ -8,6 +8,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.launch
 import java.util.*
@@ -35,6 +36,12 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
     val orderDayLiveData: LiveData<String>
         get() = _orderDayLiveData
 
+    val orderItemDuplicateLiveData = MutableLiveData<Boolean>(false)
+
+    private val _addOrderLiveData = MutableLiveData<ApiResponseState<String>>()
+    val addOrderLiveData: LiveData<ApiResponseState<String>>
+        get() = _addOrderLiveData
+
     init {
         Log.d("addOrderVM", clientID.toString())
         getClient()
@@ -58,8 +65,14 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
     }
 
     fun addOrderItemToList(item: TempBeerItemModel) {
-        orderItemsList.add(item)
-        orderItemsLiveData.value = orderItemsList
+        if (orderItemsList.any {
+                it.beer.id == item.beer.id && it.canType.id == item.canType.id
+            })
+            orderItemDuplicateLiveData.value = true
+        else {
+            orderItemsList.add(item)
+            orderItemsLiveData.value = orderItemsList
+        }
     }
 
     fun removeOrderItemFromList(item: TempBeerItemModel) {
@@ -80,11 +93,14 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
             orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0") }
         )
 
+        _addOrderLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().addOrder(orderRequestModel),
             successWithData = {
                 Log.d("itemCount", it)
-            }
+                _addOrderLiveData.value = ApiResponseState.Success(it)
+            },
+            finally = { _addOrderLiveData.value = ApiResponseState.Loading(false) }
         )
     }
 

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.TempBeerItemModel
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.example.beerdistrkt.utils.inflate
@@ -108,6 +110,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             beerAdapter.setData(it)
         })
         viewModel.saleItemsLiveData.observe(viewLifecycleOwner, Observer {
+            resetForm()
             vBinding.addDeliveryTempContainer.removeAllViews()
             it.forEach { saleItem ->
                 vBinding.addDeliveryTempContainer.addView(
@@ -117,6 +120,20 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         })
         viewModel.saleDayLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.addDeliveryDateBtn.text = it
+        })
+        viewModel.saleItemDuplicateLiveData.observe(viewLifecycleOwner, Observer {
+            if (it){
+                showToast(R.string.already_in_list)
+                viewModel.saleItemDuplicateLiveData.value = false
+            }
+        })
+        viewModel.addSaleLiveData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is ApiResponseState.Success -> {
+                    showToast(it.data)
+                    findNavController().navigateUp()
+                }
+            }
         })
     }
 
@@ -157,11 +174,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
             }
             R.id.addDeliveryAddSaleItemBtn -> {
-                if (formIsValid()) {
+                if (formIsValid())
                     viewModel.addSaleItemToList(getTempSaleItem())
-                    resetForm()
-                } else
-                    showToast("no data")
+                else
+                    showToast(R.string.fill_data)
             }
         }
 

@@ -101,7 +101,7 @@
     <string name="fields_request2">ორივე ველი აუცილებელია</string>
     <string name="feel_empty_fields">შეავსეთ ცარიელი ველები!</string>
     <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
-    <string name="alredy_in_list">ეს ლუდის სახეობა უკვე დამატებულია სიაში!</string>
+    <string name="already_in_list">ეს ლუდის სახეობა ამ კასრთან უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
     <string name="xarjebi">ხარჯები</string>
     <string name="xelze_tanxa">ხელზე თანხა</string>
@@ -139,4 +139,7 @@
     <string name="canceled">გაუქმებული</string>
     <string name="deleted">წაშლილი</string>
     <string name="auto_created">ავტომატური</string>
+
+    <string name="fill_data">შეავსეთ მონაცემები</string>
+
 </resources>

@@ -14,6 +14,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.HorizontalScrollView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.TempBeerItemModel
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.example.beerdistrkt.utils.inflate
@@ -87,11 +89,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             vBinding.addOrderBeerRecycler.smoothScrollToPosition(beerPos)
         }
         vBinding.addOrderAddItemBtn.setOnClickListener {
-            if (formIsValid()) {
+            if (formIsValid())
                 viewModel.addOrderItemToList(getTempOrderItem())
-                resetForm()
-            } else
-                showToast("no data")
+            else
+                showToast(R.string.fill_data)
         }
         vBinding.addOrdersCanChip0.setOnClickListener(this)
         vBinding.addOrdersCanChip1.setOnClickListener(this)
@@ -154,10 +155,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
-            addOrderClientInfo.text = "${it.obieqti.dasaxeleba} N:${it.obieqti.id ?: 0}"
+            addOrderClientInfo.text = "${it.obieqti.dasaxeleba}"
             vBinding.addOrderCheckBox.isChecked = it.obieqti.chek == "1"
         })
         viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer {
+            resetForm()
             addOrderItemsContainer.removeAllViews()
             it.forEach { orderItem ->
                 addOrderItemsContainer.addView(
@@ -167,6 +169,20 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         })
         viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.addOrderOrderDate.text = it
+        })
+        viewModel.orderItemDuplicateLiveData.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showToast(R.string.already_in_list)
+                viewModel.orderItemDuplicateLiveData.value = false
+            }
+        })
+        viewModel.addOrderLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResponseState.Success -> {
+                    showToast(it.data)
+                    findNavController().navigateUp()
+                }
+            }
         })
     }
 

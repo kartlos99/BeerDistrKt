@@ -9,6 +9,7 @@ import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.launch
 import java.util.*
@@ -33,12 +34,18 @@ class AddDeliveryViewModel(
     val saleDayLiveData: LiveData<String>
         get() = _saleDayLiveData
 
+    private val _addSaleLiveData = MutableLiveData<ApiResponseState<String>>()
+    val addSaleLiveData: LiveData<ApiResponseState<String>>
+        get() = _addSaleLiveData
+
     val saleItemsList = mutableListOf<TempBeerItemModel>()
     val saleItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
 
     val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
     var moneyOut: SaleRequestModel.MoneyOutItem? = null
     var isGift = false
+
+    val saleItemDuplicateLiveData = MutableLiveData<Boolean>(false)
 
     init {
         // send getDebt request: TODO
@@ -103,15 +110,18 @@ class AddDeliveryViewModel(
 
         Log.d(TAG, deliveryDataComment)
 
+        _addSaleLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().addSales(saleRequestModel),
             successWithData = {
                 Log.d(TAG, it)
+                _addSaleLiveData.value = ApiResponseState.Success(it)
             },
             finally = {
                 Log.d(TAG, "finaly" + it.toString())
                 moneyOut = null
                 barrelOutItems.clear()
+                _addSaleLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
@@ -127,8 +137,15 @@ class AddDeliveryViewModel(
     }
 
     fun addSaleItemToList(saleItem: TempBeerItemModel) {
-        saleItemsList.add(saleItem)
-        saleItemsLiveData.value = saleItemsList
+        if (saleItemsList.any {
+                it.beer.id == saleItem.beer.id && it.canType.id == saleItem.canType.id
+            })
+            saleItemDuplicateLiveData.value = true
+        else {
+            saleItemsList.add(saleItem)
+            saleItemsLiveData.value = saleItemsList
+        }
+
     }
 
     fun addBarrelToList(barrelType: Int, count: Int) {
