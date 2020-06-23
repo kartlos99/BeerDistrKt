@@ -155,6 +155,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
             addOrderClientInfo.text = "${it.obieqti.dasaxeleba} N:${it.obieqti.id ?: 0}"
+            vBinding.addOrderCheckBox.isChecked = it.obieqti.chek == "1"
         })
         viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer {
             addOrderItemsContainer.removeAllViews()

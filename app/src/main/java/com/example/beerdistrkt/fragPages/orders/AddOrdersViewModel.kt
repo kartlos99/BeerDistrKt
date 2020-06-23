@@ -72,7 +72,7 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
         val orderRequestModel = OrderRequestModel(
             0,
             dateFormatDash.format(orderDateCalendar.time),
-            1,
+            OrderStatus.ACTIVE.data,
             selectedDistributorID,
             clientID,
             comment,

@@ -24,12 +24,14 @@ class OrderItemView @JvmOverloads constructor(
         orderItems: List<Order.Item>,
         salesOfThisBeer: MutableList<Order.Sales>? = null
     ) {
+        val thisBeer = if (orderItems.isNotEmpty())
+            orderItems[0].beer
+        else
+            salesOfThisBeer!![0].beer
 
-        orderItemNameTv.text = orderItems[0].beer.dasaxeleba ?: ""
+        orderItemNameTv.text = thisBeer.dasaxeleba ?: ""
         orderItemNameUnderline.setBackgroundColor(
-            Color.parseColor(
-                orderItems[0].beer.displayColor ?: "#444"
-            )
+            Color.parseColor(thisBeer.displayColor ?: "#444")
         )
         orderItems.forEach {
             val saleItem = salesOfThisBeer?.find { sItem ->

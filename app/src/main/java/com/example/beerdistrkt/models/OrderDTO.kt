@@ -49,10 +49,12 @@ data class OrderDTO(
         val canTypeID: Int,
         val count: Int
     ) {
-        fun toPm(): Order.Sales {
+        fun toPm(beerList: List<BeerModel>): Order.Sales {
+            val beer = beerList.find { it.id == beerID } ?: BeerModel()
             return Order.Sales(
                 orderID,
                 beerID,
+                beer,
                 check,
                 canTypeID,
                 count
@@ -69,7 +71,13 @@ data class OrderDTO(
         return Order(
             ID,
             orderDate,
-            orderStatusID,
+            when(orderStatusID){
+                1 -> OrderStatus.ACTIVE
+                3 -> OrderStatus.CANCELED
+                4 -> OrderStatus.DELETED
+                5 -> OrderStatus.AUTO_CREATED
+                else -> OrderStatus.COMPLETED
+            },
             distributorID,
             clientID,
             client,
@@ -80,7 +88,7 @@ data class OrderDTO(
                 it.toPm(beerList)
             },
             sales.map {
-                it.toPm()
+                it.toPm(beerList)
             }
         )
 

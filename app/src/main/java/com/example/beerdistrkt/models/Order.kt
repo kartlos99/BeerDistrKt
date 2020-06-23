@@ -1,9 +1,12 @@
 package com.example.beerdistrkt.models
 
+import com.example.beerdistrkt.R
+import com.squareup.moshi.Json
+
 class Order(
     val ID: Int,
     val orderDate: String,
-    val orderStatusID: Int,
+    val orderStatus: OrderStatus,
     val distributorID: Int,
     val clientID: Int,
     val client: Obieqti,
@@ -28,8 +31,26 @@ class Order(
     data class Sales(
         val orderID: Int,
         val beerID: Int,
+        val beer: BeerModel,
         val check: Int,
         val canTypeID: Int,
         val count: Int
     )
+}
+
+enum class OrderStatus(val textRes: Int, val data: Int){
+    @Json(name = "order_active")
+    ACTIVE(R.string.active, 1),
+
+    @Json(name = "order_completed")
+    COMPLETED(R.string.completed, 2),
+
+    @Json(name = "order_canceled")
+    CANCELED(R.string.canceled, 3),
+
+    @Json(name = "order_deleted")
+    DELETED(R.string.deleted, 4),
+
+    @Json(name = "order_auto_created")
+    AUTO_CREATED(R.string.auto_created, 5)
 }
