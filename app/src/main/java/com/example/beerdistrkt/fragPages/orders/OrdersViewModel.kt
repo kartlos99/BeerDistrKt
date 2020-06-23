@@ -33,7 +33,6 @@ class OrdersViewModel : BaseViewModel() {
         get() = _orderDayLiveData
 
     init {
-        getOrders(dateFormatDash.format(orderDateCalendar.time))
         clientsLiveData.observeForever {
             clients = it
         }
@@ -45,11 +44,11 @@ class OrdersViewModel : BaseViewModel() {
     }
 
 
-    private fun getOrders(date: String) {
-        Log.d(TAG, date)
+    fun getOrders() {
+
         ordersLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
-            ApeniApiService.getInstance().getOrders(date),
+            ApeniApiService.getInstance().getOrders(dateFormatDash.format(orderDateCalendar.time)),
             successWithData = {
                 ordersLiveData.value = ApiResponseState.Success(
                     it.map { orderDTO -> orderDTO.toPm(clients, beers) }
@@ -67,7 +66,7 @@ class OrdersViewModel : BaseViewModel() {
     fun onDateSelected(year: Int, month: Int, day: Int) {
         orderDateCalendar.set(year, month, day)
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
-        getOrders(dateFormatDash.format(orderDateCalendar.time))
+        getOrders()
     }
 
 

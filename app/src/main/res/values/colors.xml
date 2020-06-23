@@ -30,4 +30,5 @@
     <color name="red_delete_bkg">#FDDDDD</color>
     <color name="completed_green">#26C372</color>
     <color name="in_complete_order">#F81A1A</color>
+    <color name="warning">#FAD82F</color>
 </resources>

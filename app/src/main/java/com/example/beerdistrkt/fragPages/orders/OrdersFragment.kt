@@ -122,6 +122,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         Log.d("_KA", "onActivityCreated")
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getOrders()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("_KA", "onViewCreated")

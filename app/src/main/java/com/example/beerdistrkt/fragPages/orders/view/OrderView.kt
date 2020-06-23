@@ -29,9 +29,12 @@ class OrderView  @JvmOverloads constructor(
         val itemList = order.items.groupBy {
             it.beerID
         }
+        val salesList = order.sales.groupBy {
+            it.beerID
+        }
 
         orderItemList.layoutManager = LinearLayoutManager(context)
-        orderItemList.adapter = OrderItemAdapter(itemList.toSortedMap())
+        orderItemList.adapter = OrderItemAdapter(itemList.toSortedMap(), salesList)
     }
 
     override fun onClick(v: View?) {
