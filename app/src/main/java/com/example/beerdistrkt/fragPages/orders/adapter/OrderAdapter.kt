@@ -7,7 +7,7 @@ import com.example.beerdistrkt.fragPages.orders.view.OrderView
 import com.example.beerdistrkt.models.Order
 
 class OrderAdapter(
-    private var orders: List<Order> = emptyList()
+    private var orders: MutableList<Order> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -23,8 +23,14 @@ class OrderAdapter(
     }
 
     fun setData(orders: List<Order>){
-        this.orders = orders
+        this.orders.clear()
+        this.orders.addAll(orders)
         notifyDataSetChanged()
+    }
+
+    fun removeItem(index: Int){
+        orders.removeAt(index)
+        notifyItemRemoved(index)
     }
 
     private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

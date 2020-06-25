@@ -62,7 +62,12 @@ data class OrderDTO(
         }
     }
 
-    fun toPm(clients: List<Obieqti>, beerList: List<BeerModel>): Order {
+    fun toPm(
+        clients: List<Obieqti>,
+        beerList: List<BeerModel>,
+        onDeleteClick: (Order) -> Unit,
+        onEditClick: (Order) -> Unit
+    ): Order {
 
         val client = clients.find {
             it.id ?: 0 == clientID
@@ -71,7 +76,7 @@ data class OrderDTO(
         return Order(
             ID,
             orderDate,
-            when(orderStatusID){
+            when (orderStatusID) {
                 1 -> OrderStatus.ACTIVE
                 3 -> OrderStatus.CANCELED
                 4 -> OrderStatus.DELETED
@@ -89,8 +94,10 @@ data class OrderDTO(
             },
             sales.map {
                 it.toPm(beerList)
-            }
-        )
+            },
+            onDeleteClick,
+            onEditClick
+            )
 
     }
 }

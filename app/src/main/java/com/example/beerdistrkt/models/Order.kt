@@ -14,8 +14,18 @@ class Order(
     val modifyDate: String,
     val modifyUserID: Int,
     val items: List<Item>,
-    val sales: List<Sales>
+    val sales: List<Sales>,
+    private val _onDeleteClick: (Order) -> Unit,
+    private val _onEditClick: (Order) -> Unit
 ) {
+
+    val onDeleteClick = {
+        _onDeleteClick(this)
+    }
+    val onEditClick = {
+        _onEditClick(this)
+    }
+
     data class Item(
         val ID: Int,
         val orderID: Int,

@@ -1,5 +1,6 @@
 package com.example.beerdistrkt
 
+import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
@@ -118,6 +119,22 @@ inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creato
         ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
 }
 
+fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negativeText: Int, theme: Int? = null, onClick: () -> Unit?) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    builder
+        .setMessage(text)
+        .setPositiveButton(positiveText) { dialog, _ ->
+            onClick.invoke()
+            dialog?.dismiss()
+        }.setNegativeButton(negativeText) { dialog, _ ->
+            dialog?.dismiss()
+        }.show()
+}
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager =

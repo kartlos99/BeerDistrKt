@@ -11,9 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.visibleIf
@@ -118,6 +120,28 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         })
         viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.setDateBtn.text = it
+        })
+        viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                context?.showAskingDialog(
+                    null,
+                    R.string.confirm_delete_order,
+                    R.string.yes,
+                    R.string.no, R.style.ThemeOverlay_MaterialComponents_Dialog
+                ) {
+                    viewModel.deleteOrder(it)
+                }
+                viewModel.askForOrderDeleteLiveData.value = null
+            }
+        })
+        viewModel.orderDeleteLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResponseState.Success -> {
+                    showToast(R.string.msg_record_deleted)
+                    ordersAdapter.removeItem(it.data)
+                    viewModel.orderDeleteLiveData.value = ApiResponseState.Sleep
+                }
+            }
         })
         Log.d("_KA", "onActivityCreated")
     }

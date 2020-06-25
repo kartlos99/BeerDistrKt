@@ -141,5 +141,8 @@
     <string name="auto_created">ავტომატური</string>
 
     <string name="fill_data">შეავსეთ მონაცემები</string>
+    <string name="confirm_delete_order">ნამდვილად გსურთ შეკვეთის წაშლა?</string>
+    <string name="yes">დიახ</string>
+    <string name="no">არა</string>
 
 </resources>

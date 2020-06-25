@@ -51,7 +51,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
 
-        viewModel.usersLiveData.observe(this, Observer {
+        viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
             it.forEach {user ->
                 Log.d("___User___", user.toString())
             }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
+import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -32,6 +33,11 @@ class OrdersViewModel : BaseViewModel() {
     val orderDayLiveData: LiveData<String>
         get() = _orderDayLiveData
 
+    val askForOrderDeleteLiveData = MutableLiveData<Order?>(null)
+    val orderDeleteLiveData = MutableLiveData<ApiResponseState<Int>>()
+
+    val listOfOrders: MutableList<Order> = mutableListOf()
+
     init {
         clientsLiveData.observeForever {
             clients = it
@@ -50,9 +56,18 @@ class OrdersViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getOrders(dateFormatDash.format(orderDateCalendar.time)),
             successWithData = {
-                ordersLiveData.value = ApiResponseState.Success(
-                    it.map { orderDTO -> orderDTO.toPm(clients, beers) }
-                )
+                listOfOrders.clear()
+                listOfOrders.addAll(it.map { orderDTO ->
+                    orderDTO.toPm(
+                        clients,
+                        beers,
+                        onDeleteClick = {order ->
+                            askForOrderDeleteLiveData.value = order
+                        },
+                        onEditClick = ::editOrder
+                    )
+                })
+                ordersLiveData.value = ApiResponseState.Success(listOfOrders)
             },
             failure = {
                 Log.d("getOrder", "failed: ${it.message}")
@@ -69,6 +84,21 @@ class OrdersViewModel : BaseViewModel() {
         getOrders()
     }
 
+    fun deleteOrder(order: Order) {
+        Log.d("onDelete", order.toString())
+        sendRequest(
+            ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID)),
+            success = {
+                val index = listOfOrders.indexOf(order)
+                listOfOrders.remove(order)
+                orderDeleteLiveData.value = ApiResponseState.Success(index)
+            }
+        )
+    }
+
+    private fun editOrder(order: Order) {
+        Log.d("onEdit", order.toString())
+    }
 
     companion object {
         const val TAG = "ordersVM"

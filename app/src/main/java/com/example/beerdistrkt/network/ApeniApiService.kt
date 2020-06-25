@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
@@ -20,7 +21,7 @@ interface ApeniApiService {
     companion object {
         private var instance: ApeniApiService? = null
 
-//        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
+        //        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
         private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
 
         fun initialize(context: Context) {
@@ -60,10 +61,16 @@ interface ApeniApiService {
     fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
     @GET("get_amonaweri_m.php")
-    fun getAmonaweriM(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<DataResponse<List<Amonaweri>>>
+    fun getAmonaweriM(
+        @Query("tarigi") tarigi: String,
+        @Query("objID") objID: Int
+    ): Call<DataResponse<List<Amonaweri>>>
 
     @GET("get_amonaweri_k.php")
-    fun getAmonaweriK(@Query("tarigi") tarigi: String, @Query("objID") objID: Int): Call<DataResponse<List<Amonaweri>>>
+    fun getAmonaweriK(
+        @Query("tarigi") tarigi: String,
+        @Query("objID") objID: Int
+    ): Call<DataResponse<List<Amonaweri>>>
 
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<DataResponse<List<BeerModel>>>
@@ -72,7 +79,10 @@ interface ApeniApiService {
     fun getCanList(): Call<DataResponse<List<CanModel>>>
 
     @GET("view_sale_day_v2.php")
-    fun getDayInfo(@Query("tarigi") tarigi: String, @Query("distrid") distrid: Int): Call<DataResponse<RealizationDay>>
+    fun getDayInfo(
+        @Query("tarigi") tarigi: String,
+        @Query("distrid") distrid: Int
+    ): Call<DataResponse<RealizationDay>>
 
     @POST("del_record_v2.php")
     fun deleteRecord(@Body del: DeleteRequest): Call<DataResponse<Any>>
@@ -93,4 +103,10 @@ interface ApeniApiService {
 
     @POST("sales/add.php")
     fun addSales(@Body order: SaleRequestModel): Call<DataResponse<String>>
+
+    @GET("order/getByID.php")
+    fun getOrderByID(@Query("orderID") orderID: Int): Call<DataResponse<List<OrderDTO>>>
+
+    @POST("order/delete.php")
+    fun deleteOrder(@Body deleteRequestModel: OrderDeleteRequestModel): Call<DataResponse<Any>>
 }
