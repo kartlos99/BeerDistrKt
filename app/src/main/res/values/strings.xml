@@ -144,5 +144,7 @@
     <string name="confirm_delete_order">ნამდვილად გსურთ შეკვეთის წაშლა?</string>
     <string name="yes">დიახ</string>
     <string name="no">არა</string>
+    <string name="status">სტატუსი:</string>
+    <string name="cannot_edit">არააქტიური შეკვეთები არ რედაქტირდება!</string>
 
 </resources>

@@ -109,4 +109,7 @@ interface ApeniApiService {
 
     @POST("order/delete.php")
     fun deleteOrder(@Body deleteRequestModel: OrderDeleteRequestModel): Call<DataResponse<Any>>
+
+    @POST("order/update.php")
+    fun updateOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
 }

@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolBar)
 
         val navController = this.findNavController(R.id.mainNavHostFragment)
+        navController.setGraph(R.navigation.frag_navigation)
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         NavigationUI.setupWithNavController(vBinding.navView, navController)
 

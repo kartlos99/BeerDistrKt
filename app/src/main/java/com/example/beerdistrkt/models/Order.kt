@@ -3,7 +3,7 @@ package com.example.beerdistrkt.models
 import com.example.beerdistrkt.R
 import com.squareup.moshi.Json
 
-class Order(
+data class Order(
     val ID: Int,
     val orderDate: String,
     val orderStatus: OrderStatus,
@@ -36,7 +36,25 @@ class Order(
         val check: Int,
         val modifyDate: String,
         val modifyUserID: Int
-    )
+    ) {
+
+        fun toTempBeerItemModel(
+            barrels: List<CanModel>,
+            onRemove: (beerItem: TempBeerItemModel) -> Unit,
+            onEdit: (beerItem: TempBeerItemModel) -> Unit
+        ): TempBeerItemModel {
+            val canType = barrels.find { it.id == canTypeID }
+            return TempBeerItemModel(
+                ID = orderID,
+                beer = beer,
+                canType = canType!!,
+                count = count,
+                orderItemID = ID,
+                onRemoveClick = onRemove,
+                onEditClick = onEdit
+            )
+        }
+    }
 
     data class Sales(
         val orderID: Int,
@@ -46,9 +64,11 @@ class Order(
         val canTypeID: Int,
         val count: Int
     )
+
+    fun isChecked() = items.any { it.check == 1 }
 }
 
-enum class OrderStatus(val textRes: Int, val data: Int){
+enum class OrderStatus(val textRes: Int, val data: Int) {
     @Json(name = "order_active")
     ACTIVE(R.string.active, 1),
 

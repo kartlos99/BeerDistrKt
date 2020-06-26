@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_ordersFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_addOrdersFragment"
+            app:destination="@id/addOrdersFragment" />
     </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
@@ -143,5 +146,9 @@
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
+        <argument
+            android:name="orderID"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

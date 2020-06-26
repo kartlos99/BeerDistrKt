@@ -34,6 +34,9 @@ class TempBeerRowView @JvmOverloads constructor(
         tempBeerRemoveBtn.setOnClickListener {
             data.onRemoveClick.invoke(data)
         }
+        tempBeerEditBtn.setOnClickListener {
+            data.onEditClick?.invoke(data)
+        }
     }
 
 }

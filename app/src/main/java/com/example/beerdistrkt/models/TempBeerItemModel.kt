@@ -10,13 +10,13 @@ data class TempBeerItemModel(
     val count: Int,
     val onRemoveClick: (beerItem: TempBeerItemModel) -> Unit,
     val orderItemID: Int = 0,
-    val onEditClick: (() -> Unit)? = null
+    val onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 ) {
 
     fun toRequestOrderItem(orderCheck: Boolean, userID: String): OrderRequestModel.Item {
         return OrderRequestModel.Item(
-            ID = ID,
-            orderID = orderItemID,
+            ID = orderItemID,
+            orderID = ID,
             beerID = beer.id,
             canTypeID = canType.id,
             count = count,

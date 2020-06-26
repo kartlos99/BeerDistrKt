@@ -15,6 +15,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -53,7 +54,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             )
         }
 
-        vBinding.ordersRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        vBinding.ordersRecycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         vBinding.ordersRecycler.adapter = ordersAdapter
 
         /*val beerList: ArrayList<String> = ArrayList<String>()
@@ -113,7 +115,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
-            when(it){
+            when (it) {
                 is ApiResponseState.Success -> ordersAdapter.setData(it.data)
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
             }
@@ -141,6 +143,19 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                     ordersAdapter.removeItem(it.data)
                     viewModel.orderDeleteLiveData.value = ApiResponseState.Sleep
                 }
+            }
+        })
+        viewModel.editOrderLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                if (it.orderStatus == OrderStatus.ACTIVE) {
+                    val actionOrderEdit =
+                        OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(it.clientID)
+                    actionOrderEdit.orderID = it.ID
+                    vBinding.root.findNavController().navigate(actionOrderEdit)
+                } else {
+                    showToast(R.string.cannot_edit)
+                }
+                viewModel.editOrderLiveData.value = null
             }
         })
         Log.d("_KA", "onActivityCreated")

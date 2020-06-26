@@ -24,11 +24,10 @@ import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
-import com.example.beerdistrkt.utils.SnapOnScrollListener
-import com.example.beerdistrkt.utils.inflate
+import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
 import kotlinx.android.synthetic.main.add_orders_fragment.*
@@ -57,6 +56,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         val args = AddOrdersFragmentArgs.fromBundle(arguments ?: Bundle())
         args.clientObjectID
     }
+    private val orderID by lazy {
+        val args = AddOrdersFragmentArgs.fromBundle(arguments ?: Bundle())
+        args.orderID
+    }
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onOrderDateSelected(year, month, day)
@@ -77,6 +80,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+
+        if (orderID > 0) {
+            viewModel.getOrder(orderID)
+        }
+        vBinding.addOrderStatusGroup.visibleIf(orderID > 0)
 
         vBinding.btnBeerLeftImg.setOnClickListener {
             beerPos =
@@ -118,6 +126,15 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
         vBinding.addOrderDistributorSpinner.adapter = userAdapter
         vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
+
+        vBinding.addOrderStatusSpinner.adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.orderStatusList.map {
+                resources.getString(it.textRes)
+            }
+        )
+        vBinding.addOrderStatusSpinner.onItemSelectedListener = this
 
         vBinding.addOrderCansScroll.postDelayed(Runnable {
             vBinding.addOrderCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
@@ -184,6 +201,47 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 }
             }
         })
+        viewModel.getOrderLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                fillOrderForm(it)
+                viewModel.getOrderLiveData.value = null
+            }
+        })
+        viewModel.orderItemEditLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                fillOrderItemForm(it)
+
+                viewModel.orderItemEditLiveData.value = null
+            }
+        })
+    }
+
+    private fun fillOrderForm(order: Order) {
+        addOrderClientInfo.text = order.client.dasaxeleba
+        vBinding.addOrderCheckBox.isChecked = order.isChecked()
+        vBinding.addOrderComment.setText(order.comment)
+        vBinding.addOrderOrderDate.text = order.orderDate
+        vBinding.addOrderDistributorSpinner.setSelection(
+            viewModel.usersList.map { it.id }.indexOf(order.distributorID.toString())
+        )
+        vBinding.addOrderStatusSpinner.setSelection(
+            viewModel.orderStatusList.indexOf(order.orderStatus)
+        )
+    }
+
+    private fun fillOrderItemForm(orderItem: TempBeerItemModel) {
+        beerPos = viewModel.beerList.indexOf(orderItem.beer)
+        vBinding.addOrderBeerRecycler.smoothScrollToPosition(beerPos)
+        vBinding.addOrdersChipGr.clearCheck()
+        viewModel.selectedCan = orderItem.canType
+        when (orderItem.canType.id) {
+            1 -> vBinding.addOrdersCanChip3.isChecked = true
+            2 -> vBinding.addOrdersCanChip2.isChecked = true
+            3 -> vBinding.addOrdersCanChip1.isChecked = true
+            4 -> vBinding.addOrdersCanChip0.isChecked = true
+        }
+
+        vBinding.addOrderCanCountControl.amount = orderItem.count
     }
 
     private fun initBeerRecycler() {
@@ -261,10 +319,19 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             R.id.addOrderDoneBtn -> {
                 if (formIsValid() && viewModel.orderItemsList.isEmpty())
                     viewModel.addOrderItemToList(getTempOrderItem())
-                viewModel.addOrder(
-                    vBinding.addOrderComment.text.toString(),
-                    vBinding.addOrderCheckBox.isChecked
-                )
+                if (viewModel.orderItemsList.isNotEmpty()) {
+                    if (orderID > 0)
+                        viewModel.editOrder(
+                            vBinding.addOrderComment.text.toString(),
+                            vBinding.addOrderCheckBox.isChecked
+                        )
+                    else
+                        viewModel.addOrder(
+                            vBinding.addOrderComment.text.toString(),
+                            vBinding.addOrderCheckBox.isChecked
+                        )
+                } else
+                    showToast(R.string.fill_data)
             }
             R.id.addOrderOrderDate -> {
                 val datePickerDialog = DatePickerDialog(
@@ -286,6 +353,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+        when (parent?.id) {
+            R.id.addOrderDistributorSpinner ->
+                viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+            R.id.addOrderStatusSpinner ->
+                viewModel.selectedStatus = viewModel.orderStatusList[position]
+        }
     }
 }

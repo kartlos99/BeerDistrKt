@@ -35,6 +35,7 @@ class OrdersViewModel : BaseViewModel() {
 
     val askForOrderDeleteLiveData = MutableLiveData<Order?>(null)
     val orderDeleteLiveData = MutableLiveData<ApiResponseState<Int>>()
+    val editOrderLiveData = MutableLiveData<Order?>(null)
 
     val listOfOrders: MutableList<Order> = mutableListOf()
 
@@ -64,7 +65,9 @@ class OrdersViewModel : BaseViewModel() {
                         onDeleteClick = {order ->
                             askForOrderDeleteLiveData.value = order
                         },
-                        onEditClick = ::editOrder
+                        onEditClick = {order ->
+                            editOrderLiveData.value = order
+                        }
                     )
                 })
                 ordersLiveData.value = ApiResponseState.Success(listOfOrders)

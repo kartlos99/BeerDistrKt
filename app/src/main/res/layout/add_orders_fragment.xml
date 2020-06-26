@@ -112,9 +112,9 @@
                         android:id="@+id/addOrderCansScroll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constrainedWidth="true"
                         android:scrollbarStyle="insideOverlay"
                         android:scrollbars="none"
+                        app:layout_constrainedWidth="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/addOrderCanTypeTv">
@@ -246,12 +246,13 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/addOrderOrderDate"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/gray_light"
                 android:drawableEnd="@drawable/calendar_icon"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
                 app:layout_constraintTop_toBottomOf="@+id/addOrderDistributorSpinner" />
 
             <TextView
@@ -304,6 +305,39 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
 
+            <TextView
+                android:id="@+id/addOrderStatusTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/status"
+                android:textAlignment="gravity"
+                app:layout_constraintBottom_toBottomOf="@+id/addOrderStatusSpinner"
+                app:layout_constraintEnd_toStartOf="@+id/addOrderStatusSpinner"
+                app:layout_constraintTop_toTopOf="@+id/addOrderStatusSpinner" />
+
+            <Spinner
+                android:id="@+id/addOrderStatusSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+
+                android:background="@drawable/bkg_rounded_white_r8"
+                android:backgroundTint="@color/gray_light"
+                android:elevation="@dimen/gr_size_2"
+                android:minHeight="@dimen/gr_size_36"
+                android:minWidth="@dimen/gr_size_16"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="@id/addOrderDistributorSpinner"
+                app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderOrderDate" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addOrderStatusGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="addOrderStatusTv, addOrderStatusSpinner" />
+
             <EditText
                 android:id="@+id/addOrderComment"
                 android:layout_width="0dp"
@@ -313,8 +347,9 @@
                 android:inputType="text"
                 android:singleLine="false"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderOrderDate"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderStatusSpinner"
                 tools:ignore="UnusedAttribute" />
 
             <androidx.appcompat.widget.AppCompatButton
