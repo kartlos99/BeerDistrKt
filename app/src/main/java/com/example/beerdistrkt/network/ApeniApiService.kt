@@ -112,4 +112,7 @@ interface ApeniApiService {
 
     @POST("order/update.php")
     fun updateOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
+
+    @GET("order/getLastActiveID.php")
+    fun getLastActiveOrderID(@Query("clientID") clientID: Int): Call<DataResponse<Int>>
 }

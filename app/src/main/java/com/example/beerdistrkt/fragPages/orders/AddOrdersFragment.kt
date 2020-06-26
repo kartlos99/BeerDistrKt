@@ -43,7 +43,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     override val viewModel by lazy {
-        getViewModel { AddOrdersViewModel(clientID) }
+        getViewModel { AddOrdersViewModel(clientID, orderID) }
     }
 
     private var beerPos = 0
@@ -81,10 +81,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
 
-        if (orderID > 0) {
-            viewModel.getOrder(orderID)
-        }
-        vBinding.addOrderStatusGroup.visibleIf(orderID > 0)
+        vBinding.addOrderStatusGroup.visibleIf(viewModel.editingOrderID > 0)
 
         vBinding.btnBeerLeftImg.setOnClickListener {
             beerPos =
@@ -227,6 +224,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrderStatusSpinner.setSelection(
             viewModel.orderStatusList.indexOf(order.orderStatus)
         )
+        vBinding.addOrderStatusGroup.visibleIf(viewModel.editingOrderID > 0)
     }
 
     private fun fillOrderItemForm(orderItem: TempBeerItemModel) {
@@ -320,7 +318,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 if (formIsValid() && viewModel.orderItemsList.isEmpty())
                     viewModel.addOrderItemToList(getTempOrderItem())
                 if (viewModel.orderItemsList.isNotEmpty()) {
-                    if (orderID > 0)
+                    if (viewModel.editingOrderID > 0)
                         viewModel.editOrder(
                             vBinding.addOrderComment.text.toString(),
                             vBinding.addOrderCheckBox.isChecked

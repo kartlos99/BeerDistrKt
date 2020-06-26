@@ -13,7 +13,7 @@ import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.launch
 import java.util.*
 
-class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
+class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : BaseViewModel() {
 
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
@@ -49,12 +49,12 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
     private lateinit var clients: List<Obieqti>
 
     val orderItemEditLiveData = MutableLiveData<TempBeerItemModel?>()
-    var editingOrderID = 0
     var editingOrderItemID = -1
 
     init {
         Log.d("addOrderVM", clientID.toString())
-        clientsLiveData.observeForever {  clients = it  }
+        getOrder(editingOrderID)
+        clientsLiveData.observeForever { clients = it }
         getClient()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
     }
@@ -75,11 +75,12 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
             null
     }
 
-    fun addOrderItemsToList(itemsList: List<TempBeerItemModel>){
+    fun addOrderItemsToList(itemsList: List<TempBeerItemModel>) {
         itemsList.forEach {
             orderItemsList.add(it)
         }
-        orderItemsLiveData.value = orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
+        orderItemsLiveData.value =
+            orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
     }
 
     fun addOrderItemToList(item: TempBeerItemModel) {
@@ -93,13 +94,15 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
                     it.orderItemID == editingOrderItemID
                 }
             orderItemsList.add(item)
-            orderItemsLiveData.value = orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
+            orderItemsLiveData.value =
+                orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
         }
     }
 
     fun removeOrderItemFromList(item: TempBeerItemModel) {
         orderItemsList.remove(item)
-        orderItemsLiveData.value = orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
+        orderItemsLiveData.value =
+            orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
     }
 
     fun editOrderItemFromList(item: TempBeerItemModel) {
@@ -159,30 +162,43 @@ class AddOrdersViewModel(private val clientID: Int) : BaseViewModel() {
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
     }
 
-    fun getOrder(id: Int){
-        editingOrderID = id
+    fun getOrder(id: Int) {
+        if (id == 0)
+            getActiveOrderID()
+        else {
+            editingOrderID = id
+            sendRequest(
+                ApeniApiService.getInstance().getOrderByID(id),
+                successWithData = {
+                    Log.d("editingOrder", it.toString())
+                    if (it.isNotEmpty()) {
+
+                        val order = it[0].toPm(clients, beerList, {}, {})
+
+                        getOrderLiveData.value = order
+                        addOrderItemsToList(order.items.map { itm ->
+                            itm.toTempBeerItemModel(
+                                cansList,
+                                onRemove = ::removeOrderItemFromList,
+                                onEdit = ::editOrderItemFromList
+                            )
+                        })
+                        val date = dateFormatDash.parse(order.orderDate)
+                        orderDateCalendar.time = date ?: Date()
+                        _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+                    }
+                },
+                finally = { _addOrderLiveData.value = ApiResponseState.Loading(false) }
+            )
+        }
+    }
+
+    private fun getActiveOrderID() {
         sendRequest(
-            ApeniApiService.getInstance().getOrderByID(id),
+            ApeniApiService.getInstance().getLastActiveOrderID(clientID),
             successWithData = {
-                Log.d("editingOrder", it.toString())
-                if (it.isNotEmpty()){
-
-                    val order = it[0].toPm(clients, beerList, {}, {})
-
-                    getOrderLiveData.value = order
-                    addOrderItemsToList(order.items.map { itm ->
-                        itm.toTempBeerItemModel(
-                            cansList,
-                            onRemove = ::removeOrderItemFromList,
-                            onEdit = ::editOrderItemFromList
-                        )
-                    })
-                    val date = dateFormatDash.parse(order.orderDate)
-                    orderDateCalendar.time = date ?: Date()
-                    _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
-                }
-            },
-            finally = { _addOrderLiveData.value = ApiResponseState.Loading(false) }
+                if (it > 0) getOrder(it)
+            }
         )
     }
 }
