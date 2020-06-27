@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.HorizontalScrollView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -137,6 +138,12 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             vBinding.addOrderCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
         checkForm()
+        (activity as AppCompatActivity).supportActionBar?.title = getString(
+            if (viewModel.editingOrderID > 0)
+                R.string.edit_order
+            else
+                R.string.add_order
+        )
     }
 
     fun getTempOrderItem(): TempBeerItemModel {
@@ -225,6 +232,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             viewModel.orderStatusList.indexOf(order.orderStatus)
         )
         vBinding.addOrderStatusGroup.visibleIf(viewModel.editingOrderID > 0)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_order)
     }
 
     private fun fillOrderItemForm(orderItem: TempBeerItemModel) {

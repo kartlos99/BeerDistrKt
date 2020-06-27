@@ -146,5 +146,8 @@
     <string name="no">არა</string>
     <string name="status">სტატუსი:</string>
     <string name="cannot_edit">არააქტიური შეკვეთები არ რედაქტირდება!</string>
+    <string name="order_main">შეკვეთები</string>
+    <string name="add_order">შეკვეთის დამატება</string>
+    <string name="edit_order">შეკვეთის რედაქტირება</string>
 
 </resources>

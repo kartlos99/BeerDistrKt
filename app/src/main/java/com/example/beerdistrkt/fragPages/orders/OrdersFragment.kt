@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -158,7 +159,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 viewModel.editOrderLiveData.value = null
             }
         })
-        Log.d("_KA", "onActivityCreated")
+        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.order_main)
     }
 
     override fun onResume() {
