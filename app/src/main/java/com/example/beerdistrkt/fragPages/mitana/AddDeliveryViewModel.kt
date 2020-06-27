@@ -55,7 +55,7 @@ class AddDeliveryViewModel(
         clientLiveData.observeForever {
             attachPrices(it.prices)
         }
-        _saleDayLiveData.value = dateFormatDash.format(saleDateCalendar.time)
+        _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
@@ -99,7 +99,7 @@ class AddDeliveryViewModel(
             Session.get().getUserID(),
             sales = saleItemsList.map {
                 it.toRequestSaleItem(
-                    dateFormatDash.format(saleDateCalendar.time),
+                    dateTimeFormat.format(saleDateCalendar.time),
                     orderID,
                     isGift
                 )
@@ -108,7 +108,7 @@ class AddDeliveryViewModel(
             money = moneyOut
         )
 
-        Log.d(TAG, deliveryDataComment)
+        Log.d(TAG, saleRequestModel.toString())
 
         _addSaleLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
@@ -128,7 +128,13 @@ class AddDeliveryViewModel(
 
     fun onSaleDateSelected(year: Int, month: Int, day: Int) {
         saleDateCalendar.set(year, month, day)
-        _saleDayLiveData.value = dateFormatDash.format(saleDateCalendar.time)
+        _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+    }
+
+    fun onSaleTimeSelected(hour: Int, minute: Int) {
+        saleDateCalendar.set(Calendar.HOUR_OF_DAY, hour)
+        saleDateCalendar.set(Calendar.MINUTE, minute)
+        _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
     }
 
     fun removeSaleItemFromList(saleItem: TempBeerItemModel) {
@@ -152,7 +158,7 @@ class AddDeliveryViewModel(
         barrelOutItems.add(
             SaleRequestModel.BarrelOutItem(
                 0,
-                dateFormatDash.format(saleDateCalendar.time),
+                dateTimeFormat.format(saleDateCalendar.time),
                 barrelType,
                 count
             )
@@ -170,7 +176,7 @@ class AddDeliveryViewModel(
         if (!text.isNullOrEmpty())
             moneyOut = SaleRequestModel.MoneyOutItem(
                 0,
-                dateFormatDash.format(saleDateCalendar.time),
+                dateTimeFormat.format(saleDateCalendar.time),
                 text.toString().toDouble()
             )
     }

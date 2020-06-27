@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.mitana
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -53,6 +54,19 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     private var dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
         viewModel.onSaleDateSelected(year, month, day)
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            timeSetListener,
+            viewModel.saleDateCalendar.get(Calendar.HOUR_OF_DAY),
+            viewModel.saleDateCalendar.get(Calendar.MINUTE),
+            true
+        )
+        timePickerDialog.setCancelable(false)
+        timePickerDialog.show()
+    }
+
+    private val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        viewModel.onSaleTimeSelected(hourOfDay, minute)
     }
 
     private var beerPos = 0
@@ -122,13 +136,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryDateBtn.text = it
         })
         viewModel.saleItemDuplicateLiveData.observe(viewLifecycleOwner, Observer {
-            if (it){
+            if (it) {
                 showToast(R.string.already_in_list)
                 viewModel.saleItemDuplicateLiveData.value = false
             }
         })
         viewModel.addSaleLiveData.observe(viewLifecycleOwner, Observer {
-            when(it){
+            when (it) {
                 is ApiResponseState.Success -> {
                     showToast(it.data)
                     findNavController().navigateUp()

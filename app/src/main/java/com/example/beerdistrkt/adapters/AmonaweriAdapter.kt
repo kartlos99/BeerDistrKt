@@ -90,11 +90,11 @@ class AmonaweriAdapter(
             }
             viewHolder.t_p4?.setText(MyUtil.floatToSmartStr(currItem.balance))
         }
-        viewHolder.t_comment?.text = currItem.comment
+        viewHolder.t_comment?.text = currItem.comment ?: ""
         if (grouped) {
             viewHolder.t_comment!!.visibility = View.GONE
         } else {
-            if (currItem.comment!!.isEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            if (currItem.comment.isNullOrEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 viewHolder.t_p3!!.setTextColor(Color.BLACK)
                 viewHolder.t_p2!!.setTextColor(Color.BLACK)
             } else { //                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_comment_icon);

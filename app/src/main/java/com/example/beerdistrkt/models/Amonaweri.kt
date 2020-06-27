@@ -8,7 +8,7 @@ data class Amonaweri(
     @Json(name = "dt")
     var tarigi: String = "",
 
-    var comment: String = "",
+    var comment: String? = "",
     var k_in: Float = 0f,
     var k_out: Float = 0f,
 
