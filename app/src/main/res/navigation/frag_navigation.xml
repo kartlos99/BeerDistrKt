@@ -124,6 +124,9 @@
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_amonaweriFragment_to_addDeliveryFragment"
+            app:destination="@id/addDeliveryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
@@ -135,6 +138,14 @@
             app:argType="integer" />
         <argument
             android:name="orderID"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="operacia"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="recordID"
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>

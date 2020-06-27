@@ -60,6 +60,13 @@
                 <!--                    app:layout_constraintRight_toRightOf="parent"-->
                 <!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/addDeliveryMitanaGr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="addDeliveryAddSaleItemBtn,
+                    addDeliveryOperationalCard, addDeliveryTempContainer, addDeliveryCheckGift"/>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/addDeliveryOperationalCard"
                     android:layout_width="match_parent"
@@ -283,6 +290,13 @@
 
                 </LinearLayout>
 
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/addDeliveryBarrelGr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="addDeliveryBarrelOutput,
+                    addDeliveryBarrelOutputCard" />
+
                 <TextView
                     android:id="@+id/addDeliveryBarrelOutput"
                     android:layout_width="wrap_content"
@@ -391,6 +405,13 @@
                     </androidx.core.widget.NestedScrollView>
 
                 </androidx.cardview.widget.CardView>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/addDeliveryMoneyGr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="addDeliveryMoneyOutput,
+                    addDeliveryMoneyOutputCard" />
 
                 <TextView
                     android:id="@+id/addDeliveryMoneyOutput"

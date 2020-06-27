@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +24,7 @@ import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
-import com.example.beerdistrkt.utils.SnapOnScrollListener
-import com.example.beerdistrkt.utils.inflate
+import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
 import kotlinx.android.synthetic.main.beer_item_view.view.*
@@ -34,10 +32,6 @@ import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 import java.util.*
 
 class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickListener {
-
-    companion object {
-        fun newInstance() = AddDeliveryFragment()
-    }
 
     override val viewModel by lazy {
         getViewModel { AddDeliveryViewModel(clientID, orderID) }
@@ -88,6 +82,26 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val args = AddDeliveryFragmentArgs.fromBundle(arguments ?: Bundle())
+        val recordID = args.recordID
+        val op = args.operacia
+        when (op) {
+            MITANA -> {
+                vBinding.addDeliveryBarrelGr.visibleIf(false)
+                vBinding.addDeliveryMoneyGr.visibleIf(false)
+            }
+            M_OUT -> {
+                vBinding.addDeliveryBarrelGr.visibleIf(false)
+                vBinding.addDeliveryMitanaGr.visibleIf(false)
+            }
+            K_OUT -> {
+                vBinding.addDeliveryMitanaGr.visibleIf(false)
+                vBinding.addDeliveryMoneyGr.visibleIf(false)
+            }
+        }
+
+        Log.d("recivDATA", "$op - $recordID")
 
         vBinding.addDeliverysCanChip0.setOnClickListener(this)
         vBinding.addDeliverysCanChip1.setOnClickListener(this)
@@ -313,5 +327,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 rv.addOnScrollListener(onPageChangeListener!!)
             }
         }
+    }
+
+    companion object {
+        fun newInstance() = AddDeliveryFragment()
+
+        const val MITANA = "mitana"
+        const val K_OUT = "kout"
+        const val M_OUT = "mout"
     }
 }
