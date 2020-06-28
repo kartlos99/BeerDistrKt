@@ -84,15 +84,16 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     }
 
     fun addOrderItemToList(item: TempBeerItemModel) {
+        if (editingOrderItemID > 0)
+            orderItemsList.removeAll {
+                it.orderItemID == editingOrderItemID
+            }
+
         if (orderItemsList.any {
                 it.beer.id == item.beer.id && it.canType.id == item.canType.id
             })
             orderItemDuplicateLiveData.value = true
         else {
-            if (editingOrderItemID > 0)
-                orderItemsList.removeAll {
-                    it.orderItemID == editingOrderItemID
-                }
             orderItemsList.add(item)
             orderItemsLiveData.value =
                 orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
