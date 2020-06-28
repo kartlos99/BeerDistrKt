@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
@@ -44,11 +43,9 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriM(date, clientID),
             successWithData = {
-                Log.d("suMsize", "${it.size}")
                 amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
-                Log.d("suMsize", "${amonaweriDataList.size}")
             }
         )
     }
@@ -57,11 +54,9 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriK(date, clientID),
             successWithData = {
-                Log.d("suKsize", "${it.size}")
                 amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
-                Log.d("suKsize", "${amonaweriDataList.size}")
             }
         )
     }
@@ -73,7 +68,6 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         }else{
             _amonaweriLiveData.value = amonaweriDataList
         }
-        Log.d("suLiveData-size", "${_amonaweriLiveData.value?.size}")
     }
 
     fun groupAmonaweriList(rowList: ArrayList<Amonaweri>): ArrayList<Amonaweri>{
@@ -143,7 +137,6 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                 )
             ),
             success = {
-                Log.d("su", "del")
                 requestAmonaweriList()
                 needUpdateLiveData.value = pagePos.toString()
             }

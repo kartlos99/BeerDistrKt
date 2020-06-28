@@ -5,6 +5,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
+import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
+import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
+import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
+import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
+import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
@@ -44,6 +51,9 @@ class AddDeliveryViewModel(
     val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
     var moneyOut: SaleRequestModel.MoneyOutItem? = null
     var isGift = false
+
+    var operation: String? = null
+    var recordID = 0
 
     val saleItemDuplicateLiveData = MutableLiveData<Boolean>(false)
 
@@ -90,8 +100,7 @@ class AddDeliveryViewModel(
             null
     }
 
-    fun addDelivery(deliveryDataComment: String) {
-
+    fun onDoneClick(deliveryDataComment: String) {
         val saleRequestModel = SaleRequestModel(
             clientID,
             Session.get().getUserID(),
@@ -108,6 +117,14 @@ class AddDeliveryViewModel(
             money = moneyOut
         )
 
+        if (operation == null)
+            addDelivery(saleRequestModel)
+        else
+            updateDelivey(saleRequestModel)
+    }
+
+    fun addDelivery(saleRequestModel: SaleRequestModel) {
+
         Log.d(TAG, saleRequestModel.toString())
 
         _addSaleLiveData.value = ApiResponseState.Loading(true)
@@ -118,12 +135,26 @@ class AddDeliveryViewModel(
                 _addSaleLiveData.value = ApiResponseState.Success(it)
             },
             finally = {
-                Log.d(TAG, "finaly" + it.toString())
                 moneyOut = null
                 barrelOutItems.clear()
                 _addSaleLiveData.value = ApiResponseState.Loading(false)
             }
         )
+    }
+
+    fun updateDelivey(saleRequestModel: SaleRequestModel) {
+
+        _addSaleLiveData.value = ApiResponseState.Loading(true)
+        sendRequest(
+            ApeniApiService.getInstance().updateSale(saleRequestModel),
+            successWithData = {
+                _addSaleLiveData.value = ApiResponseState.Success(it)
+            },
+            finally = {
+                _addSaleLiveData.value = ApiResponseState.Loading(false)
+            }
+        )
+
     }
 
     fun onSaleDateSelected(year: Int, month: Int, day: Int) {
@@ -157,7 +188,7 @@ class AddDeliveryViewModel(
     fun addBarrelToList(barrelType: Int, count: Int) {
         barrelOutItems.add(
             SaleRequestModel.BarrelOutItem(
-                0,
+                recordID,
                 dateTimeFormat.format(saleDateCalendar.time),
                 barrelType,
                 count
@@ -173,12 +204,54 @@ class AddDeliveryViewModel(
     }
 
     fun setMoney(text: Editable?) {
-        if (!text.isNullOrEmpty())
+        if (!text.isNullOrEmpty() && (operation == null || operation == M_OUT))
             moneyOut = SaleRequestModel.MoneyOutItem(
-                0,
+                recordID,
                 dateTimeFormat.format(saleDateCalendar.time),
                 text.toString().toDouble()
             )
+    }
+
+    val saleItemEditLiveData = MutableLiveData<SaleRowModel?>()
+    val kOutEditLiveData = MutableLiveData<BarrelRowModel?>()
+    val mOutEditLiveData = MutableLiveData<MoneyRowModel?>()
+
+    fun getRecordData() {
+        sendRequest(
+            ApeniApiService.getInstance().getRecord(
+                RecordRequestModel(operation ?: "", recordID)
+            ),
+            successWithData = {
+                if (it.mitana != null) {
+                    saleItemEditLiveData.value = it.mitana
+
+                    isGift = it.mitana.unitPrice == 0.0
+                    val date = dateTimeFormat.parse(it.mitana.saleDate)
+                    saleDateCalendar.time = date ?: Date()
+                    _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+                }
+                if (it.kout != null) {
+                    kOutEditLiveData.value = it.kout
+                    selectedCan = cansList.find { b ->  b.id == it.kout.canTypeID } ?: cansList[0]
+
+                    val date = dateTimeFormat.parse(it.kout.outputDate)
+                    saleDateCalendar.time = date ?: Date()
+                    _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+                }
+                if (it.mout != null) {
+                    mOutEditLiveData.value = it.mout
+
+                    val date = dateTimeFormat.parse(it.mout.takeMoneyDate)
+                    saleDateCalendar.time = date ?: Date()
+                    _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+                }
+
+                Log.d("respRECORD", it.toString())
+            },
+            finally = {
+                Log.d("respRECORD_Finaly", it.toString())
+            }
+        )
     }
 
     companion object {

@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
+import com.example.beerdistrkt.fragPages.mitana.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
@@ -87,6 +89,9 @@ interface ApeniApiService {
     @POST("del_record_v2.php")
     fun deleteRecord(@Body del: DeleteRequest): Call<DataResponse<Any>>
 
+    @POST("getRecord.php")
+    fun getRecord(@Body recordModel: RecordRequestModel): Call<DataResponse<RecordResponseDTO>>
+
     @FormUrlEncoded
     @POST("insert_xarji.php")
     fun addXarji(
@@ -102,7 +107,10 @@ interface ApeniApiService {
     fun addOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
 
     @POST("sales/add.php")
-    fun addSales(@Body order: SaleRequestModel): Call<DataResponse<String>>
+    fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
+
+    @POST("sales/update.php")
+    fun updateSale(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
 
     @GET("order/getByID.php")
     fun getOrderByID(@Query("orderID") orderID: Int): Call<DataResponse<List<OrderDTO>>>

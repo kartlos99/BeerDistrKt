@@ -20,6 +20,9 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
+import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
+import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
+import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.BeerModel
@@ -84,24 +87,28 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         super.onViewCreated(view, savedInstanceState)
 
         val args = AddDeliveryFragmentArgs.fromBundle(arguments ?: Bundle())
-        val recordID = args.recordID
-        val op = args.operacia
-        when (op) {
+        viewModel.recordID = args.recordID
+        viewModel.operation = args.operacia
+        if (viewModel.operation != null) {
+            viewModel.getRecordData()
+            vBinding.addDeliveryBarrelGr.visibleIf(false)
+        }
+        vBinding.addDeliveryhideOnEditGroup.visibleIf(viewModel.operation == null)
+        vBinding.hideBeerGroup.visibleIf(viewModel.operation != K_OUT )
+
+        when (viewModel.operation) {
             MITANA -> {
-                vBinding.addDeliveryBarrelGr.visibleIf(false)
                 vBinding.addDeliveryMoneyGr.visibleIf(false)
             }
             M_OUT -> {
-                vBinding.addDeliveryBarrelGr.visibleIf(false)
                 vBinding.addDeliveryMitanaGr.visibleIf(false)
+                vBinding.addDeliveryCheckGift.visibility = View.GONE
             }
             K_OUT -> {
-                vBinding.addDeliveryMitanaGr.visibleIf(false)
                 vBinding.addDeliveryMoneyGr.visibleIf(false)
+                vBinding.addDeliveryCheckGift.visibility = View.GONE
             }
         }
-
-        Log.d("recivDATA", "$op - $recordID")
 
         vBinding.addDeliverysCanChip0.setOnClickListener(this)
         vBinding.addDeliverysCanChip1.setOnClickListener(this)
@@ -163,6 +170,60 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 }
             }
         })
+        viewModel.saleItemEditLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                fillSale(it)
+                viewModel.saleItemEditLiveData.value = null
+            }
+        })
+        viewModel.kOutEditLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                fillBarrels(it)
+                viewModel.kOutEditLiveData.value = null
+            }
+        })
+        viewModel.mOutEditLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                fillMoney(it)
+                viewModel.mOutEditLiveData.value = null
+            }
+        })
+    }
+
+    private fun fillMoney(moneyRowModel: MoneyRowModel) {
+        vBinding.addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+
+        vBinding.addDeliveryComment.editText?.setText(moneyRowModel.comment ?: "")
+    }
+
+    private fun fillBarrels(barrelRowModel: BarrelRowModel) {
+        when (barrelRowModel.canTypeID) {
+            1 -> vBinding.addDeliverysCanChip3.isChecked = true
+            2 -> vBinding.addDeliverysCanChip2.isChecked = true
+            3 -> vBinding.addDeliverysCanChip1.isChecked = true
+            4 -> vBinding.addDeliverysCanChip0.isChecked = true
+        }
+        vBinding.addDeliveryCanCountControl.amount = barrelRowModel.count
+
+        vBinding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
+    }
+
+    fun fillSale(saleData: SaleRowModel) {
+        val data = saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)
+        beerPos = viewModel.beerList.indexOf(data.beer)
+        vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
+        vBinding.addDeliverysChipGr.clearCheck()
+        viewModel.selectedCan = data.canType
+        when (data.canType.id) {
+            1 -> vBinding.addDeliverysCanChip3.isChecked = true
+            2 -> vBinding.addDeliverysCanChip2.isChecked = true
+            3 -> vBinding.addDeliverysCanChip1.isChecked = true
+            4 -> vBinding.addDeliverysCanChip0.isChecked = true
+        }
+        vBinding.addDeliveryCanCountControl.amount = data.count
+
+        vBinding.addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
+        vBinding.addDeliveryComment.editText?.setText(saleData.comment ?: "")
     }
 
     override fun onClick(v: View?) {
@@ -172,13 +233,25 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             R.id.addDeliverysCanChip2 -> viewModel.setCan(1)
             R.id.addDeliverysCanChip3 -> viewModel.setCan(0)
             R.id.addDeliveryDoneBtn -> {
-                if (formIsValid() && viewModel.saleItemsList.isEmpty())
+                when (viewModel.operation){
+                    MITANA -> {
+                        viewModel.barrelOutItems.clear()
+                        viewModel.moneyOut = null
+                    }
+                    K_OUT -> {
+                        viewModel.moneyOut = null
+                        viewModel.saleItemsList.clear()
+                    }
+                    M_OUT -> {
+                        viewModel.saleItemsList.clear()
+                        viewModel.barrelOutItems.clear()
+                    }
+                }
+                if (formIsValid() && viewModel.saleItemsList.isEmpty() && viewModel.operation != K_OUT)
                     viewModel.addSaleItemToList(getTempSaleItem())
                 collectEmptyBarrels()
                 viewModel.setMoney(vBinding.addDeliveryMoneyEt.text)
-                viewModel.addDelivery(
-                    vBinding.addDeliveryComment.editText?.text.toString()
-                )
+                viewModel.onDoneClick(vBinding.addDeliveryComment.editText?.text.toString())
             }
             R.id.addDeliveryDateBtn -> {
                 val datePickerDialog = DatePickerDialog(
@@ -215,18 +288,25 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun collectEmptyBarrels() {
-        if (vBinding.addDeliveryBarrelOutputCount1.amount > 0)
-            viewModel.addBarrelToList(1, vBinding.addDeliveryBarrelOutputCount1.amount)
-        if (vBinding.addDeliveryBarrelOutputCount2.amount > 0)
-            viewModel.addBarrelToList(2, vBinding.addDeliveryBarrelOutputCount2.amount)
-        if (vBinding.addDeliveryBarrelOutputCount3.amount > 0)
-            viewModel.addBarrelToList(3, vBinding.addDeliveryBarrelOutputCount3.amount)
-        if (vBinding.addDeliveryBarrelOutputCount4.amount > 0)
-            viewModel.addBarrelToList(4, vBinding.addDeliveryBarrelOutputCount4.amount)
+        if (viewModel.operation == null) {
+            if (vBinding.addDeliveryBarrelOutputCount1.amount > 0)
+                viewModel.addBarrelToList(1, vBinding.addDeliveryBarrelOutputCount1.amount)
+            if (vBinding.addDeliveryBarrelOutputCount2.amount > 0)
+                viewModel.addBarrelToList(2, vBinding.addDeliveryBarrelOutputCount2.amount)
+            if (vBinding.addDeliveryBarrelOutputCount3.amount > 0)
+                viewModel.addBarrelToList(3, vBinding.addDeliveryBarrelOutputCount3.amount)
+            if (vBinding.addDeliveryBarrelOutputCount4.amount > 0)
+                viewModel.addBarrelToList(4, vBinding.addDeliveryBarrelOutputCount4.amount)
+        } else if (viewModel.operation == K_OUT) {
+            viewModel.addBarrelToList(
+                viewModel.selectedCan?.id ?: 0,
+                vBinding.addDeliveryCanCountControl.amount
+            )
+        }
     }
 
     fun getTempSaleItem(): TempBeerItemModel {
-        return TempBeerItemModel(0,
+        return TempBeerItemModel(viewModel.recordID,
 //            viewModel.beerList[beerPos],
             viewModel.beerListLiveData.value?.get(beerPos)!!,
             viewModel.selectedCan!!,
