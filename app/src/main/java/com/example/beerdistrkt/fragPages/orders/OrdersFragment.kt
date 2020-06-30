@@ -15,6 +15,7 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
+import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.showAskingDialog
@@ -33,7 +34,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     override val viewModel: OrdersViewModel by lazy { getViewModel<OrdersViewModel>() }
 
     private lateinit var vBinding: OrdersFragmentBinding
-    private val ordersAdapter by lazy { OrderAdapter() }
+    private val ordersAdapter by lazy { ParentOrderAdapter() }
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)

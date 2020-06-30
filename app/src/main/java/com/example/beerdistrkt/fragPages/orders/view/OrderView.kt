@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.R
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.view_order.view.*
 
 class OrderView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), View.OnClickListener {
+) : LinearLayout(context, attrs, defStyleAttr), View.OnClickListener {
 
     var commentIsVisible = false
         set(value) {
@@ -37,6 +38,7 @@ class OrderView @JvmOverloads constructor(
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         orderComment.visibleIf(false)
         orderStatusTv.text = ""
+        orderUnitRootSwipe.close(false)
     }
 
     fun fillData(order: Order) {
@@ -73,8 +75,11 @@ class OrderView @JvmOverloads constructor(
         orderUnitDeleteBtn.setOnClickListener {
             order.onDeleteClick()
         }
-        layoutParams =
-            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        orderUnitFrontRoot.postDelayed({
+            val lp = orderUnitBackRoot.layoutParams
+            lp.height = orderUnitFrontRoot.measuredHeight
+            orderUnitBackRoot.layoutParams = lp
+        }, 50)
     }
 
     override fun onClick(v: View?) {

@@ -12,7 +12,7 @@
     <LinearLayout
         android:id="@+id/orderUnitBackRoot"
         android:layout_width="112dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
 
         android:gravity="end"
         android:orientation="horizontal"
@@ -26,6 +26,7 @@
             android:background="@color/blue_edit_bkg"
             android:contentDescription="@string/img_description"
             android:paddingHorizontal="@dimen/gr_size_4"
+            android:paddingVertical="@dimen/gr_size_16"
             android:tint="@color/blue_edit"
             app:srcCompat="@drawable/ic_edit_white_24dp" />
 

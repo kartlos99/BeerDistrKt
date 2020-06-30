@@ -6,7 +6,7 @@
 
     <color name="colorForText">#252525</color>
     <color name="colorForText_2">#5B5B61</color>
-    <color name="colorCardview">#a0d4d1</color>
+    <color name="blue_1">#BCF1EE</color>
     <color name="colorCardview_2">#99beba</color>
     <color name="colorCardview_green">#a1ec9d</color>
     <color name="color_orderCol">#44c2d6d6</color>
@@ -31,4 +31,6 @@
     <color name="completed_green">#26C372</color>
     <color name="in_complete_order">#F81A1A</color>
     <color name="warning">#FAD82F</color>
+
+
 </resources>

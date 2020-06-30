@@ -7,8 +7,10 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
+import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.coroutines.launch
 import java.util.*
@@ -21,8 +23,10 @@ class OrdersViewModel : BaseViewModel() {
 
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
+    private val usersList = ObjectCache.getInstance().getList(User::class, "userList")
+        ?: listOf()
 
-    val ordersLiveData = MutableLiveData<ApiResponseState<List<Order>>>()
+    val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
     private lateinit var clients: List<Obieqti>
     private lateinit var beers: List<BeerModel>
@@ -62,15 +66,17 @@ class OrdersViewModel : BaseViewModel() {
                     orderDTO.toPm(
                         clients,
                         beers,
-                        onDeleteClick = {order ->
+                        onDeleteClick = { order ->
                             askForOrderDeleteLiveData.value = order
                         },
-                        onEditClick = {order ->
+                        onEditClick = { order ->
                             editOrderLiveData.value = order
                         }
                     )
                 })
-                ordersLiveData.value = ApiResponseState.Success(listOfOrders)
+
+                ordersLiveData.value =
+                    ApiResponseState.Success(groupOrderByDistributor(listOfOrders))
             },
             failure = {
                 Log.d("getOrder", "failed: ${it.message}")
@@ -79,6 +85,25 @@ class OrdersViewModel : BaseViewModel() {
                 ordersLiveData.value = ApiResponseState.Loading(false)
             }
         )
+    }
+
+    private fun groupOrderByDistributor(orders: List<Order>): MutableList<OrderGroupModel> {
+        val groupedOrders = mutableListOf<OrderGroupModel>()
+        val ordersMap = orders.groupBy { it.distributorID }
+        ordersMap.forEach {
+            val distributorName = usersList.firstOrNull{user ->
+                user.id == it.key.toString()
+            }?.name ?: "_"
+            groupedOrders.add(
+                OrderGroupModel(
+                    distributorID = it.key,
+                    distributorName = distributorName,
+                    ordersList = it.value.toMutableList()
+                )
+            )
+        }
+
+        return groupedOrders
     }
 
     fun onDateSelected(year: Int, month: Int, day: Int) {

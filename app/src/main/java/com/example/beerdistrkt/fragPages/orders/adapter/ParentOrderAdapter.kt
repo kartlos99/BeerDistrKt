@@ -1,0 +1,71 @@
+package com.example.beerdistrkt.fragPages.orders.adapter
+
+import com.example.beerdistrkt.R
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
+import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.utils.visibleIf
+import kotlinx.android.synthetic.main.view_order_group.view.*
+
+
+class ParentOrderAdapter(
+    private var orderGroups: MutableList<OrderGroupModel> = mutableListOf()
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val viewPool = RecycledViewPool()
+//    private var ordersMap = orders.groupBy { it.distributorID }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.view_order_group, parent, false)
+        return ParentViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return orderGroups.size
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+        orderGroups[position].let { grItem ->
+
+            holder.itemView.viewOrderGroupDistributor.text = grItem.distributorName
+
+            holder.itemView.viewOrderGroupTitle.setOnClickListener {
+                grItem.isExpanded = !grItem.isExpanded
+                holder.itemView.viewOrderGroupRecycler.visibleIf(grItem.isExpanded)
+                holder.itemView.viewOrderGroupCollapseImg.rotation = if (grItem.isExpanded) 180f else 0f
+            }
+
+            // Create layout manager with initial prefetch item count
+            val layoutManager = LinearLayoutManager(
+                holder.itemView.viewOrderGroupRecycler.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            layoutManager.initialPrefetchItemCount = grItem.ordersList.size
+
+            // Create sub item view adapter
+            val subOrderAdapter = OrderAdapter(grItem.ordersList)
+
+            holder.itemView.viewOrderGroupRecycler.layoutManager = layoutManager
+            holder.itemView.viewOrderGroupRecycler.adapter = subOrderAdapter
+            holder.itemView.viewOrderGroupRecycler.setRecycledViewPool(viewPool)
+        }
+    }
+
+    fun setData(data: MutableList<OrderGroupModel>) {
+        orderGroups = data
+    }
+
+    fun removeItem(data: Int) {
+        TODO("Not yet implemented")
+    }
+
+    private class ParentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+}
