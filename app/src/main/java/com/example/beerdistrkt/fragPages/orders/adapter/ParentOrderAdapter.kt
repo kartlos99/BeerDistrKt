@@ -68,6 +68,7 @@ class ParentOrderAdapter(
 
             // Create sub item view adapter
             val subOrderAdapter = OrderAdapter(grItem.ordersList)
+            orderGroups[position].orderAdapter = subOrderAdapter
 
             holder.itemView.viewOrderGroupRecycler.layoutManager = layoutManager
             holder.itemView.viewOrderGroupRecycler.adapter = subOrderAdapter
@@ -77,10 +78,13 @@ class ParentOrderAdapter(
 
     fun setData(data: MutableList<OrderGroupModel>) {
         orderGroups = data
+        notifyDataSetChanged()
     }
 
-    fun removeItem(data: Int) {
-        TODO("Not yet implemented")
+    fun removeItem(indexes: Pair<Int, Int>) {
+        orderGroups[indexes.first].orderAdapter?.removeItem(indexes.second)
+        orderGroups[indexes.first].orderAdapter?.notifyItemRemoved(indexes.second)
+        notifyItemChanged(indexes.first)
     }
 
     private class ParentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

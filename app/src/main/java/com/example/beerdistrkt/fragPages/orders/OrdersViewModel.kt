@@ -4,15 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
-import kotlinx.coroutines.launch
 import java.util.*
 
 class OrdersViewModel : BaseViewModel() {
@@ -38,10 +35,10 @@ class OrdersViewModel : BaseViewModel() {
         get() = _orderDayLiveData
 
     val askForOrderDeleteLiveData = MutableLiveData<Order?>(null)
-    val orderDeleteLiveData = MutableLiveData<ApiResponseState<Int>>()
+    val orderDeleteLiveData = MutableLiveData<ApiResponseState<Pair<Int, Int>>>()
     val editOrderLiveData = MutableLiveData<Order?>(null)
 
-    val listOfOrders: MutableList<Order> = mutableListOf()
+    val listOfGroupedOrders: MutableList<OrderGroupModel> = mutableListOf()
 
     init {
         clientsLiveData.observeForever {
@@ -61,8 +58,8 @@ class OrdersViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getOrders(dateFormatDash.format(orderDateCalendar.time)),
             successWithData = {
-                listOfOrders.clear()
-                listOfOrders.addAll(it.map { orderDTO ->
+                listOfGroupedOrders.clear()
+                listOfGroupedOrders.addAll(groupOrderByDistributor(it.map { orderDTO ->
                     orderDTO.toPm(
                         clients,
                         beers,
@@ -73,10 +70,9 @@ class OrdersViewModel : BaseViewModel() {
                             editOrderLiveData.value = order
                         }
                     )
-                })
+                }))
 
-                ordersLiveData.value =
-                    ApiResponseState.Success(groupOrderByDistributor(listOfOrders))
+                ordersLiveData.value = ApiResponseState.Success(listOfGroupedOrders)
             },
             failure = {
                 Log.d("getOrder", "failed: ${it.message}")
@@ -117,9 +113,16 @@ class OrdersViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID)),
             success = {
-                val index = listOfOrders.indexOf(order)
-                listOfOrders.remove(order)
-                orderDeleteLiveData.value = ApiResponseState.Success(index)
+                listOfGroupedOrders.forEachIndexed { index1, orderGroupModel ->
+                    val index = orderGroupModel.ordersList.indexOf(order)
+                    if (index != -1){
+                        orderDeleteLiveData.value = ApiResponseState.Success(Pair(index1, index))
+                        orderGroupModel.ordersList.remove(order)
+                        return@sendRequest
+                    }
+
+                }
+
             }
         )
     }

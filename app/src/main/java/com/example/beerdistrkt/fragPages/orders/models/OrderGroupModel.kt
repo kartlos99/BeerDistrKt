@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.orders.models
 
+import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.models.Order
 
 data class OrderGroupModel(
@@ -9,6 +10,9 @@ data class OrderGroupModel(
     var isExpanded: Boolean = true
 
 ) {
+
+    var orderAdapter: OrderAdapter? = null
+
     fun getSummedOrder(): List<Order.Item> {
         val sumOrderItems = mutableListOf<Order.Item>()
         val resultList = mutableListOf<Order.Item>()

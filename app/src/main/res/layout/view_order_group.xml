@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/gr_size_4"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/gr_size_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/viewOrderGroupTitle"
-        android:padding="@dimen/gr_size_4"
-        android:background="@color/blue_1"
-        android:elevation="@dimen/gr_size_2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/blue_1"
+
+        android:elevation="@dimen/gr_size_2"
+        android:padding="@dimen/gr_size_8">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/viewOrderGroupDistributor"
@@ -20,8 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gr_size_2"
             android:layout_marginEnd="@dimen/gr_size_8"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="@dimen/sp18"
             app:layout_constraintEnd_toStartOf="@id/viewOrderGroupCollapseImg"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +55,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewOrderGroupRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_4" />
 
 </LinearLayout>
