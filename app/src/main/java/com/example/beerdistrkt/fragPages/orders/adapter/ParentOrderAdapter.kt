@@ -35,11 +35,27 @@ class ParentOrderAdapter(
         orderGroups[position].let { grItem ->
 
             holder.itemView.viewOrderGroupDistributor.text = grItem.distributorName
+            val itemList = grItem.getSummedOrder().groupBy {
+                it.beerID
+            }.toMutableMap()
+            val salesList = grItem.getSummedSales().groupBy {
+                it.beerID
+            }
+            salesList.forEach {
+                if (!itemList.contains(it.key))
+                    itemList[it.key] = emptyList()
+            }
+
+            holder.itemView.viewOrderGroupSumRecycler.layoutManager =
+                LinearLayoutManager(holder.itemView.viewOrderGroupSumRecycler.context)
+            holder.itemView.viewOrderGroupSumRecycler.adapter =
+                OrderItemAdapter(itemList.toSortedMap(), salesList)
 
             holder.itemView.viewOrderGroupTitle.setOnClickListener {
                 grItem.isExpanded = !grItem.isExpanded
                 holder.itemView.viewOrderGroupRecycler.visibleIf(grItem.isExpanded)
-                holder.itemView.viewOrderGroupCollapseImg.rotation = if (grItem.isExpanded) 180f else 0f
+                holder.itemView.viewOrderGroupCollapseImg.rotation =
+                    if (grItem.isExpanded) 180f else 0f
             }
 
             // Create layout manager with initial prefetch item count
@@ -68,4 +84,6 @@ class ParentOrderAdapter(
     }
 
     private class ParentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+//    fun initSummedRecycler()
 }
