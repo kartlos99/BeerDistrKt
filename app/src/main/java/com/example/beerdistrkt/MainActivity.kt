@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.databinding.ActivityMainBinding
@@ -18,6 +19,9 @@ import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.visibleIf
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,7 +53,22 @@ class MainActivity : AppCompatActivity() {
 
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(vBinding.drawerLayout.windowToken, 0)
+
+            vBinding.toolBar.visibleIf(destination.id != R.id.loginFragment)
         }
+
+//        vBinding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+//            item.setTitle(R.string.yes)
+//            return@OnNavigationItemSelectedListener true
+//        })
+    }
+
+    override fun onBackPressed() {
+        val navController = this.findNavController(R.id.mainNavHostFragment)
+//        if (!navController.popBackStack())
+        if (navController.currentDestination?.id == R.id.loginFragment)
+            finish()
+        super.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean {

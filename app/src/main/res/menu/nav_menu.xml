@@ -35,13 +35,12 @@
             android:title="@string/ssysclear"/>
 
         <item
-            android:id="@+id/m_ch_pass"
+            android:id="@+id/mChangePass"
             android:icon="@drawable/beer_icon"
             android:title="@string/change_pass"/>
 
         <item
-            android:id="@+id/m_logout"
-            android:checked="false"
+            android:id="@+id/loginFragment"
             android:icon="@drawable/beer_icon"
             android:title="@string/logout" />
 

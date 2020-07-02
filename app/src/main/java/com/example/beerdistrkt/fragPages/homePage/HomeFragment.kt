@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.BaseFragment
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
+import com.example.beerdistrkt.utils.Session
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
@@ -56,6 +58,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 Log.d("___User___", user.toString())
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!Session.get().isUserLogged())
+            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
     }
 
     override fun onClick(view: View?) {

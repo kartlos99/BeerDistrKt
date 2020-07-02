@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.login.models.LoginRequest
+import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
 import com.example.beerdistrkt.fragPages.mitana.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
@@ -128,4 +130,7 @@ interface ApeniApiService {
     // client
     @GET("client/getDebtByID.php")
     fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
+
+    @POST("client/login.php")
+    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
 }
