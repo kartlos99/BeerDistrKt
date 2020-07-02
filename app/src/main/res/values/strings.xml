@@ -153,5 +153,7 @@
     <string name="edit_order">შეკვეთის რედაქტირება</string>
     <string name="remove_grouping">მოხსენით დაჯგუფება!</string>
     <string name="confirm_delete_text">ნამდვილად გსურთ ჩანაწერის წაშლა?</string>
+    <string name="auth_fail_firebase">FireBase Auth Failed.</string>
+    <string name="registration_fail_firebase">FireBase Registration Failed.</string>
 
 </resources>
