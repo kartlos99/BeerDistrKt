@@ -11,6 +11,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 //import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 //import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -123,4 +124,8 @@ interface ApeniApiService {
 
     @GET("order/getLastActiveID.php")
     fun getLastActiveOrderID(@Query("clientID") clientID: Int): Call<DataResponse<Int>>
+
+    // client
+    @GET("client/getDebtByID.php")
+    fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
 }

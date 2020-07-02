@@ -45,6 +45,8 @@ class AddDeliveryViewModel(
     val addSaleLiveData: LiveData<ApiResponseState<String>>
         get() = _addSaleLiveData
 
+    val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
+
     val saleItemsList = mutableListOf<TempBeerItemModel>()
     val saleItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
 
@@ -66,6 +68,16 @@ class AddDeliveryViewModel(
             attachPrices(it.prices)
         }
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+        getDebt()
+    }
+
+    private fun getDebt(){
+        sendRequest(
+            ApeniApiService.getInstance().getDebt(clientID),
+            successWithData = {
+                getDebtLiveData.value = ApiResponseState.Success(it)
+            }
+        )
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {

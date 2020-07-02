@@ -30,6 +30,7 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
+import kotlinx.android.synthetic.main.add_delivery_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 import java.util.*
@@ -94,7 +95,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryBarrelGr.visibleIf(false)
         }
         vBinding.addDeliveryhideOnEditGroup.visibleIf(viewModel.operation == null)
-        vBinding.hideBeerGroup.visibleIf(viewModel.operation != K_OUT )
+        vBinding.hideBeerGroup.visibleIf(viewModel.operation != K_OUT)
 
         when (viewModel.operation) {
             MITANA -> {
@@ -188,6 +189,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.mOutEditLiveData.value = null
             }
         })
+        viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
+            if (it is ApiResponseState.Success) {
+                addDeliveryClientDebt.text =
+                    getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
+                viewModel.getDebtLiveData.value = ApiResponseState.Sleep
+            }
+        })
     }
 
     private fun fillMoney(moneyRowModel: MoneyRowModel) {
@@ -233,7 +241,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             R.id.addDeliverysCanChip2 -> viewModel.setCan(1)
             R.id.addDeliverysCanChip3 -> viewModel.setCan(0)
             R.id.addDeliveryDoneBtn -> {
-                when (viewModel.operation){
+                when (viewModel.operation) {
                     MITANA -> {
                         viewModel.barrelOutItems.clear()
                         viewModel.moneyOut = null

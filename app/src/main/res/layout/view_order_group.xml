@@ -10,7 +10,7 @@
         android:id="@+id/viewOrderGroupTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/blue_1"
+        android:background="@color/gray_light"
 
         android:elevation="@dimen/gr_size_2"
         android:padding="@dimen/gr_size_8">
