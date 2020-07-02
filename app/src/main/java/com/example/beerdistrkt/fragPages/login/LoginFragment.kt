@@ -10,6 +10,7 @@ import com.example.beerdistrkt.BaseFragment
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.android.synthetic.main.login_fragment.*
@@ -40,10 +41,24 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             )
         }
 
-        if (Session.get().isUserLogged())
+        if (Session.get().isUserLogged()) {
             Session.get().clearSession()
+            SharedPreferenceDataSource(requireContext()).saveUserName("")
+            SharedPreferenceDataSource(requireContext()).savePassword("")
+        } else
+            checkSavedPass()
 
         initViewModel()
+    }
+
+    private fun checkSavedPass() {
+        val userName = SharedPreferenceDataSource(requireContext()).getUserName()
+        val password = SharedPreferenceDataSource(requireContext()).getPass()
+        if (userName.isNotEmpty() && password.isNotEmpty()) {
+            viewLoginUserField.setText(userName)
+            viewLoginPasswordField.setText(password)
+            viewModel.logIn(userName, password)
+        }
     }
 
     private fun initViewModel() {
@@ -51,6 +66,12 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast("login aq")
+                    if (viewLoginSaveChk.isChecked) {
+                        SharedPreferenceDataSource(requireContext()).saveUserName(it.data.username)
+                        SharedPreferenceDataSource(requireContext()).savePassword(
+                            viewLoginPasswordField.text.toString()
+                        )
+                    }
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                 }

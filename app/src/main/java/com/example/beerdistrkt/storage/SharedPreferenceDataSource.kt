@@ -21,4 +21,35 @@ class SharedPreferenceDataSource(appContext: Context) {
     fun getSession(): String {
         return sharedPreference.getString("accessToken", "") ?: ""
     }
+
+    fun saveUserName(username: String) {
+        sharedPreference.edit().putString(USERNAME, username).apply()
+    }
+
+    fun getUserName(): String {
+        return sharedPreference.getString(USERNAME, "") ?: ""
+    }
+
+    fun savePassword(password: String) {
+        sharedPreference.edit().putString(PASS, password).apply()
+    }
+
+    fun getPass(): String {
+        return sharedPreference.getString(PASS, "") ?: ""
+    }
+
+
+    companion object {
+        private var instance: SharedPreferenceDataSource? = null
+
+        fun get(appContext: Context): SharedPreferenceDataSource {
+            if (instance == null) {
+                instance = SharedPreferenceDataSource(appContext)
+            }
+            return instance!!
+        }
+
+        const val USERNAME = "username"
+        const val PASS = "pass"
+    }
 }
