@@ -83,7 +83,7 @@ interface ApeniApiService {
     @GET("get_kasri_list.php")
     fun getCanList(): Call<DataResponse<List<CanModel>>>
 
-    @GET("view_sale_day_v2.php")
+    @GET("sales/getDayTotal.php")
     fun getDayInfo(
         @Query("tarigi") tarigi: String,
         @Query("distrid") distrid: Int

@@ -8,13 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.dialogs.XarjebiDialog
+import com.example.beerdistrkt.fragPages.sales.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.utils.*
 import java.util.*
@@ -84,9 +87,12 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
         return vBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModel()
+    }
 
+    fun initViewModel(){
         viewModel.salesLiveData.observe(viewLifecycleOwner, Observer {
             val adapter = SalesAdapter(context, it)
             vBinding.salesList1.adapter = adapter
@@ -128,30 +134,32 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
             }
             viewModel.addXarjiComplited()
         })
+
+        viewModel.barrelsLiveData.observe(viewLifecycleOwner, Observer {
+            initBarrelBlock(it)
+        })
     }
 
     fun fillPageData() {
 
-        vBinding.tP3K30Count.text = String.format(
-            "%s\n%s",
-            MyUtil.floatToSmartStr(viewModel.k3r.toFloat()),
-            MyUtil.floatToSmartStr(viewModel.k30empty)
-        )
-
-        vBinding.tP3K50Count.text = String.format(
-            "%s\n%s",
-            MyUtil.floatToSmartStr(viewModel.k5r.toFloat()),
-            MyUtil.floatToSmartStr(viewModel.k50empty)
-        )
 
         val xarjiSum = viewModel.xarjebi.sumByDouble { it.amount.toDouble() }
-        vBinding.tP3LariCount.text = resources.getString(R.string.format_gel, viewModel.priceSum)
+        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
         vBinding.tXarjSum.text = resources.getString(R.string.format_gel, xarjiSum)
-        vBinding.tXelze.text = resources.getString(
+        vBinding.salesAmountAtHand.text = resources.getString(
             R.string.format_gel,
-            viewModel.realizationDayLiveData.value?.output?.money?.minus(xarjiSum)
+            viewModel.realizationDayLiveData.value?.takenMoney?.minus(xarjiSum)
         )
 
+    }
+
+    fun initBarrelBlock(data: List<BarrelIO>) {
+        vBinding.salesBarrelRecycler.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        vBinding.salesBarrelRecycler.adapter = BarrelsIOAdapter(data)
     }
 
     private fun showXarjList(expanded: Boolean) {

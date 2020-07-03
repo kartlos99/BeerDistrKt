@@ -24,4 +24,18 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SaleSubTitles">
+        <item name="android:layout_marginTop">@dimen/gr_size_8</item>
+        <item name="android:padding">@dimen/gr_size_6</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/sp14</item>
+    </style>
+
+    <style name="BarrelDataStyle">
+        <item name="android:layout_marginTop">@dimen/gr_size_2</item>
+        <item name="android:padding">@dimen/gr_size_6</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/sp16</item>
+    </style>
+
 </resources>

@@ -161,7 +161,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/t_p3_kasrebi"
+                        android:id="@+id/salesTitleBarrel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -174,99 +174,43 @@
                         tools:layout_editor_absoluteX="8dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleBarrel1"
+                        style="@style/SaleSubTitles"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:lineSpacingExtra="5dp"
-                        android:padding="6dp"
-                        android:text="@string/kasri_inout"
-                        android:textAlignment="textEnd"
-                        android:textSize="@dimen/textsize_3"
+                        android:text="@string/can_type"
+                        app:layout_constraintEnd_toStartOf="@id/salesTitleBarrel2"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel" />
 
                     <TextView
-                        android:id="@+id/t_p3_k30"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleBarrel2"
+                        style="@style/SaleSubTitles"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="@string/_30litri"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_kasrebi" />
+                        android:text="@string/realized"
+                        app:layout_constraintEnd_toStartOf="@id/salesTitleBarrel3"
+                        app:layout_constraintStart_toEndOf="@id/salesTitleBarrel1"
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel" />
 
                     <TextView
-                        android:id="@+id/t_p3_k50"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleBarrel3"
+                        style="@style/SaleSubTitles"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="@string/_50litri"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/t_p3_k30" />
+                        android:text="@string/received"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/salesTitleBarrel2"
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel" />
 
-                    <TextView
-                        android:id="@+id/t_p3_k30_count"
-                        android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/salesBarrelRecycler"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/highlight_rect"
-                        android:lineSpacingExtra="5dp"
-                        android:padding="8dp"
-                        android:text="@string/_30_n30"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintHorizontal_bias="0.507"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+                        tools:itemCount="2"
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel1"
+                        />
 
-                    <TextView
-                        android:id="@+id/t_p3_k50_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:background="@drawable/highlight_rect"
-                        android:lineSpacingExtra="5dp"
-                        android:padding="8dp"
-                        android:text="@string/default_0"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintHorizontal_bias="0.507"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_p3_kasr"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.7"
-                        tools:layout_editor_absoluteX="266dp"
-                        tools:layout_editor_absoluteY="198dp" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_p3_kasr_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.4"
-                        tools:layout_editor_absoluteX="155dp"
-                        tools:layout_editor_absoluteY="198dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
@@ -311,7 +255,7 @@
 
 
                     <TextView
-                        android:id="@+id/t_p3_lari_count"
+                        android:id="@+id/salesSumPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -348,7 +292,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/t_agebuli_tanxa"
+                        android:id="@+id/salesTakenAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -360,7 +304,7 @@
                         android:padding="6dp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="@{@string/format_gel(viewModel.realizationDayLiveData.output.money)}"
+                        android:text="@{@string/format_gel(viewModel.realizationDayLiveData.takenMoney)}"
                         android:textSize="@dimen/textsize_3"
                         app:layout_constraintEnd_toEndOf="@+id/ttt_agebuli"
                         app:layout_constraintLeft_toLeftOf="@+id/guideline3"
@@ -429,11 +373,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="@string/xelze_tanxa"
-                app:layout_constraintEnd_toStartOf="@id/t_xelze"
-                app:layout_constraintTop_toTopOf="@id/t_xelze" />
+                app:layout_constraintEnd_toStartOf="@id/salesAmountAtHand"
+                app:layout_constraintTop_toTopOf="@id/salesAmountAtHand" />
 
             <TextView
-                android:id="@+id/t_xelze"
+                android:id="@+id/salesAmountAtHand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -453,7 +397,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/temp_beer_cont_rect"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/t_xelze" />
+                app:layout_constraintTop_toBottomOf="@id/salesAmountAtHand" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

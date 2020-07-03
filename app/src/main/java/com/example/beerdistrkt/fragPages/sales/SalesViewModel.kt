@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import java.util.*
@@ -15,13 +16,12 @@ import kotlin.collections.ArrayList
 class SalesViewModel : BaseViewModel() {
 
     val TAG = "Sales_VM"
-    var k30empty = 0.0f
-    var k50empty = 0.0f
-    var takeMoney = 0.0f
-    var k3r = 0.0
-    var k5r = 0.0
+    var takeMoney = 0.0
     var priceSum = 0.0
     val xarjebi: ArrayList<Xarji> = ArrayList()
+
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
+        ?: listOf()
 
     private val _deleteXarjiLiveData = MutableLiveData<ApiResponseState<String>>()
     val deleteXarjiLiveData: LiveData<ApiResponseState<String>>
@@ -46,6 +46,10 @@ class SalesViewModel : BaseViewModel() {
     private val _salesLiveData = MutableLiveData<List<SaleInfo>>()
     val salesLiveData: LiveData<List<SaleInfo>>
         get() = _salesLiveData
+
+    private val _barrelsLiveData = MutableLiveData<List<BarrelIO>>()
+    val barrelsLiveData: LiveData<List<BarrelIO>>
+        get() = _barrelsLiveData
 
     val usersLiveData = database.getUsers()
 
@@ -92,22 +96,23 @@ class SalesViewModel : BaseViewModel() {
             ApeniApiService.getInstance().getDayInfo(date, distributorID),
             successWithData = {
                 val sales: ArrayList<SaleInfo> = ArrayList()
-                sales.addAll(it.realizebuli)
+                sales.addAll(it.sale)
                 xarjebi.clear()
                 xarjebi.addAll(it.xarji)
 
                 priceSum = sales.sumByDouble { obj -> obj.price }
-                k3r = sales.sumByDouble { obj -> obj.k30 }
-                k5r = sales.sumByDouble { obj -> obj.k50 }
 
                 Log.d(TAG, it.toString())
-                takeMoney = it.output.money
-                k30empty = it.output.k30
-                k50empty = it.output.k50
+                takeMoney = it.takenMoney
                 Log.d(TAG, takeMoney.toString())
 
+                val barrelIOList = it.barrels
+                barrelIOList.forEach { bIO ->
+                    bIO.barrelName = cansList.find { can -> can.id == bIO.canTypeID }?.name
+                }
+                _barrelsLiveData.value = barrelIOList
                 _realizationDayLiveData.value = it
-                _salesLiveData.value = it.realizebuli
+                _salesLiveData.value = it.sale
             },
             finally = {
                 Log.d(TAG, "dayReq $it")

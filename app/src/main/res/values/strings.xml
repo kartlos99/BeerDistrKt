@@ -81,6 +81,8 @@
     <string name="detaluri">დეტალური</string>
     <string name="ufleba_false">არაგაქვთ ამ ოპერაციის განხორციელების უფლება</string>
     <string name="kasri_inout">რეალიზებული\nდაბრუნებული</string>
+    <string name="realized">რეალიზ.</string>
+    <string name="received">დაბრუნება</string>
     <string name="_30_n30">30\n30</string>
     <string name="ganmarteba1">* (+ x ) ობიექტებზე დატოვებული კასრები</string>
     <string name="choose_color">ფერის არჩევა</string>
