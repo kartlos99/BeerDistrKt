@@ -83,6 +83,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     loginToFirebase(it.data.username)
                     viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                 }
+                is ApiResponseState.Loading -> viewLoginLoginBtn.isEnabled = true
             }
         })
     }

@@ -14,13 +14,16 @@ class LoginViewModel : BaseViewModel() {
     val loginResponseLiveData = MutableLiveData<ApiResponseState<LoginResponse>>()
 
     fun logIn(username: String, password: String){
-
+        loginResponseLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().logIn(LoginRequest(username, password)),
             successWithData = {
                 Log.d("user", it.toString())
                 Session.get().justLoggedIn(it)
                 loginResponseLiveData.value = ApiResponseState.Success(it)
+            },
+            finally = {
+                loginResponseLiveData.value = ApiResponseState.Loading(false)
             }
         )
 
