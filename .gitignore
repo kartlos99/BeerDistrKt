@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 .idea/
+app/src/main/java/com/example/beerdistrkt/utils/PrivateKey.kt
+app/google-services.json
