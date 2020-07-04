@@ -50,32 +50,30 @@ class ObjListAdapter(
         if (convertView == null) {
             listRowView = inflater.inflate(R.layout.obj_list_row,null)
             viewHolder = ViewHolder()
-            viewHolder!!.t_objName = listRowView.findViewById(R.id.t_objName) as TextView
+            viewHolder!!.clientNameTv = listRowView.findViewById(R.id.clientNameTv) as TextView
             listRowView.tag = viewHolder
         } else {
             listRowView = convertView
             viewHolder = listRowView.tag as ViewHolder
         }
         val obieqti = getItem(i)
-        viewHolder!!.t_objName?.text = obieqti.dasaxeleba
+        viewHolder!!.clientNameTv?.text = obieqti.dasaxeleba
         return listRowView
     }
 
-    fun filter(query: String) {
-        myObjList
-        if (query.isEmpty()) {
+    fun filter(query: String?) {
+        myObjList.clear()
+        if (query.isNullOrEmpty()) {
             myObjList.addAll(objListOriginal)
         } else {
-            for (mimdinareObieqti in objListOriginal) {
-                if (mimdinareObieqti.dasaxeleba.contains(query)) {
-                    myObjList.add(mimdinareObieqti)
-                }
-            }
+            myObjList.addAll(objListOriginal.filter {
+                it.dasaxeleba.contains(query)
+            })
         }
         notifyDataSetChanged()
     }
 
     inner class ViewHolder {
-        var t_objName: TextView? = null
+        var clientNameTv: TextView? = null
     }
 }

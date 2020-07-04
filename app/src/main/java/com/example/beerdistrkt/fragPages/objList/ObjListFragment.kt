@@ -1,32 +1,34 @@
 package com.example.beerdistrkt.fragPages.objList
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.adapters.ObjListAdapter
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
-import com.example.beerdistrkt.db.ApeniDataBase
+import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
 
-class ObjListFragment : Fragment() {
+class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     companion object {
         fun newInstance() = ObjListFragment()
     }
 
-    private lateinit var viewModel: ObjListViewModel
+    override val viewModel by lazy {
+        getViewModel { ObjListViewModel() }
+    }
+
     private lateinit var vBinding: ObjListFragmentBinding
+    private lateinit var objListAdapter: ObjListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,15 +37,14 @@ class ObjListFragment : Fragment() {
         vBinding = ObjListFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
 
-        viewModel = ViewModelProviders.of(this).get(ObjListViewModel::class.java)
         vBinding.viewModel = viewModel
 
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
         Log.d("arg", args.directionTo)
 
-        vBinding.objListView.setOnItemClickListener { parent, view, position, id ->
-            val clientObject= vBinding.objListView.adapter.getItem(position) as Obieqti
+        vBinding.clientListView.setOnItemClickListener { parent, view, position, id ->
+            val clientObject= vBinding.clientListView.adapter.getItem(position) as Obieqti
             clientObject.id?.let {
                 when(args.directionTo){
                     ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment(it))
@@ -61,12 +62,28 @@ class ObjListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val objListObserver = Observer<List<Obieqti>> {
-            Log.d("____size_______", it.size.toString())
-            showObieqts(it)
+            Log.d("_clientList__size__", it.size.toString())
+            initClientsList(it)
         }
+        viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
+
+        val filterListener = object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                showToast(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                objListAdapter.filter(newText)
+                return false
+            }
+        }
+
+        vBinding.clientSearchView.setOnQueryTextListener(filterListener)
+
 //        objListObserver.onChanged(mutableListOf(Obieqti("rame saxeli")))
 //        viewModel.objList.observe(this, objListObserver)
-        viewModel.obieqtsList.observe(this, objListObserver)
+
 //        viewModel.isUpdating.observe(this, Observer {
 //            if(it){
 //                vBinding.progresBarObjList.visibility = View.VISIBLE
@@ -74,15 +91,10 @@ class ObjListFragment : Fragment() {
 //                vBinding.progresBarObjList.visibility = View.GONE
 //            }
 //        })
-
     }
 
-    private fun showObieqts(list: List<Obieqti>) {
-        val listAdapter = ObjListAdapter(activity?.applicationContext, list)
-        vBinding.objListView.adapter = listAdapter
-    }
-
-    fun Context.isNetAvalable(): Boolean{
-        return true
+    private fun initClientsList(list: List<Obieqti>) {
+        objListAdapter = ObjListAdapter(activity?.applicationContext, list)
+        vBinding.clientListView.adapter = objListAdapter
     }
 }

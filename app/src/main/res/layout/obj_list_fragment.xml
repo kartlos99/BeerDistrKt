@@ -15,29 +15,27 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchV_objlist"
+            android:id="@+id/clientSearchView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:queryHint="ფილტრი"
             android:elevation="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.appcompat.widget.SearchView>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ListView
-            android:id="@+id/objListView"
+            android:id="@+id/clientListView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchV_objlist">
+            app:layout_constraintTop_toBottomOf="@+id/clientSearchView">
         </ListView>
 
         <ProgressBar
-            android:id="@+id/progresBarObjList"
+            android:id="@+id/clientProgressBar"
             android:visibility="gone"
             android:layout_width="72dp"
             android:layout_height="72dp"
