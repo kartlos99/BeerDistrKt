@@ -59,6 +59,8 @@ interface ApeniApiService {
         }
     }
 
+    @GET("getVersions.php")
+    fun getTableVersions(): Call<DataResponse<VcsResponse>>
 
     @GET("get_users.php")
     fun getUsersList(): Call<DataResponse<List<User>>>

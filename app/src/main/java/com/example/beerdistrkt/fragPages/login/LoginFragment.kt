@@ -52,8 +52,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
         if (Session.get().isUserLogged()) {
             Session.get().clearSession()
-            SharedPreferenceDataSource(requireContext()).saveUserName("")
-            SharedPreferenceDataSource(requireContext()).savePassword("")
+            SharedPreferenceDataSource.getInstance().saveUserName("")
+            SharedPreferenceDataSource.getInstance().savePassword("")
         } else
             checkSavedPass()
 
@@ -61,8 +61,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     }
 
     private fun checkSavedPass() {
-        val userName = SharedPreferenceDataSource(requireContext()).getUserName()
-        val password = SharedPreferenceDataSource(requireContext()).getPass()
+        val userName = SharedPreferenceDataSource.getInstance().getUserName()
+        val password = SharedPreferenceDataSource.getInstance().getPass()
         if (userName.isNotEmpty() && password.isNotEmpty()) {
             viewLoginUserField.setText(userName)
             viewLoginPasswordField.setText(password)

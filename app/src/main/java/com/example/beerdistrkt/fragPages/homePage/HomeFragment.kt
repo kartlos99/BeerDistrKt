@@ -19,6 +19,7 @@ import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
 import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.visibleIf
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
@@ -53,10 +54,10 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
 
-        viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
-            it.forEach {user ->
-                Log.d("___User___", user.toString())
-            }
+        viewModel.mainLoaderLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.homeMainProgressBar?.visibleIf(it)
+            if (it)
+                viewModel.mainLoaderLiveData.value = false
         })
     }
 

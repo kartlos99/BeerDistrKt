@@ -1,10 +1,13 @@
 package com.example.beerdistrkt.fragPages.homePage
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.*
 
 class HomeViewModel : BaseViewModel() {
@@ -13,13 +16,17 @@ class HomeViewModel : BaseViewModel() {
     val beerLiveData = database.getBeerList()
     val cansLiveData = database.getCansList()
 
+    var localVersionState: VcsResponse? = null
+    var numberOfUpdatingTables = 0
+
+    val mainLoaderLiveData = MutableLiveData<Boolean>(false)
+
     init {
-        Log.d(TAG, "init")
-//        getObjects()
-//        getPrices()
-//        getUsers()
-//        getBeerList()
-//        getCanTypes()
+        if (Session.get().isUserLogged())
+            getTableVersionsFromServer()
+        localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
+        Log.d("localVers", localVersionState.toString())
+
         beerLiveData.observeForever {
             ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
         }
@@ -29,6 +36,53 @@ class HomeViewModel : BaseViewModel() {
         usersLiveData.observeForever { userList ->
             ObjectCache.getInstance()
                 .putList(User::class, "userList", userList.sortedBy { it.name })
+        }
+    }
+
+    private fun getTableVersionsFromServer() {
+        sendRequest(
+            ApeniApiService.getInstance().getTableVersions(),
+            successWithData = {
+                if (localVersionState != null) {
+                    if (it.beer > localVersionState!!.beer) {
+                        getBeerList()
+                        numberOfUpdatingTables++
+                    }
+                    if (it.client > localVersionState!!.client) {
+                        getObjects()
+                        numberOfUpdatingTables++
+                    }
+                    if (it.user > localVersionState!!.user) {
+                        getUsers()
+                        numberOfUpdatingTables++
+                    }
+                    if (it.barrel > localVersionState!!.barrel) {
+                        getCanTypes()
+                        numberOfUpdatingTables++
+                    }
+                    if (it.price > localVersionState!!.price) {
+                        getPrices()
+                        numberOfUpdatingTables++
+                    }
+                } else {
+                    numberOfUpdatingTables = 5
+                    getObjects()
+                    getPrices()
+                    getUsers()
+                    getBeerList()
+                    getCanTypes()
+                }
+                mainLoaderLiveData.value = numberOfUpdatingTables > 0
+                localVersionState = it
+            }
+        )
+    }
+
+    private fun saveVersion() {
+        numberOfUpdatingTables--
+        if (numberOfUpdatingTables == 0 && localVersionState != null) {
+            mainLoaderLiveData.value = false
+            SharedPreferenceDataSource.getInstance().saveVersions(localVersionState!!)
         }
     }
 
@@ -42,6 +96,7 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getUsersList(),
             successWithData = {
+                saveVersion()
                 Log.d(TAG, "Users_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -59,6 +114,7 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getBeerList(),
             successWithData = {
+                saveVersion()
                 Log.d(TAG, "Users_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -76,6 +132,8 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getPrices(),
             successWithData = {
+                Log.d(TAG, "price_respOK")
+                saveVersion()
                 clearPrices()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -83,8 +141,6 @@ class HomeViewModel : BaseViewModel() {
                             insertBeetPrice(bPrice)
                         }
                     }
-                    Log.d("__Price__size___VM____", it.size.toString())
-                    Log.d(TAG, it.firstOrNull().toString())
                 }
             }
         )
@@ -94,6 +150,8 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getObieqts(),
             successWithData = {
+                Log.d(TAG, "clients_respOK")
+                saveVersion()
                 clearObieqtsList()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -110,6 +168,7 @@ class HomeViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getCanList(),
             successWithData = {
+                saveVersion()
                 Log.d(TAG, "Cans_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
@@ -134,7 +193,6 @@ class HomeViewModel : BaseViewModel() {
     }
 
     private fun insertObiect(obieqti: Obieqti) {
-        Log.d(TAG, obieqti.toString())
         database.insertObiecti(obieqti)
     }
 

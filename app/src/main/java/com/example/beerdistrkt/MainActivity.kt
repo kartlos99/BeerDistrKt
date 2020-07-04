@@ -19,6 +19,7 @@ import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         vBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         ApeniDataBase.initialize(this)
         ApeniApiService.initialize(this)
+        SharedPreferenceDataSource.initialize(this)
         drawerLayout = vBinding.drawerLayout
 
         val toolBar = vBinding.toolBar
