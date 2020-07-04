@@ -38,4 +38,15 @@
         <item name="android:textSize">@dimen/sp16</item>
     </style>
 
+    <style name="FinanceAppearance">
+<!--        <item name="android:layout_marginTop">@dimen/gr_size_2</item>-->
+        <item name="android:paddingStart">@dimen/gr_size_8</item>
+        <item name="android:paddingEnd">@dimen/gr_size_8</item>
+        <item name="android:paddingTop">@dimen/gr_size_4</item>
+        <item name="android:paddingBottom">@dimen/gr_size_4</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/sp18</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

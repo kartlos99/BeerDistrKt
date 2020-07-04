@@ -47,7 +47,7 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
         vBinding.viewModel = viewModel
         vBinding.lifecycleOwner = this
 
-        vBinding.btnTarigi.setOnClickListener {
+        vBinding.salesSetDateBtn.setOnClickListener {
             context?.let {
                 val datePickerDialog = DatePickerDialog(
                     it,
@@ -61,12 +61,12 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
             }
         }
 
-        vBinding.btnXarjExpand.setOnClickListener {
+        vBinding.salesExpandXarjiBtn.setOnClickListener {
             viewModel.btnXarjExpandClick()
         }
 
         context?.let {
-            vBinding.btnXarjebi.setOnClickListener {
+            vBinding.salesAddXarjiBtn.setOnClickListener {
                 val xarjebiDialog = XarjebiDialog(it.context) { comment, amount ->
                     if (amount.isEmpty()) {
                         showToast(getString(R.string.msg_empty_not_saved))
@@ -145,7 +145,7 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
 
         val xarjiSum = viewModel.xarjebi.sumByDouble { it.amount.toDouble() }
         vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
-        vBinding.tXarjSum.text = resources.getString(R.string.format_gel, xarjiSum)
+        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, xarjiSum)
         vBinding.salesAmountAtHand.text = resources.getString(
             R.string.format_gel,
             viewModel.realizationDayLiveData.value?.takenMoney?.minus(xarjiSum)
@@ -163,7 +163,7 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
     }
 
     private fun showXarjList(expanded: Boolean) {
-        vBinding.btnXarjExpand.setImageDrawable(resources.getDrawable(if (expanded) R.drawable.ic_arrow_up_24dp else R.drawable.ic_arrow_down_24dp))
+        vBinding.salesExpandXarjiBtn.setImageDrawable(resources.getDrawable(if (expanded) R.drawable.ic_arrow_up_24dp else R.drawable.ic_arrow_down_24dp))
         vBinding.linearXarjebi.removeAllViews()
         var canDel = false
         if (Session.get().userType == UserType.ADMIN ||
