@@ -22,6 +22,9 @@ class SalesViewModel : BaseViewModel() {
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
         ?: listOf()
+    val usersList = mutableListOf(User.getBaseUser())
+    private val realUsersList = ObjectCache.getInstance().getList(User::class, "userList")
+        ?: listOf()
 
     private val _deleteXarjiLiveData = MutableLiveData<ApiResponseState<String>>()
     val deleteXarjiLiveData: LiveData<ApiResponseState<String>>
@@ -53,13 +56,13 @@ class SalesViewModel : BaseViewModel() {
 
     val usersLiveData = database.getUsers()
 
-    val distr_id = 0
+    var selectedDistributorID = 0
 
     var calendar: Calendar = Calendar.getInstance()
 
     fun onDataSelected(year: Int, month: Int, day: Int) {
         calendar.set(year, month, day)
-        prepearData()
+        prepareData()
     }
 
     fun btnXarjExpandClick() {
@@ -69,13 +72,13 @@ class SalesViewModel : BaseViewModel() {
     fun changeDay(days: Int) {
         calendar.add(Calendar.DAY_OF_MONTH, days)
         _xarjiListExpandedLiveData.value = false
-        prepearData()
+        prepareData()
     }
 
-    fun prepearData() {
+    fun prepareData() {
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         Log.d(TAG, selectedDayLiveData.value!!)
-        getDayInfo(selectedDayLiveData.value!!, distr_id)
+        getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
     }
 
     lateinit var userMap: Map<String, List<User>>
@@ -85,10 +88,11 @@ class SalesViewModel : BaseViewModel() {
     }
 
     init {
+        usersList.addAll(realUsersList)
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         _xarjiListExpandedLiveData.value = false
 
-        getDayInfo(selectedDayLiveData.value!!, distr_id)
+        getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
     }
 
     fun getDayInfo(date: String, distributorID: Int) {

@@ -77,8 +77,8 @@
                 android:layout_margin="8dp"
                 android:text="@string/distributorebi"
                 android:textSize="@dimen/textsize_3"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/salesDistributorsSpinner"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/salesDistributorsSpinner" />
 
             <Spinner
@@ -86,6 +86,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/gr_size_8"
+                android:spinnerMode="dialog"
                 android:background="@drawable/bkg_rounded_white_r8"
                 android:backgroundTint="@color/gray_light"
                 android:elevation="@dimen/gr_size_2"
@@ -252,78 +253,78 @@
                         android:textSize="@dimen/textsize_4"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/salesPriceTitle"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/price"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintBottom_toBottomOf="@id/salesSumPrice"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintTop_toTopOf="@id/salesSumPrice" />
 
                     <TextView
                         android:id="@+id/salesSumPrice"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/default_0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/salesTitleMoney" />
 
                     <TextView
                         android:id="@+id/salesTakenTitle"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/taken"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintBottom_toBottomOf="@id/salesTakenAmount"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintTop_toTopOf="@id/salesTakenAmount" />
 
                     <TextView
                         android:id="@+id/salesTakenAmount"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@{@string/format_gel(viewModel.realizationDayLiveData.takenMoney)}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/salesSumPrice" />
 
                     <TextView
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/xarjebi"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintBottom_toBottomOf="@id/salesSumXarji"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintTop_toTopOf="@id/salesSumXarji" />
 
                     <TextView
                         android:id="@+id/salesSumXarji"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/default_0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/salesTakenAmount" />
 
                     <TextView
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/xelze_tanxa"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintBottom_toBottomOf="@id/salesAmountAtHand"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintTop_toTopOf="@id/salesAmountAtHand" />
 
                     <TextView
                         android:id="@+id/salesAmountAtHand"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FinanceAppearance"
                         android:text="@string/default_0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/salesSumXarji" />

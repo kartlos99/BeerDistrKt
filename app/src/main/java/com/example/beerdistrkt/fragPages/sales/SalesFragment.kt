@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
@@ -22,7 +24,7 @@ import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.utils.*
 import java.util.*
 
-class SalesFragment : BaseFragment<SalesViewModel>() {
+class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelectedListener {
 
     companion object {
         fun newInstance() = SalesFragment()
@@ -89,6 +91,14 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.usersList.map { it.name }
+        )
+        vBinding.salesDistributorsSpinner.onItemSelectedListener = this
+
         initViewModel()
     }
 
@@ -200,5 +210,14 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
                 )
             }
         }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+        viewModel.prepareData()
     }
 }

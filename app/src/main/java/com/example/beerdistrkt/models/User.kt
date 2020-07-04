@@ -15,7 +15,17 @@ data class User(
     val adress: String,
     val maker: String,
     val comment: String
-)
+) {
+
+    companion object {
+        fun getBaseUser(): User {
+            return User(
+                "0", "ყველა", "ყველა",
+                "1", "","","",""
+            )
+        }
+    }
+}
 
 class Useri(var id: Int, var username: String) : Serializable {
     var type = 0
