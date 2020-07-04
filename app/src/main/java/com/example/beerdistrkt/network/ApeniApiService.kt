@@ -9,6 +9,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.utils.PrivateKey.Companion.TEST_SERVER_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 //import okhttp3.logging.HttpLoggingInterceptor
@@ -28,6 +29,9 @@ interface ApeniApiService {
 
         //        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
         private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
+
+//        test at server
+//        private const val BASE_URL = TEST_SERVER_URL
 
         fun initialize(context: Context) {
             if (instance == null) {

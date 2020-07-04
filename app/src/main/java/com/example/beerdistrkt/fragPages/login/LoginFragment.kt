@@ -67,6 +67,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             viewLoginUserField.setText(userName)
             viewLoginPasswordField.setText(password)
             viewModel.logIn(userName, password)
+            viewLoginLoginBtn.isEnabled = false
         }
     }
 
@@ -83,7 +84,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     loginToFirebase(it.data.username)
                     viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                 }
-                is ApiResponseState.Loading -> viewLoginLoginBtn.isEnabled = true
+                is ApiResponseState.ApiError -> {
+                    viewLoginLoginBtn.isEnabled = true
+                    showToast(it.errorText)
+                }
             }
         })
     }
@@ -116,7 +120,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 //                    val user = mAuth.currentUser
                     onLoginSuccess()
                 } else {
-                    Log.d("auth", task.exception?.message ?:"")
+                    Log.d("auth", task.exception?.message ?: "")
                     showToast(R.string.registration_fail_firebase)
                     Session.get().clearSession()
                 }

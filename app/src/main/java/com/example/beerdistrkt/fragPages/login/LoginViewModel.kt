@@ -22,6 +22,9 @@ class LoginViewModel : BaseViewModel() {
                 Session.get().justLoggedIn(it)
                 loginResponseLiveData.value = ApiResponseState.Success(it)
             },
+            responseFailure = {code, error ->
+                loginResponseLiveData.value = ApiResponseState.ApiError(code, error)
+            },
             finally = {
                 loginResponseLiveData.value = ApiResponseState.Loading(false)
             }
