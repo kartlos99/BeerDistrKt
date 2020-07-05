@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 
 import com.example.beerdistrkt.R
+import kotlinx.android.synthetic.main.sawyobi_fragment.*
 
 class SawyobiFragment : Fragment() {
 
@@ -22,12 +23,14 @@ class SawyobiFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
+        viewModel = ViewModelProviders.of(this).get(SawyobiViewModel::class.java)
+
         return inflater.inflate(R.layout.sawyobi_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SawyobiViewModel::class.java)
+        storeHouseReceiveBeerSelector.initView(viewModel.beerList, {})
         // TODO: Use the ViewModel
     }
 

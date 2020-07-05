@@ -76,6 +76,7 @@ class BeerSelectorView @JvmOverloads constructor(
     fun initView(beerList: List<BeerModel>, onFormUpdate: () -> Unit) {
         this.beerList = beerList
         this.onFormUpdate = onFormUpdate
+        initBeerRecycler()
     }
 
     fun formIsValid(): Boolean {
