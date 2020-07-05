@@ -107,16 +107,16 @@ class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory 
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProviders.of(this).get(T::class.java)
+        ViewModelProvider(this).get(T::class.java)
     else
-        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
 }
 
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProviders.of(this).get(T::class.java)
+        ViewModelProvider(this).get(T::class.java)
     else
-        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
 }
 
 fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negativeText: Int, theme: Int? = null, onClick: () -> Unit?) {
