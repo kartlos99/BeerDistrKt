@@ -75,9 +75,9 @@
     <string name="savse">სავსე კასრები</string>
     <string name="nashti">ნაშთი *</string>
     <string name="nashti_at_client">ნაშთი</string>
-    <string name="chamotana">ჩამოტანა 30/50</string>
+    <string name="chamotana">ჩამოტანა</string>
     <string name="carieli">ცარიელი კასრები</string>
-    <string name="wageba">წაღება 30/50</string>
+    <string name="wageba">წაღება</string>
     <string name="detaluri">დეტალური</string>
     <string name="ufleba_false">არაგაქვთ ამ ოპერაციის განხორციელების უფლება</string>
     <string name="kasri_inout">რეალიზებული\nდაბრუნებული</string>

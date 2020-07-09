@@ -8,6 +8,7 @@ import com.example.beerdistrkt.fragPages.mitana.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.utils.PrivateKey.Companion.TEST_SERVER_URL
 import com.squareup.moshi.Moshi
@@ -139,4 +140,11 @@ interface ApeniApiService {
 
     @POST("client/login.php")
     fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
+
+    // storeHouse
+    @GET("storeHouse/getBalance.php")
+    fun getStoreHouseBalance(
+        @Query("date") date: String,
+        @Query("chek") chek: Int
+    ): Call<DataResponse<StoreHouseResponse>>
 }

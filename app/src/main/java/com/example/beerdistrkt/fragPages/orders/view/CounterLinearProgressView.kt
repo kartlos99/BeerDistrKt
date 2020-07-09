@@ -37,4 +37,8 @@ class CounterLinearProgressView @JvmOverloads constructor(
             viewProgress.setBackgroundResource(R.color.warning)
     }
 
+    fun setCount(count: Int){
+        countTv.text = count.toString()
+        countTv.setTextColor(resources.getColor(R.color.colorForText))
+    }
 }

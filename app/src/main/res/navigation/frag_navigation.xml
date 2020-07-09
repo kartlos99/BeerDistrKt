@@ -75,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/sawyobiFragment"
-        android:name="com.example.beerdistrkt.fragPages.sawyobi.SawyobiFragment"
+        android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseFragment"
         android:label="sawyobi_fragment"
         tools:layout="@layout/sawyobi_fragment" >
         <action
