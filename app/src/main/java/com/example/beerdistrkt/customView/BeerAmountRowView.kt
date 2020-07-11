@@ -30,10 +30,6 @@ class BeerAmountRowView @JvmOverloads constructor(
                 4 -> orderItemCan10.setCount(amounts[it] ?: 0)
             }
         }
-//        orderItemCan50.setCount(amounts[0])
-//        orderItemCan30.setCount(amounts[1])
-//        orderItemCan20.setCount(amounts[2])
-//        orderItemCan10.setCount(amounts[3])
     }
 
 }

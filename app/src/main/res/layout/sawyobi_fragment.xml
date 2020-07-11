@@ -38,10 +38,10 @@
                 android:id="@+id/storeHouseFullBarrelsRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_4"
                 android:layout_marginTop="@dimen/gr_size_8"
                 android:background="@drawable/bkg_rounded_white_r8"
                 android:elevation="@dimen/gr_size_2"
-                android:layout_margin="@dimen/gr_size_4"
                 android:padding="@dimen/gr_size_4"
                 app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsTitle"
                 tools:itemCount="3" />
@@ -62,6 +62,9 @@
                 android:id="@+id/storeHouseReceiveContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_4"
+                android:background="@drawable/bkg_rounded_white_r8"
+                android:elevation="@dimen/gr_size_2"
                 android:paddingBottom="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,8 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:backgroundTint="@color/fab_addbeer_color"
-                android:src="@drawable/ic_add_24dp"
+                android:src="@drawable/ic_playlist_add_24dp"
                 app:backgroundTintMode="src_over"
                 app:fabSize="mini"
                 app:layout_constraintRight_toRightOf="parent"
@@ -121,7 +123,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_editor_absoluteX="105dp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/storeHouseEmptyBarrelsListBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -137,10 +139,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="@color/colorCardview_green"
-                    app:cardCornerRadius="@dimen/cardCornerRadius"
-                    app:cardElevation="@dimen/lowElevation"
                     android:padding="@dimen/gr_size_4"
+
+                    app:cardCornerRadius="@dimen/cardCornerRadius"
+                    app:cardElevation="@dimen/gr_size_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelTitle"
@@ -148,25 +150,14 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/storeHouseEmptyBarrelDataTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="8dp"
-                            android:text="@string/nashti"
-                            android:textAlignment="center"
-                            android:textSize="@dimen/textsize_3"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/gr_size_4">
 
                         <com.example.beerdistrkt.customView.BeerAmountRowView
                             android:id="@+id/storeHouseEmptyBarrelsAtHouse"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/storeHouseEmptyBarrelDataTitle" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <com.example.beerdistrkt.customView.BeerAmountRowView
                             android:id="@+id/storeHouseEmptyBarrelsAtClients"
@@ -287,10 +278,17 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/gr_size_4"
+                    app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCard" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/storeHouseSetDateBtn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -319,26 +317,28 @@
                     tools:ignore="Autofill" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/storeHouseDoneBtn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_height="56dp"
+
                 android:text="@string/chawera"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/storeHouseComment"
                 tools:layout_editor_absoluteX="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="@string/ganmarteba1"
-                android:textSize="@dimen/textsize_2"
+            <ProgressBar
+                android:id="@+id/storeHouseProgress"
+                android:layout_width="@dimen/gr_size_56"
+                android:layout_height="@dimen/gr_size_56"
+                android:layout_marginBottom="@dimen/gr_size_24"
+                android:elevation="@dimen/gr_size_2"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/storeHouseDoneBtn" />
+                app:layout_constraintStart_toStartOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

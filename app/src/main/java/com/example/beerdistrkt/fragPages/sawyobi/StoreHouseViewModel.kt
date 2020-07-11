@@ -5,11 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
 import java.util.*
 
 class StoreHouseViewModel : BaseViewModel() {
@@ -34,9 +40,20 @@ class StoreHouseViewModel : BaseViewModel() {
     val emptyBarrelsListLiveData: LiveData<List<SimpleBeerRowModel>>
         get() = _emptyBarrelsListLiveData
 
+    private val _doneLiveData = MutableLiveData<ApiResponseState<String>>()
+    val doneLiveData: LiveData<ApiResponseState<String>>
+        get() = _doneLiveData
+
     val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")
         ?: mutableListOf()
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
+        ?: listOf()
 
+    val receivedItemsList = mutableListOf<TempBeerItemModel>()
+    val barrelOutItems = mutableListOf<StoreInsertRequestModel.BarrelOutItem>()
+
+    val receivedItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
+    val receivedItemDuplicateLiveData = MutableLiveData<Boolean>(false)
 
     init {
         getStoreBalance()
@@ -76,7 +93,7 @@ class StoreHouseViewModel : BaseViewModel() {
 
         val fGr = fList.groupBy { it.barrelID }
         fGr.keys.forEach {
-            val sumOfSale = fGr[it]?.sumBy { fItem -> fItem.saleCount} ?: 0
+            val sumOfSale = fGr[it]?.sumBy { fItem -> fItem.saleCount } ?: 0
             val sumOfReceived = empty.find { e -> e.barrelID == it }?.inputEmptyToStore ?: 0
             barrelsAtClient[it] = sumOfSale - sumOfReceived
         }
@@ -103,5 +120,71 @@ class StoreHouseViewModel : BaseViewModel() {
         selectedDate.set(year, month, day)
         _setDayLiveData.value = dateFormatDash.format(selectedDate.time)
         getStoreBalance()
+    }
+
+    fun onDoneClick(comment: String?, barrelsEntered: List<Int>) {
+        barrelOutItems.clear()
+        barrelsEntered.forEachIndexed { index, count ->
+            if (count > 0)
+                addBarrelToList(index + 1, count)
+        }
+
+        val storeInsertRequestModel = StoreInsertRequestModel(
+            comment,
+            Session.get().getUserID(),
+            if (isChecked) 1 else 0,
+            inputBeer = receivedItemsList.map {
+                StoreInsertRequestModel.ReceiveItem(
+                    0, dateTimeFormat.format(selectedDate.time), it.beer.id, it.canType.id, it.count
+                )
+            },
+            outputBarrels = barrelOutItems
+        )
+
+        addStoreHouseOperation(storeInsertRequestModel)
+    }
+
+    private fun addStoreHouseOperation(requestModel: StoreInsertRequestModel) {
+        _doneLiveData.value = ApiResponseState.Loading(true)
+        sendRequest(
+            ApeniApiService.getInstance().addStoreHouseOperation(requestModel),
+            successWithData = {
+                Log.d("insToStore", it)
+                _doneLiveData.value = ApiResponseState.Success(it)
+
+                receivedItemsList.clear()
+                receivedItemsLiveData.value = receivedItemsList
+                barrelOutItems.clear()
+
+                getStoreBalance()
+            },
+            finally = {
+                _doneLiveData.value = ApiResponseState.Loading(false)
+            }
+        )
+    }
+
+    fun addBeerReceiveItemToList(saleItem: TempBeerItemModel) {
+        if (receivedItemsList.any {
+                it.beer.id == saleItem.beer.id && it.canType.id == saleItem.canType.id
+            })
+            receivedItemDuplicateLiveData.value = true
+        else {
+            receivedItemsList.add(saleItem)
+            receivedItemsLiveData.value = receivedItemsList
+                .sortedBy { it.canType.sortValue }
+                .sortedBy { it.beer.sortValue }
+        }
+    }
+
+    fun addBarrelToList(barrelType: Int, count: Int) {
+        barrelOutItems.add(
+            StoreInsertRequestModel.BarrelOutItem(
+                0,
+                dateTimeFormat.format(selectedDate.time),
+                barrelType,
+                count
+            )
+        )
     }
 }

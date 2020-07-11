@@ -1,8 +1,6 @@
 package com.example.beerdistrkt.customView
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -18,7 +16,6 @@ import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.CanModel
 
-import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
@@ -31,13 +28,14 @@ import kotlinx.android.synthetic.main.view_beer_selector.view.*
 
 class BeerSelectorView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr), View.OnClickListener {
 
     private var beerPos = 0
     private val snapHelper = PagerSnapHelper()
     private val beerAdapter = BeerAdapter()
 
-    lateinit var beerList: List<BeerModel>
+    private lateinit var beerList: List<BeerModel>
+    private lateinit var cansList: List<CanModel>
     var selectedCan: CanModel? = null
     var onFormUpdate: (() -> Unit)? = null
 
@@ -60,23 +58,36 @@ class BeerSelectorView @JvmOverloads constructor(
         })
 
         beerSelectorBtnLeftImg.setOnClickListener {
-            beerPos = (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + beerList.size - 1) % beerList.size
+            beerPos =
+                (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + beerList.size - 1) % beerList.size
             beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
         }
         beerSelectorBtnRightImg.setOnClickListener {
             beerPos = (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + 1) % beerList.size
             beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
         }
+        beerSelectorCanChip0.setOnClickListener(this)
+        beerSelectorCanChip1.setOnClickListener(this)
+        beerSelectorCanChip2.setOnClickListener(this)
+        beerSelectorCanChip3.setOnClickListener(this)
 
         beerSelectorCansScroll.postDelayed(Runnable {
             beerSelectorCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
     }
 
-    fun initView(beerList: List<BeerModel>, onFormUpdate: () -> Unit) {
+    fun initView(beerList: List<BeerModel>, barrelsList: List<CanModel>, onFormUpdate: () -> Unit) {
         this.beerList = beerList
         this.onFormUpdate = onFormUpdate
+        cansList = barrelsList
         initBeerRecycler()
+    }
+
+    private fun setCan(pos: Int) {
+        selectedCan = if (pos >= 0)
+            cansList[pos]
+        else
+            null
     }
 
     fun formIsValid(): Boolean {
@@ -93,9 +104,9 @@ class BeerSelectorView @JvmOverloads constructor(
         onFormUpdate?.invoke()
     }
 
-    fun getTempOrderItem(): TempBeerItemModel {
+    fun getTempBeerItem(): TempBeerItemModel {
         return TempBeerItemModel(0,
-            beerList[beerPos],
+            beerList[snapHelper.getSnapPosition(beerSelectorBeerRecycler)],
             selectedCan!!,
             beerSelectorCanCountControl.amount,
             {
@@ -104,7 +115,7 @@ class BeerSelectorView @JvmOverloads constructor(
             })
     }
 
-    private fun fillOrderItemForm(orderItem: TempBeerItemModel) {
+    private fun fillBeerItemForm(orderItem: TempBeerItemModel) {
         beerPos = beerList.indexOf(orderItem.beer)
         beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
         beerSelectorChipGr.clearCheck()
@@ -183,5 +194,18 @@ class BeerSelectorView @JvmOverloads constructor(
                 rv.addOnScrollListener(onPageChangeListener!!)
             }
         }
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.beerSelectorCanChip0 -> setCan(3)
+            R.id.beerSelectorCanChip1 -> setCan(2)
+            R.id.beerSelectorCanChip2 -> setCan(1)
+            R.id.beerSelectorCanChip3 -> setCan(0)
+        }
+
+        if (beerSelectorChipGr.checkedChipId == View.NO_ID)
+            setCan(-1)
+        checkForm()
     }
 }

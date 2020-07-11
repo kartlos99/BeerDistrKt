@@ -9,6 +9,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.utils.PrivateKey.Companion.TEST_SERVER_URL
 import com.squareup.moshi.Moshi
@@ -147,4 +148,7 @@ interface ApeniApiService {
         @Query("date") date: String,
         @Query("chek") chek: Int
     ): Call<DataResponse<StoreHouseResponse>>
+
+    @POST("storeHouse/add.php")
+    fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
 }
