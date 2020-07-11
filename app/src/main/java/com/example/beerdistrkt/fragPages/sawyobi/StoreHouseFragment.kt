@@ -56,6 +56,11 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
     override fun onStart() {
         super.onStart()
+
+        storeHouseReceiveBeerSelector.onDeleteClick = {
+            showToast("del")
+            viewModel.removeReceiveItemFromList(it)
+        }
         storeHouseReceiveBeerSelector.initView(
             viewModel.beerList,
             viewModel.cansList,

@@ -39,6 +39,8 @@ class BeerSelectorView @JvmOverloads constructor(
     var selectedCan: CanModel? = null
     var onFormUpdate: (() -> Unit)? = null
 
+    var onDeleteClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
+    var onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 
     init {
         View.inflate(context, R.layout.view_beer_selector, this)
@@ -110,8 +112,7 @@ class BeerSelectorView @JvmOverloads constructor(
             selectedCan!!,
             beerSelectorCanCountControl.amount,
             {
-//                showToast("del")
-//                viewModel.removeOrderItemFromList(it)
+                onDeleteClick?.invoke(it)
             })
     }
 

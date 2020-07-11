@@ -187,4 +187,9 @@ class StoreHouseViewModel : BaseViewModel() {
             )
         )
     }
+
+    fun removeReceiveItemFromList(item: TempBeerItemModel) {
+        receivedItemsList.remove(item)
+        receivedItemsLiveData.value = receivedItemsList
+    }
 }
