@@ -34,7 +34,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     override val viewModel: OrdersViewModel by lazy { getViewModel<OrdersViewModel>() }
 
     private lateinit var vBinding: OrdersFragmentBinding
-    private val ordersAdapter by lazy { ParentOrderAdapter() }
+    private lateinit var ordersAdapter: ParentOrderAdapter
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -58,7 +58,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
         vBinding.ordersRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        vBinding.ordersRecycler.adapter = ordersAdapter
+//        vBinding.ordersRecycler.adapter = ordersAdapter
 
         /*val beerList: ArrayList<String> = ArrayList<String>()
         beerList.add("-")
@@ -118,7 +118,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         super.onActivityCreated(savedInstanceState)
         viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is ApiResponseState.Success -> ordersAdapter.setData(it.data)
+                is ApiResponseState.Success -> {
+                    ordersAdapter = ParentOrderAdapter(it.data)
+                    vBinding.ordersRecycler.adapter = ordersAdapter
+                }
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
             }
         })
