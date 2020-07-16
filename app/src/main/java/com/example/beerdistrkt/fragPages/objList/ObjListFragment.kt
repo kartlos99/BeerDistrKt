@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.adapters.ObjListAdapter
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
+import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
+import java.util.*
 
 class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
@@ -28,7 +32,8 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     }
 
     private lateinit var vBinding: ObjListFragmentBinding
-    private lateinit var objListAdapter: ObjListAdapter
+
+    private var clientListAdapter = ClientsListAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,23 +44,19 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
         vBinding.viewModel = viewModel
 
+        return vBinding.root
+    }
+
+    fun navigateTo(clientID: Int) {
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
-        Log.d("arg", args.directionTo)
-
-        vBinding.clientListView.setOnItemClickListener { parent, view, position, id ->
-            val clientObject= vBinding.clientListView.adapter.getItem(position) as Obieqti
-            clientObject.id?.let {
-                when(args.directionTo){
-                    ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment(it))
-                    MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddDeliveryFragment(it, null))
-                    AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAmonaweriFragment(it))
+        when (args.directionTo) {
+            ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment(clientID))
+            MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddDeliveryFragment(clientID,null))
+            AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAmonaweriFragment(clientID))
 //                    else -> // show toast
-                }
-            }
         }
 
-        return vBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -74,7 +75,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                objListAdapter.filter(newText)
+                clientListAdapter.filter(newText)
                 return false
             }
         }
@@ -94,7 +95,37 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     }
 
     private fun initClientsList(list: List<Obieqti>) {
-        objListAdapter = ObjListAdapter(activity?.applicationContext, list)
-        vBinding.clientListView.adapter = objListAdapter
+        vBinding.clientsRecycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        vBinding.clientsRecycler.setHasFixedSize(true)
+
+        clientListAdapter.setData(list)
+        clientListAdapter.onItemClick = ::navigateTo
+        vBinding.clientsRecycler.adapter = clientListAdapter
+
+        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val sourcePosition = viewHolder.adapterPosition
+                val targetPosition = target.adapterPosition
+                Log.d("drag size2", "${list.size}")
+                Collections.swap(clientListAdapter.showingList, sourcePosition, targetPosition)
+                clientListAdapter.notifyItemMoved(sourcePosition, targetPosition)
+                Log.d("drag", "$sourcePosition to $targetPosition")
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+            }
+
+        })
+
+        touchHelper.attachToRecyclerView(vBinding.clientsRecycler)
     }
 }
