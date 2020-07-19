@@ -136,6 +136,16 @@ fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negative
         }.show()
 }
 
+fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index: Int) -> Unit?) {
+    val builder = AlertDialog.Builder(this)
+    if (title != null)
+        builder.setTitle(title)
+    builder.setItems(dataList) {dialog, which ->
+        onClick.invoke(which)
+    }
+    builder.create().show()
+}
+
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager =
         this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

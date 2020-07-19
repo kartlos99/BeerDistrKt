@@ -7,6 +7,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
+import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
@@ -38,6 +39,7 @@ class OrdersViewModel : BaseViewModel() {
     val askForOrderDeleteLiveData = MutableLiveData<Order?>(null)
     val orderDeleteLiveData = MutableLiveData<ApiResponseState<Pair<Int, Int>>>()
     val editOrderLiveData = MutableLiveData<Order?>(null)
+    val changeDistributorLiveData = MutableLiveData<Order?>(null)
 
     val listOfGroupedOrders: MutableList<OrderGroupModel> = mutableListOf()
 
@@ -69,6 +71,9 @@ class OrdersViewModel : BaseViewModel() {
                         },
                         onEditClick = { order ->
                             editOrderLiveData.value = order
+                        },
+                        onChangeDistributorClick = { order ->
+                            changeDistributorLiveData.value = order
                         }
                     )
                 }))
@@ -95,7 +100,7 @@ class OrdersViewModel : BaseViewModel() {
                 OrderGroupModel(
                     distributorID = it.key,
                     distributorName = distributorName,
-                    ordersList = it.value.sortedBy {order ->
+                    ordersList = it.value.sortedBy { order ->
                         order.sortValue
                     }.toMutableList()
                 )
@@ -140,8 +145,26 @@ class OrdersViewModel : BaseViewModel() {
         )
     }
 
+    fun getDistributorsArray(): Array<String> {
+        return usersList.map {
+            it.username
+        }.toTypedArray()
+    }
+
     private fun editOrder(order: Order) {
         Log.d("onEdit", order.toString())
+    }
+
+    fun changeDistributor(orderID: Int, distributorPos: Int) {
+        val distributorID = usersList[distributorPos].id
+        val orderChangeDistributor = OrderUpdateDistributorRequestModel(orderID, distributorID)
+        sendRequest(
+            ApeniApiService.getInstance().updateOrderDistributor(orderChangeDistributor),
+            finally = {
+                Log.d("reOrderResult", "$it")
+                if (it) getOrders()
+            }
+        )
     }
 
     companion object {

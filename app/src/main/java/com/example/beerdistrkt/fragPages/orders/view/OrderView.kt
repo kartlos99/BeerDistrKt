@@ -75,6 +75,9 @@ class OrderView @JvmOverloads constructor(
         orderUnitDeleteBtn.setOnClickListener {
             order.onDeleteClick()
         }
+        orderUnitChangeDistributorBtn.setOnClickListener {
+            order.onChangeDistributorClick()
+        }
         orderUnitFrontRoot.postDelayed({
             val lp = orderUnitBackRoot.layoutParams
             lp.height = orderUnitFrontRoot.measuredHeight

@@ -11,12 +11,24 @@
 
     <LinearLayout
         android:id="@+id/orderUnitBackRoot"
-        android:layout_width="112dp"
+        android:layout_width="168dp"
         android:layout_height="wrap_content"
 
         android:gravity="end"
         android:orientation="horizontal"
         android:paddingVertical="@dimen/gr_size_4">
+
+        <ImageButton
+            android:id="@+id/orderUnitChangeDistributorBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/green_01"
+            android:contentDescription="@string/img_description"
+            android:paddingHorizontal="@dimen/gr_size_4"
+            android:paddingVertical="@dimen/gr_size_16"
+            android:tint="@color/green_08"
+            app:srcCompat="@drawable/ic_redirect_24" />
 
         <ImageButton
             android:id="@+id/orderUnitEditBtn"

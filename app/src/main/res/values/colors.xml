@@ -33,5 +33,8 @@
     <color name="in_complete_order">#F81A1A</color>
     <color name="warning">#FAD82F</color>
 
+    <color name="green_01">#CEEFD5</color>
+    <color name="green_02">#BAF1C6</color>
+    <color name="green_08">#32ED5B</color>
 
 </resources>

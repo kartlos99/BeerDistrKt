@@ -11,14 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.visibleIf
@@ -164,6 +161,18 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 viewModel.editOrderLiveData.value = null
             }
         })
+        viewModel.changeDistributorLiveData.observe(viewLifecycleOwner, Observer { order ->
+            if (order != null) {
+                requireContext().showListDialog(
+                    R.string.choose_distributor,
+                    viewModel.getDistributorsArray()
+                ) { distributorPos ->
+                    viewModel.changeDistributor(order.ID, distributorPos)
+                }
+                viewModel.changeDistributorLiveData.value = null
+            }
+        })
+
         (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.order_main)
     }
 
