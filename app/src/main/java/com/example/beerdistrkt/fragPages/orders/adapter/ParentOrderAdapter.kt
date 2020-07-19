@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.UserType
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.view_order_group.view.*
 import java.util.*
@@ -137,15 +139,17 @@ class ParentOrderAdapter(
                     }
                 }
 
-                fun calculateSortValue(sourcePosition: Int, targetPosition: Int): Double{
+                fun calculateSortValue(sourcePosition: Int, targetPosition: Int): Double {
                     var newValue = .0
                     if (sourcePosition < targetPosition) {
                         newValue =
                             if (targetPosition == grItem.ordersList.size - 1) {
                                 grItem.ordersList[targetPosition].sortValue.plus(1.0)
                             } else {
-                                listOf(grItem.ordersList[targetPosition].sortValue,
-                                    grItem.ordersList[targetPosition + 1].sortValue).average()
+                                listOf(
+                                    grItem.ordersList[targetPosition].sortValue,
+                                    grItem.ordersList[targetPosition + 1].sortValue
+                                ).average()
                             }
                     }
                     if (sourcePosition > targetPosition) {
@@ -153,8 +157,10 @@ class ParentOrderAdapter(
                             if (targetPosition == 0) {
                                 grItem.ordersList[targetPosition].sortValue.minus(1.0)
                             } else {
-                                listOf(grItem.ordersList[targetPosition].sortValue,
-                                    grItem.ordersList[targetPosition - 1].sortValue).average()
+                                listOf(
+                                    grItem.ordersList[targetPosition].sortValue,
+                                    grItem.ordersList[targetPosition - 1].sortValue
+                                ).average()
                             }
                     }
                     return newValue
@@ -167,7 +173,8 @@ class ParentOrderAdapter(
                 }
             })
 
-            touchHelper.attachToRecyclerView(holder.itemView.viewOrderGroupRecycler)
+            if (Session.get().userType == UserType.ADMIN || Session.get().userID == grItem.distributorID.toString())
+                touchHelper.attachToRecyclerView(holder.itemView.viewOrderGroupRecycler)
 
             holder.itemView.viewOrderGroupRecycler.layoutManager = layoutManager
             holder.itemView.viewOrderGroupRecycler.adapter = subOrderAdapter
