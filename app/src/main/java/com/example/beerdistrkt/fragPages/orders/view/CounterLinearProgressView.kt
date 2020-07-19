@@ -22,13 +22,22 @@ class CounterLinearProgressView @JvmOverloads constructor(
     }
 
     fun setCountAndProgress(count: Int, progress: Int = 0) {
-        val combText = "$count/$progress"
-        val spanText = SpannableString(combText)
-        spanText.setSpan(
-            ForegroundColorSpan(resources.getColor(R.color.colorForText)),
-            0, combText.indexOf("/"), Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-        )
-        countTv.text = spanText
+        if (progress > 0) {
+            val combText = "$count/$progress"
+            val spanText = SpannableString(combText)
+            spanText.setSpan(
+                ForegroundColorSpan(resources.getColor(R.color.colorForText)),
+                0, combText.indexOf("/"), Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+            countTv.text = spanText
+        } else {
+            val spanText = SpannableString("$count")
+            spanText.setSpan(
+                ForegroundColorSpan(resources.getColor(R.color.colorForText)),
+                0, spanText.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            countTv.text = spanText
+        }
         viewProgress.max = count
         viewProgress.progress = progress
         if (count > 0)

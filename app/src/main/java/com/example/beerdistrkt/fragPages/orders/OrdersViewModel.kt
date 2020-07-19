@@ -77,6 +77,7 @@ class OrdersViewModel : BaseViewModel() {
                         }
                     )
                 }))
+                listOfGroupedOrders.sortBy { gr -> gr.distributorID }
 
                 ordersLiveData.value = ApiResponseState.Success(listOfGroupedOrders)
             },

@@ -42,21 +42,14 @@ class ParentOrderAdapter(
         orderGroups[position].let { grItem ->
 
             holder.itemView.viewOrderGroupDistributor.text = grItem.distributorName
-            val itemList = grItem.getSummedOrder().groupBy {
+            val itemList = grItem.getSummedRemainingOrder().groupBy {
                 it.beerID
             }.toMutableMap()
-            val salesList = grItem.getSummedSales().groupBy {
-                it.beerID
-            }
-            salesList.forEach {
-                if (!itemList.contains(it.key))
-                    itemList[it.key] = emptyList()
-            }
 
             holder.itemView.viewOrderGroupSumRecycler.layoutManager =
                 LinearLayoutManager(holder.itemView.viewOrderGroupSumRecycler.context)
             holder.itemView.viewOrderGroupSumRecycler.adapter =
-                OrderItemAdapter(itemList.toSortedMap(), salesList)
+                OrderItemAdapter(itemList.toSortedMap())
 
             holder.itemView.viewOrderGroupTitle.setOnClickListener {
                 grItem.isExpanded = !grItem.isExpanded

@@ -71,6 +71,21 @@ data class Order(
     )
 
     fun isChecked() = items.any { it.check == 1 }
+
+    fun getRemainingOrderItems(): List<Item> {
+        val result = mutableListOf<Item>()
+
+        items.forEach { item ->
+            val deliveredCount = sales.find { sale ->
+                item.beerID == sale.beerID && item.canTypeID == sale.canTypeID
+            }?.count ?: 0
+            val diff = if (item.count - deliveredCount < 0) 0 else item.count - deliveredCount
+            val copyItem = item.copy(count = diff)
+            result.add(copyItem)
+        }
+
+        return result
+    }
 }
 
 enum class OrderStatus(val textRes: Int, val data: Int) {
