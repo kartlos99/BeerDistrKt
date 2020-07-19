@@ -11,6 +11,7 @@ data class Order(
     val clientID: Int,
     val client: Obieqti,
     val comment: String?,
+    var sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
     val items: List<Item>,

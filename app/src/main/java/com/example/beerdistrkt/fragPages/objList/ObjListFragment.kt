@@ -126,6 +126,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
         })
 
-        touchHelper.attachToRecyclerView(vBinding.clientsRecycler)
+//        touchHelper.attachToRecyclerView(vBinding.clientsRecycler)
     }
 }

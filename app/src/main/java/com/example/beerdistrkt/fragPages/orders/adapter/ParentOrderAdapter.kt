@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
+import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.view_order_group.view.*
 import java.util.*
@@ -18,6 +19,8 @@ import java.util.*
 class ParentOrderAdapter(
     private var orderGroups: MutableList<OrderGroupModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var onOrderDrag: ((orderID: Int, newSortValue: Double) -> Unit)? = null
 
     private val viewPool = RecycledViewPool()
 //    private var ordersMap = orders.groupBy { it.distributorID }
@@ -72,14 +75,20 @@ class ParentOrderAdapter(
             val subOrderAdapter = OrderAdapter(grItem.ordersList)
             orderGroups[position].orderAdapter = subOrderAdapter
 
+            var dragStartPosition = -1
             Log.d("drag size1", "${grItem.ordersList.size}")
+
+            var draggingOrder: Order? = null
+
+            var newSortValue: Double? = null
+
             val touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
                 override fun getMovementFlags(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder
                 ): Int {
-                    return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0 )
+                    return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
                 }
 
                 override fun onMove(
@@ -90,6 +99,9 @@ class ParentOrderAdapter(
                     val sourcePosition = sourceVH.adapterPosition
                     val targetPosition = targetVH.adapterPosition
                     Log.d("drag size2", "${grItem.ordersList.size}")
+
+                    newSortValue = calculateSortValue(sourcePosition, targetPosition)
+
                     Collections.swap(grItem.ordersList, sourcePosition, targetPosition)
                     subOrderAdapter.notifyItemMoved(sourcePosition, targetPosition)
                     Log.d("drag", "$sourcePosition to $targetPosition")
@@ -102,6 +114,14 @@ class ParentOrderAdapter(
                 ) {
                     super.clearView(recyclerView, viewHolder)
                     Log.d("drag posFin", "${viewHolder.adapterPosition}")
+                    val dragFinalPosition = viewHolder.adapterPosition
+
+                    if (dragStartPosition != dragFinalPosition && dragStartPosition != -1) {
+                        if (draggingOrder != null && newSortValue != null) {
+                            onOrderDrag?.invoke(draggingOrder!!.ID, newSortValue!!)
+                            draggingOrder!!.sortValue = newSortValue!!
+                        }
+                    }
                 }
 
                 override fun onSelectedChanged(
@@ -109,9 +129,35 @@ class ParentOrderAdapter(
                     actionState: Int
                 ) {
                     super.onSelectedChanged(viewHolder, actionState)
-                    Log.d("drag onSel", "${viewHolder?.adapterPosition} $actionState.")
-                    if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
-                        Log.d("drag posStart", "${viewHolder?.adapterPosition}")
+                    if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                        dragStartPosition = viewHolder?.adapterPosition ?: -1
+                        if (dragStartPosition >= 0)
+                            draggingOrder = grItem.ordersList[dragStartPosition]
+                        Log.d("drag posStart", "$dragStartPosition")
+                    }
+                }
+
+                fun calculateSortValue(sourcePosition: Int, targetPosition: Int): Double{
+                    var newValue = .0
+                    if (sourcePosition < targetPosition) {
+                        newValue =
+                            if (targetPosition == grItem.ordersList.size - 1) {
+                                grItem.ordersList[targetPosition].sortValue.plus(1.0)
+                            } else {
+                                listOf(grItem.ordersList[targetPosition].sortValue,
+                                    grItem.ordersList[targetPosition + 1].sortValue).average()
+                            }
+                    }
+                    if (sourcePosition > targetPosition) {
+                        newValue =
+                            if (targetPosition == 0) {
+                                grItem.ordersList[targetPosition].sortValue.minus(1.0)
+                            } else {
+                                listOf(grItem.ordersList[targetPosition].sortValue,
+                                    grItem.ordersList[targetPosition - 1].sortValue).average()
+                            }
+                    }
+                    return newValue
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}

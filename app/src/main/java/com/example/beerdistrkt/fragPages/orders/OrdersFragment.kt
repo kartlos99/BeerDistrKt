@@ -120,6 +120,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             when (it) {
                 is ApiResponseState.Success -> {
                     ordersAdapter = ParentOrderAdapter(it.data)
+                    ordersAdapter.onOrderDrag = viewModel::onOrderDrag
                     vBinding.ordersRecycler.adapter = ordersAdapter
                 }
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)

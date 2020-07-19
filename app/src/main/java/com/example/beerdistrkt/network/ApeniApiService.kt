@@ -6,6 +6,7 @@ import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
 import com.example.beerdistrkt.fragPages.mitana.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
+import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -134,6 +135,9 @@ interface ApeniApiService {
 
     @GET("order/getLastActiveID.php")
     fun getLastActiveOrderID(@Query("clientID") clientID: Int): Call<DataResponse<Int>>
+
+    @POST("order/updateSortValue.php")
+    fun updateOrderSortValue(@Body data: OrderReSortModel): Call<DataResponse<String>>
 
     // client
     @GET("client/getDebtByID.php")

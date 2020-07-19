@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
+import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
@@ -87,14 +88,16 @@ class OrdersViewModel : BaseViewModel() {
         val groupedOrders = mutableListOf<OrderGroupModel>()
         val ordersMap = orders.groupBy { it.distributorID }
         ordersMap.forEach {
-            val distributorName = usersList.firstOrNull{user ->
+            val distributorName = usersList.firstOrNull { user ->
                 user.id == it.key.toString()
             }?.name ?: "_"
             groupedOrders.add(
                 OrderGroupModel(
                     distributorID = it.key,
                     distributorName = distributorName,
-                    ordersList = it.value.toMutableList()
+                    ordersList = it.value.sortedBy {order ->
+                        order.sortValue
+                    }.toMutableList()
                 )
             )
         }
@@ -115,7 +118,7 @@ class OrdersViewModel : BaseViewModel() {
             success = {
                 listOfGroupedOrders.forEachIndexed { index1, orderGroupModel ->
                     val index = orderGroupModel.ordersList.indexOf(order)
-                    if (index != -1){
+                    if (index != -1) {
                         orderDeleteLiveData.value = ApiResponseState.Success(Pair(index1, index))
                         orderGroupModel.ordersList.remove(order)
                         return@sendRequest
@@ -123,6 +126,16 @@ class OrdersViewModel : BaseViewModel() {
 
                 }
 
+            }
+        )
+    }
+
+    fun onOrderDrag(orderID: Int, newSortValue: Double) {
+        val orderReSort = OrderReSortModel(orderID, newSortValue)
+        sendRequest(
+            ApeniApiService.getInstance().updateOrderSortValue(orderReSort),
+            finally = {
+                Log.d("reOrderResult", "$it")
             }
         )
     }

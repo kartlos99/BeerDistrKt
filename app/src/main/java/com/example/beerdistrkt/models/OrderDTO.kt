@@ -9,6 +9,7 @@ data class OrderDTO(
     val distributorID: Int,
     val clientID: Int,
     val comment: String?,
+    val sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
     val items: List<Item>,
@@ -87,6 +88,7 @@ data class OrderDTO(
             clientID,
             client,
             comment,
+            sortValue,
             modifyDate,
             modifyUserID,
             items.map {
