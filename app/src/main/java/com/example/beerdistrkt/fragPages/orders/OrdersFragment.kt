@@ -33,7 +33,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
-    private var orderListSize = -1
+    private var orderListSize = 0
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -123,12 +123,14 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             else
                 resources.getString(R.string.order_main)
 
-        vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
-            it.addDeliveryBtn.visibleIf(checked)
-            it.totalSummedOrderRecycler.visibleIf(!checked)
-            it.totalOrderTitle.visibleIf(!checked)
+        if (vBinding.ordersRecycler.layoutManager?.itemCount ?: 0 > 0) {
+            vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
+                it.addDeliveryBtn.visibleIf(checked)
+                it.totalSummedOrderRecycler.visibleIf(!checked)
+                it.totalOrderTitle.visibleIf(!checked)
+            }
+            ordersAdapter.updateLastItem(checked)
         }
-        ordersAdapter.updateLastItem(checked)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

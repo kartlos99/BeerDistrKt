@@ -88,6 +88,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     viewLoginLoginBtn.isEnabled = true
                     showToast(it.errorText)
                 }
+                is ApiResponseState.Loading -> {
+                    if (!it.showLoading)
+                        viewLoginLoginBtn.isEnabled = true
+                }
             }
         })
     }
