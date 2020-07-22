@@ -5,9 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderItemAdapter
@@ -77,6 +75,12 @@ class OrderView @JvmOverloads constructor(
         }
         orderUnitChangeDistributorBtn.setOnClickListener {
             order.onChangeDistributorClick()
+        }
+        orderMainConstraint.setOnClickListener {
+            order.onItemClick()
+        }
+        orderItemList.setOnClickListener {
+            order.onItemClick()
         }
         orderUnitFrontRoot.postDelayed({
             val lp = orderUnitBackRoot.layoutParams

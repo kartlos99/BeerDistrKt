@@ -140,7 +140,7 @@ fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index
     val builder = AlertDialog.Builder(this)
     if (title != null)
         builder.setTitle(title)
-    builder.setItems(dataList) {dialog, which ->
+    builder.setItems(dataList) {_, which ->
         onClick.invoke(which)
     }
     builder.create().show()

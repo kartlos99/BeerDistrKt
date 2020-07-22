@@ -22,9 +22,20 @@
             android:layout_margin="8dp"
             android:text="@string/shekvetis_damateba"
             app:layout_constraintStart_toEndOf="@id/setDateBtn"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/orderToDeliverySwitch"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Switch
+            android:id="@+id/orderToDeliverySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitana"
+            android:paddingEnd="@dimen/gr_size_4"
+            android:paddingVertical="@dimen/gr_size_8"
+            app:layout_constraintTop_toTopOf="@id/addOrderBtn"
+            app:layout_constraintBottom_toBottomOf="@id/addOrderBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:checked="false"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/setDateBtn"

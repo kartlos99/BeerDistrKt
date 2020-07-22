@@ -40,6 +40,9 @@ class OrdersViewModel : BaseViewModel() {
     val orderDeleteLiveData = MutableLiveData<ApiResponseState<Pair<Int, Int>>>()
     val editOrderLiveData = MutableLiveData<Order?>(null)
     val changeDistributorLiveData = MutableLiveData<Order?>(null)
+    val onItemClickLiveData = MutableLiveData<Order?>(null)
+
+    var deliveryMode = false
 
     val listOfGroupedOrders: MutableList<OrderGroupModel> = mutableListOf()
 
@@ -74,6 +77,9 @@ class OrdersViewModel : BaseViewModel() {
                         },
                         onChangeDistributorClick = { order ->
                             changeDistributorLiveData.value = order
+                        },
+                        onItemClick = { order ->
+                            if (deliveryMode) onItemClickLiveData.value = order
                         }
                     )
                 }))

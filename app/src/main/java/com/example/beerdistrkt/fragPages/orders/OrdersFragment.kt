@@ -13,7 +13,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
-import com.example.beerdistrkt.fragPages.orders.adapter.OrderAdapter
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.utils.ADD_ORDER
@@ -52,7 +51,9 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 )
             )
         }
-
+        vBinding.orderToDeliverySwitch.setOnCheckedChangeListener { _, isChecked ->
+            onModeChange(isChecked)
+        }
         vBinding.ordersRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 //        vBinding.ordersRecycler.adapter = ordersAdapter
@@ -111,8 +112,23 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         return vBinding.root
     }
 
+    private fun onModeChange(checked: Boolean) {
+        viewModel.deliveryMode = checked
+        (activity as AppCompatActivity).supportActionBar?.title =
+            if (checked)
+                resources.getString(R.string.mitana)
+            else
+                resources.getString(R.string.order_main)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initViewModel()
+
+        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.order_main)
+    }
+
+    private fun initViewModel() {
         viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -172,8 +188,12 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 viewModel.changeDistributorLiveData.value = null
             }
         })
-
-        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.order_main)
+        viewModel.onItemClickLiveData.observe(viewLifecycleOwner, Observer { order ->
+            if (order != null) {
+                // open mitana page
+                viewModel.onItemClickLiveData.value = null
+            }
+        })
     }
 
     override fun onResume() {

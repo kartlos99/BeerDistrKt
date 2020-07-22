@@ -18,7 +18,8 @@ data class Order(
     val sales: List<Sales>,
     private val _onDeleteClick: (Order) -> Unit,
     private val _onEditClick: (Order) -> Unit,
-    private val _onChangeDistributorClick: ((Order) -> Unit)? = null
+    private val _onChangeDistributorClick: ((Order) -> Unit)? = null,
+    private val _onItemClick: ((Order) -> Unit)? = null
 ) {
 
     val onDeleteClick = {
@@ -29,6 +30,9 @@ data class Order(
     }
     val onChangeDistributorClick = {
         _onChangeDistributorClick?.invoke(this)
+    }
+    val onItemClick = {
+        _onItemClick?.invoke(this)
     }
 
     data class Item(

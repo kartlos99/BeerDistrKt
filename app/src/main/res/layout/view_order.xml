@@ -61,6 +61,7 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/orderMainConstraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/gr_size_12"
@@ -71,6 +72,7 @@
             android:clickable="true"
             android:elevation="2dp"
             android:focusable="true"
+            android:foreground="?selectableItemBackground"
             android:paddingStart="@dimen/gr_size_12"
             android:paddingEnd="@dimen/gr_size_8"
             tools:ignore="RtlSymmetry">

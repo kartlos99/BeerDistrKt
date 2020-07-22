@@ -68,7 +68,8 @@ data class OrderDTO(
         beerList: List<BeerModel>,
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,
-        onChangeDistributorClick: ((Order) -> Unit)? = null
+        onChangeDistributorClick: ((Order) -> Unit)? = null,
+        onItemClick: ((Order) -> Unit)? = null
     ): Order {
 
         val client = clients.find {
@@ -100,7 +101,8 @@ data class OrderDTO(
             },
             onDeleteClick,
             onEditClick,
-            onChangeDistributorClick
+            onChangeDistributorClick,
+            onItemClick
             )
 
     }
