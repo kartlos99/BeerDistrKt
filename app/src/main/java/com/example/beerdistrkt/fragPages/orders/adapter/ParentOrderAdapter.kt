@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
+import com.example.beerdistrkt.getSummedRemainingOrder
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.UserType
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.view_order_group.view.*
+import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
 
@@ -23,26 +25,41 @@ class ParentOrderAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onOrderDrag: ((orderID: Int, newSortValue: Double) -> Unit)? = null
+    var onMitanaClick: View.OnClickListener? = null
+    var deliveryMode = false
 
     private val viewPool = RecycledViewPool()
 //    private var ordersMap = orders.groupBy { it.distributorID }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_order_group, parent, false)
+            .inflate(if (viewType == BOTTOM_ITEM) R.layout.view_order_group_bottom_item else
+                R.layout.view_order_group,
+                parent,
+                false)
         return ParentViewHolder(view)
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (position == orderGroups.size)
+            BOTTOM_ITEM
+        else
+            MAIN_ORDER_ITEM
+    }
+
     override fun getItemCount(): Int {
-        return orderGroups.size
+        return orderGroups.size + 1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
+        if (position == orderGroups.size)
+            bindBottomItem(holder)
+        else
         orderGroups[position].let { grItem ->
 
             holder.itemView.viewOrderGroupDistributor.text = grItem.distributorName
-            val itemList = grItem.getSummedRemainingOrder().groupBy {
+            val itemList = grItem.ordersList.getSummedRemainingOrder().groupBy {
                 it.beerID
             }.toMutableMap()
 
@@ -175,6 +192,27 @@ class ParentOrderAdapter(
         }
     }
 
+    private fun bindBottomItem(holder: RecyclerView.ViewHolder) {
+        holder.itemView.addDeliveryBtn.setOnClickListener(onMitanaClick)
+
+        val allOrders = mutableListOf<Order>()
+        orderGroups.forEach{
+            allOrders.addAll(it.ordersList)
+        }
+        val itemList = allOrders.getSummedRemainingOrder().groupBy {
+            it.beerID
+        }.toMutableMap()
+
+        holder.itemView.totalSummedOrderRecycler.layoutManager =
+            LinearLayoutManager(holder.itemView.totalSummedOrderRecycler.context)
+        holder.itemView.totalSummedOrderRecycler.adapter =
+            OrderItemAdapter(itemList.toSortedMap())
+
+        holder.itemView.addDeliveryBtn.visibleIf(deliveryMode)
+        holder.itemView.totalSummedOrderRecycler.visibleIf(!deliveryMode)
+        holder.itemView.totalOrderTitle.visibleIf(!deliveryMode)
+    }
+
     fun setData(data: MutableList<OrderGroupModel>) {
         // ase ganaxlebis Semdeg drag-i urevda da amovige
         orderGroups = data
@@ -187,7 +225,16 @@ class ParentOrderAdapter(
 //        notifyItemChanged(indexes.first)
     }
 
+    fun updateLastItem(mode: Boolean) {
+        deliveryMode = mode
+        notifyItemChanged(orderGroups.size)
+    }
+
     private class ParentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-//    fun initSummedRecycler()
+    //    fun initSummedRecycler()
+    companion object {
+        const val MAIN_ORDER_ITEM = 1
+        const val BOTTOM_ITEM = 2
+    }
 }

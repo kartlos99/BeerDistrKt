@@ -158,5 +158,6 @@
     <string name="confirm_delete_text">ნამდვილად გსურთ ჩანაწერის წაშლა?</string>
     <string name="auth_fail_firebase">FireBase Auth Failed.</string>
     <string name="registration_fail_firebase">FireBase Registration Failed.</string>
+    <string name="orders_sum_title">შეკვეთების ჯამი</string>
 
 </resources>

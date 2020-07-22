@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.models.DataResponse
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -144,6 +146,32 @@ fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index
         onClick.invoke(which)
     }
     builder.create().show()
+}
+
+fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
+    val sumOrderItems = mutableListOf<Order.Item>()
+    val resultList = mutableListOf<Order.Item>()
+
+    this
+        .filter {
+            it.orderStatus == OrderStatus.ACTIVE
+        }
+        .forEach {
+            sumOrderItems.addAll(it.getRemainingOrderItems())
+        }
+
+    sumOrderItems
+        .groupBy {
+            it.beerID
+        }.values.forEach { orderItemList ->
+            orderItemList.groupBy { it.canTypeID }.values.forEach { singleList ->
+                val summedCount = singleList.sumBy { it.count }
+                resultList.add(
+                    singleList[0].copy(count = summedCount)
+                )
+            }
+        }
+    return resultList
 }
 
 fun Context.isNetworkAvailable(): Boolean {

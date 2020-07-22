@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragPages.orders.OrdersFragment">
@@ -21,30 +20,30 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@string/shekvetis_damateba"
-            app:layout_constraintStart_toEndOf="@id/setDateBtn"
             app:layout_constraintEnd_toStartOf="@id/orderToDeliverySwitch"
+            app:layout_constraintStart_toEndOf="@id/setDateBtn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Switch
             android:id="@+id/orderToDeliverySwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/mitana"
-            android:paddingEnd="@dimen/gr_size_4"
+            android:checked="false"
             android:paddingVertical="@dimen/gr_size_8"
-            app:layout_constraintTop_toTopOf="@id/addOrderBtn"
+            android:paddingEnd="@dimen/gr_size_4"
+            android:text="@string/mitana"
             app:layout_constraintBottom_toBottomOf="@id/addOrderBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            android:checked="false"/>
+            app:layout_constraintTop_toTopOf="@id/addOrderBtn" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/setDateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gr_size_8"
             android:layout_marginRight="8dp"
             android:drawableEnd="@drawable/calendar_icon"
             android:text="@string/text_tarigi"
-            android:layout_margin="@dimen/gr_size_8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlHardcoded" />
@@ -61,28 +60,12 @@
             android:id="@+id/orderLoaderBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/ordersRecycler"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/gr_size_16"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ordersRecycler" />
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:padding="10dp"-->
-<!--            android:paddingTop="-20dp"-->
-<!--            android:paddingBottom="-20dp"-->
-<!--            android:background="@color/colorCardview"-->
-<!--            android:id="@+id/testRecycler"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/setDateBtn"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="150dp"/>-->
-
-<!--        <com.example.beerdistrkt.fragPages.orders.view.OrderView-->
-<!--            app:layout_constraintTop_toBottomOf="@id/setDateBtn"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"/>-->
 
         <TextView
             android:layout_width="wrap_content"

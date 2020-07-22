@@ -17,8 +17,10 @@ import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.MITANA
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.orders_fragment.*
+import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
 class OrdersFragment : BaseFragment<OrdersViewModel>() {
@@ -31,6 +33,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
+    private var orderListSize = -1
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -119,6 +122,13 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 resources.getString(R.string.mitana)
             else
                 resources.getString(R.string.order_main)
+
+        vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
+            it.addDeliveryBtn.visibleIf(checked)
+            it.totalSummedOrderRecycler.visibleIf(!checked)
+            it.totalOrderTitle.visibleIf(!checked)
+        }
+        ordersAdapter.updateLastItem(checked)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -132,8 +142,16 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
+                    orderListSize = it.data.size
                     ordersAdapter = ParentOrderAdapter(it.data)
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
+                    ordersAdapter.onMitanaClick = View.OnClickListener { view ->
+                        view.findNavController().navigate(
+                            OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
+                                MITANA
+                            )
+                        )
+                    }
                     vBinding.ordersRecycler.adapter = ordersAdapter
                 }
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
@@ -190,8 +208,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         })
         viewModel.onItemClickLiveData.observe(viewLifecycleOwner, Observer { order ->
             if (order != null) {
-                // open mitana page
                 viewModel.onItemClickLiveData.value = null
+                vBinding.root.findNavController().navigate(
+                    OrdersFragmentDirections
+                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, null)
+                )
             }
         })
     }

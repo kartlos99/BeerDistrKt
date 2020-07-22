@@ -14,32 +14,6 @@ data class OrderGroupModel(
 
     var orderAdapter: OrderAdapter? = null
 
-    fun getSummedRemainingOrder(): List<Order.Item> {
-        val sumOrderItems = mutableListOf<Order.Item>()
-        val resultList = mutableListOf<Order.Item>()
-
-        ordersList
-            .filter {
-                it.orderStatus == OrderStatus.ACTIVE
-            }
-            .forEach {
-                sumOrderItems.addAll(it.getRemainingOrderItems())
-            }
-
-        sumOrderItems
-            .groupBy {
-                it.beerID
-            }.values.forEach { orderItemList ->
-                orderItemList.groupBy { it.canTypeID }.values.forEach { singleList ->
-                    val summedCount = singleList.sumBy { it.count }
-                    resultList.add(
-                        singleList[0].copy(count = summedCount)
-                    )
-                }
-            }
-        return resultList
-    }
-
     fun getSummedSales(): List<Order.Sales> {
         val sumSaleItems = mutableListOf<Order.Sales>()
         val resultList = mutableListOf<Order.Sales>()
