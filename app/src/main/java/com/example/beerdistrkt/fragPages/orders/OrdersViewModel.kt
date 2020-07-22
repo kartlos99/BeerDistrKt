@@ -101,9 +101,10 @@ class OrdersViewModel : BaseViewModel() {
                 OrderGroupModel(
                     distributorID = it.key,
                     distributorName = distributorName,
-                    ordersList = it.value.sortedBy { order ->
-                        order.sortValue
-                    }.toMutableList()
+                    ordersList = it.value
+                        .sortedBy { order -> order.sortValue }
+                        .sortedBy { order -> order.orderStatus }
+                        .toMutableList()
                 )
             )
         }
