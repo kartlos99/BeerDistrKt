@@ -2,12 +2,9 @@ package com.example.beerdistrkt.fragPages.homePage
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -43,10 +40,9 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
         vBinding.lifecycleOwner = this
 
-        vBinding.btnShekvetebi.setOnClickListener(this)
-        vBinding.btnMitana.setOnClickListener(this)
-        vBinding.btnRealizDge.setOnClickListener(this)
-        vBinding.btnRealizObj.setOnClickListener(this)
+        vBinding.btnOrder.setOnClickListener(this)
+        vBinding.btnSaleResult.setOnClickListener(this)
+        vBinding.btnSalesByClient.setOnClickListener(this)
         return vBinding.root
     }
 
@@ -69,20 +65,16 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when(view?.id){
-            R.id.btn_shekvetebi -> {
+            R.id.btnOrder -> {
                 view.findNavController().navigate(R.id.action_homeFragment_to_ordersFragment)
             }
-            vBinding.btnMitana.id -> {
-                view.findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToObjListFragment(
-                    MITANA))
+            R.id.btnSaleResult -> {
+                view.findNavController()
+                    .navigate(HomeFragmentDirections.actionHomeFragmentToSalesFragment())
             }
-            vBinding.btnRealizDge.id -> {
-                view.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSalesFragment())
-            }
-            vBinding.btnRealizObj.id -> {
-                view.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(
-                    AMONAWERI))
+            R.id.btnSalesByClient -> {
+                view.findNavController()
+                    .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
             }
         }
     }

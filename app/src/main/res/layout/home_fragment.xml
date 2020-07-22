@@ -19,39 +19,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <Button
-            android:id="@+id/btn_shekvetebi"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnOrder"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="@string/shekveTebi"
-            app:layout_constraintBottom_toTopOf="@+id/btn_mitana"
+            app:layout_constraintBottom_toTopOf="@+id/btnSaleResult"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/main_btn_hor_margin"
             style="@style/mainBtnStyle" />
 
-        <Button
-            android:id="@+id/btn_mitana"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:text="@string/mitana"
-            app:layout_constraintBottom_toTopOf="@+id/btn_realiz_dge"
-            app:layout_constraintTop_toBottomOf="@+id/btn_shekvetebi"
-            style="@style/mainBtnStyle" />
-
-        <Button
-            android:id="@+id/btn_realiz_dge"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaleResult"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="@string/day_realizacia"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/btnSalesByClient"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_mitana"
+            app:layout_constraintTop_toBottomOf="@+id/btnOrder"
             android:layout_marginEnd="@dimen/main_btn_hor_margin_half"
             style="@style/mainBtnStyle" />
 
-        <Button
-            android:id="@+id/btn_realiz_obj"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSalesByClient"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="@string/obj_realizacia"
@@ -59,31 +50,16 @@
             android:layout_marginStart="@dimen/main_btn_hor_margin_half"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/btn_realiz_dge" />
+            app:layout_constraintStart_toEndOf="@id/btnSaleResult"
+            app:layout_constraintTop_toTopOf="@+id/btnSaleResult" />
 
-        <TextView
-            android:id="@+id/t_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/curr_version"
-            android:textSize="8sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.35" />
 
         <TextView
             android:id="@+id/t_comments"
