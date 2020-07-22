@@ -13,6 +13,7 @@
     <color name="color_orderCol">#44c2d6d6</color>
     <color name="color_orderRed">#5aff0008</color>
     <color name="color_ForChek">#FF7115</color>
+    <color name="color_chek_bkg">#FFBC91</color>
     <color name="important_info_color">#f95588</color>
     <color name="not_imp_color">#999999</color>
     <color name="fab_addbeer_color">#009688</color>

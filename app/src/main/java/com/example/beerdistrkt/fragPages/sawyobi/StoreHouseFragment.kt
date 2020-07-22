@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.sawyobi
 
 import android.app.DatePickerDialog
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -141,6 +142,13 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             R.id.storeHouseCheckBox -> {
                 viewModel.isChecked = storeHouseCheckBox.isChecked
                 storeHouseEmptyBarrelManageBox.visibleIf(!storeHouseCheckBox.isChecked)
+                storeHouseMainScroll.setBackgroundColor(
+                    resources.getColor(
+                        if (storeHouseCheckBox.isChecked)
+                            R.color.color_chek_bkg
+                        else R.color.white
+                    )
+                )
             }
             R.id.storeHouseSetDateBtn -> {
                 val datePickerDialog = DatePickerDialog(
@@ -161,7 +169,10 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             }
             R.id.storeHouseDoneBtn -> {
 
-                viewModel.onDoneClick(storeHouseComment.editText?.text.toString(), collectEmptyBarrels())
+                viewModel.onDoneClick(
+                    storeHouseComment.editText?.text.toString(),
+                    collectEmptyBarrels()
+                )
             }
 
         }
