@@ -1,21 +1,22 @@
 package com.example.beerdistrkt.fragPages.addEditObiects
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.getViewModel
 
-class AddObjectFragment : Fragment() {
+class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
     companion object {
         fun newInstance() = AddObjectFragment()
     }
 
-    private lateinit var viewModel: AddObjectViewModel
+    override val viewModel by lazy {
+        getViewModel { AddObjectViewModel() }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,7 +27,6 @@ class AddObjectFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(AddObjectViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

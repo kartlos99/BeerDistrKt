@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.fragPages.addEditObiects
 
-import androidx.lifecycle.ViewModel
+import com.example.beerdistrkt.BaseViewModel
 
-class AddObjectViewModel : ViewModel() {
+class AddObjectViewModel : BaseViewModel() {
     // TODO: Implement the ViewModel
 }
