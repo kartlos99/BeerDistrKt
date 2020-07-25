@@ -58,7 +58,12 @@
         android:id="@+id/addObjectFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
         android:label="add_object_fragment"
-        tools:layout="@layout/add_object_fragment" />
+        tools:layout="@layout/add_object_fragment" >
+        <argument
+            android:name="clientID"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
     <fragment
         android:id="@+id/addUserFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
@@ -107,6 +112,9 @@
         <argument
             android:name="directionTo"
             app:argType="string" />
+        <action
+            android:id="@+id/action_objListFragment_to_addObjectFragment"
+            app:destination="@id/addObjectFragment" />
     </fragment>
     <fragment
         android:id="@+id/salesFragment"

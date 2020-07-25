@@ -82,6 +82,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                             viewLoginPasswordField.text.toString()
                         )
                     }
+                    viewLoginLoginBtn.isEnabled = false
                     loginToFirebase(it.data.username)
                     viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                 }
@@ -107,6 +108,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                         Log.d("auth", "exp_MEssage: " + task.exception?.message)
                     } else {
                         showToast(R.string.auth_fail_firebase)
+                        Log.d("auth", "exp_MEssage: " + task.exception?.message)
                         Session.get().clearSession()
                     }
                 } else {

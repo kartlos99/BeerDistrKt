@@ -159,5 +159,9 @@
     <string name="auth_fail_firebase">FireBase Auth Failed.</string>
     <string name="registration_fail_firebase">FireBase Registration Failed.</string>
     <string name="orders_sum_title">შეკვეთების ჯამი</string>
+    <string name="server_error">სერვერის შეცდომა</string>
+    <string name="ok">კარგი</string>
+    <string name="data_saved">მონაცემები შენახულია</string>
+    <string name="duplicate_client">ასეთი ობიექტი უკვე არსებობს ბაზაში!</string>
 
 </resources>

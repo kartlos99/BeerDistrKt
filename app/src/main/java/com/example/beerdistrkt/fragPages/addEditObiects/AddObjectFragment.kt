@@ -10,15 +10,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.models.BeerModel
-import com.example.beerdistrkt.models.ObiectWithPrices
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.ObjToBeerPrice
+import androidx.navigation.fragment.findNavController
+import com.example.beerdistrkt.*
+import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.android.synthetic.main.add_object_fragment.*
-import java.lang.String
 
 class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
@@ -27,10 +23,8 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     }
 
     private val clientID by lazy {
-        194
-//        val args =
-//            AddObjeOrdersFragmentArgs.fromBundle(arguments ?: Bundle())
-//        args.mode
+        val args = AddObjectFragmentArgs.fromBundle(arguments ?: Bundle())
+        args.clientID
     }
 
     override fun onCreateView(
@@ -45,7 +39,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         initViewModel()
 
         addEditClientDoneBtn.setOnClickListener {
-            val client = Obieqti(addEditClientName.editText?.text.toString()).apply {
+            val client = Obieqti(addEditClientName.editText?.text.toString().trim()).apply {
                 id = viewModel.clientID
                 adress = addEditClientAdress.editText?.text.toString()
                 tel = addEditClientPhone.editText?.text.toString()
@@ -57,7 +51,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
             val priceList = mutableListOf<ObjToBeerPrice>()
 
-            for (i in 0 until addEditClientPricesContainer.childCount ) {
+            for (i in 0 until addEditClientPricesContainer.childCount) {
                 val priceRow = addEditClientPricesContainer.getChildAt(i) as LinearLayout
                 val eText = priceRow.getChildAt(1) as EditText
                 val price = if (eText.text.isEmpty())
@@ -83,8 +77,53 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
     private fun initViewModel() {
         viewModel.beersLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) drawBeerPrices(it)
+            if (it.isNotEmpty() && clientID == 0) drawBeerPrices(it)
         })
+        viewModel.clientObjectLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                fillForm(it)
+                viewModel.clientObjectLiveData.value = null
+                viewModel.beersLiveData.value?.let { beerList ->
+                    drawBeerPrices(beerList)
+                }
+            }
+        })
+        viewModel.clientSaveMutableLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResponseState.Loading -> {
+                }
+                is ApiResponseState.ApiError -> {
+                    if (it.errorCode == DataResponse.mySqlDuplicateError)
+                        context?.showInfoDialog(
+                            null,
+                            R.string.duplicate_client,
+                            R.string.ok,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog
+                        )
+                    else
+                        context?.showInfoDialog(
+                            R.string.server_error,
+                            it.errorText,
+                            R.string.ok,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog
+                        )
+                }
+                is ApiResponseState.Success -> {
+                    showToast(R.string.data_saved)
+                    findNavController().navigateUp()
+                }
+            }
+        })
+    }
+
+    private fun fillForm(clientData: ObiectWithPrices) {
+        addEditClientName.editText?.setText(clientData.obieqti.dasaxeleba)
+        addEditClientSK.editText?.setText(clientData.obieqti.sk ?: "")
+        addEditClientPerson.editText?.setText(clientData.obieqti.sakpiri ?: "")
+        addEditClientAdress.editText?.setText(clientData.obieqti.adress ?: "")
+        addEditClientPhone.editText?.setText(clientData.obieqti.tel ?: "")
+        addEditComment.editText?.setText(clientData.obieqti.comment ?: "")
+        addEditClientChek.isChecked = clientData.obieqti.chek == "1"
     }
 
     private fun drawBeerPrices(beerList: List<BeerModel>) {
@@ -106,7 +145,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 text = beerList[i].dasaxeleba
             }
             if (viewModel.clientID > 0)
-                eText.setText("objPrice")
+                eText.setText(viewModel.clientObject?.prices?.get(i)?.fasi.toString())
             priceItemView.addView(textView, 0)
             priceItemView.addView(eText, 1)
             addEditClientPricesContainer.addView(priceItemView, i)

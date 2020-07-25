@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/cm_call"
+        android:icon="@drawable/ic_call_icon"
+        android:title="@string/call"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/cm_info"
+        android:icon="@drawable/ic_info_24"
+        android:title="@string/info"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/cm_edit_obj"
+        android:icon="@drawable/ic_edit_white_24dp"
+        android:title="@string/m_edit"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/cm_del"
+
+        android:title="@string/remove"
+        app:showAsAction="withText" />
+</menu>

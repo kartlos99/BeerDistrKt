@@ -1,5 +1,6 @@
 package com.example.beerdistrkt
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
@@ -138,6 +139,36 @@ fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negative
         }.show()
 }
 
+fun Context.showInfoDialog(title: Int?, text: Int, buttonText: Int, theme: Int? = null, onClick: (() -> Unit)? = null) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    builder
+        .setMessage(text)
+        .setNeutralButton(buttonText) { dialog, _ ->
+            onClick?.invoke()
+            dialog?.dismiss()
+        }.show()
+}
+
+fun Context.showInfoDialog(title: Int?, text: CharSequence, buttonText: Int, theme: Int? = null, onClick: (() -> Unit)? = null) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    builder
+        .setMessage(text)
+        .setNeutralButton(buttonText) { dialog, _ ->
+            onClick?.invoke()
+            dialog?.dismiss()
+        }.show()
+}
+
 fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index: Int) -> Unit?) {
     val builder = AlertDialog.Builder(this)
     if (title != null)
@@ -173,6 +204,11 @@ fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
         }
     return resultList
 }
+
+val Fragment.baseActivity: MainActivity?
+    get() {
+        return activity as? MainActivity
+    }
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager =

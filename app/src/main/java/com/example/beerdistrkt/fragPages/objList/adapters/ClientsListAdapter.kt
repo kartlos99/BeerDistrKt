@@ -1,8 +1,7 @@
 package com.example.beerdistrkt.fragPages.objList.adapters
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.content.Context
+import android.view.*
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
@@ -33,6 +32,7 @@ class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         holder.itemView.setOnClickListener {
             onItemClick.invoke(showingList[position].id ?: -1)
         }
+        holder.itemView.tag = showingList[position]
     }
 
     fun setData(data: List<Obieqti>) {
@@ -55,5 +55,28 @@ class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    fun getClientObject(position: Int): Obieqti {
+        return showingList[position]
+    }
+
+    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener {
+
+        init {
+            itemView.setOnCreateContextMenuListener(this)
+        }
+
+        override fun onCreateContextMenu(
+            menu: ContextMenu?,
+            v: View?,
+            menuInfo: ContextMenu.ContextMenuInfo?
+        ) {
+            val title = (itemView.tag as Obieqti).dasaxeleba
+            menu?.setHeaderTitle(title)
+            menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
+            menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
+            menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
+            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+        }
+
+    }
 }
