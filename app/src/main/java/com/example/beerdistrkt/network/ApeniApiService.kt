@@ -16,6 +16,8 @@ import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.utils.PrivateKey.Companion.TEST_SERVER_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 //import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Response
@@ -54,7 +56,7 @@ interface ApeniApiService {
                 .build()
 
             val retrofit = Retrofit.Builder()
-//                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build())
+                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(BASE_URL)
                 .build()
@@ -149,6 +151,12 @@ interface ApeniApiService {
 
     @POST("client/login.php")
     fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
+
+    @POST("client/add.php")
+    fun addClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
+
+    @POST("client/update.php")
+    fun updateClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
 
     // storeHouse
     @GET("storeHouse/getBalance.php")

@@ -14,5 +14,8 @@ data class DataResponse<T: Any>(
 
         @JvmField
         val UnknownError = 999
+
+        @JvmField
+        val mySqlDuplicateError = 1062
     }
 }
