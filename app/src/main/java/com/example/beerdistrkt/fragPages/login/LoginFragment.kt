@@ -17,6 +17,7 @@ import com.example.beerdistrkt.utils.PrivateKey
 import com.example.beerdistrkt.utils.Session
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.login_fragment.*
 
 class LoginFragment : BaseFragment<LoginViewModel>() {
@@ -112,6 +113,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("auth", "SignIN:success")
                     onLoginSuccess()
+                    FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+                        val newToken = it.token
+                        Log.d("token", newToken)
+                    }
                 }
             }
     }

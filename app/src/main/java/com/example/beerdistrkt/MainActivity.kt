@@ -63,6 +63,10 @@ class MainActivity : AppCompatActivity() {
 //            item.setTitle(R.string.yes)
 //            return@OnNavigationItemSelectedListener true
 //        })
+
+//        intent.extras?.keySet()?.forEach {
+//            Log.d("extr", "$it - ${intent?.extras?.get(it!!)}")
+//        }
     }
 
     override fun onBackPressed() {
