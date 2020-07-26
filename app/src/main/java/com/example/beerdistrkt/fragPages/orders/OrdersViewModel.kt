@@ -22,13 +22,12 @@ class OrdersViewModel : BaseViewModel() {
 
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
-    private val usersList = ObjectCache.getInstance().getList(User::class, "userList")
-        ?: listOf()
-
+    private val userLiveData = database.getUsers()
     val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
     private lateinit var clients: List<Obieqti>
     private lateinit var beers: List<BeerModel>
+    private lateinit var usersList: List<User>
 
     var orderDateCalendar: Calendar = Calendar.getInstance()
 
@@ -47,13 +46,9 @@ class OrdersViewModel : BaseViewModel() {
     val listOfGroupedOrders: MutableList<OrderGroupModel> = mutableListOf()
 
     init {
-        clientsLiveData.observeForever {
-            clients = it
-        }
-        beersLiveData.observeForever {
-            beers = it
-            Log.d("Beer", beers.toString())
-        }
+        clientsLiveData.observeForever { clients = it }
+        beersLiveData.observeForever { beers = it }
+        userLiveData.observeForever { usersList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
     }
 

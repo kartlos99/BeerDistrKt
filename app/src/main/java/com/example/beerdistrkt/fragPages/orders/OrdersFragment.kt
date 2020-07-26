@@ -155,6 +155,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                         )
                     }
                     vBinding.ordersRecycler.adapter = ordersAdapter
+                    onModeChange(vBinding.orderToDeliverySwitch.isChecked)
                 }
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
             }
