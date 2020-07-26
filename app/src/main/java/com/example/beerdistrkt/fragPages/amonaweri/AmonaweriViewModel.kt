@@ -1,10 +1,24 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.models.ObiectWithPrices
+import kotlinx.coroutines.launch
 
-class AmonaweriViewModel : ViewModel() {
-    var davalianebaM = 0
-    var davalianebaK = 0
-    var grouped = true
-    var objID = -1
+class AmonaweriViewModel(val clientID: Int) : BaseViewModel() {
+
+    val clientLiveData = MutableLiveData<ObiectWithPrices>()
+
+    init {
+        getClient()
+    }
+
+    private fun getClient() {
+        ioScope.launch {
+            val clientData = database.getObiectsWithPrices(clientID)
+            uiScope.launch {
+                clientLiveData.value = clientData
+            }
+        }
+    }
 }

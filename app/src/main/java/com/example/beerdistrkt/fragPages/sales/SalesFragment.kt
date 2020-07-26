@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
@@ -91,6 +92,8 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.day_realizacia)
 
         vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
             requireContext(),
@@ -102,7 +105,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         initViewModel()
     }
 
-    fun initViewModel(){
+    fun initViewModel() {
         viewModel.salesLiveData.observe(viewLifecycleOwner, Observer {
             val adapter = SalesAdapter(context, it)
             vBinding.salesList1.adapter = adapter

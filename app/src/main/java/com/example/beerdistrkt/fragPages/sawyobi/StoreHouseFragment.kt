@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,7 +48,8 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-
+        (activity as AppCompatActivity).supportActionBar?.title =
+                resources.getString(R.string.sawyobi)
 
         storeHouseSetDateBtn.setOnClickListener(this)
         storeHouseCheckBox.setOnClickListener(this)

@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
+import com.example.beerdistrkt.getViewModel
 import java.text.SimpleDateFormat
 
-class AmonaweriFragment : Fragment() {
+class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
 
     companion object {
         fun newInstance() = AmonaweriFragment()
@@ -20,10 +22,16 @@ class AmonaweriFragment : Fragment() {
 
     val frag = this
 
+    override val viewModel by lazy {
+        getViewModel { AmonaweriViewModel(clientID) }
+    }
+    private val clientID by lazy {
+        val args = AmonaweriFragmentArgs.fromBundle(arguments ?: Bundle())
+        args.clientObjectID
+    }
+
     private lateinit var vBinding: AmonaweriFragmentBinding
-    private lateinit var viewModel: AmonaweriViewModel
     lateinit var simpleDateFormat: SimpleDateFormat
-    var clientID = 0
 
     var pagesAdapter: MyPagesAdapter? = null
 
@@ -39,11 +47,6 @@ class AmonaweriFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(AmonaweriViewModel::class.java)
-
-        val argsBundle = arguments ?: Bundle()
-        val args = AmonaweriFragmentArgs.fromBundle(argsBundle)
-        clientID = args.clientObjectID
 
         pagesAdapter = MyPagesAdapter(childFragmentManager, clientID)
         vBinding.viewpagerAmonaweri.adapter = pagesAdapter
@@ -71,6 +74,9 @@ class AmonaweriFragment : Fragment() {
             }
         }
 
+        viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
+            (activity as AppCompatActivity).supportActionBar?.title = it.obieqti.dasaxeleba
+        })
     }
 
     private fun goEditing(operation: String, recordID: Int) {

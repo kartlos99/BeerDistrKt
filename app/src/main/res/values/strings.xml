@@ -163,5 +163,8 @@
     <string name="ok">კარგი</string>
     <string name="data_saved">მონაცემები შენახულია</string>
     <string name="duplicate_client">ასეთი ობიექტი უკვე არსებობს ბაზაში!</string>
+    <string name="choose_client">აირჩიეთ ობიექტი</string>
+    <string name="create_client">ობიექტის დამატება</string>
+    <string name="edit_client">ობიექტის რედაქტირება</string>
 
 </resources>

@@ -75,7 +75,7 @@ class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
             menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
-            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+//            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
         }
 
     }

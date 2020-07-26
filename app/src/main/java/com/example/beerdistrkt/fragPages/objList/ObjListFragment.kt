@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -58,9 +59,12 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
         when (args.directionTo) {
-            ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddOrdersFragment(clientID))
-            MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAddDeliveryFragment(clientID,null))
-            AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections.actionObjListFragmentToAmonaweriFragment(clientID))
+            ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
+                .actionObjListFragmentToAddOrdersFragment(clientID))
+            MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
+                .actionObjListFragmentToAddDeliveryFragment(clientID,null))
+            AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
+                .actionObjListFragmentToAmonaweriFragment(clientID))
 //                    else -> // show toast
         }
 
@@ -69,6 +73,8 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.choose_client)
         val objListObserver = Observer<List<Obieqti>> {
             Log.d("_clientList__size__", it.size.toString())
             initClientsList(it)
@@ -160,8 +166,17 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             }
             R.id.cm_info -> {
                 val arr = listOf(
-                    String.format("ობიექტი: %s\n    %s\n    %s", selectedclient.dasaxeleba, selectedclient.sk ?: "-", selectedclient.adress ?: "-"),
-                    String.format("საკ.პირი: %s\n    %s", selectedclient.sakpiri, selectedclient.tel),
+                    String.format(
+                        "ობიექტი: %s\n    %s\n    %s",
+                        selectedclient.dasaxeleba,
+                        selectedclient.sk ?: "-",
+                        selectedclient.adress ?: "-"
+                    ),
+                    String.format(
+                        "საკ.პირი: %s\n    %s",
+                        selectedclient.sakpiri,
+                        selectedclient.tel
+                    ),
                     String.format(selectedclient.comment ?: "")
                 )
                 context?.showListDialog(R.string.info, arr.toTypedArray()) {}
@@ -182,6 +197,10 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CALL_PHONE)
             != PackageManager.PERMISSION_GRANTED
         ) {
+//            ActivityCompat.requestPermissions(
+//                (activity as AppCompatActivity),
+//                arrayOf(Manifest.permission.CALL_PHONE),
+//                CALL_PERMISSION_REQUEST)
             myCallInterface?.askForCallPermission()
         } else {
             val callIntent = Intent(Intent.ACTION_CALL)

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.*
@@ -37,6 +38,11 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        (activity as AppCompatActivity).supportActionBar?.title =
+            if (clientID > 0)
+                resources.getString(R.string.edit_client)
+            else
+                resources.getString(R.string.create_client)
 
         addEditClientDoneBtn.setOnClickListener {
             val client = Obieqti(addEditClientName.editText?.text.toString().trim()).apply {
