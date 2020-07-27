@@ -33,7 +33,7 @@ interface ApeniApiService {
     companion object {
         private var instance: ApeniApiService? = null
 
-        //        const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
+//        private const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
         private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
 
 //        test at server

@@ -2,11 +2,12 @@ package com.example.beerdistrkt.fragPages.orders
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.RelativeLayout
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -34,6 +35,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
+    lateinit var switchToDelivery: Switch
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -53,9 +55,6 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                     ADD_ORDER
                 )
             )
-        }
-        vBinding.orderToDeliverySwitch.setOnCheckedChangeListener { _, isChecked ->
-            onModeChange(isChecked)
         }
         vBinding.ordersRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -131,6 +130,9 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             }
             ordersAdapter.updateLastItem(checked)
         }
+        vBinding.orderRootConstraint.setBackgroundColor(
+            if (checked) resources.getColor(R.color.colorAccent_33) else Color.WHITE
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -155,7 +157,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                         )
                     }
                     vBinding.ordersRecycler.adapter = ordersAdapter
-                    onModeChange(vBinding.orderToDeliverySwitch.isChecked)
+                    onModeChange(viewModel.deliveryMode)
+                    switchToDelivery.isChecked = viewModel.deliveryMode
                 }
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
             }
@@ -228,5 +231,25 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("_KA", "onViewCreated")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.order_option_menu, menu)
+
+        val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
+        switchToDelivery = swView.getChildAt(0) as Switch
+        switchToDelivery.setOnCheckedChangeListener { _, isChecked ->
+            onModeChange(isChecked)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return false
     }
 }

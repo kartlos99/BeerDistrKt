@@ -349,7 +349,8 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bkg_empty_barrels">
 
                             <TextView
                                 android:id="@+id/addDeliveryBarrelOutput1Tv"

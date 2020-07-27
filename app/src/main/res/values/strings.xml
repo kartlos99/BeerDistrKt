@@ -166,5 +166,6 @@
     <string name="choose_client">აირჩიეთ ობიექტი</string>
     <string name="create_client">ობიექტის დამატება</string>
     <string name="edit_client">ობიექტის რედაქტირება</string>
+    <string name="mitana_no_order">შეკვეთის გარეშე მიტანა</string>
 
 </resources>
