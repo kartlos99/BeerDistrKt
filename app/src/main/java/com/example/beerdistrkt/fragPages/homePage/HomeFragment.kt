@@ -10,15 +10,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
-
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.home_fragment.*
-import kotlinx.android.synthetic.main.sawyobi_fragment.*
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
@@ -71,9 +68,11 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     private fun initViewModel() {
         viewModel.mainLoaderLiveData.observe(viewLifecycleOwner, Observer {
-            homeMainProgressBar?.visibleIf(it)
-            if (it)
-                viewModel.mainLoaderLiveData.value = false
+            it?.let {
+                homeMainProgressBar?.visibleIf(it)
+                if (!it)
+                    viewModel.getStoreBalance()
+            }
         })
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
             initStoreHouseRecycler(it)

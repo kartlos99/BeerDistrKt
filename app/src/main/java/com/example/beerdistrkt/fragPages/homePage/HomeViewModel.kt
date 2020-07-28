@@ -24,7 +24,7 @@ class HomeViewModel : BaseViewModel() {
     var localVersionState: VcsResponse? = null
     var numberOfUpdatingTables = 0
 
-    val mainLoaderLiveData = MutableLiveData<Boolean>(false)
+    val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
     private val _barrelsListLiveData = MutableLiveData<List<SimpleBeerRowModel>>()
@@ -48,7 +48,6 @@ class HomeViewModel : BaseViewModel() {
             ObjectCache.getInstance()
                 .putList(User::class, "userList", userList.sortedBy { it.name })
         }
-        getStoreBalance()
     }
 
     private fun getTableVersionsFromServer() {
@@ -222,7 +221,7 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-    private fun getStoreBalance() {
+    fun getStoreBalance() {
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseBalance(
                 dateFormatDash.format(currentDate.time), 0
