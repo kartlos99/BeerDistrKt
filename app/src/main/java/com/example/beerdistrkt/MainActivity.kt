@@ -23,15 +23,18 @@ import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
+import com.example.beerdistrkt.fragPages.homePage.HomeFragment
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment.Companion.CALL_PERMISSION_REQUEST
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface {
+class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
+    NotificationService.NotificationInterface {
 
     private lateinit var vBinding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
@@ -66,6 +69,9 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             vBinding.toolBar.visibleIf(destination.id != R.id.loginFragment)
         }
 
+        NotificationService.myNotificationInterface = this
+        startService(Intent(this, NotificationService::class.java))
+
 //        vBinding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
 //            item.setTitle(R.string.yes)
 //            return@OnNavigationItemSelectedListener true
@@ -97,7 +103,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CALL_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
-                findNavController(R.id.mainNavHostFragment).currentDestination?.id = R.id.objListFragment
+//                findNavController(R.id.mainNavHostFragment).currentDestination?.id = R.id.objListFragment
                 val hostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment)
                 val activeFragment = hostFragment?.childFragmentManager?.fragments?.get(0)
                 if (activeFragment is ObjListFragment)
@@ -112,5 +118,26 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             this,
             arrayOf(Manifest.permission.CALL_PHONE),
             CALL_PERMISSION_REQUEST)
+    }
+
+    override fun getComments() {
+        val hostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment)
+        val activeFragment = hostFragment?.childFragmentManager?.fragments?.get(0)
+        if (activeFragment is HomeFragment)
+            activeFragment.getComments()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        isActive = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isActive = false
+    }
+
+    companion object {
+        var isActive = false
     }
 }

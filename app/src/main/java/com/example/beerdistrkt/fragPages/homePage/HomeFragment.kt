@@ -57,6 +57,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
         showStoreHouseData(Session.get().userType == UserType.ADMIN)
+        getComments()
 
         initViewModel()
     }
@@ -119,5 +120,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         }
     }
 
-
+    fun getComments() {
+//        TODO
+    }
 }

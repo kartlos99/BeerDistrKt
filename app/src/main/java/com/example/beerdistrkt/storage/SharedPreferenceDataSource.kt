@@ -57,6 +57,14 @@ class SharedPreferenceDataSource(appContext: Context) {
         return if (jsonData.isNotEmpty()) moshiJsonAdapter.fromJson(jsonData) else null
     }
 
+    fun saveLastMsgDate(text: String) {
+        sharedPreference.edit().putString(MSG_DATE, text).apply()
+    }
+
+    fun getLastMsgDate(): String {
+        return sharedPreference.getString(MSG_DATE, "") ?: ""
+    }
+
     companion object {
         private var instance: SharedPreferenceDataSource? = null
 
@@ -72,5 +80,6 @@ class SharedPreferenceDataSource(appContext: Context) {
 
         const val USERNAME = "username"
         const val PASS = "pass"
+        const val MSG_DATE = "msg_date"
     }
 }

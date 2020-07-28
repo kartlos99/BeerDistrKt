@@ -168,4 +168,9 @@
     <string name="edit_client">ობიექტის რედაქტირება</string>
     <string name="mitana_no_order">შეკვეთის გარეშე მიტანა</string>
 
+<!--    kakhetshi kh-->
+    <string name="channel_name">channel_tb</string>
+    <string name="channel_id">channel_id_tb</string>
+    <string name="channel_description">აქ მოდის შეტყობინებები</string>
+
 </resources>
