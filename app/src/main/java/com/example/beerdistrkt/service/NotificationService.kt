@@ -58,7 +58,8 @@ class NotificationService : Service() {
                             Settings.System.DEFAULT_NOTIFICATION_URI
                         )
                         player.start()
-                        displayNotification(text)
+                        val msg = text.substring(text.indexOf("|") + 1)
+                        displayNotification(msg)
 //                        MainActivity.NEED_COMENTS_UPDATE = true
                     }
                     SharedPreferenceDataSource.getInstance().saveLastMsgDate(text)

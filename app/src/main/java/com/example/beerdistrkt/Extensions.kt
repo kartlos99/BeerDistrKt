@@ -19,10 +19,13 @@ import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.google.firebase.database.FirebaseDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
 
 //<Response : Any, ApiResponse : DataResponse<Response>>
 fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
@@ -209,6 +212,14 @@ val Fragment.baseActivity: MainActivity?
     get() {
         return activity as? MainActivity
     }
+
+fun Fragment.notifyNewComment(text: String) {
+    val refToFB = FirebaseDatabase.getInstance().getReference(getString(R.string.location_en))
+    val fullText = "${Date()}|$text"
+    refToFB.setValue(fullText)
+    SharedPreferenceDataSource.initialize(this.requireContext())
+    SharedPreferenceDataSource.getInstance().saveLastMsgDate(fullText)
+}
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager =

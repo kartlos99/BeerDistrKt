@@ -19,12 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
-import com.example.beerdistrkt.getSnapPosition
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.TempBeerItemModel
@@ -201,6 +198,8 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast(it.data)
+                    if (!vBinding.addOrderComment.text.isNullOrEmpty())
+                        notifyNewComment(vBinding.addOrderComment.text.toString())
                     findNavController().navigateUp()
                 }
             }

@@ -16,15 +16,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
-import com.example.beerdistrkt.getSnapPosition
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
@@ -167,6 +164,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast(it.data)
+                    if (!vBinding.addDeliveryComment.editText?.text.isNullOrEmpty())
+                        notifyNewComment(vBinding.addDeliveryComment.editText?.text.toString())
                     findNavController().navigateUp()
                 }
             }
