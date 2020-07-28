@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_salesFragment"
             app:destination="@id/salesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_sawyobiFragment"
+            app:destination="@id/sawyobiFragment" />
     </fragment>
     <fragment
         android:id="@+id/ordersFragment"

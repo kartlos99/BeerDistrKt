@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.fragPages.homePage
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
-import com.example.beerdistrkt.utils.AMONAWERI
-import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.visibleIf
+import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
+import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.utils.*
+import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.sawyobi_fragment.*
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
@@ -24,37 +26,66 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         fun newInstance() = HomeFragment()
     }
 
-    private lateinit var vBinding: HomeFragmentBinding
-    override val viewModel: HomeViewModel by lazy { ViewModelProviders.of(this)[HomeViewModel::class.java] }
+    override val viewModel: HomeViewModel by lazy {
+        getViewModel { HomeViewModel() }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        vBinding = HomeFragmentBinding.inflate(inflater)
 //        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.home_fragment, container, false)
 
 //        val application = requireNotNull(this.activity).application
 
-        vBinding.lifecycleOwner = this
+//        lifecycleOwner = this
 
-        vBinding.btnOrder.setOnClickListener(this)
-        vBinding.btnSaleResult.setOnClickListener(this)
-        vBinding.btnSalesByClient.setOnClickListener(this)
-        return vBinding.root
+        return inflater.inflate(R.layout.home_fragment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btnOrder.setOnClickListener(this)
+        btnSaleResult.setOnClickListener(this)
+        btnSalesByClient.setOnClickListener(this)
+        homeHideStoreHouse.setOnClickListener(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
+        showStoreHouseData(Session.get().userType == UserType.ADMIN)
 
+        initViewModel()
+    }
+
+    private fun showStoreHouseData(shouldShow: Boolean) {
+        homeStoreHouseRecycler.visibleIf(shouldShow)
+        homeHideStoreHouse.visibleIf(shouldShow)
+        homeStoreHouseTitle.visibleIf(shouldShow)
+        homeStoreHouseBkg.visibleIf(shouldShow)
+    }
+
+    private fun initViewModel() {
         viewModel.mainLoaderLiveData.observe(viewLifecycleOwner, Observer {
-            vBinding.homeMainProgressBar?.visibleIf(it)
+            homeMainProgressBar?.visibleIf(it)
             if (it)
                 viewModel.mainLoaderLiveData.value = false
         })
+        viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
+            initStoreHouseRecycler(it)
+        })
+    }
+
+    private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
+        homeStoreHouseRecycler?.layoutManager = LinearLayoutManager(context)
+        val adapter = SimpleBeerRowAdapter(data)
+        adapter.onClick = View.OnClickListener{
+            findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
+        }
+        homeStoreHouseRecycler?.adapter = adapter
     }
 
     override fun onResume() {
@@ -75,6 +106,15 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             R.id.btnSalesByClient -> {
                 view.findNavController()
                     .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
+            }
+            R.id.homeHideStoreHouse -> {
+                if (homeStoreHouseRecycler.visibility == View.VISIBLE) {
+                    homeStoreHouseRecycler.goAway()
+                    homeHideStoreHouse.rotation = 180f
+                } else {
+                    homeStoreHouseRecycler.show()
+                    homeHideStoreHouse.rotation = 0f
+                }
             }
         }
     }

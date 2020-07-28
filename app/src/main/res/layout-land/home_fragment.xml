@@ -43,25 +43,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSaleResult" />
 
-        <TextView
-            android:id="@+id/t_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/curr_version"
-            android:textSize="8sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.4" />
 
 
         <TextView
-            android:id="@+id/t_comments"
+            android:id="@+id/homeCommentsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -71,17 +62,71 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ListView
-            android:id="@+id/list_for_comments"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeCommentsRecycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="4dp"
             android:background="@drawable/comments_rect"
             android:padding="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/homeStoreHouseTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/t_comments" />
+            app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle" />
+
+        <View
+            android:id="@+id/homeStoreHouseBkg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/gr_size_8"
+            android:layout_marginEnd="@dimen/gr_size_8"
+            android:layout_marginBottom="@dimen/gr_size_8"
+            android:elevation="@dimen/gr_size_2"
+            android:background="@drawable/bkg_rounded_white_r8"
+            app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/homeStoreHouseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sawyobi"
+            android:layout_marginBottom="@dimen/gr_size_8"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_4"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeStoreHouseRecycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/gr_size_8"
+            android:layout_marginBottom="@dimen/gr_size_8"
+            android:paddingHorizontal="@dimen/gr_size_8"
+            android:paddingBottom="@dimen/gr_size_4"
+            android:elevation="@dimen/gr_size_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"/>
+
+        <ImageView
+            android:id="@+id/homeHideStoreHouse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_4"
+            android:layout_marginEnd="@dimen/main_btn_hor_margin"
+            android:src="@drawable/ic_arrow_down_24dp"
+            app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle"
+            app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,25 +1,35 @@
 package com.example.beerdistrkt.fragPages.homePage
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.*
+import java.util.*
 
 class HomeViewModel : BaseViewModel() {
 
-    val usersLiveData = database.getUsers()
-    val beerLiveData = database.getBeerList()
-    val cansLiveData = database.getCansList()
+    private val usersLiveData = database.getUsers()
+    private val beerLiveData = database.getBeerList()
+    private val cansLiveData = database.getCansList()
+    lateinit var beerList: List<BeerModel>
 
     var localVersionState: VcsResponse? = null
     var numberOfUpdatingTables = 0
 
     val mainLoaderLiveData = MutableLiveData<Boolean>(false)
+
+    private var currentDate = Calendar.getInstance()
+    private val _barrelsListLiveData = MutableLiveData<List<SimpleBeerRowModel>>()
+    val barrelsListLiveData: LiveData<List<SimpleBeerRowModel>>
+        get() = _barrelsListLiveData
 
     init {
         if (Session.get().isUserLogged())
@@ -28,6 +38,7 @@ class HomeViewModel : BaseViewModel() {
         Log.d("localVers", localVersionState.toString())
 
         beerLiveData.observeForever {
+            beerList = it
             ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
         }
         cansLiveData.observeForever {
@@ -37,6 +48,7 @@ class HomeViewModel : BaseViewModel() {
             ObjectCache.getInstance()
                 .putList(User::class, "userList", userList.sortedBy { it.name })
         }
+        getStoreBalance()
     }
 
     private fun getTableVersionsFromServer() {
@@ -208,6 +220,38 @@ class HomeViewModel : BaseViewModel() {
         ioScope.launch {
             database.clearPricesTable()
         }
+    }
+
+    private fun getStoreBalance() {
+        sendRequest(
+            ApeniApiService.getInstance().getStoreHouseBalance(
+                dateFormatDash.format(currentDate.time), 0
+            ),
+            successWithData = {
+                Log.d("store", it.empty.toString())
+                formAllBarrelsList(it)
+            }
+        )
+    }
+
+    private fun formAllBarrelsList(data: StoreHouseResponse) {
+        val result = mutableListOf<SimpleBeerRowModel>()
+        val a = data.full.groupBy { it.beerID }
+        a.values.forEach {
+            val valueOfDiff = mutableMapOf<Int, Int>()
+            it.forEach { fbm ->
+                valueOfDiff[fbm.barrelID] = fbm.inputToStore - fbm.saleCount
+            }
+            val title = beerList.first { b -> b.id == it[0].beerID }.dasaxeleba ?: "_"
+            result.add(SimpleBeerRowModel(title, valueOfDiff))
+        }
+        val valueOfDiff = mutableMapOf<Int, Int>()
+        data.empty?.forEach { ebm ->
+            valueOfDiff[ebm.barrelID] = ebm.inputEmptyToStore - ebm.outputEmptyFromStoreCount
+        }
+        result.add(SimpleBeerRowModel("ცარიელი", valueOfDiff))
+
+        _barrelsListLiveData.value = result
     }
 
     override fun onCleared() {
