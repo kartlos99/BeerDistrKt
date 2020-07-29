@@ -9,13 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
+import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.home_fragment.*
 
@@ -50,6 +49,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         btnSaleResult.setOnClickListener(this)
         btnSalesByClient.setOnClickListener(this)
         homeHideStoreHouse.setOnClickListener(this)
+        homeAddComment.setOnClickListener(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -81,6 +81,16 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         })
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
             initCommentsRecycler(it)
+        })
+        viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResponseState.Loading -> {
+                }
+                is ApiResponseState.Success -> {
+                    notifyNewComment(it.data)
+                    showToast(R.string.data_saved)
+                }
+            }
         })
     }
 
@@ -124,6 +134,17 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 } else {
                     homeStoreHouseRecycler.show()
                     homeHideStoreHouse.rotation = 0f
+                }
+            }
+            R.id.homeAddComment -> {
+                context?.showTextInputDialog(
+                    R.string.add_comment,
+                    R.style.ThemeOverlay_MaterialComponents_Dialog
+                ) {
+                    if (it.isNotEmpty())
+                        viewModel.addComment(AddCommentModel(it, Session.get().userID!!))
+                    else
+                        showToast(R.string.msg_empty_not_saved)
                 }
             }
         }

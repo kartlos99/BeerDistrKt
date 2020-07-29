@@ -70,6 +70,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
+        <ImageView
+            android:id="@+id/homeAddComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/main_btn_hor_margin"
+            android:padding="@dimen/gr_size_4"
+            android:src="@drawable/ic_add_24dp"
+            app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/homeCommentsRecycler"
             android:layout_width="match_parent"

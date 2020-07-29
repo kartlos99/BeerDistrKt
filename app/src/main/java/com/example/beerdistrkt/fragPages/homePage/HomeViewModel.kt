@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -11,6 +12,7 @@ import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.*
 import java.util.*
@@ -35,6 +37,10 @@ class HomeViewModel : BaseViewModel() {
     private val _commentsListLiveData = MutableLiveData<List<CommentModel>>()
     val commentsListLiveData: LiveData<List<CommentModel>>
         get() = _commentsListLiveData
+
+    private val _addCommentLiveData = MutableLiveData<ApiResponseState<String>>()
+    val addCommentLiveData: LiveData<ApiResponseState<String>>
+        get() = _addCommentLiveData
 
     init {
         if (Session.get().isUserLogged())
@@ -269,6 +275,20 @@ class HomeViewModel : BaseViewModel() {
             ApeniApiService.getInstance().getcomments(),
             successWithData = {
                 _commentsListLiveData.value = it
+            }
+        )
+    }
+
+    fun addComment(comment: AddCommentModel) {
+        _addCommentLiveData.value = ApiResponseState.Loading(true)
+        sendRequest(
+            ApeniApiService.getInstance().addComment(comment),
+            success = {
+                getComments()
+                _addCommentLiveData.value = ApiResponseState.Success(comment.comment)
+            },
+            finally = {
+                _addCommentLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }

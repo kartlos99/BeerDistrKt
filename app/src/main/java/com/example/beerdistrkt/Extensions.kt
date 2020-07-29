@@ -5,9 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -180,6 +182,22 @@ fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index
         onClick.invoke(which)
     }
     builder.create().show()
+}
+
+fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text: String) -> Unit) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    val view: View = LayoutInflater.from(this).inflate(R.layout.text_input_layout, null)
+    builder
+        .setView(view)
+        .setPositiveButton(R.string.chawera) {dialog, which ->
+            callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
+            dialog.dismiss()
+        }.show()
 }
 
 fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
