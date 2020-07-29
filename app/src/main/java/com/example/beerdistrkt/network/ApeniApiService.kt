@@ -14,15 +14,14 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorReq
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
+import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
-import com.example.beerdistrkt.utils.PrivateKey.Companion.TEST_SERVER_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 //import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 //import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -176,4 +175,8 @@ interface ApeniApiService {
 
     @POST("general/addComment.php")
     fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>
+
+    // other
+    @GET("other/getCleaningList.php")
+    fun getSysCleaning(): Call<DataResponse<List<SysClearModel>>>
 }

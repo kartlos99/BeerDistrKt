@@ -9,132 +9,91 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <TextView
-            android:id="@+id/t_sysclean"
+            android:id="@+id/sysClearTitle2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="@dimen/textsize_4"
-            android:text="@string/sys_clean"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.502" />
-
-        <TextView
-            android:id="@+id/t_add_sysclear"
             android:layout_margin="8dp"
-            android:textSize="@dimen/textsize_3"
+            android:layout_marginTop="8dp"
             android:text="@string/chanaweris_damateba"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintBottom_toBottomOf="@id/sysClearModeBtn"
+            app:layout_constraintEnd_toStartOf="@id/sysClearModeBtn"
+            app:layout_constraintTop_toTopOf="@id/sysClearModeBtn" />
 
-            app:layout_constraintTop_toTopOf="@+id/btn_sysclear"
-            app:layout_constraintRight_toLeftOf="@+id/btn_sysclear"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btn_sysclear"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/sysClearModeBtn"
             android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gr_size_8"
+            android:layout_marginEnd="@dimen/gr_size_8"
             android:text="+"
             android:textSize="@dimen/textsize_3"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/t_sysclean" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <Spinner
-            android:id="@+id/spinner_sysclean"
+            android:id="@+id/sysCleanSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="8dp"
+            android:layout_margin="@dimen/gr_size_8"
             android:visibility="gone"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintRight_toLeftOf="@+id/btn_add_sysclean"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintTop_toTopOf="@+id/btn_add_sysclean"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_add_sysclean"
-            android:layout_marginBottom="8dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/sysCleanSaveBtn"
+            app:layout_constraintBottom_toBottomOf="@id/sysCleanSaveBtn"
+            app:layout_constraintEnd_toStartOf="@id/sysCleanSaveBtn"
+            />
 
-        <Button
-            android:id="@+id/btn_add_sysclean"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/sysCleanSaveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/chawera"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/btn_sysclear" />
-
-        <EditText
+            android:text="@string/chawera"
             android:visibility="gone"
-            android:id="@+id/e_cleaning_comment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/btn_add_sysclean"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            android:hint="@string/comment"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sysClearModeBtn" />
 
         <LinearLayout
-            android:id="@+id/linear_cleaning_titles"
-            android:orientation="horizontal"
-            android:background="@color/cardview_light_background"
+            android:id="@+id/sysClearListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@color/gray_light"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/e_cleaning_comment"
-            tools:layout_editor_absoluteY="8dp"
-            tools:layout_editor_absoluteX="8dp">
+            app:layout_constraintTop_toBottomOf="@+id/sysCleanSaveBtn"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp">
 
             <TextView
-                android:id="@+id/t_dasaxeleba_cleaning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@color/cardview_light_background"
-                android:text="@string/dasaxeleba"
                 android:layout_weight="5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+                android:text="@string/dasaxeleba" />
 
             <TextView
-                android:id="@+id/t_tarigi_cleaning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:layout_width="0dp"
-                android:text="@string/text_tarigi"
-                android:layout_height="wrap_content" />
+                android:text="@string/text_tarigi" />
 
             <TextView
-                android:id="@+id/t_pastday_cleaning"
-                android:text="@string/past_days"
-                android:layout_weight="2"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/past_days" />
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/list_sys_clean"
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sysClearRecycler"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toBottomOf="@+id/linear_cleaning_titles"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@id/sysClearListTitle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

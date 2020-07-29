@@ -101,19 +101,6 @@ class ShekvetebiSum : Serializable {
     var k50wont = 0f
 }
 
-class SysClean : Serializable {
-    var id = 0
-    var distr_id = 0
-    var dge = 0
-    var tarigi: String? = null
-    var dasaxeleba: String? = null
-    var comment: String? = null
-
-    override fun toString(): String {
-        return dasaxeleba!!
-    }
-}
-
 class Totalinout(
     var ludi: String,
     var k30s: Float,

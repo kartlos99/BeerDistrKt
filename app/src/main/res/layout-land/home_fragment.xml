@@ -50,7 +50,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.4" />
 
-
         <TextView
             android:id="@+id/homeCommentsTitle"
             android:layout_width="wrap_content"
@@ -61,6 +60,17 @@
             app:layout_constraintStart_toStartOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/homeAddComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/main_btn_hor_margin"
+            android:padding="@dimen/gr_size_4"
+            android:src="@drawable/ic_add_24dp"
+            app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/homeCommentsRecycler"
