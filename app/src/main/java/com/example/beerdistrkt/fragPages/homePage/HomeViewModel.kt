@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.*
@@ -30,6 +31,10 @@ class HomeViewModel : BaseViewModel() {
     private val _barrelsListLiveData = MutableLiveData<List<SimpleBeerRowModel>>()
     val barrelsListLiveData: LiveData<List<SimpleBeerRowModel>>
         get() = _barrelsListLiveData
+
+    private val _commentsListLiveData = MutableLiveData<List<CommentModel>>()
+    val commentsListLiveData: LiveData<List<CommentModel>>
+        get() = _commentsListLiveData
 
     init {
         if (Session.get().isUserLogged())
@@ -257,6 +262,15 @@ class HomeViewModel : BaseViewModel() {
         super.onCleared()
         Log.d(TAG, "onCleared job dacenselda")
         job.cancel()
+    }
+
+    fun getComments() {
+        sendRequest(
+            ApeniApiService.getInstance().getcomments(),
+            successWithData = {
+                _commentsListLiveData.value = it
+            }
+        )
     }
 
     companion object {

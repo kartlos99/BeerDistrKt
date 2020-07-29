@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
@@ -167,4 +168,8 @@ interface ApeniApiService {
 
     @POST("storeHouse/add.php")
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
+
+    // general
+    @GET("general/getComments.php")
+    fun getcomments(): Call<DataResponse<List<CommentModel>>>
 }

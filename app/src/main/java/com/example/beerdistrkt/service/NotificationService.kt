@@ -31,7 +31,7 @@ class NotificationService : Service() {
         super.onCreate()
 
         Log.d("msg", "onCreate Servic")
-        myNotificationInterface?.getComments()
+//        myNotificationInterface?.getComments()
 
         val messageRef =
             FirebaseDatabase.getInstance().getReference(getString(R.string.location_en))

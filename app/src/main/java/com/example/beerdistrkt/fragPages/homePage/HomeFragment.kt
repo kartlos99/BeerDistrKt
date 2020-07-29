@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
+import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.getViewModel
@@ -77,12 +79,20 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
             initStoreHouseRecycler(it)
         })
+        viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
+            initCommentsRecycler(it)
+        })
+    }
+
+    private fun initCommentsRecycler(data: List<CommentModel>) {
+        homeCommentsRecycler.layoutManager = LinearLayoutManager(context)
+        homeCommentsRecycler.adapter = CommentsAdapter(data)
     }
 
     private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
         homeStoreHouseRecycler?.layoutManager = LinearLayoutManager(context)
         val adapter = SimpleBeerRowAdapter(data)
-        adapter.onClick = View.OnClickListener{
+        adapter.onClick = View.OnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
         }
         homeStoreHouseRecycler?.adapter = adapter
@@ -95,7 +105,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        when(view?.id){
+        when (view?.id) {
             R.id.btnOrder -> {
                 view.findNavController().navigate(R.id.action_homeFragment_to_ordersFragment)
             }
@@ -120,6 +130,6 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     fun getComments() {
-//        TODO
+        viewModel.getComments()
     }
 }
