@@ -27,10 +27,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gr_size_8"
             android:layout_marginEnd="@dimen/gr_size_8"
+            android:enabled="false"
             android:text="+"
             android:textSize="@dimen/textsize_3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/sysCleanSpinner"
@@ -38,14 +39,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gr_size_8"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/sysClearSaveBtn"
+            app:layout_constraintEnd_toStartOf="@id/sysClearSaveBtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/sysCleanSaveBtn"
-            app:layout_constraintBottom_toBottomOf="@id/sysCleanSaveBtn"
-            app:layout_constraintEnd_toStartOf="@id/sysCleanSaveBtn"
-            />
+            app:layout_constraintTop_toTopOf="@id/sysClearSaveBtn" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/sysCleanSaveBtn"
+            android:id="@+id/sysClearSaveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -63,7 +63,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sysCleanSaveBtn"
+            app:layout_constraintTop_toBottomOf="@+id/sysClearSaveBtn"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
 
@@ -91,8 +91,8 @@
             android:id="@+id/sysClearRecycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/sysClearListTitle"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sysClearListTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

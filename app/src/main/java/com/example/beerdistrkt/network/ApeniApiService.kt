@@ -14,6 +14,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorReq
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
+import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
 import com.squareup.moshi.Moshi
@@ -179,4 +180,7 @@ interface ApeniApiService {
     // other
     @GET("other/getCleaningList.php")
     fun getSysCleaning(): Call<DataResponse<List<SysClearModel>>>
+
+    @POST("other/addDeleteClearing.php")
+    fun addDeleteClearing(@Body data: AddClearingModel): Call<DataResponse<String>>
 }
