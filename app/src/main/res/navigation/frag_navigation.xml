@@ -71,7 +71,12 @@
         android:id="@+id/addUserFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
         android:label="add_user_fragment"
-        tools:layout="@layout/add_user_fragment" />
+        tools:layout="@layout/add_user_fragment" >
+        <argument
+            android:name="userID"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
     <fragment
         android:id="@+id/userListFragment"
         android:name="com.example.beerdistrkt.fragPages.usersList.UserListFragment"

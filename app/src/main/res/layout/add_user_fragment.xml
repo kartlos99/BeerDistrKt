@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragPages.addEditUser.AddUserFragment">
 
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -15,7 +14,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/e_user_username"
+                    android:id="@+id/addUserUsername"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
@@ -32,11 +31,21 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <CheckBox
+                    android:id="@+id/addUserAdminBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/admin"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp" />
+
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/e_user_name"
+                    android:id="@+id/addUserName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_username"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserUsername"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
 
@@ -50,11 +59,12 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/e_user_pass"
+                    android:id="@+id/addUserPass"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
-                    app:layout_constraintTop_toBottomOf="@+id/checkbox_user_chpass"
+                    android:layout_marginTop="@dimen/gr_size_8"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserChangePassBox"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
 
@@ -68,21 +78,22 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <EditText
-                    android:id="@+id/e_user_pass_conf"
+                    android:id="@+id/addUserPassConfirm"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/confirn"
                     android:inputType="textPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_pass"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserPass"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     tools:ignore="Autofill" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/e_user_adress"
+                    android:id="@+id/addUserAddress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_name"
+                    android:layout_marginTop="@dimen/gr_size_8"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserName"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
 
@@ -96,10 +107,11 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/e_user_tel"
+                    android:id="@+id/addUserPhone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_adress"
+                    android:layout_marginTop="@dimen/gr_size_8"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserAddress"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
 
@@ -113,10 +125,11 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/e_user_comment"
+                    android:id="@+id/addUserComment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_tel"
+                    android:layout_marginTop="@dimen/gr_size_8"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserPhone"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
 
@@ -130,33 +143,31 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <CheckBox
-                    android:id="@+id/checkbox_user_chpass"
+                    android:id="@+id/addUserChangePassBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/change_pass"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_comment"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserComment"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginTop="8dp" />
 
-                <CheckBox
-                    android:id="@+id/checkBox_user_admin"
-                    android:layout_width="wrap_content"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addUserDoneBtn"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/admin"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp" />
-
-                <Button
-                    android:id="@+id/btn_user_reg"
+                    android:layout_marginTop="@dimen/gr_size_8"
+                    style="@style/mainBtnStyle"
                     android:text="@string/dadastureba"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/e_user_pass_conf"
+                    app:layout_constraintTop_toBottomOf="@+id/addUserPassConfirm"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gr_size_8"
+                    app:layout_constraintTop_toBottomOf="@id/addUserDoneBtn"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

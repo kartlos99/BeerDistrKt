@@ -1,7 +1,12 @@
 package com.example.beerdistrkt.fragPages.addEditUser
 
-import androidx.lifecycle.ViewModel
+import com.example.beerdistrkt.BaseViewModel
 
-class AddUserViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class AddUserViewModel(userID: String) : BaseViewModel() {
+
+
+    fun onDoneClick() {
+//        TODO("Not yet implemented")
+    }
+
 }

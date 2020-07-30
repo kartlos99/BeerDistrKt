@@ -8,12 +8,6 @@
             android:title="@string/add_object" />
 
         <item
-            android:id="@+id/addUserFragment"
-            android:checked="false"
-            android:icon="@drawable/beer_icon"
-            android:title="@string/add_user" />
-
-        <item
             android:id="@+id/userListFragment"
             android:checked="false"
             android:icon="@drawable/beer_icon"
