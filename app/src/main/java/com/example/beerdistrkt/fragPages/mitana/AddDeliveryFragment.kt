@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -133,6 +134,9 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
         initViewModel()
         checkForm()
+        vBinding.addDeliveryCansScroll.postDelayed(Runnable {
+            vBinding.addDeliveryCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+        }, 100L)
     }
 
     private fun initViewModel() {
@@ -367,6 +371,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             holder.itemView.tBeerNameItm.text =
                 "${bList[position].dasaxeleba}\n${bList[position].fasi} ₾"
+            holder.itemView.tBeerNameItm.backgroundTintList = ColorStateList
+                .valueOf(Color.parseColor(bList[position].displayColor))
         }
 
         fun setData(beerList: List<BeerModel>) {

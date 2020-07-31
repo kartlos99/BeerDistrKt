@@ -23,7 +23,6 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.models.Order
-import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
@@ -270,6 +269,8 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             holder.itemView.tBeerNameItm.text = viewModel.beerList[position].dasaxeleba
+            holder.itemView.tBeerNameItm.backgroundTintList = ColorStateList
+                .valueOf(Color.parseColor(viewModel.beerList[position].displayColor))
         }
     }
 

@@ -72,7 +72,7 @@
 
     <HorizontalScrollView
         android:id="@+id/beerSelectorCansScroll"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="none"
@@ -85,7 +85,8 @@
             android:id="@+id/beerSelectorChipGr"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginStart="@dimen/gr_size_8"
+            android:layout_marginEnd="@dimen/gr_size_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/beerSelectorCanTypeTv"
@@ -148,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gr_size_4"
-                android:layout_marginEnd="@dimen/gr_size_4"
+                android:layout_marginEnd="@dimen/gr_size_16"
                 android:checkable="true"
                 android:checked="false"
                 android:elevation="@dimen/gr_size_2"
@@ -161,6 +162,22 @@
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
+
+    <View
+        android:layout_width="@dimen/gr_size_16"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/beerSelectorCansScroll"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll"
+        app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
+        android:background="@drawable/left_right_gradient" />
+
+    <View
+        android:layout_width="@dimen/gr_size_16"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@id/beerSelectorCansScroll"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll"
+        app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
+        android:background="@drawable/right_left_gradient" />
 
     <TextView
         android:id="@+id/beerSelectorCanCountTv"

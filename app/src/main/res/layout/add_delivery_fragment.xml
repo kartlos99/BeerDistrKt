@@ -167,7 +167,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
 
                         <HorizontalScrollView
                             android:id="@+id/addDeliveryCansScroll"
-                            android:layout_width="wrap_content"
+                            android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:scrollbarStyle="insideOverlay"
                             android:scrollbars="none"
@@ -180,7 +180,8 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                                 android:id="@+id/addDeliverysChipGr"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-
+                                android:layout_marginStart="@dimen/gr_size_8"
+                                android:layout_marginEnd="@dimen/gr_size_8"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/addDeliveryCanTypeTv"
@@ -243,7 +244,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/gr_size_4"
-                                    android:layout_marginEnd="@dimen/gr_size_4"
+                                    android:layout_marginEnd="@dimen/gr_size_16"
                                     android:checkable="true"
                                     android:checked="false"
                                     android:elevation="@dimen/gr_size_2"
@@ -256,6 +257,22 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
 
                             </com.google.android.material.chip.ChipGroup>
                         </HorizontalScrollView>
+
+                        <View
+                            android:layout_width="@dimen/gr_size_16"
+                            android:layout_height="0dp"
+                            app:layout_constraintStart_toStartOf="@id/addDeliveryCansScroll"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryCansScroll"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryCansScroll"
+                            android:background="@drawable/left_right_gradient" />
+
+                        <View
+                            android:layout_width="@dimen/gr_size_16"
+                            android:layout_height="0dp"
+                            app:layout_constraintEnd_toEndOf="@id/addDeliveryCansScroll"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryCansScroll"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryCansScroll"
+                            android:background="@drawable/right_left_gradient" />
 
                         <TextView
                             android:id="@+id/addDeliveryCanCountTv"

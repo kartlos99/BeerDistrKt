@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.customView
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -152,6 +154,8 @@ class BeerSelectorView @JvmOverloads constructor(
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             holder.itemView.tBeerNameItm.text = beerList[position].dasaxeleba
+            holder.itemView.tBeerNameItm.backgroundTintList = ColorStateList
+                .valueOf(Color.parseColor(beerList[position].displayColor))
         }
     }
 
