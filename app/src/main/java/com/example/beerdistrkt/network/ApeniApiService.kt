@@ -12,6 +12,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
+import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
@@ -110,13 +111,8 @@ interface ApeniApiService {
     @POST("getRecord.php")
     fun getRecord(@Body recordModel: RecordRequestModel): Call<DataResponse<RecordResponseDTO>>
 
-    @FormUrlEncoded
-    @POST("insert_xarji.php")
-    fun addXarji(
-        @Field("distrid") userID: String,
-        @Field("amount") amount: String,
-        @Field("comment") comment: String
-    ): Call<DataResponse<Int>>
+    @POST("general/addXarji.php")
+    fun addXarji(@Body data: AddXarjiRequestModel): Call<DataResponse<Int>>
 
     @GET("order/getByDate.php")
     fun getOrders(@Query("date") date: String): Call<DataResponse<List<OrderDTO>>>

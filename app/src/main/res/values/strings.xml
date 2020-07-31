@@ -178,5 +178,6 @@
     <string name="password_invalid_error_text">პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს</string>
     <string name="password_confirm_error_text">პაროლი არ ემთხვევა</string>
     <string name="enter_corect_data">შეავსეთ მოთხოვნილი ველები სათანადოდ!</string>
+    <string name="cant_add_xarji">ძველი თარიღით ხარჯებს ვერ დაამატებთ!</string>
 
 </resources>

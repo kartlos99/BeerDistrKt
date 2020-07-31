@@ -59,6 +59,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                     viewModel.calendar.get(Calendar.MONTH),
                     viewModel.calendar.get(Calendar.DAY_OF_MONTH)
                 )
+                datePickerDialog.datePicker.maxDate = Date().time
                 datePickerDialog.setCancelable(false)
                 datePickerDialog.show()
             }
@@ -70,20 +71,22 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
         context?.let {
             vBinding.salesAddXarjiBtn.setOnClickListener {
-                val xarjebiDialog = XarjebiDialog(it.context) { comment, amount ->
-                    if (amount.isEmpty()) {
-                        showToast(getString(R.string.msg_empty_not_saved))
-                    } else {
-                        try {
-                            val am = amount.toFloat()
-                            viewModel.addXarji(comment, am.toString())
-                        } catch (e: NumberFormatException) {
-                            Log.d(TAG, e.toString())
-                            showToast(getString(R.string.msg_invalid_format))
+                if (Session.get().userType == UserType.DISTRIBUTOR && !viewModel.isToday()) {
+                    showToast(R.string.cant_add_xarji)
+                } else
+                    XarjebiDialog(it.context) { comment, amount ->
+                        if (amount.isEmpty()) {
+                            showToast(getString(R.string.msg_empty_not_saved))
+                        } else {
+                            try {
+                                val am = amount.toFloat()
+                                viewModel.addXarji(comment, am.toString())
+                            } catch (e: NumberFormatException) {
+                                Log.d(TAG, e.toString())
+                                showToast(getString(R.string.msg_invalid_format))
+                            }
                         }
-                    }
-                }
-                xarjebiDialog.show(childFragmentManager, "xarjidialogTag")
+                    }.show(childFragmentManager, "xarjidialogTag")
             }
         }
 
@@ -101,6 +104,12 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             viewModel.usersList.map { it.name }
         )
         vBinding.salesDistributorsSpinner.onItemSelectedListener = this
+        if (Session.get().userType == UserType.DISTRIBUTOR) {
+            vBinding.salesDistributorsSpinner.setSelection(
+                viewModel.usersList.map { it.id }.indexOf(Session.get().userID)
+            )
+            vBinding.salesDistributorsSpinner.isEnabled = false
+        }
 
         initViewModel()
     }
@@ -111,11 +120,9 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             vBinding.salesList1.adapter = adapter
             fillPageData()
         })
-
         viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
             viewModel.formUserMap(it)
         })
-
         viewModel.deleteXarjiLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -129,11 +136,9 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             }
             viewModel.deleteXarjiComplited()
         })
-
         viewModel.xarjiListExpandedLiveData.observe(viewLifecycleOwner, Observer {
             showXarjList(it)
         })
-
         viewModel.addXarjiLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -147,9 +152,11 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             }
             viewModel.addXarjiComplited()
         })
-
         viewModel.barrelsLiveData.observe(viewLifecycleOwner, Observer {
             initBarrelBlock(it)
+        })
+        viewModel.selectedDayLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.salesDayForwardBtn.isEnabled = !viewModel.isToday()
         })
     }
 

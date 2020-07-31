@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
@@ -60,6 +61,8 @@ class SalesViewModel : BaseViewModel() {
 
     var calendar: Calendar = Calendar.getInstance()
 
+    fun isToday(): Boolean = dateFormatDash.format(calendar.time) == dateFormatDash.format(Date())
+
     fun onDataSelected(year: Int, month: Int, day: Int) {
         calendar.set(year, month, day)
         prepareData()
@@ -79,6 +82,7 @@ class SalesViewModel : BaseViewModel() {
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         Log.d(TAG, selectedDayLiveData.value!!)
         getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
+        _xarjiListExpandedLiveData.value = false
     }
 
     lateinit var userMap: Map<String, List<User>>
@@ -149,10 +153,14 @@ class SalesViewModel : BaseViewModel() {
     fun addXarji(comment: String, amount: String) {
         Log.d(TAG, " comm $amount")
         sendRequest(
-            apiRequest = ApeniApiService.getInstance().addXarji(
-                Session.get().userID!!,
-                amount,
-                comment
+            ApeniApiService.getInstance().addXarji(
+                AddXarjiRequestModel(
+                    Session.get().userID!!,
+                    amount.toDouble(),
+                    comment,
+                    dateTimeFormat.format(calendar.time)
+                )
+
             ),
             successWithData = {
                 xarjebi.add(
