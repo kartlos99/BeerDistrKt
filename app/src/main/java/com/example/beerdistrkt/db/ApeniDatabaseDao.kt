@@ -34,6 +34,9 @@ interface ApeniDatabaseDao {
     @Query("DELETE FROM user_table")
     fun clearUserTable()
 
+    @Query("DELETE FROM user_table WHERE id = :userID")
+    fun deleteUser(userID: String)
+
     @Query("Select * from user_table order by username")
     fun getUsers(): LiveData<List<User>>
 

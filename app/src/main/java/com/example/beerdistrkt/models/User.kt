@@ -24,6 +24,8 @@ data class User(
                 "1", "","","",""
             )
         }
+
+        val EMPTY_USER = User("", "", "", "1", "", "", "", "")
     }
 }
 

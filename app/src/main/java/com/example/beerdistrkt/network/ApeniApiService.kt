@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
@@ -103,7 +104,7 @@ interface ApeniApiService {
         @Query("distrid") distrid: Int
     ): Call<DataResponse<RealizationDay>>
 
-    @POST("del_record_v2.php")
+    @POST("general/deleteRecord.php")
     fun deleteRecord(@Body del: DeleteRequest): Call<DataResponse<Any>>
 
     @POST("getRecord.php")
@@ -183,4 +184,8 @@ interface ApeniApiService {
 
     @POST("other/addDeleteClearing.php")
     fun addDeleteClearing(@Body data: AddClearingModel): Call<DataResponse<String>>
+
+    // user
+    @POST("user/add.php")
+    fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
 }

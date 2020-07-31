@@ -142,7 +142,7 @@
     <string name="active">აქტიური</string>
     <string name="completed">დასრულებული</string>
     <string name="canceled">გაუქმებული</string>
-    <string name="deleted">წაშლილი</string>
+    <string name="deleted">წაშლილია</string>
     <string name="auto_created">ავტომატური</string>
 
     <string name="fill_data">შეავსეთ მონაცემები</string>
