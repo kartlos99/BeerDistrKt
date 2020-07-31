@@ -62,15 +62,25 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
 
         addUserDoneBtn.setOnClickListener {
-
-            val user = readUser()
-            val requestModel = AddUserRequestModel(
-                user,
-                addUserPass.editText?.text.toString(),
-                addUserChangePassBox.isChecked
-            )
-            viewModel.onDoneClick(requestModel)
+            if (isFormValid()) {
+                val user = readUser()
+                val requestModel = AddUserRequestModel(
+                    user,
+                    addUserPass.editText?.text.toString(),
+                    addUserChangePassBox.isChecked
+                )
+                viewModel.onDoneClick(requestModel)
+            } else {
+                showToast(R.string.enter_corect_data)
+            }
         }
+    }
+
+    private fun isFormValid(): Boolean {
+        return if (userID.isNotEmpty() && !addUserChangePassBox.isChecked)
+            validateUsername() and validateName()
+        else
+            validateUsername() and validateName() and validatePassword() and validateConfirmPass()
     }
 
     private fun readUser(): User {
@@ -143,5 +153,50 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             }
         }
         return false
+    }
+
+    private fun validateUsername(): Boolean {
+        val input = addUserUsername.editText?.text.toString().trim()
+        return if (input.length < 3) {
+            addUserUsername.error = resources.getString(R.string.username_invalid_error_text)
+            false
+        } else {
+            addUserUsername.error = null
+            true
+        }
+    }
+
+    private fun validateName(): Boolean {
+        val input = addUserName.editText?.text.toString().trim()
+        return if (input.length < 3) {
+            addUserName.error = resources.getString(R.string.username_invalid_error_text)
+            false
+        } else {
+            addUserName.error = null
+            true
+        }
+    }
+
+    private fun validatePassword(): Boolean {
+        val input = addUserPass.editText?.text.toString()
+        Log.d("pass", input)
+        return if (input.length < 6) {
+            addUserPass.error = resources.getString(R.string.password_invalid_error_text)
+            false
+        } else {
+            addUserPass.error = null
+            true
+        }
+    }
+
+    private fun validateConfirmPass(): Boolean {
+        val input = addUserPassConfirm.editText?.text.toString()
+        return if (addUserPass.editText?.text.toString() != input) {
+            addUserPassConfirm.error = resources.getString(R.string.password_confirm_error_text)
+            false
+        } else {
+            addUserPassConfirm.error = null
+            true
+        }
     }
 }

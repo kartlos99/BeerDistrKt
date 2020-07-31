@@ -42,7 +42,7 @@
     <string name="saxeli_gvari">სახელი გვარი</string>
     <string name="adress">მისამართი</string>
     <string name="tel">ტელ:</string>
-    <string name="admin">ადმინ</string>
+    <string name="admin_rights">ადმინსტრატორის უფლებები</string>
     <string name="confirn">გაიმეორეთ პაროლი</string>
     <string name="userslist">მომხმარებლები</string>
     <string name="change_pass">პაროლის შეცვლა</string>
@@ -173,5 +173,10 @@
     <string name="channel_id">channel_id_tb</string>
     <string name="channel_description">აქ მოდის შეტყობინებები</string>
     <string name="add_comment">კომენტარის დამატება</string>
+
+    <string name="username_invalid_error_text">შეიყვანეთ მინიმუმ 3 სიმბოლო</string>
+    <string name="password_invalid_error_text">პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს</string>
+    <string name="password_confirm_error_text">პაროლი არ ემთხვევა</string>
+    <string name="enter_corect_data">შეავსეთ მოთხოვნილი ველები სათანადოდ!</string>
 
 </resources>
