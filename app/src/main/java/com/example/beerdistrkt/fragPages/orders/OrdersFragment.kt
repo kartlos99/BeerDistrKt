@@ -35,7 +35,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
-    lateinit var switchToDelivery: Switch
+    private var switchToDelivery: Switch? = null
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -158,7 +158,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                     }
                     vBinding.ordersRecycler.adapter = ordersAdapter
                     onModeChange(viewModel.deliveryMode)
-                    switchToDelivery.isChecked = viewModel.deliveryMode
+                    switchToDelivery?.isChecked = viewModel.deliveryMode
                 }
                 is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
             }
@@ -244,7 +244,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
         val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
         switchToDelivery = swView.getChildAt(0) as Switch
-        switchToDelivery.setOnCheckedChangeListener { _, isChecked ->
+        switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
         }
     }

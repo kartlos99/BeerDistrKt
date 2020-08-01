@@ -85,6 +85,7 @@ class ParentOrderAdapter(
 
             // Create sub item view adapter
             val subOrderAdapter = OrderAdapter(grItem.ordersList)
+            subOrderAdapter.setMode(deliveryMode)
             orderGroups[position].orderAdapter = subOrderAdapter
 
             var dragStartPosition = -1
@@ -227,12 +228,11 @@ class ParentOrderAdapter(
 
     fun updateLastItem(mode: Boolean) {
         deliveryMode = mode
-        notifyItemChanged(orderGroups.size)
+        notifyDataSetChanged()
     }
 
     private class ParentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    //    fun initSummedRecycler()
     companion object {
         const val MAIN_ORDER_ITEM = 1
         const val BOTTOM_ITEM = 2

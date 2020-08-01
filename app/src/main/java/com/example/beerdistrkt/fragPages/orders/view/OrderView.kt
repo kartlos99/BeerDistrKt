@@ -2,7 +2,6 @@ package com.example.beerdistrkt.fragPages.orders.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -28,7 +27,6 @@ class OrderView @JvmOverloads constructor(
         View.inflate(context, R.layout.view_order, this)
         layoutParams =
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        Log.d("newViewCreated", "init")
     }
 
     private fun resetForm(){
@@ -37,6 +35,11 @@ class OrderView @JvmOverloads constructor(
         orderComment.visibleIf(false)
         orderStatusTv.text = ""
         orderUnitRootSwipe.close(false)
+    }
+
+    fun lockSwipe(lock: Boolean) {
+        orderUnitRootSwipe.close(false)
+        orderUnitRootSwipe.setLockDrag(lock)
     }
 
     fun fillData(order: Order) {
