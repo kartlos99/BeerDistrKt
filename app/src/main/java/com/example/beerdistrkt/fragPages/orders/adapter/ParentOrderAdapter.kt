@@ -1,9 +1,12 @@
 package com.example.beerdistrkt.fragPages.orders.adapter
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -130,6 +133,8 @@ class ParentOrderAdapter(
                         super.clearView(recyclerView, viewHolder)
                         Log.d("drag posFin", "${viewHolder.adapterPosition}")
                         val dragFinalPosition = viewHolder.adapterPosition
+                        viewHolder.itemView.findViewById<ConstraintLayout>(R.id.orderMainConstraint)?.
+                        backgroundTintList = null
 
                         if (dragStartPosition != dragFinalPosition && dragStartPosition != -1) {
                             if (draggingOrder != null && newSortValue != null) {
@@ -145,6 +150,8 @@ class ParentOrderAdapter(
                     ) {
                         super.onSelectedChanged(viewHolder, actionState)
                         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                            viewHolder?.itemView?.findViewById<ConstraintLayout>(R.id.orderMainConstraint)?.
+                            backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF9696"))
                             dragStartPosition = viewHolder?.adapterPosition ?: -1
                             if (dragStartPosition >= 0)
                                 draggingOrder = grItem.ordersList[dragStartPosition]
