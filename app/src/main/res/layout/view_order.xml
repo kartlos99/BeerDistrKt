@@ -73,7 +73,6 @@
             android:elevation="2dp"
             android:focusable="true"
             android:foreground="?selectableItemBackground"
-            android:paddingStart="@dimen/gr_size_12"
             android:paddingEnd="@dimen/gr_size_8"
             tools:ignore="RtlSymmetry">
 
@@ -97,10 +96,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gr_size_2"
                 android:layout_marginEnd="@dimen/gr_size_8"
+                android:paddingStart="@dimen/gr_size_12"
                 android:textSize="@dimen/sp18"
                 app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/orderUnitDragImg"
+                android:layout_width="@dimen/gr_size_32"
+                android:layout_height="@dimen/gr_size_32"
+                android:padding="@dimen/gr_size_4"
+                android:visibility="gone"
+                android:src="@drawable/ic_baseline_drag_indicator_24"
+                android:contentDescription="@string/img_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/orderUnitCommentImg"
@@ -128,6 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/gr_size_1"
                 android:layout_marginTop="@dimen/gr_size_6"
+                android:layout_marginStart="@dimen/gr_size_12"
                 android:background="@color/gray_3"
                 app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
 
@@ -138,6 +150,7 @@
                 android:layout_marginTop="@dimen/gr_size_12"
                 android:layout_marginBottom="@dimen/gr_size_8"
                 android:paddingBottom="@dimen/gr_size_4"
+                android:paddingStart="@dimen/gr_size_12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
