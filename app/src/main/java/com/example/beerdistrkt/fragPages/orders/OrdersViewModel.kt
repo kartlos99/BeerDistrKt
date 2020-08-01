@@ -10,7 +10,6 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import java.util.*
 
@@ -23,11 +22,13 @@ class OrdersViewModel : BaseViewModel() {
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
     private val userLiveData = database.getUsers()
+    private val barrelsLiveData = database.getCansList()
     val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
     private lateinit var clients: List<Obieqti>
     private lateinit var beers: List<BeerModel>
     private lateinit var usersList: List<User>
+    lateinit var barrelsList: List<CanModel>
 
     var orderDateCalendar: Calendar = Calendar.getInstance()
 
@@ -49,6 +50,7 @@ class OrdersViewModel : BaseViewModel() {
         clientsLiveData.observeForever { clients = it }
         beersLiveData.observeForever { beers = it }
         userLiveData.observeForever { usersList = it }
+        barrelsLiveData.observeForever { barrelsList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
     }
 
