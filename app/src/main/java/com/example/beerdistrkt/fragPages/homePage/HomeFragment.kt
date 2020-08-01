@@ -89,6 +89,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 is ApiResponseState.Success -> {
                     notifyNewComment(it.data)
                     showToast(R.string.data_saved)
+                    viewModel.stopAddCommentObserving()
                 }
             }
         })

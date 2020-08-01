@@ -293,6 +293,10 @@ class HomeViewModel : BaseViewModel() {
         )
     }
 
+    fun stopAddCommentObserving() {
+        _addCommentLiveData.value = ApiResponseState.Sleep
+    }
+
     companion object {
         const val TAG = "homeVM"
     }
