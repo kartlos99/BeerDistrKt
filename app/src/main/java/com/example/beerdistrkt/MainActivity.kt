@@ -8,11 +8,13 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.beerdistrkt.databinding.ActivityMainBinding
@@ -23,6 +25,7 @@ import com.example.beerdistrkt.fragPages.objList.ObjListFragment.Companion.CALL_
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.change_pass_dialog.view.*
@@ -76,6 +79,13 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             NavigationUI.onNavDestinationSelected(item, navController);
             vBinding.drawerLayout.closeDrawer(GravityCompat.START);
             return@OnNavigationItemSelectedListener true
+        })
+
+        viewModel.headerUpdateLiveData.observe(this, Observer {
+            val userNameTv = vBinding.navView.getHeaderView(0).findViewById<TextView>(R.id.navHeaderUsername)
+            val nameTv = vBinding.navView.getHeaderView(0).findViewById<TextView>(R.id.navHeaderName)
+            userNameTv.text = "${Session.get().userName}  ( ${Session.get().userType.name} )"
+            nameTv.text = Session.get().displayName
         })
 
 //        intent.extras?.keySet()?.forEach {

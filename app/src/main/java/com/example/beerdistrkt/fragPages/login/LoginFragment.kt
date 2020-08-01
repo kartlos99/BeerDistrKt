@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.*
 
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.PrivateKey
@@ -29,6 +27,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     override val viewModel by lazy {
         getViewModel { LoginViewModel() }
     }
+
+    lateinit var actViewModel: MainActViewModel
 
     private val mAuth by lazy {
         FirebaseAuth.getInstance()
@@ -59,6 +59,11 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             checkSavedPass()
 
         initViewModel()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        actViewModel = (activity as MainActivity).viewModel
     }
 
     private fun checkSavedPass() {
@@ -140,6 +145,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     private fun onLoginSuccess() {
         viewLoginLoginBtn.isEnabled = true
+        actViewModel.updateNavHeader()
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }
 
