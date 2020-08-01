@@ -4,13 +4,13 @@
         <item
             android:id="@+id/addObjectFragment"
             android:checked="false"
-            android:icon="@drawable/beer_icon"
+            android:icon="@drawable/ic_client_add_24"
             android:title="@string/add_object" />
 
         <item
             android:id="@+id/userListFragment"
             android:checked="false"
-            android:icon="@drawable/beer_icon"
+            android:icon="@drawable/ic_persons_24"
             android:title="@string/userslist" />
 
         <item
@@ -20,22 +20,22 @@
 
         <item
             android:id="@+id/sawyobiFragment"
-            android:icon="@drawable/beer_icon"
+            android:icon="@drawable/ic_storage_24"
             android:title="@string/sawyobi"/>
 
         <item
             android:id="@+id/sysClearFragment"
-            android:icon="@drawable/beer_icon"
+            android:icon="@drawable/ic_build_24"
             android:title="@string/ssysclear"/>
 
         <item
             android:id="@+id/mChangePass"
-            android:icon="@drawable/beer_icon"
+            android:icon="@drawable/ic_lock_portrait_24"
             android:title="@string/change_pass"/>
 
         <item
             android:id="@+id/loginFragment"
-            android:icon="@drawable/beer_icon"
+            android:icon="@drawable/ic_logout_24"
             android:title="@string/logout" />
 
     </group>

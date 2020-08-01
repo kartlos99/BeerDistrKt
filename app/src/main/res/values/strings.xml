@@ -46,6 +46,7 @@
     <string name="confirn">გაიმეორეთ პაროლი</string>
     <string name="userslist">მომხმარებლები</string>
     <string name="change_pass">პაროლის შეცვლა</string>
+    <string name="change_pass_done">პაროლი შეიცვალა!</string>
     <string name="group">დაჯგუფება</string>
     <string name="choose_distributor">ვის დაევალოს:</string>
     <string name="delete">წაშლა</string>
@@ -142,6 +143,7 @@
     <string name="active">აქტიური</string>
     <string name="completed">დასრულებული</string>
     <string name="canceled">გაუქმებული</string>
+    <string name="cancel">გაუქმება</string>
     <string name="deleted">წაშლილია</string>
     <string name="auto_created">ავტომატური</string>
 
@@ -174,9 +176,9 @@
     <string name="channel_description">აქ მოდის შეტყობინებები</string>
     <string name="add_comment">კომენტარის დამატება</string>
 
-    <string name="username_invalid_error_text">შეიყვანეთ მინიმუმ 3 სიმბოლო</string>
-    <string name="password_invalid_error_text">პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს</string>
-    <string name="password_confirm_error_text">პაროლი არ ემთხვევა</string>
+    <string name="username_invalid_error_text">შეიყვანეთ მინიმუმ 3 სიმბოლო!</string>
+    <string name="password_invalid_error_text">პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს!</string>
+    <string name="password_confirm_error_text">დაადასტურეთ ახალი პაროლი!</string>
     <string name="enter_corect_data">შეავსეთ მოთხოვნილი ველები სათანადოდ!</string>
     <string name="cant_add_xarji">ძველი თარიღით ხარჯებს ვერ დაამატებთ!</string>
 

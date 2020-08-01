@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -237,6 +238,15 @@ fun Fragment.notifyNewComment(text: String) {
     refToFB.setValue(fullText)
     SharedPreferenceDataSource.initialize(this.requireContext())
     SharedPreferenceDataSource.getInstance().saveLastMsgDate(fullText)
+}
+
+fun Activity.showToast(message: String?) {
+    if (!message.isNullOrEmpty())
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Activity.showToast(strRes: Int) {
+    showToast(getString(strRes))
 }
 
 fun Context.isNetworkAvailable(): Boolean {

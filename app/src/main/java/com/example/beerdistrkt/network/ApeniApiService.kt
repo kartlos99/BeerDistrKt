@@ -184,4 +184,7 @@ interface ApeniApiService {
     // user
     @POST("user/add.php")
     fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
+
+    @POST("user/changePassword.php")
+    fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>
 }
