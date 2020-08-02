@@ -50,14 +50,9 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         btnSalesByClient.setOnClickListener(this)
         homeHideStoreHouse.setOnClickListener(this)
         homeAddComment.setOnClickListener(this)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
         showStoreHouseData(Session.get().userType == UserType.ADMIN)
         getComments()
-
         initViewModel()
     }
 
@@ -111,6 +106,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
         if (!Session.get().isUserLogged())
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
     }
