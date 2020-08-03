@@ -28,6 +28,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 
 //<Response : Any, ApiResponse : DataResponse<Response>>
@@ -247,6 +249,10 @@ fun Activity.showToast(message: String?) {
 
 fun Activity.showToast(strRes: Int) {
     showToast(getString(strRes))
+}
+
+fun Double.round(decSize: Int = 2): Double {
+    return BigDecimal(this).setScale(decSize, RoundingMode.HALF_EVEN).toDouble()
 }
 
 fun Context.isNetworkAvailable(): Boolean {

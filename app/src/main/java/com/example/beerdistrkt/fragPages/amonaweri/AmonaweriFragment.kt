@@ -52,11 +52,6 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         vBinding.viewpagerAmonaweri.adapter = pagesAdapter
         vBinding.tabsAmonaweri.setupWithViewPager(vBinding.viewpagerAmonaweri)
 
-        vBinding.btnP4Tarigi.setOnClickListener {
-//            val fr1 = pagesAdapter?.fragmentM
-
-        }
-
         vBinding.chkGrAmonaweri.setOnCheckedChangeListener { buttonView, isChecked ->
             pagesAdapter?.fragmentM?.chengeAmonaweriAppearance(isChecked)
             pagesAdapter?.fragmentK?.chengeAmonaweriAppearance(isChecked)
