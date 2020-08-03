@@ -15,6 +15,7 @@ import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.round
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -90,7 +91,7 @@ class AddDeliveryViewModel(
                 it.id,
                 it.dasaxeleba,
                 it.displayColor,
-                "%.2f".format(price).toDouble(),
+                price.round(),
                 it.sortValue
             )
         }

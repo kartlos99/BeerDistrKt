@@ -102,6 +102,11 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         vBinding.navView.menu.getItem(3).isEnabled = Session.get().userType == UserType.ADMIN
     }
 
+    fun logOut() {
+        val navController = this.findNavController(R.id.mainNavHostFragment)
+        navController.navigate(R.id.loginFragment)
+    }
+
     private fun changePass() {
         val chPassView: View =
             layoutInflater.inflate(R.layout.change_pass_dialog, null)
