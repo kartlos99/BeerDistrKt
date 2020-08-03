@@ -14,27 +14,27 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/t_amon_title_tarigi"
+                android:id="@+id/amoColumnTitle1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5" />
 
             <TextView
-                android:id="@+id/t_amon_title_in"
+                android:id="@+id/amoColumnTitle2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/t_amon_title_out"
+                android:id="@+id/amoColumnTitle3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/t_amon_title_balance"
+                android:id="@+id/amoColumnTitle4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"

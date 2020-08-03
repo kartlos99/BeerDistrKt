@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.Amonaweri
+import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
+import com.example.beerdistrkt.utils.Session
 import java.text.ParseException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -20,28 +22,39 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     val TAG = "subPageVM"
     var amonaweriDataList = ArrayList<Amonaweri>()
     var isGrouped = true
+    var clientID = 0
+    var pagePos = 0
+    val needUpdateLiveData = MutableLiveData<String?>(null)
 
-    fun requestAmonaweriList(date: String, objID: Int, pagePos: Int){
+    val calendar = Calendar.getInstance()
+
+    init {
+        calendar.add(Calendar.HOUR, 24 + 4) // es dge rom bolomde chaitvalos
+    }
+
+    fun requestAmonaweriList(){
         when(pagePos){
-            M_PAGE -> getAmonaweriM(date, objID)
-            K_PAGE -> getAmonaweriK(date, objID)
+            M_PAGE -> getAmonaweriM(dateFormatDash.format(calendar.time))
+            K_PAGE -> getAmonaweriK(dateFormatDash.format(calendar.time))
         }
     }
 
-    fun getAmonaweriM(date: String, id: Int) {
+    fun getAmonaweriM(date: String) {
         sendRequest(
-            ApeniApiService.getInstance().getAmonaweriM(date, id),
+            ApeniApiService.getInstance().getAmonaweriM(date, clientID),
             successWithData = {
+                amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
             }
         )
     }
 
-    fun getAmonaweriK(date: String, id: Int) {
+    fun getAmonaweriK(date: String) {
         sendRequest(
-            ApeniApiService.getInstance().getAmonaweriK(date, id),
+            ApeniApiService.getInstance().getAmonaweriK(date, clientID),
             successWithData = {
+                amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
             }
@@ -49,12 +62,12 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     }
 
     fun changeDataStructure(grouped: Boolean) {
+        isGrouped = grouped
         if (grouped){
             _amonaweriLiveData.value = groupAmonaweriList(amonaweriDataList)
         }else{
             _amonaweriLiveData.value = amonaweriDataList
         }
-        isGrouped = grouped
     }
 
     fun groupAmonaweriList(rowList: ArrayList<Amonaweri>): ArrayList<Amonaweri>{
@@ -64,7 +77,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
 
         if (rowList.size > 0) {
             try {
-                grDate = dateFormat_desh.parse(rowList[0].tarigi) ?: Date()
+                grDate = dateFormatDash.parse(rowList[0].tarigi) ?: Date()
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -75,7 +88,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             var k_out = 0.0f
             for (i in rowList.indices) {
                 try {
-                    currRowDate = dateFormat_desh.parse(rowList[i].tarigi) ?: Date()
+                    currRowDate = dateFormatDash.parse(rowList[i].tarigi) ?: Date()
                 } catch (e: ParseException) {
                     e.printStackTrace()
                 }
@@ -86,7 +99,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     k_out += rowList[i].k_out
                 } else {
                     val currGrRow = Amonaweri()
-                    currGrRow.tarigi = dateFormat_desh.format(grDate)
+                    currGrRow.tarigi = dateFormatDash.format(grDate)
                     currGrRow.price = pr
                     currGrRow.pay = pay
                     currGrRow.balance = bal
@@ -103,7 +116,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                 }
             }
             val currGrRow = Amonaweri()
-            currGrRow.tarigi = dateFormat_desh.format(grDate)
+            currGrRow.tarigi = dateFormatDash.format(grDate)
             currGrRow.price = pr
             currGrRow.pay = pay
             currGrRow.balance = bal
@@ -112,5 +125,21 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             groupedList.add(currGrRow)
         }
         return groupedList
+    }
+
+    fun deleteRecord(table: String, id: Int) {
+        sendRequest(
+            ApeniApiService.getInstance().deleteRecord(
+                DeleteRequest(
+                    id.toString(),
+                    table,
+                    Session.get().userID ?: return
+                )
+            ),
+            success = {
+                requestAmonaweriList()
+                needUpdateLiveData.value = pagePos.toString()
+            }
+        )
     }
 }

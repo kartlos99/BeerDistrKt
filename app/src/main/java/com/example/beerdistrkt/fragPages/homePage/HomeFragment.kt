@@ -1,22 +1,22 @@
 package com.example.beerdistrkt.fragPages.homePage
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.example.beerdistrkt.BaseFragment
-
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.HomeFragmentBinding
-import com.example.beerdistrkt.utils.AMONAWERI
-import com.example.beerdistrkt.utils.MITANA
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.beerdistrkt.*
+import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
+import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
+import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
+import com.example.beerdistrkt.utils.*
+import kotlinx.android.synthetic.main.home_fragment.*
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
@@ -24,59 +24,130 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         fun newInstance() = HomeFragment()
     }
 
-    private lateinit var vBinding: HomeFragmentBinding
-    override val viewModel: HomeViewModel by lazy { ViewModelProviders.of(this)[HomeViewModel::class.java] }
+    override val viewModel: HomeViewModel by lazy {
+        getViewModel { HomeViewModel() }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        vBinding = HomeFragmentBinding.inflate(inflater)
 //        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.home_fragment, container, false)
 
 //        val application = requireNotNull(this.activity).application
 
-        vBinding.lifecycleOwner = this
+//        lifecycleOwner = this
 
-        vBinding.btnShekvetebi.setOnClickListener(this)
-        vBinding.btnMitana.setOnClickListener(this)
-        vBinding.btnRealizDge.setOnClickListener(this)
-        vBinding.btnRealizObj.setOnClickListener(this)
-        return vBinding.root
+        return inflater.inflate(R.layout.home_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btnOrder.setOnClickListener(this)
+        btnSaleResult.setOnClickListener(this)
+        btnSalesByClient.setOnClickListener(this)
+        homeHideStoreHouse.setOnClickListener(this)
+        homeAddComment.setOnClickListener(this)
 
-        viewModel.usersLiveData.observe(this, Observer {
-            it.forEach {user ->
-                Log.d("___User___", user.toString())
+        showStoreHouseData(Session.get().userType == UserType.ADMIN)
+        getComments()
+        initViewModel()
+    }
+
+    private fun showStoreHouseData(shouldShow: Boolean) {
+        homeStoreHouseRecycler.visibleIf(shouldShow)
+        homeHideStoreHouse.visibleIf(shouldShow)
+        homeStoreHouseTitle.visibleIf(shouldShow)
+        homeStoreHouseBkg.visibleIf(shouldShow)
+    }
+
+    private fun initViewModel() {
+        viewModel.mainLoaderLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                homeMainProgressBar?.visibleIf(it)
+                if (!it)
+                    viewModel.getStoreBalance()
+            }
+        })
+        viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
+            initStoreHouseRecycler(it)
+        })
+        viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
+            initCommentsRecycler(it)
+        })
+        viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResponseState.Loading -> {
+                }
+                is ApiResponseState.Success -> {
+                    notifyNewComment(it.data)
+                    showToast(R.string.data_saved)
+                    viewModel.stopAddCommentObserving()
+                }
             }
         })
     }
 
+    private fun initCommentsRecycler(data: List<CommentModel>) {
+        homeCommentsRecycler.layoutManager = LinearLayoutManager(context)
+        homeCommentsRecycler.adapter = CommentsAdapter(data)
+    }
+
+    private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
+        homeStoreHouseRecycler?.layoutManager = LinearLayoutManager(context)
+        val adapter = SimpleBeerRowAdapter(data)
+        adapter.onClick = View.OnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
+        }
+        homeStoreHouseRecycler?.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
+        if (!Session.get().isUserLogged())
+            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+    }
+
     override fun onClick(view: View?) {
-        when(view?.id){
-            R.id.btn_shekvetebi -> {
+        when (view?.id) {
+            R.id.btnOrder -> {
                 view.findNavController().navigate(R.id.action_homeFragment_to_ordersFragment)
             }
-            vBinding.btnMitana.id -> {
-                view.findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToObjListFragment(
-                    MITANA))
+            R.id.btnSaleResult -> {
+                view.findNavController()
+                    .navigate(HomeFragmentDirections.actionHomeFragmentToSalesFragment())
             }
-            vBinding.btnRealizDge.id -> {
-                view.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSalesFragment())
+            R.id.btnSalesByClient -> {
+                view.findNavController()
+                    .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
             }
-            vBinding.btnRealizObj.id -> {
-                view.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(
-                    AMONAWERI))
+            R.id.homeHideStoreHouse -> {
+                if (homeStoreHouseRecycler.visibility == View.VISIBLE) {
+                    homeStoreHouseRecycler.goAway()
+                    homeHideStoreHouse.rotation = 180f
+                } else {
+                    homeStoreHouseRecycler.show()
+                    homeHideStoreHouse.rotation = 0f
+                }
+            }
+            R.id.homeAddComment -> {
+                context?.showTextInputDialog(
+                    R.string.add_comment,
+                    R.style.ThemeOverlay_MaterialComponents_Dialog
+                ) {
+                    if (it.isNotEmpty())
+                        viewModel.addComment(AddCommentModel(it, Session.get().userID!!))
+                    else
+                        showToast(R.string.msg_empty_not_saved)
+                }
             }
         }
     }
 
-
+    fun getComments() {
+        viewModel.getComments()
+    }
 }

@@ -1,11 +1,16 @@
 package com.example.beerdistrkt
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -15,10 +20,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.models.DataResponse
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.google.firebase.database.FirebaseDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
 
 //<Response : Any, ApiResponse : DataResponse<Response>>
 fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
@@ -106,18 +116,138 @@ class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory 
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProviders.of(this).get(T::class.java)
+        ViewModelProvider(this).get(T::class.java)
     else
-        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
 }
 
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProviders.of(this).get(T::class.java)
+        ViewModelProvider(this).get(T::class.java)
     else
-        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
 }
 
+fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negativeText: Int, theme: Int? = null, onClick: () -> Unit?) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    builder
+        .setMessage(text)
+        .setPositiveButton(positiveText) { dialog, _ ->
+            onClick.invoke()
+            dialog?.dismiss()
+        }.setNegativeButton(negativeText) { dialog, _ ->
+            dialog?.dismiss()
+        }.show()
+}
+
+fun Context.showInfoDialog(title: Int?, text: Int, buttonText: Int, theme: Int? = null, onClick: (() -> Unit)? = null) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    builder
+        .setMessage(text)
+        .setNeutralButton(buttonText) { dialog, _ ->
+            onClick?.invoke()
+            dialog?.dismiss()
+        }.show()
+}
+
+fun Context.showInfoDialog(title: Int?, text: CharSequence, buttonText: Int, theme: Int? = null, onClick: (() -> Unit)? = null) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    builder
+        .setMessage(text)
+        .setNeutralButton(buttonText) { dialog, _ ->
+            onClick?.invoke()
+            dialog?.dismiss()
+        }.show()
+}
+
+fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index: Int) -> Unit?) {
+    val builder = AlertDialog.Builder(this)
+    if (title != null)
+        builder.setTitle(title)
+    builder.setItems(dataList) {_, which ->
+        onClick.invoke(which)
+    }
+    builder.create().show()
+}
+
+fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text: String) -> Unit) {
+    val builder = if (theme == null)
+        AlertDialog.Builder(this)
+    else
+        AlertDialog.Builder(this, theme)
+    if (title != null)
+        builder.setTitle(title)
+    val view: View = LayoutInflater.from(this).inflate(R.layout.text_input_layout, null)
+    builder
+        .setView(view)
+        .setPositiveButton(R.string.chawera) {dialog, which ->
+            callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
+            dialog.dismiss()
+        }.show()
+}
+
+fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
+    val sumOrderItems = mutableListOf<Order.Item>()
+    val resultList = mutableListOf<Order.Item>()
+
+    this
+        .filter {
+            it.orderStatus == OrderStatus.ACTIVE
+        }
+        .forEach {
+            sumOrderItems.addAll(it.getRemainingOrderItems())
+        }
+
+    sumOrderItems
+        .groupBy {
+            it.beerID
+        }.values.forEach { orderItemList ->
+            orderItemList.groupBy { it.canTypeID }.values.forEach { singleList ->
+                val summedCount = singleList.sumBy { it.count }
+                resultList.add(
+                    singleList[0].copy(count = summedCount)
+                )
+            }
+        }
+    return resultList
+}
+
+val Fragment.baseActivity: MainActivity?
+    get() {
+        return activity as? MainActivity
+    }
+
+fun Fragment.notifyNewComment(text: String) {
+    val refToFB = FirebaseDatabase.getInstance().getReference(getString(R.string.location_en))
+    val fullText = "${Date()}|$text"
+    refToFB.setValue(fullText)
+    SharedPreferenceDataSource.initialize(this.requireContext())
+    SharedPreferenceDataSource.getInstance().saveLastMsgDate(fullText)
+}
+
+fun Activity.showToast(message: String?) {
+    if (!message.isNullOrEmpty())
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Activity.showToast(strRes: Int) {
+    showToast(getString(strRes))
+}
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager =

@@ -11,7 +11,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true">
 
@@ -108,69 +108,114 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         app:layout_constraintTop_toBottomOf="@+id/addOrderBeerListIndicator" />
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/addOrdersChipGr"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/gr_size_40"
-                        android:layout_marginVertical="@dimen/gr_size_8"
-                        android:paddingTop="@dimen/gr_size_4"
+                    <HorizontalScrollView
+                        android:id="@+id/addOrderCansScroll"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:scrollbarStyle="insideOverlay"
+                        android:scrollbars="none"
+                        app:layout_constrainedWidth="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/addOrderCanTypeTv"
-                        app:singleLine="false"
-                        app:singleSelection="true">
+                        app:layout_constraintTop_toBottomOf="@id/addOrderCanTypeTv">
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/addOrdersCanChip1"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/addOrdersChipGr"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/gr_size_4"
-                            android:checkable="true"
-                            android:checked="false"
-                            android:elevation="@dimen/gr_size_2"
-                            android:gravity="center_vertical"
-                            android:text="@string/_20litri"
-                            android:textStyle="bold"
-                            app:checkedIcon="@drawable/beer_icon"
-                            app:checkedIconEnabled="true"
-                            app:chipStrokeColor="@color/gray_3"
-                            app:chipStrokeWidth="@dimen/gr_size_1" />
+                            android:layout_marginStart="@dimen/gr_size_8"
 
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/addOrderCanTypeTv"
+                            app:singleLine="true"
+                            app:singleSelection="true">
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/addOrdersCanChip2"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/gr_size_4"
-                            android:checkable="true"
-                            android:checked="false"
-                            android:elevation="@dimen/gr_size_2"
-                            android:gravity="center_vertical"
-                            android:text="@string/_30litri"
-                            app:checkedIcon="@drawable/beer_icon"
-                            app:checkedIconEnabled="true"
-                            app:chipStrokeColor="@color/gray_3"
-                            app:chipStrokeWidth="@dimen/gr_size_1" />
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/addOrdersCanChip0"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/gr_size_4"
+                                android:checkable="true"
+                                android:checked="false"
+                                android:elevation="@dimen/gr_size_2"
+                                android:gravity="center_vertical"
+                                android:text="@string/_10litri"
+                                android:textStyle="bold"
+                                app:checkedIcon="@drawable/beer_icon"
+                                app:checkedIconEnabled="true"
+                                app:chipStrokeColor="@color/gray_3"
+                                app:chipStrokeWidth="@dimen/gr_size_1" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/addOrdersCanChip3"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/gr_size_4"
-                            android:checkable="true"
-                            android:checked="false"
-                            android:elevation="@dimen/gr_size_2"
-                            android:gravity="center_vertical"
-                            android:text="@string/_50litri"
-                            app:checkedIcon="@drawable/beer_icon"
-                            app:checkedIconEnabled="true"
-                            app:chipStrokeColor="@color/gray_3"
-                            app:chipStrokeWidth="@dimen/gr_size_1" />
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/addOrdersCanChip1"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/gr_size_4"
+                                android:checkable="true"
+                                android:checked="false"
+                                android:elevation="@dimen/gr_size_2"
+                                android:gravity="center_vertical"
+                                android:text="@string/_20litri"
+                                android:textStyle="bold"
+                                app:checkedIcon="@drawable/beer_icon"
+                                app:checkedIconEnabled="true"
+                                app:chipStrokeColor="@color/gray_3"
+                                app:chipStrokeWidth="@dimen/gr_size_1" />
 
-                    </com.google.android.material.chip.ChipGroup>
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/addOrdersCanChip2"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/gr_size_4"
+                                android:checkable="true"
+                                android:checked="false"
+                                android:elevation="@dimen/gr_size_2"
+                                android:gravity="center_vertical"
+                                android:text="@string/_30litri"
+                                app:checkedIcon="@drawable/beer_icon"
+                                app:checkedIconEnabled="true"
+                                app:chipStrokeColor="@color/gray_3"
+                                app:chipStrokeWidth="@dimen/gr_size_1" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/addOrdersCanChip3"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/gr_size_4"
+                                android:layout_marginEnd="@dimen/gr_size_16"
+                                android:checkable="true"
+                                android:checked="false"
+                                android:elevation="@dimen/gr_size_2"
+                                android:gravity="center_vertical"
+                                android:text="@string/_50litri"
+                                app:checkedIcon="@drawable/beer_icon"
+                                app:checkedIconEnabled="true"
+                                app:chipStrokeColor="@color/gray_3"
+                                app:chipStrokeWidth="@dimen/gr_size_1" />
+
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+
+                    <View
+                        android:layout_width="@dimen/gr_size_16"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="@id/addOrderCansScroll"
+                        app:layout_constraintTop_toTopOf="@id/addOrderCansScroll"
+                        app:layout_constraintBottom_toBottomOf="@id/addOrderCansScroll"
+                        android:background="@drawable/left_right_gradient" />
+
+                    <View
+                        android:layout_width="@dimen/gr_size_16"
+                        android:layout_height="0dp"
+                        app:layout_constraintEnd_toEndOf="@id/addOrderCansScroll"
+                        app:layout_constraintTop_toTopOf="@id/addOrderCansScroll"
+                        app:layout_constraintBottom_toBottomOf="@id/addOrderCansScroll"
+                        android:background="@drawable/right_left_gradient" />
 
                     <TextView
                         android:id="@+id/addOrderCanCountTv"
@@ -180,7 +225,7 @@
                         android:text="@string/can_count"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        app:layout_constraintTop_toBottomOf="@+id/addOrdersChipGr" />
+                        app:layout_constraintTop_toBottomOf="@+id/addOrderCansScroll" />
 
                     <com.example.beerdistrkt.customView.NumericEditText
                         android:id="@+id/addOrderCanCountControl"
@@ -216,6 +261,27 @@
                 app:layout_constraintStart_toStartOf="@+id/addOrderOperationalCard"
                 app:layout_constraintTop_toBottomOf="@+id/addOrderOperationalCard" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addOrderOrderDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/gray_light"
+                android:drawableEnd="@drawable/calendar_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderDistributorSpinner" />
+
+            <TextView
+                android:id="@+id/addOrderDateTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/order_date"
+                app:layout_constraintBottom_toBottomOf="@+id/addOrderOrderDate"
+                app:layout_constraintEnd_toStartOf="@+id/addOrderOrderDate"
+                app:layout_constraintTop_toTopOf="@+id/addOrderOrderDate" />
+
             <LinearLayout
                 android:id="@+id/addOrderItemsContainer"
                 android:layout_width="match_parent"
@@ -235,9 +301,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@string/vis"
+                android:text="@string/choose_distributor"
                 android:textAlignment="gravity"
-
                 app:layout_constraintBottom_toBottomOf="@+id/addOrderDistributorSpinner"
                 app:layout_constraintEnd_toStartOf="@+id/addOrderDistributorSpinner"
                 app:layout_constraintTop_toTopOf="@+id/addOrderDistributorSpinner" />
@@ -246,11 +311,49 @@
                 android:id="@+id/addOrderDistributorSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/gr_size_36"
-                android:minWidth="@dimen/gr_size_48"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="@dimen/gr_size_8"
+                android:background="@drawable/bkg_rounded_white_r8"
+                android:backgroundTint="@color/gray_light"
+                android:elevation="@dimen/gr_size_2"
+                android:minWidth="@dimen/gr_size_48"
+                android:minHeight="@dimen/gr_size_36"
+                android:spinnerMode="dialog"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
+
+            <TextView
+                android:id="@+id/addOrderStatusTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/status"
+                android:textAlignment="gravity"
+                app:layout_constraintBottom_toBottomOf="@+id/addOrderStatusSpinner"
+                app:layout_constraintEnd_toStartOf="@+id/addOrderStatusSpinner"
+                app:layout_constraintTop_toTopOf="@+id/addOrderStatusSpinner" />
+
+            <Spinner
+                android:id="@+id/addOrderStatusSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+
+                android:background="@drawable/bkg_rounded_white_r8"
+                android:backgroundTint="@color/gray_light"
+                android:elevation="@dimen/gr_size_2"
+                android:minHeight="@dimen/gr_size_36"
+                android:minWidth="@dimen/gr_size_16"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="@id/addOrderDistributorSpinner"
+                app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderOrderDate" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addOrderStatusGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="addOrderStatusTv, addOrderStatusSpinner" />
 
             <EditText
                 android:id="@+id/addOrderComment"
@@ -259,9 +362,11 @@
                 android:autofillHints="@string/comment"
                 android:hint="@string/comment"
                 android:inputType="text"
+                android:singleLine="false"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderDistributorSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderStatusSpinner"
                 tools:ignore="UnusedAttribute" />
 
             <androidx.appcompat.widget.AppCompatButton

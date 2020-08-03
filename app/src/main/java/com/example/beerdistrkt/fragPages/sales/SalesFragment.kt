@@ -7,19 +7,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.dialogs.XarjebiDialog
+import com.example.beerdistrkt.fragPages.sales.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.utils.*
 import java.util.*
 
-class SalesFragment : BaseFragment<SalesViewModel>() {
+class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelectedListener {
 
     companion object {
         fun newInstance() = SalesFragment()
@@ -44,7 +50,7 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
         vBinding.viewModel = viewModel
         vBinding.lifecycleOwner = this
 
-        vBinding.btnTarigi.setOnClickListener {
+        vBinding.salesSetDateBtn.setOnClickListener {
             context?.let {
                 val datePickerDialog = DatePickerDialog(
                     it,
@@ -53,50 +59,70 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
                     viewModel.calendar.get(Calendar.MONTH),
                     viewModel.calendar.get(Calendar.DAY_OF_MONTH)
                 )
+                datePickerDialog.datePicker.maxDate = Date().time
                 datePickerDialog.setCancelable(false)
                 datePickerDialog.show()
             }
         }
 
-        vBinding.btnXarjExpand.setOnClickListener {
+        vBinding.salesExpandXarjiBtn.setOnClickListener {
             viewModel.btnXarjExpandClick()
         }
 
         context?.let {
-            vBinding.btnXarjebi.setOnClickListener {
-                val xarjebiDialog = XarjebiDialog(it.context) { comment, amount ->
-                    if (amount.isEmpty()) {
-                        showToast(getString(R.string.msg_empty_not_saved))
-                    } else {
-                        try {
-                            val am = amount.toFloat()
-                            viewModel.addXarji(comment, am.toString())
-                        } catch (e: NumberFormatException) {
-                            Log.d(TAG, e.toString())
-                            showToast(getString(R.string.msg_invalid_format))
+            vBinding.salesAddXarjiBtn.setOnClickListener {
+                if (Session.get().userType == UserType.DISTRIBUTOR && !viewModel.isToday()) {
+                    showToast(R.string.cant_add_xarji)
+                } else
+                    XarjebiDialog(it.context) { comment, amount ->
+                        if (amount.isEmpty()) {
+                            showToast(getString(R.string.msg_empty_not_saved))
+                        } else {
+                            try {
+                                val am = amount.toFloat()
+                                viewModel.addXarji(comment, am.toString())
+                            } catch (e: NumberFormatException) {
+                                Log.d(TAG, e.toString())
+                                showToast(getString(R.string.msg_invalid_format))
+                            }
                         }
-                    }
-                }
-                xarjebiDialog.show(childFragmentManager, "xarjidialogTag")
+                    }.show(childFragmentManager, "xarjidialogTag")
             }
         }
 
         return vBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.day_realizacia)
 
+        vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.usersList.map { it.name }
+        )
+        vBinding.salesDistributorsSpinner.onItemSelectedListener = this
+        if (Session.get().userType == UserType.DISTRIBUTOR) {
+            vBinding.salesDistributorsSpinner.setSelection(
+                viewModel.usersList.map { it.id }.indexOf(Session.get().userID)
+            )
+            vBinding.salesDistributorsSpinner.isEnabled = false
+        }
+
+        initViewModel()
+    }
+
+    fun initViewModel() {
         viewModel.salesLiveData.observe(viewLifecycleOwner, Observer {
             val adapter = SalesAdapter(context, it)
             vBinding.salesList1.adapter = adapter
             fillPageData()
         })
-
         viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
             viewModel.formUserMap(it)
         })
-
         viewModel.deleteXarjiLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -110,11 +136,9 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
             }
             viewModel.deleteXarjiComplited()
         })
-
         viewModel.xarjiListExpandedLiveData.observe(viewLifecycleOwner, Observer {
             showXarjList(it)
         })
-
         viewModel.addXarjiLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -128,34 +152,38 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
             }
             viewModel.addXarjiComplited()
         })
+        viewModel.barrelsLiveData.observe(viewLifecycleOwner, Observer {
+            initBarrelBlock(it)
+        })
+        viewModel.selectedDayLiveData.observe(viewLifecycleOwner, Observer {
+            vBinding.salesDayForwardBtn.isEnabled = !viewModel.isToday()
+        })
     }
 
     fun fillPageData() {
 
-        vBinding.tP3K30Count.text = String.format(
-            "%s\n%s",
-            MyUtil.floatToSmartStr(viewModel.k3r.toFloat()),
-            MyUtil.floatToSmartStr(viewModel.k30empty)
-        )
-
-        vBinding.tP3K50Count.text = String.format(
-            "%s\n%s",
-            MyUtil.floatToSmartStr(viewModel.k5r.toFloat()),
-            MyUtil.floatToSmartStr(viewModel.k50empty)
-        )
 
         val xarjiSum = viewModel.xarjebi.sumByDouble { it.amount.toDouble() }
-        vBinding.tP3LariCount.text = resources.getString(R.string.format_gel, viewModel.priceSum)
-        vBinding.tXarjSum.text = resources.getString(R.string.format_gel, xarjiSum)
-        vBinding.tXelze.text = resources.getString(
+        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
+        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, xarjiSum)
+        vBinding.salesAmountAtHand.text = resources.getString(
             R.string.format_gel,
-            viewModel.realizationDayLiveData.value?.output?.money?.minus(xarjiSum)
+            viewModel.realizationDayLiveData.value?.takenMoney?.minus(xarjiSum)
         )
 
     }
 
+    fun initBarrelBlock(data: List<BarrelIO>) {
+        vBinding.salesBarrelRecycler.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        vBinding.salesBarrelRecycler.adapter = BarrelsIOAdapter(data)
+    }
+
     private fun showXarjList(expanded: Boolean) {
-        vBinding.btnXarjExpand.setImageDrawable(resources.getDrawable(if (expanded) R.drawable.ic_arrow_up_24dp else R.drawable.ic_arrow_down_24dp))
+        vBinding.salesExpandXarjiBtn.setImageDrawable(resources.getDrawable(if (expanded) R.drawable.ic_arrow_up_24dp else R.drawable.ic_arrow_down_24dp))
         vBinding.linearXarjebi.removeAllViews()
         var canDel = false
         if (Session.get().userType == UserType.ADMIN ||
@@ -192,5 +220,14 @@ class SalesFragment : BaseFragment<SalesViewModel>() {
                 )
             }
         }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+        viewModel.prepareData()
     }
 }

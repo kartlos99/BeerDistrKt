@@ -1,7 +1,10 @@
 package com.example.beerdistrkt.fragPages.usersList
 
-import androidx.lifecycle.ViewModel
+import com.example.beerdistrkt.BaseViewModel
 
-class UserListViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class UserListViewModel : BaseViewModel() {
+
+    val usersLiveData = database.getUsers()
+
+
 }

@@ -22,71 +22,66 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/t_tarigi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/day_realizacia"
-                android:textSize="@dimen/textsize_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="196dp" />
-
-            <Button
-                android:id="@+id/btn_tarigi"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/salesSetDateBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:drawableEnd="@drawable/calendar_icon"
                 android:text="@{viewModel.selectedDayLiveData}"
-                app:layout_constraintEnd_toStartOf="@+id/btn_day_forward"
-                app:layout_constraintStart_toEndOf="@+id/btn_day_back"
-                app:layout_constraintTop_toBottomOf="@+id/t_tarigi"
+                app:layout_constraintEnd_toStartOf="@+id/salesDayForwardBtn"
+                app:layout_constraintStart_toEndOf="@+id/salesDayBackBtn"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:layout_editor_absoluteX="97dp" />
 
-            <Button
-                android:id="@+id/btn_day_back"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/salesDayBackBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_arrow_left"
+                android:layout_height="0dp"
+                android:drawableStart="@drawable/ic_arrow_left_24dp"
                 android:onClick="@{() -> viewModel.changeDay(-1)}"
                 android:text="@string/back"
+                app:layout_constraintBottom_toBottomOf="@id/salesSetDateBtn"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_tarigi"
+                app:layout_constraintTop_toTopOf="@+id/salesSetDateBtn"
                 tools:layout_editor_absoluteX="0dp" />
 
-            <Button
-                android:id="@+id/btn_day_forward"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/salesDayForwardBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_arrow_right"
+                android:drawableEnd="@drawable/ic_arrow_right_24dp"
                 android:onClick="@{() -> viewModel.changeDay(1)}"
                 android:text="@string/forward"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_day_back"
+                app:layout_constraintBottom_toBottomOf="@+id/salesSetDateBtn"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_tarigi" />
+                app:layout_constraintTop_toTopOf="@+id/salesSetDateBtn" />
 
             <TextView
-                android:id="@+id/t_distributori"
+                android:id="@+id/salesDistributorTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="@string/distributorebi"
                 android:textSize="@dimen/textsize_3"
+                app:layout_constraintBottom_toBottomOf="@id/salesDistributorsSpinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_tarigi" />
+                app:layout_constraintTop_toTopOf="@id/salesDistributorsSpinner" />
 
             <Spinner
-                android:id="@+id/sp_distributori"
+                android:id="@+id/salesDistributorsSpinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/t_distributori"
+                android:layout_margin="@dimen/gr_size_8"
+                android:spinnerMode="dialog"
+                android:background="@drawable/bkg_rounded_white_r8"
+                android:backgroundTint="@color/gray_light"
+                android:elevation="@dimen/gr_size_2"
+                android:minHeight="44dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/t_distributori"
-                app:layout_constraintTop_toTopOf="@+id/t_distributori" />
+                app:layout_constraintStart_toEndOf="@id/salesDistributorTitle"
+                app:layout_constraintTop_toBottomOf="@id/salesSetDateBtn" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_sales"
@@ -96,13 +91,13 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:visibility="visible"
-                app:cardBackgroundColor="@color/colorCardview"
+                app:cardBackgroundColor="@color/blue_1"
                 app:cardCornerRadius="@dimen/cardCornerRadius"
                 app:cardElevation="@dimen/lowElevation"
 
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sp_distributori"
+                app:layout_constraintTop_toBottomOf="@+id/salesDistributorsSpinner"
 
                 >
 
@@ -146,7 +141,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:cardBackgroundColor="@color/colorCardview"
+                app:cardBackgroundColor="@color/blue_1"
                 app:cardCornerRadius="@dimen/cardCornerRadius"
                 app:cardElevation="@dimen/lowElevation"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -161,7 +156,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/t_p3_kasrebi"
+                        android:id="@+id/salesTitleBarrel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -174,99 +169,42 @@
                         tools:layout_editor_absoluteX="8dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleBarrel1"
+                        style="@style/SaleSubTitles"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:lineSpacingExtra="5dp"
-                        android:padding="6dp"
-                        android:text="@string/kasri_inout"
-                        android:textAlignment="textEnd"
-                        android:textSize="@dimen/textsize_3"
+                        android:text="@string/can_type"
+                        app:layout_constraintEnd_toStartOf="@id/salesTitleBarrel2"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel" />
 
                     <TextView
-                        android:id="@+id/t_p3_k30"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleBarrel2"
+                        style="@style/SaleSubTitles"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="@string/_30litri"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_kasrebi" />
+                        android:text="@string/realized"
+                        app:layout_constraintEnd_toStartOf="@id/salesTitleBarrel3"
+                        app:layout_constraintStart_toEndOf="@id/salesTitleBarrel1"
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel" />
 
                     <TextView
-                        android:id="@+id/t_p3_k50"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleBarrel3"
+                        style="@style/SaleSubTitles"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="@string/_50litri"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/t_p3_k30" />
+                        android:text="@string/received"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/salesTitleBarrel2"
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel" />
 
-                    <TextView
-                        android:id="@+id/t_p3_k30_count"
-                        android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/salesBarrelRecycler"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/highlight_rect"
-                        android:lineSpacingExtra="5dp"
-                        android:padding="8dp"
-                        android:text="@string/_30_n30"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintHorizontal_bias="0.507"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr_2"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleBarrel1"
+                        tools:itemCount="1" />
 
-                    <TextView
-                        android:id="@+id/t_p3_k50_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:background="@drawable/highlight_rect"
-                        android:lineSpacingExtra="5dp"
-                        android:padding="8dp"
-                        android:text="@string/default_0"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintHorizontal_bias="0.507"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline_p3_kasr"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_k30" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_p3_kasr"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.7"
-                        tools:layout_editor_absoluteX="266dp"
-                        tools:layout_editor_absoluteY="198dp" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_p3_kasr_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.4"
-                        tools:layout_editor_absoluteX="155dp"
-                        tools:layout_editor_absoluteY="198dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
@@ -279,7 +217,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="@color/colorCardview"
+                app:cardBackgroundColor="@color/blue_1"
                 app:cardCornerRadius="@dimen/cardCornerRadius"
                 app:cardElevation="@dimen/lowElevation"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -291,83 +229,93 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp">
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/t_p3_shemosavali"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/salesTitleMoney"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/price"
+                        android:text="@string/finances"
                         android:textAlignment="center"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                        app:layout_constraintHorizontal_bias="0.5"
+                        android:textSize="@dimen/textsize_4"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-
                     <TextView
-                        android:id="@+id/t_p3_lari_count"
+                        android:id="@+id/salesPriceTitle"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:background="@drawable/highlight_rect"
-                        android:padding="6dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
+                        android:text="@string/price"
+                        app:layout_constraintBottom_toBottomOf="@id/salesSumPrice"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="@id/salesSumPrice" />
+
+                    <TextView
+                        android:id="@+id/salesSumPrice"
+                        style="@style/FinanceAppearance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/default_0"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintEnd_toEndOf="@+id/t_p3_shemosavali"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline3"
-                        app:layout_constraintStart_toStartOf="@+id/t_p3_shemosavali"
-                        app:layout_constraintTop_toBottomOf="@+id/t_p3_shemosavali" />
-
-                    <TextView
-                        android:id="@+id/ttt_agebuli"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="48dp"
-                        android:text="@string/taken"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textsize_3"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="@+id/guideline3"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/salesTitleMoney" />
 
                     <TextView
-                        android:id="@+id/t_agebuli_tanxa"
+                        android:id="@+id/salesTakenTitle"
+                        style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:background="@drawable/highlight_rect"
-                        android:padding="6dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:text="@{@string/format_gel(viewModel.realizationDayLiveData.output.money)}"
-                        android:textSize="@dimen/textsize_3"
-                        app:layout_constraintEnd_toEndOf="@+id/ttt_agebuli"
-                        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/ttt_agebuli"
-                        app:layout_constraintTop_toBottomOf="@+id/ttt_agebuli" />
+                        android:text="@string/taken"
+                        app:layout_constraintBottom_toBottomOf="@id/salesTakenAmount"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="@id/salesTakenAmount" />
 
+                    <TextView
+                        android:id="@+id/salesTakenAmount"
+                        style="@style/FinanceAppearance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{@string/format_gel(viewModel.realizationDayLiveData.takenMoney)}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/salesSumPrice" />
+
+                    <TextView
+                        style="@style/FinanceAppearance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/xarjebi"
+                        app:layout_constraintBottom_toBottomOf="@id/salesSumXarji"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="@id/salesSumXarji" />
+
+                    <TextView
+                        android:id="@+id/salesSumXarji"
+                        style="@style/FinanceAppearance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_0"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/salesTakenAmount" />
+
+                    <TextView
+                        style="@style/FinanceAppearance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/xelze_tanxa"
+                        app:layout_constraintBottom_toBottomOf="@id/salesAmountAtHand"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="@id/salesAmountAtHand" />
+
+                    <TextView
+                        android:id="@+id/salesAmountAtHand"
+                        style="@style/FinanceAppearance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_0"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/salesSumXarji" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline3"
@@ -384,8 +332,8 @@
             </androidx.cardview.widget.CardView>
 
 
-            <Button
-                android:id="@+id/btn_xarjebi"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/salesAddXarjiBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -394,57 +342,14 @@
                 app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3" />
 
             <ImageButton
-                android:id="@+id/btn_xarj_expand"
+                android:id="@+id/salesExpandXarjiBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 android:src="@drawable/ic_arrow_down_24dp"
-                app:layout_constraintStart_toEndOf="@id/btn_xarjebi"
-                app:layout_constraintTop_toTopOf="@id/btn_xarjebi" />
+                app:layout_constraintStart_toEndOf="@id/salesAddXarjiBtn"
+                app:layout_constraintTop_toTopOf="@id/salesAddXarjiBtn" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/xarjebi"
-                app:layout_constraintEnd_toStartOf="@id/t_xarj_sum"
-                app:layout_constraintTop_toTopOf="@id/t_xarj_sum" />
-
-            <TextView
-                android:id="@+id/t_xarj_sum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/highlight_rect"
-                android:padding="6dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="0"
-                android:textSize="@dimen/textsize_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/xelze_tanxa"
-                app:layout_constraintEnd_toStartOf="@id/t_xelze"
-                app:layout_constraintTop_toTopOf="@id/t_xelze" />
-
-            <TextView
-                android:id="@+id/t_xelze"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/highlight_rect"
-                android:padding="6dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="0"
-                android:textSize="@dimen/textsize_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/t_xarj_sum" />
 
             <LinearLayout
                 android:id="@+id/linear_xarjebi"
@@ -453,7 +358,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/temp_beer_cont_rect"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/t_xelze" />
+                app:layout_constraintTop_toBottomOf="@id/salesAddXarjiBtn" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

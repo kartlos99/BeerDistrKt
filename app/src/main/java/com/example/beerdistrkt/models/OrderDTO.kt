@@ -9,6 +9,7 @@ data class OrderDTO(
     val distributorID: Int,
     val clientID: Int,
     val comment: String?,
+    val sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
     val items: List<Item>,
@@ -49,10 +50,12 @@ data class OrderDTO(
         val canTypeID: Int,
         val count: Int
     ) {
-        fun toPm(): Order.Sales {
+        fun toPm(beerList: List<BeerModel>): Order.Sales {
+            val beer = beerList.find { it.id == beerID } ?: BeerModel()
             return Order.Sales(
                 orderID,
                 beerID,
+                beer,
                 check,
                 canTypeID,
                 count
@@ -60,7 +63,14 @@ data class OrderDTO(
         }
     }
 
-    fun toPm(clients: List<Obieqti>, beerList: List<BeerModel>): Order {
+    fun toPm(
+        clients: List<Obieqti>,
+        beerList: List<BeerModel>,
+        onDeleteClick: (Order) -> Unit,
+        onEditClick: (Order) -> Unit,
+        onChangeDistributorClick: ((Order) -> Unit)? = null,
+        onItemClick: ((Order) -> Unit)? = null
+    ): Order {
 
         val client = clients.find {
             it.id ?: 0 == clientID
@@ -69,20 +79,31 @@ data class OrderDTO(
         return Order(
             ID,
             orderDate,
-            orderStatusID,
+            when (orderStatusID) {
+                1 -> OrderStatus.ACTIVE
+                3 -> OrderStatus.CANCELED
+                4 -> OrderStatus.DELETED
+                5 -> OrderStatus.AUTO_CREATED
+                else -> OrderStatus.COMPLETED
+            },
             distributorID,
             clientID,
             client,
             comment,
+            sortValue,
             modifyDate,
             modifyUserID,
             items.map {
                 it.toPm(beerList)
             },
             sales.map {
-                it.toPm()
-            }
-        )
+                it.toPm(beerList)
+            },
+            onDeleteClick,
+            onEditClick,
+            onChangeDistributorClick,
+            onItemClick
+            )
 
     }
 }

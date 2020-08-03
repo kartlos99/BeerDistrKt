@@ -34,16 +34,30 @@ interface ApeniDatabaseDao {
     @Query("DELETE FROM user_table")
     fun clearUserTable()
 
+    @Query("DELETE FROM user_table WHERE id = :userID")
+    fun deleteUser(userID: String)
+
     @Query("Select * from user_table order by username")
     fun getUsers(): LiveData<List<User>>
 
     // beer operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertbeer(beerModel: BeerModel)
+    fun insertBeer(beerModel: BeerModel)
 
     @Query("DELETE FROM beer_table")
     fun clearBeerTable()
 
-    @Query("Select * from beer_table order by dasaxeleba")
+    @Query("Select * from beer_table order by sortValue")
     fun getBeerList(): LiveData<List<BeerModel>>
+
+    // cans (kasrebi)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCan(canModel: CanModel)
+
+    @Query("DELETE FROM can_table")
+    fun clearCansTable()
+
+    @Query("Select * from can_table order by sortValue")
+    fun getCansList(): LiveData<List<CanModel>>
+
 }

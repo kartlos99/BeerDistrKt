@@ -12,7 +12,8 @@ data class BeerModel(
     var dasaxeleba: String? = null,
     @Json(name = "color")
     var displayColor: String? = null,
-    var fasi: Double? = null
+    var fasi: Double? = null,
+    val sortValue: String = ""
 )
 
 data class PeerObjPrice(var obj_id: Int) {
@@ -31,19 +32,20 @@ data class ObjToBeerPrice(
 data class SaleInfo(
     val beerName: String,
     val price: Double,
-    val litraji: Int,
-    val k30: Double,
-    val k50: Double
+    val litraji: Int
 )
 
-data class DayOutPut(
-    val money: Float,
-    val k30: Float,
-    val k50: Float
-)
+data class BarrelIO(
+    val canTypeID: Int,
+    val backCount: Int,
+    val saleCount: Int
+) {
+    var barrelName: String? = null
+}
 
 data class RealizationDay(
-    val output: DayOutPut,
-    val realizebuli: List<SaleInfo>,
+    val sale: List<SaleInfo>,
+    val takenMoney: Double,
+    val barrels: List<BarrelIO>,
     val xarji: List<Xarji>
 )

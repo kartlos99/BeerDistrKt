@@ -7,6 +7,7 @@
     <string name="ludsaxarshi">თბილისი</string>
     <string name="text_tarigi">თარიღი</string>
     <string name="shekvetis_damateba">შეკვეთის დამატება</string>
+    <string name="_10litri">10 ლტ.</string>
     <string name="_20litri">20 ლტ.</string>
     <string name="_30litri">30 ლტ.</string>
     <string name="_50litri">50 ლტ.</string>
@@ -41,18 +42,19 @@
     <string name="saxeli_gvari">სახელი გვარი</string>
     <string name="adress">მისამართი</string>
     <string name="tel">ტელ:</string>
-    <string name="admin">ადმინ</string>
+    <string name="admin_rights">ადმინსტრატორის უფლებები</string>
     <string name="confirn">გაიმეორეთ პაროლი</string>
     <string name="userslist">მომხმარებლები</string>
     <string name="change_pass">პაროლის შეცვლა</string>
+    <string name="change_pass_done">პაროლი შეიცვალა!</string>
     <string name="group">დაჯგუფება</string>
-    <string name="vis">ვის დაევალოს</string>
+    <string name="choose_distributor">ვის დაევალოს:</string>
     <string name="delete">წაშლა</string>
     <string name="saorient_fasi">საორენტიაციო ფასი</string>
     <string name="uaryofa">უარყოფა</string>
     <string name="lari">₾</string>
     <string name="format_gel">%.2f ₾</string>
-    <string name="mitana_title">მიტანა  30 / 50</string>
+    <string name="mitanili_kasrebi">მიტანილი კასრები</string>
     <string name="shekveta_title">შეკვეთა  30 / 50</string>
     <string name="beer">ლუდი</string>
     <string name="obieqti">ობიექტი</string>
@@ -66,19 +68,22 @@
     <string name="zveli_paroli">ძველი პაროლი</string>
     <string name="axali_paroli">ახალი პაროლი</string>
 
-    <string name="curr_version">2.00</string>
+    <string name="curr_version">v 2.0.9</string>
     <string name="back">უკან</string>
     <string name="forward">წინ</string>
     <string name="sachuqari">საჩუქარი</string>
     <string name="sawyobi">საწყობი</string>
     <string name="savse">სავსე კასრები</string>
     <string name="nashti">ნაშთი *</string>
-    <string name="chamotana">ჩამოტანა 30/50</string>
+    <string name="nashti_at_client">ნაშთი</string>
+    <string name="chamotana">ჩამოტანა</string>
     <string name="carieli">ცარიელი კასრები</string>
-    <string name="wageba">წაღება 30/50</string>
+    <string name="wageba">წაღება</string>
     <string name="detaluri">დეტალური</string>
     <string name="ufleba_false">არაგაქვთ ამ ოპერაციის განხორციელების უფლება</string>
     <string name="kasri_inout">რეალიზებული\nდაბრუნებული</string>
+    <string name="realized">რეალიზ.</string>
+    <string name="received">დაბრუნება</string>
     <string name="_30_n30">30\n30</string>
     <string name="ganmarteba1">* (+ x ) ობიექტებზე დატოვებული კასრები</string>
     <string name="choose_color">ფერის არჩევა</string>
@@ -87,8 +92,10 @@
     <string name="patern_date2">yyyy:MM:dd</string>
     <string name="davalianeba">დავალიანება</string>
     <string name="kasri">კასრი</string>
-    <string name="price">ღირებულება</string>
-    <string name="taken">აღებული</string>
+    <string name="finances">ფინანსები</string>
+    <string name="pay">გადახდა</string>
+    <string name="price">ღირებულება:</string>
+    <string name="taken">აღებული:</string>
     <string name="msg_noUserFile">can\'t find users file</string>
     <string name="msg_cantDelUserFile">can\'t delete users file</string>
     <string name="msg_enterKasrQuantity">შეავსეთ კასრების რაოდენობა</string>
@@ -100,10 +107,10 @@
     <string name="fields_request2">ორივე ველი აუცილებელია</string>
     <string name="feel_empty_fields">შეავსეთ ცარიელი ველები!</string>
     <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
-    <string name="alredy_in_list">ეს ლუდის სახეობა უკვე დამატებულია სიაში!</string>
+    <string name="already_in_list">ეს ლუდის სახეობა ამ კასრთან უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
-    <string name="xarjebi">ხარჯები</string>
-    <string name="xelze_tanxa">ხელზე თანხა</string>
+    <string name="xarjebi">ხარჯები:</string>
+    <string name="xelze_tanxa">ხელზე თანხა:</string>
     <string name="odenoba">ოდენობა</string>
     <string name="add_xarji">ხარჯის დამატება</string>
     <string name="comments">კომენტარები</string>
@@ -130,4 +137,49 @@
     <string name="beer_kind">ლუდის სახეობა</string>
     <string name="img_description">simple description</string>
     <string name="error_no_connection">შეამოწმეთ ინტერნეტ კავშირი!</string>
+    <string name="order_date">შეკვეთის თარიღი:</string>
+    <string name="client_debt">დავალიანება\n თანხა: %.2f ₾   _   კასრი: %d ც.</string>
+
+    <string name="active">აქტიური</string>
+    <string name="completed">დასრულებული</string>
+    <string name="canceled">გაუქმებული</string>
+    <string name="cancel">გაუქმება</string>
+    <string name="deleted">წაშლილია</string>
+    <string name="auto_created">ავტომატური</string>
+
+    <string name="fill_data">შეავსეთ მონაცემები</string>
+    <string name="confirm_delete_order">ნამდვილად გსურთ შეკვეთის წაშლა?</string>
+    <string name="yes">დიახ</string>
+    <string name="no">არა</string>
+    <string name="status">სტატუსი:</string>
+    <string name="cannot_edit">არააქტიური შეკვეთები არ რედაქტირდება!</string>
+    <string name="order_main">შეკვეთები</string>
+    <string name="add_order">შეკვეთის დამატება</string>
+    <string name="edit_order">შეკვეთის რედაქტირება</string>
+    <string name="remove_grouping">მოხსენით დაჯგუფება!</string>
+    <string name="confirm_delete_text">ნამდვილად გსურთ ჩანაწერის წაშლა?</string>
+    <string name="auth_fail_firebase">FireBase Auth Failed.</string>
+    <string name="registration_fail_firebase">FireBase Registration Failed.</string>
+    <string name="orders_sum_title">შეკვეთების ჯამი</string>
+    <string name="server_error">სერვერის შეცდომა</string>
+    <string name="ok">კარგი</string>
+    <string name="data_saved">მონაცემები შენახულია</string>
+    <string name="duplicate_client">ასეთი ობიექტი უკვე არსებობს ბაზაში!</string>
+    <string name="choose_client">აირჩიეთ ობიექტი</string>
+    <string name="create_client">ობიექტის დამატება</string>
+    <string name="edit_client">ობიექტის რედაქტირება</string>
+    <string name="mitana_no_order">შეკვეთის გარეშე მიტანა</string>
+
+<!--    kakhetshi kh-->
+    <string name="channel_name">channel_tb</string>
+    <string name="channel_id">channel_id_tb</string>
+    <string name="channel_description">აქ მოდის შეტყობინებები</string>
+    <string name="add_comment">კომენტარის დამატება</string>
+
+    <string name="username_invalid_error_text">შეიყვანეთ მინიმუმ 3 სიმბოლო!</string>
+    <string name="password_invalid_error_text">პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს!</string>
+    <string name="password_confirm_error_text">დაადასტურეთ ახალი პაროლი!</string>
+    <string name="enter_corect_data">შეავსეთ მოთხოვნილი ველები სათანადოდ!</string>
+    <string name="cant_add_xarji">ძველი თარიღით ხარჯებს ვერ დაამატებთ!</string>
+
 </resources>

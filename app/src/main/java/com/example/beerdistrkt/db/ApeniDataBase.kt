@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.beerdistrkt.models.BeerModel
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.ObjToBeerPrice
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.*
 
-@Database(entities = [Obieqti::class, ObjToBeerPrice::class, User::class, BeerModel::class], version = 5, exportSchema = false)
+@Database(entities = [
+    Obieqti::class,
+    ObjToBeerPrice::class,
+    User::class,
+    BeerModel::class,
+    CanModel::class
+], version = 6, exportSchema = false)
 abstract class ApeniDataBase : RoomDatabase() {
 
     abstract val apeniDataBaseDao: ApeniDatabaseDao

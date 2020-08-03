@@ -7,8 +7,10 @@ import com.example.beerdistrkt.fragPages.orders.view.OrderView
 import com.example.beerdistrkt.models.Order
 
 class OrderAdapter(
-    private var orders: List<Order> = emptyList()
+    private var orders: MutableList<Order> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var deliveryMode = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(OrderView(parent.context))
@@ -18,12 +20,25 @@ class OrderAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemView = holder.itemView
-        if (itemView is OrderView)
+        if (itemView is OrderView) {
+            itemView.lockSwipe(deliveryMode)
             itemView.fillData(orders[position])
+        }
     }
 
     fun setData(orders: List<Order>){
-        this.orders = orders
+        this.orders.clear()
+        this.orders.addAll(orders)
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(index: Int){
+        orders.removeAt(index)
+        notifyItemRemoved(index)
+    }
+
+    fun setMode(mode: Boolean) {
+        deliveryMode = mode
         notifyDataSetChanged()
     }
 

@@ -22,10 +22,15 @@
             app:destination="@id/objListFragment" />
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_homeFragment_to_salesFragment"
             app:destination="@id/salesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_sawyobiFragment"
+            app:destination="@id/sawyobiFragment" />
     </fragment>
     <fragment
         android:id="@+id/ordersFragment"
@@ -35,6 +40,12 @@
         <action
             android:id="@+id/action_ordersFragment_to_objListFragment"
             app:destination="@id/objListFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_addDeliveryFragment"
+            app:destination="@id/addDeliveryFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_addOrdersFragment"
+            app:destination="@id/addOrdersFragment" />
     </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
@@ -50,12 +61,22 @@
         android:id="@+id/addObjectFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
         android:label="add_object_fragment"
-        tools:layout="@layout/add_object_fragment" />
+        tools:layout="@layout/add_object_fragment" >
+        <argument
+            android:name="clientID"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
     <fragment
         android:id="@+id/addUserFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
         android:label="add_user_fragment"
-        tools:layout="@layout/add_user_fragment" />
+        tools:layout="@layout/add_user_fragment" >
+        <argument
+            android:name="userID"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
     <fragment
         android:id="@+id/userListFragment"
         android:name="com.example.beerdistrkt.fragPages.usersList.UserListFragment"
@@ -67,7 +88,7 @@
     </fragment>
     <fragment
         android:id="@+id/sawyobiFragment"
-        android:name="com.example.beerdistrkt.fragPages.sawyobi.SawyobiFragment"
+        android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseFragment"
         android:label="sawyobi_fragment"
         tools:layout="@layout/sawyobi_fragment" >
         <action
@@ -99,6 +120,9 @@
         <argument
             android:name="directionTo"
             app:argType="string" />
+        <action
+            android:id="@+id/action_objListFragment_to_addObjectFragment"
+            app:destination="@id/addObjectFragment" />
     </fragment>
     <fragment
         android:id="@+id/salesFragment"
@@ -109,7 +133,13 @@
         android:id="@+id/loginFragment"
         android:name="com.example.beerdistrkt.fragPages.login.LoginFragment"
         android:label="login_fragment"
-        tools:layout="@layout/login_fragment" />
+        tools:layout="@layout/login_fragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/amonaweriFragment"
         android:name="com.example.beerdistrkt.fragPages.amonaweri.AmonaweriFragment"
@@ -118,6 +148,9 @@
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_amonaweriFragment_to_addDeliveryFragment"
+            app:destination="@id/addDeliveryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
@@ -127,6 +160,18 @@
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
+        <argument
+            android:name="orderID"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="operacia"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="recordID"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/addOrdersFragment"
@@ -136,5 +181,9 @@
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
+        <argument
+            android:name="orderID"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

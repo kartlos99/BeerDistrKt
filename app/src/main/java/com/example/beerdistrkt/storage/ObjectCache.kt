@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.storage
 
+import com.example.beerdistrkt.network.ApeniApiService
 import kotlin.reflect.KClass
 
 class ObjectCache {
@@ -32,5 +33,16 @@ class ObjectCache {
 
     fun clean() {
         map.clear()
+    }
+
+    companion object {
+        private var instance: ObjectCache? = null
+
+        fun getInstance(): ObjectCache {
+            if (instance == null) {
+                instance = ObjectCache()
+            }
+            return instance!!
+        }
     }
 }

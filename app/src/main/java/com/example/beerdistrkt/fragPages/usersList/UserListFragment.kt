@@ -1,21 +1,29 @@
 package com.example.beerdistrkt.fragPages.usersList
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-
+import android.view.*
+import android.widget.RelativeLayout
+import android.widget.Switch
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
+import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.User
+import kotlinx.android.synthetic.main.user_list_fragment.*
 
-class UserListFragment : Fragment() {
+class UserListFragment : BaseFragment<UserListViewModel>() {
 
     companion object {
         fun newInstance() = UserListFragment()
     }
 
-    private lateinit var viewModel: UserListViewModel
+    override val viewModel by lazy {
+        getViewModel { UserListViewModel() }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,10 +32,43 @@ class UserListFragment : Fragment() {
         return inflater.inflate(R.layout.user_list_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(UserListViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.userslist)
+        initViewModel()
     }
 
+    private fun initViewModel() {
+        viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
+            initUsersRecycler(it)
+        })
+    }
+
+    private fun initUsersRecycler(users: List<User>) {
+        usersRecycler.layoutManager = LinearLayoutManager(context)
+        val adapter = UserAdapter(users)
+        adapter.onClick = {
+            val direction = UserListFragmentDirections.actionUserListFragmentToAddUserFragment()
+            direction.userID = it
+            findNavController().navigate(direction)
+        }
+        usersRecycler.adapter = adapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.user_list_manu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mAddUser -> {
+                val direction = UserListFragmentDirections.actionUserListFragmentToAddUserFragment()
+                findNavController().navigate(direction)
+                return true
+            }
+        }
+        return false
+    }
 }

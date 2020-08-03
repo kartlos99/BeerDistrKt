@@ -64,6 +64,6 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
-    val dateFormat_desh = SimpleDateFormat("yyyy-MM-dd")
-    val dateFormat_2dots = SimpleDateFormat("yyyy:MM:dd")
+    val dateFormatDash = SimpleDateFormat("yyyy-MM-dd")
+    val dateFormat2Dots = SimpleDateFormat("yyyy:MM:dd")
 }

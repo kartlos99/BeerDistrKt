@@ -2,15 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bkg_underline"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/t_objName"
+        android:id="@+id/clientNameTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+
         android:paddingTop="4dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
+        android:paddingBottom="6dp"
         android:textSize="24sp" />
+
 </LinearLayout>

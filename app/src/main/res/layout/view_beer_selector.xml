@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/beerSelectorMainConstraint"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/beerSelectorBeerKindTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_8"
+        android:text="@string/beer_kind"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/beerSelectorBeerRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_16"
+        app:layout_constraintTop_toBottomOf="@id/beerSelectorBeerKindTv" />
+
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/beerSelectorBeerListIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_8"
+        app:dotsColor="@color/beer_stroke_bkg"
+        app:dotsSize="@dimen/gr_size_4"
+        app:dotsSpacing="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/beerSelectorBeerRecycler"
+        app:selectedDotColor="@color/colorPrimary" />
+
+    <ImageView
+        android:id="@+id/beerSelectorBtnLeftImg"
+        android:layout_width="@dimen/gr_size_24"
+        android:layout_height="@dimen/gr_size_48"
+        android:layout_margin="@dimen/gr_size_8"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_arrow_left_24dp"
+        android:tint="@color/arrow_color_tr"
+        app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/beerSelectorBeerRecycler" />
+
+    <ImageView
+        android:id="@+id/beerSelectorBtnRightImg"
+        android:layout_width="@dimen/gr_size_24"
+        android:layout_height="@dimen/gr_size_48"
+        android:layout_margin="@dimen/gr_size_8"
+        android:rotation="180"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_arrow_left_24dp"
+        android:tint="@color/arrow_color_tr"
+        app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorBeerRecycler" />
+
+    <TextView
+        android:id="@+id/beerSelectorCanTypeTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_8"
+        android:text="@string/can_type"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintTop_toBottomOf="@+id/beerSelectorBeerListIndicator" />
+
+    <HorizontalScrollView
+        android:id="@+id/beerSelectorCansScroll"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="none"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/beerSelectorCanTypeTv">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/beerSelectorChipGr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/gr_size_8"
+            android:layout_marginEnd="@dimen/gr_size_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/beerSelectorCanTypeTv"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/beerSelectorCanChip0"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gr_size_4"
+                android:checkable="true"
+                android:checked="false"
+                android:elevation="@dimen/gr_size_2"
+                android:gravity="center_vertical"
+                android:text="@string/_10litri"
+                android:textStyle="bold"
+                app:checkedIcon="@drawable/beer_icon"
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/gray_3"
+                app:chipStrokeWidth="@dimen/gr_size_1" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/beerSelectorCanChip1"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gr_size_4"
+                android:checkable="true"
+                android:checked="false"
+                android:elevation="@dimen/gr_size_2"
+                android:gravity="center_vertical"
+                android:text="@string/_20litri"
+                android:textStyle="bold"
+                app:checkedIcon="@drawable/beer_icon"
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/gray_3"
+                app:chipStrokeWidth="@dimen/gr_size_1" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/beerSelectorCanChip2"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gr_size_4"
+                android:checkable="true"
+                android:checked="false"
+                android:elevation="@dimen/gr_size_2"
+                android:gravity="center_vertical"
+                android:text="@string/_30litri"
+                app:checkedIcon="@drawable/beer_icon"
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/gray_3"
+                app:chipStrokeWidth="@dimen/gr_size_1" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/beerSelectorCanChip3"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gr_size_4"
+                android:layout_marginEnd="@dimen/gr_size_16"
+                android:checkable="true"
+                android:checked="false"
+                android:elevation="@dimen/gr_size_2"
+                android:gravity="center_vertical"
+                android:text="@string/_50litri"
+                app:checkedIcon="@drawable/beer_icon"
+                app:checkedIconEnabled="true"
+                app:chipStrokeColor="@color/gray_3"
+                app:chipStrokeWidth="@dimen/gr_size_1" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="@dimen/gr_size_16"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/beerSelectorCansScroll"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll"
+        app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
+        android:background="@drawable/left_right_gradient" />
+
+    <View
+        android:layout_width="@dimen/gr_size_16"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@id/beerSelectorCansScroll"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll"
+        app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
+        android:background="@drawable/right_left_gradient" />
+
+    <TextView
+        android:id="@+id/beerSelectorCanCountTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_8"
+        android:text="@string/can_count"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintTop_toBottomOf="@+id/beerSelectorCansScroll" />
+
+    <com.example.beerdistrkt.customView.NumericEditText
+        android:id="@+id/beerSelectorCanCountControl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/beerSelectorCanCountTv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

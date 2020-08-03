@@ -3,15 +3,18 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#C6560A</color>
+    <color name="colorAccent_33">#33C6560A</color>
 
     <color name="colorForText">#252525</color>
     <color name="colorForText_2">#5B5B61</color>
-    <color name="colorCardview">#a0d4d1</color>
+    <color name="blue_1">#BCF1EE</color>
+    <color name="blue_01">#D2FAF7</color>
     <color name="colorCardview_2">#99beba</color>
     <color name="colorCardview_green">#a1ec9d</color>
     <color name="color_orderCol">#44c2d6d6</color>
     <color name="color_orderRed">#5aff0008</color>
     <color name="color_ForChek">#FF7115</color>
+    <color name="color_chek_bkg">#FFBC91</color>
     <color name="important_info_color">#f95588</color>
     <color name="not_imp_color">#999999</color>
     <color name="fab_addbeer_color">#009688</color>
@@ -30,4 +33,10 @@
     <color name="red_delete_bkg">#FDDDDD</color>
     <color name="completed_green">#26C372</color>
     <color name="in_complete_order">#F81A1A</color>
+    <color name="warning">#FAD82F</color>
+
+    <color name="green_01">#CEEFD5</color>
+    <color name="green_02">#BAF1C6</color>
+    <color name="green_08">#32ED5B</color>
+
 </resources>

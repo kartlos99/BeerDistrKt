@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/changePassOld"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/zveli_paroli"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        android:textSize="@dimen/textsize_3"
+        tools:ignore="Autofill" />
+
+    <EditText
+        android:id="@+id/changePassNew"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/axali_paroli"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        android:textSize="@dimen/textsize_3"
+        tools:ignore="Autofill" />
+
+    <EditText
+        android:id="@+id/changePassConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/confirn"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        android:textSize="@dimen/textsize_3"
+        tools:ignore="Autofill" />
+
+</LinearLayout>

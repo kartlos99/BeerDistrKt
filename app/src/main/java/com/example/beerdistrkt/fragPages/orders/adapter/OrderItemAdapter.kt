@@ -7,7 +7,8 @@ import com.example.beerdistrkt.fragPages.orders.view.OrderItemView
 import com.example.beerdistrkt.models.Order
 
 class OrderItemAdapter(
-    private var orderItems: Map<Int, List<Order.Item>> = emptyMap()
+    private var orderItems: Map<Int, List<Order.Item>> = emptyMap(),
+    private val saleItems: Map<Int, List<Order.Sales>> = emptyMap()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(OrderItemView(parent.context))
@@ -18,9 +19,11 @@ class OrderItemAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemView = holder.itemView
         if (itemView is OrderItemView) {
+            // key is beerID
             val key = orderItems.keys.elementAt(position)
             orderItems[key]?.let {
-                itemView.fillData(it)
+                val salesOfThisBeer = saleItems[key]
+                itemView.fillData(it, salesOfThisBeer?.toMutableList())
             }
 
         }
