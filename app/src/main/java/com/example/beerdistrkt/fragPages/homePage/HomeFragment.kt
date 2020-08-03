@@ -76,6 +76,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         })
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
             initCommentsRecycler(it)
+            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
         })
         viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -96,19 +97,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
-        homeStoreHouseRecycler?.layoutManager = LinearLayoutManager(context)
+        homeStoreHouseRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = SimpleBeerRowAdapter(data)
         adapter.onClick = View.OnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
         }
-        homeStoreHouseRecycler?.adapter = adapter
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
-        if (!Session.get().isUserLogged())
-            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+        homeStoreHouseRecycler.adapter = adapter
     }
 
     override fun onClick(view: View?) {
@@ -129,8 +123,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     homeStoreHouseRecycler.goAway()
                     homeHideStoreHouse.rotation = 180f
                 } else {
-                    homeStoreHouseRecycler.show()
-                    homeHideStoreHouse.rotation = 0f
+                    if (homeStoreHouseRecycler.adapter == null) {
+                        initStoreHouseRecycler(viewModel.barrelsListLiveData.value ?: listOf())
+                    } else {
+                        homeStoreHouseRecycler.show()
+                        homeHideStoreHouse.rotation = 0f
+                    }
                 }
             }
             R.id.homeAddComment -> {

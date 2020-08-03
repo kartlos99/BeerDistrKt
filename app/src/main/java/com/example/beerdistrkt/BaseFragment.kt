@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import com.example.beerdistrkt.fragPages.login.LoginFragment
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
 import java.text.SimpleDateFormat
 
 abstract class BaseFragment<T : BaseViewModel> : Fragment() {
@@ -33,4 +36,9 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!Session.get().isUserLogged() && this !is LoginFragment)
+            (activity as MainActivity).logOut()
+    }
 }
