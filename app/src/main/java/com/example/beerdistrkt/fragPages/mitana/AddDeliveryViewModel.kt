@@ -267,6 +267,14 @@ class AddDeliveryViewModel(
         )
     }
 
+    fun getPrice(): Double {
+        var price = 0.0
+        saleItemsList.forEach {
+            price += it.canType.volume * it.count * (it.beer.fasi ?: 0.0)
+        }
+        return price.round()
+    }
+
     companion object {
         const val TAG = "AddDelivery-----"
     }

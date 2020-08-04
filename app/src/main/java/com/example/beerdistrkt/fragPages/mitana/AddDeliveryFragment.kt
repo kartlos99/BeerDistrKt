@@ -345,6 +345,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             ColorStateList.valueOf(Color.GREEN)
         else
             ColorStateList.valueOf(Color.RED)
+        vBinding.addDeliveryTotalPrice.text = "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
     }
 
 
