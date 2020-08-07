@@ -36,7 +36,12 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
             sendRequest(
                 ApeniApiService.getInstance().addClient(clientData),
                 successWithData = {
-                    saveToLocalDB(clientData)
+                    val insertedClientID = it.toInt()
+                    clientData.obieqti.id = insertedClientID
+                    val prices = clientData.prices.map { prItem ->
+                        prItem.copy(objID = insertedClientID)
+                    }
+                    saveToLocalDB(ObiectWithPrices(clientData.obieqti, prices))
                     clientSaveMutableLiveData.value = ApiResponseState.Success(clientData)
                 },
                 responseFailure = { code, error ->
@@ -66,7 +71,7 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
         )
     }
 
-    fun saveToLocalDB(clientData: ObiectWithPrices){
+    fun saveToLocalDB(clientData: ObiectWithPrices) {
         ioScope.launch {
             database.insertObiecti(clientData.obieqti)
             clientData.prices.forEach { beerPrice ->
