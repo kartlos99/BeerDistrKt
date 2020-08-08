@@ -313,6 +313,18 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/addDeliveryOperationalCard" />
 
+                <TextView
+                    android:id="@+id/addDeliveryTotalPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp14"
+                    android:padding="@dimen/gr_size_4"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/addDeliveryAddSaleItemBtn"
+                    app:layout_constraintBottom_toBottomOf="@id/addDeliveryAddSaleItemBtn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"/>
+
                 <LinearLayout
                     android:id="@+id/addDeliveryTempContainer"
                     android:layout_width="match_parent"

@@ -218,7 +218,11 @@ class HomeViewModel : BaseViewModel() {
         database.insertObiecti(obieqti)
     }
 
-    private fun insertBeetPrice(bPrice: ObjToBeerPrice) {
+    private suspend fun insertBeetPrice(bPrice: ObjToBeerPrice) {
+        if (bPrice.objID < 50) {
+//            Log.d("obj_prIns", bPrice.toString())
+            delay(50)
+        }
         database.insertBeerPrice(bPrice)
     }
 

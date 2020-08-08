@@ -1,4 +1,6 @@
 <resources>
+    <string name="curr_version">v 2.0.12</string>
+
     <string name="app_name">BeerDistrKt</string>
     <string name="shekveTebi">შეკვეთები</string>
     <string name="mitana">მიტანა</string>
@@ -68,7 +70,6 @@
     <string name="zveli_paroli">ძველი პაროლი</string>
     <string name="axali_paroli">ახალი პაროლი</string>
 
-    <string name="curr_version">v 2.0.10</string>
     <string name="back">უკან</string>
     <string name="forward">წინ</string>
     <string name="sachuqari">საჩუქარი</string>

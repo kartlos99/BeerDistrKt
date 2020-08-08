@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.orders.view
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class OrderView @JvmOverloads constructor(
         orderComment.visibleIf(false)
         orderStatusTv.text = ""
         orderUnitRootSwipe.close(false)
+        orderMainConstraint.backgroundTintList = null
     }
 
     fun lockSwipe(lock: Boolean) {
@@ -47,8 +49,10 @@ class OrderView @JvmOverloads constructor(
         orderUnitClientNameTv.text = order.client.dasaxeleba
         orderUnitCommentImg.visibleIf(!order.comment.isNullOrEmpty())
         orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
-        if (order.orderStatus != OrderStatus.ACTIVE)
+        if (order.orderStatus != OrderStatus.ACTIVE) {
             orderStatusTv.text = resources.getString(order.orderStatus.textRes)
+            orderMainConstraint.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.red_01))
+        }
 
         val itemList = order.items.groupBy {
             it.beerID

@@ -22,10 +22,13 @@ interface ApeniDatabaseDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertBeerPrice(objToBeerPrice: ObjToBeerPrice)
+    fun insertBeerPrice(objToBeerPrice: ObjToBeerPrice): Long
 
     @Query("DELETE FROM prices_table")
     fun clearPricesTable()
+
+    @Query("Select * from prices_table where objID = :clientID")
+    fun getPricesForClient(clientID: Int): List<ObjToBeerPrice>
 
     // users operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
