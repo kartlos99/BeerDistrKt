@@ -11,6 +11,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorReq
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
 import java.util.*
 
 class OrdersViewModel : BaseViewModel() {
@@ -162,7 +163,8 @@ class OrdersViewModel : BaseViewModel() {
 
     fun changeDistributor(orderID: Int, distributorPos: Int) {
         val distributorID = usersList[distributorPos].id
-        val orderChangeDistributor = OrderUpdateDistributorRequestModel(orderID, distributorID)
+        val userID = Session.get().userID ?: return
+        val orderChangeDistributor = OrderUpdateDistributorRequestModel(orderID, distributorID, userID)
         sendRequest(
             ApeniApiService.getInstance().updateOrderDistributor(orderChangeDistributor),
             finally = {
