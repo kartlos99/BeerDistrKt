@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragPages.sawyobi.SawyobiListFragment">
+    tools:context=".fragPages.sawyobi.StoreHouseListFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,8 +44,8 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/list_sawyobi_detaluri"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sHLRecycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"

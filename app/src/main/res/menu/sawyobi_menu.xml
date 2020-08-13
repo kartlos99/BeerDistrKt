@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sawyobiDetail"
-        android:icon="@drawable/ic_action_list_white"
+        android:icon="@drawable/ic_list_24"
         android:title="@string/detaluri"
         app:showAsAction="always" />
 </menu>

@@ -97,7 +97,7 @@
     </fragment>
     <fragment
         android:id="@+id/sawyobiListFragment"
-        android:name="com.example.beerdistrkt.fragPages.sawyobi.SawyobiListFragment"
+        android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment"
         android:label="sawyobi_list_fragment"
         tools:layout="@layout/sawyobi_list_fragment" />
     <fragment

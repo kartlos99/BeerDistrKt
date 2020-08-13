@@ -14,6 +14,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
@@ -166,6 +167,9 @@ interface ApeniApiService {
 
     @POST("storeHouse/add.php")
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
+
+    @GET("storeHouse/getioList.php")
+    fun getStoreHouseIoList(): Call<DataResponse<List<IoModel>>>
 
     // general
     @GET("general/getComments.php")
