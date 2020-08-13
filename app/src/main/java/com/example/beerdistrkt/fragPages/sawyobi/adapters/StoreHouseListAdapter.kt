@@ -11,7 +11,8 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import kotlinx.android.synthetic.main.sawyobi_list_item_view.view.*
 
 class StoreHouseListAdapter(
-    private val dataMap: Map<String, List<IoModel>>
+    private val dataMap: Map<String, List<IoModel>>,
+    private val beerNameMap: Map<Int, String>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -46,8 +47,7 @@ class StoreHouseListAdapter(
                 it.value.sumBy { ioModel -> ioModel.count }
             }
 
-            val title = singleBeerList[0].beerID.toString()
-//            val title = beerList.first { b -> b.id == it[0].beerID }.dasaxeleba ?: "_"
+            val title = beerNameMap[singleBeerList[0].beerID] ?: "- ცარიელი -"
             result.add(SimpleBeerRowModel(title, countByBarrelMap))
         }
 

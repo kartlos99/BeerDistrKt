@@ -50,8 +50,9 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     private fun initIoList(dataList: List<IoModel>) {
         sHLRecycler.layoutManager = LinearLayoutManager(context)
-        sHLRecycler.adapter = StoreHouseListAdapter(dataList.groupBy {
-            it.ioDate
-        })
+        sHLRecycler.adapter = StoreHouseListAdapter(
+            dataList.groupBy { it.ioDate },
+            viewModel.beerNamesMap
+        )
     }
 }
