@@ -9,11 +9,14 @@
         android:id="@+id/orderItemNameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_4"
         android:ellipsize="end"
         android:lines="1"
-        android:text="ლაგერი"
         android:textSize="14sp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/orderMiddleIcon"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,11 +24,20 @@
         android:id="@+id/orderItemNameUnderline"
         android:layout_width="0dp"
         android:layout_height="@dimen/gr_size_2"
-
         android:background="@color/gray_3"
         app:layout_constraintEnd_toEndOf="@id/orderItemNameTv"
         app:layout_constraintStart_toStartOf="@id/orderItemNameTv"
         app:layout_constraintTop_toBottomOf="@id/orderItemNameTv" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/orderMiddleIcon"
+        android:layout_width="@dimen/gr_size_16"
+        android:layout_height="0dp"
+        android:contentDescription="@string/img_description"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/orderItemCan10"
+        app:layout_constraintEnd_toStartOf="@id/orderItemCan10"
+        app:layout_constraintTop_toTopOf="@id/orderItemCan10" />
 
     <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan10"

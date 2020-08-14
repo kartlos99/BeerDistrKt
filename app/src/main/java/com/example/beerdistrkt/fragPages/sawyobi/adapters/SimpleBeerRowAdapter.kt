@@ -21,7 +21,7 @@ class SimpleBeerRowAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemView = holder.itemView
         if (itemView is BeerAmountRowView) {
-            itemView.setData(dataList[position].title, dataList[position].values)
+            itemView.setData(dataList[position])
             itemView.setOnClickListener(onClick)
         }
     }

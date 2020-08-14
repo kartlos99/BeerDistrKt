@@ -6,13 +6,12 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 
 class StoreHouseListViewModel : BaseViewModel() {
 
     private val beerLiveData = database.getBeerList()
-    lateinit var beerNamesMap : Map<Int, String>
+    lateinit var beerMap : Map<Int, BeerModel>
 
     private val _ioDoneLiveData = MutableLiveData<ApiResponseState<List<IoModel>>>()
     val ioDoneLiveData: LiveData<ApiResponseState<List<IoModel>>>
@@ -20,8 +19,8 @@ class StoreHouseListViewModel : BaseViewModel() {
 
     init {
         beerLiveData.observeForever { beerList ->
-            beerNamesMap = beerList.groupBy { it.id }.mapValues {
-                it.value[0].dasaxeleba ?: "-"
+            beerMap = beerList.groupBy { it.id }.mapValues {
+                it.value[0]
             }
         }
         getIoList()

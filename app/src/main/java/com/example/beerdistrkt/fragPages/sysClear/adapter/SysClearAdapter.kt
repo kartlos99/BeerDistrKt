@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.customView.BeerAmountRowView
-import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import kotlinx.android.synthetic.main.sys_clear_row.view.*
 

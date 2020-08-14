@@ -13,7 +13,6 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.android.synthetic.main.sawyobi_list_fragment.*
-import kotlinx.android.synthetic.main.sawyobi_list_item_view.*
 
 class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
@@ -52,7 +51,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
         sHLRecycler.layoutManager = LinearLayoutManager(context)
         sHLRecycler.adapter = StoreHouseListAdapter(
             dataList.groupBy { it.ioDate },
-            viewModel.beerNamesMap
+            viewModel.beerMap
         )
     }
 }

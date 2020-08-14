@@ -88,8 +88,8 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         })
         viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner, Observer {
             if (it.size > 1) {
-                storeHouseEmptyBarrelsAtHouse.setData(it[0].title, it[0].values)
-                storeHouseEmptyBarrelsAtClients.setData(it[1].title, it[1].values)
+                storeHouseEmptyBarrelsAtHouse.setData(SimpleBeerRowModel(it[0].title, it[0].values))
+                storeHouseEmptyBarrelsAtClients.setData(SimpleBeerRowModel(it[1].title, it[1].values))
             }
         })
         viewModel.receivedItemDuplicateLiveData.observe(viewLifecycleOwner, Observer {
