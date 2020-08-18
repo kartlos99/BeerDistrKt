@@ -13,6 +13,7 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.utils.*
@@ -54,6 +55,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         showStoreHouseData(Session.get().userType == UserType.ADMIN)
         getComments()
         initViewModel()
+        StoreHouseListFragment.editingIoDate = ""
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {

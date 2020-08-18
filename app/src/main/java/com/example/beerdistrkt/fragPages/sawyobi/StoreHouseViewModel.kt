@@ -3,9 +3,8 @@ package com.example.beerdistrkt.fragPages.sawyobi
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
@@ -21,6 +20,8 @@ import java.util.*
 class StoreHouseViewModel : BaseViewModel() {
 
     var selectedDate = Calendar.getInstance()
+    var editMode = false
+    var editingItemID = -1
 
     var isChecked = false
         set(value) {
@@ -43,6 +44,10 @@ class StoreHouseViewModel : BaseViewModel() {
     private val _doneLiveData = MutableLiveData<ApiResponseState<String>>()
     val doneLiveData: LiveData<ApiResponseState<String>>
         get() = _doneLiveData
+
+    private val _editDataReceiveLiveData = MutableLiveData<ApiResponseState<List<IoModel>>>()
+    val editDataReceiveLiveData: LiveData<ApiResponseState<List<IoModel>>>
+        get() = _editDataReceiveLiveData
 
     val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")
         ?: mutableListOf()
@@ -164,17 +169,21 @@ class StoreHouseViewModel : BaseViewModel() {
         )
     }
 
-    fun addBeerReceiveItemToList(saleItem: TempBeerItemModel) {
+    fun addBeerReceiveItemToList(beerItem: TempBeerItemModel) {
+        if (editingItemID > 0)
+            receivedItemsList.removeAll { it.orderItemID == editingItemID }
+
         if (receivedItemsList.any {
-                it.beer.id == saleItem.beer.id && it.canType.id == saleItem.canType.id
+                it.beer.id == beerItem.beer.id && it.canType.id == beerItem.canType.id
             })
             receivedItemDuplicateLiveData.value = true
         else {
-            receivedItemsList.add(saleItem)
+            receivedItemsList.add(beerItem)
             receivedItemsLiveData.value = receivedItemsList
                 .sortedBy { it.canType.sortValue }
                 .sortedBy { it.beer.sortValue }
         }
+        editingItemID = 0
     }
 
     fun addBarrelToList(barrelType: Int, count: Int) {
@@ -189,7 +198,53 @@ class StoreHouseViewModel : BaseViewModel() {
     }
 
     fun removeReceiveItemFromList(item: TempBeerItemModel) {
-        receivedItemsList.remove(item)
+        receivedItemsList.removeAll { it.beer == item.beer && it.canType == item.canType }
         receivedItemsLiveData.value = receivedItemsList
+            .sortedBy { it.canType.sortValue }
+            .sortedBy { it.beer.sortValue }
+    }
+
+    fun clearEnteredData() {
+        barrelOutItems.clear()
+        receivedItemsList.clear()
+        receivedItemsLiveData.value = receivedItemsList
+    }
+
+    fun getEditingData(operationTime: String) {
+        _editDataReceiveLiveData.value = ApiResponseState.Loading(true)
+        sendRequest(
+            ApeniApiService.getInstance().getStoreHouseIoList(operationTime),
+            successWithData = {
+                processIoData(it)
+                _editDataReceiveLiveData.value = ApiResponseState.Success(it)
+            },
+            finally = {
+                _editDataReceiveLiveData.value = ApiResponseState.Loading(false)
+            }
+        )
+    }
+
+    fun processIoData(data: List<IoModel>) {
+        data
+            .filter { it.beerID == 0 }
+            .forEach {
+                addBarrelToList(it.barrelID, it.count)
+            }
+
+        data
+            .filter { it.beerID > 0 }
+            .forEach { ioModel ->
+                addBeerReceiveItemToList(
+                    ioModel.toTempBeerItemModel(
+                        cansList,
+                        beerList,
+                        onRemove = { tbm ->
+                            Log.d("itmDel", tbm.toString())
+                            receivedItemsList.removeAll { it.ID == tbm.ID }
+                            receivedItemsLiveData.value = receivedItemsList
+                        },
+                        onEdit = {})
+                )
+            }
     }
 }

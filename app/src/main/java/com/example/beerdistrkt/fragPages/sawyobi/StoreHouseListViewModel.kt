@@ -29,7 +29,7 @@ class StoreHouseListViewModel : BaseViewModel() {
     private fun getIoList() {
         _ioDoneLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
-            ApeniApiService.getInstance().getStoreHouseIoList(),
+            ApeniApiService.getInstance().getStoreHouseIoList(""),
             successWithData = {
                 _ioDoneLiveData.value = ApiResponseState.Success(it)
             },

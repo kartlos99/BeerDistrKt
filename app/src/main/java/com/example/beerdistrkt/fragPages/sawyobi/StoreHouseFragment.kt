@@ -2,22 +2,22 @@ package com.example.beerdistrkt.fragPages.sawyobi
 
 import android.app.DatePickerDialog
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.TempBeerRowView
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.sawyobi_fragment.*
 import java.util.*
@@ -35,6 +35,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         viewModel.onDateSelected(year, month, day)
     }
 
+    var pageTitleRes = R.string.sawyobi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +49,6 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        (activity as AppCompatActivity).supportActionBar?.title =
-                resources.getString(R.string.sawyobi)
 
         storeHouseSetDateBtn.setOnClickListener(this)
         storeHouseCheckBox.setOnClickListener(this)
@@ -57,8 +56,23 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         storeHouseDoneBtn.setOnClickListener(this)
     }
 
+    private fun switchToEditMode() {
+        pageTitleRes = R.string.m_edit
+        storeHouseFullBarrelsRecycler.goAway()
+        storeHouseEmptyBarrelDataContainer.goAway()
+        viewModel.clearEnteredData()
+    }
+
     override fun onStart() {
         super.onStart()
+
+        if (StoreHouseListFragment.editingIoDate.isNotEmpty()) {
+            viewModel.getEditingData(StoreHouseListFragment.editingIoDate)
+            switchToEditMode()
+        }
+
+        clearEmptyBarrels()
+        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(pageTitleRes)
 
         storeHouseReceiveBeerSelector.onDeleteClick = {
             showToast("del")
@@ -89,7 +103,12 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner, Observer {
             if (it.size > 1) {
                 storeHouseEmptyBarrelsAtHouse.setData(SimpleBeerRowModel(it[0].title, it[0].values))
-                storeHouseEmptyBarrelsAtClients.setData(SimpleBeerRowModel(it[1].title, it[1].values))
+                storeHouseEmptyBarrelsAtClients.setData(
+                    SimpleBeerRowModel(
+                        it[1].title,
+                        it[1].values
+                    )
+                )
             }
         })
         viewModel.receivedItemDuplicateLiveData.observe(viewLifecycleOwner, Observer {
@@ -102,10 +121,15 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             storeHouseReceiveBeerSelector.resetForm()
             storeHouseSelectedBeerContainer.removeAllViews()
             it.forEach { receivedItem ->
+                val itemData = receivedItem.copy(onEditClick = { tempBeerItem ->
+                    storeHouseReceiveBeerSelector.fillBeerItemForm(tempBeerItem)
+                    viewModel.editingItemID = tempBeerItem.orderItemID
+                })
                 storeHouseSelectedBeerContainer.addView(
-                    TempBeerRowView(context = requireContext(), rowData = receivedItem)
+                    TempBeerRowView(context = requireContext(), rowData = itemData)
                 )
             }
+            setEmptyBarrels()
         })
         viewModel.doneLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -113,6 +137,11 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 is ApiResponseState.Success -> {
                     showToast(it.data)
                     resetPage()
+                    if (viewModel.editMode) {
+                        StoreHouseListFragment.editingIoDate = ""
+                        findNavController()
+                            .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+                    }
                 }
             }
         })
@@ -120,10 +149,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
     private fun resetPage() {
         storeHouseReceiveBeerSelector.resetForm()
-        storeHouseBarrelOutputCount1.amount = 0
-        storeHouseBarrelOutputCount2.amount = 0
-        storeHouseBarrelOutputCount3.amount = 0
-        storeHouseBarrelOutputCount4.amount = 0
+        clearEmptyBarrels()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -189,7 +215,25 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         )
     }
 
-    fun initFullRecycler(data: List<SimpleBeerRowModel>) {
+    private fun clearEmptyBarrels() {
+        storeHouseBarrelOutputCount1.amount = 0
+        storeHouseBarrelOutputCount2.amount = 0
+        storeHouseBarrelOutputCount3.amount = 0
+        storeHouseBarrelOutputCount4.amount = 0
+    }
+
+    fun setEmptyBarrels() {
+        viewModel.barrelOutItems.forEach {
+            when (it.canTypeID) {
+                1 -> storeHouseBarrelOutputCount1.amount = it.count
+                2 -> storeHouseBarrelOutputCount2.amount = it.count
+                3 -> storeHouseBarrelOutputCount3.amount = it.count
+                4 -> storeHouseBarrelOutputCount4.amount = it.count
+            }
+        }
+    }
+
+    private fun initFullRecycler(data: List<SimpleBeerRowModel>) {
         storeHouseFullBarrelsRecycler.layoutManager = LinearLayoutManager(context)
         storeHouseFullBarrelsRecycler.adapter = SimpleBeerRowAdapter(data)
     }

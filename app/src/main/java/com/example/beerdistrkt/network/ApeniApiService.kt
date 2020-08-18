@@ -39,7 +39,8 @@ interface ApeniApiService {
         private var instance: ApeniApiService? = null
 
 //        private const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
-        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
+//        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
+        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
 
 //        test at server
 //        private const val BASE_URL = TEST_SERVER_URL
@@ -169,7 +170,7 @@ interface ApeniApiService {
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
 
     @GET("storeHouse/getioList.php")
-    fun getStoreHouseIoList(): Call<DataResponse<List<IoModel>>>
+    fun getStoreHouseIoList(@Query("operationTime") operationTime: String): Call<DataResponse<List<IoModel>>>
 
     // general
     @GET("general/getComments.php")

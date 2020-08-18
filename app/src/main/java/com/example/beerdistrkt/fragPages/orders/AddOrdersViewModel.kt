@@ -163,7 +163,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
     }
 
-    fun getOrder(id: Int) {
+    private fun getOrder(id: Int) {
         if (id == 0)
             getActiveOrderID()
         else {

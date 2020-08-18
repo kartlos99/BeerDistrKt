@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
@@ -18,6 +19,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     companion object {
         fun newInstance() = StoreHouseListFragment()
+        var editingIoDate: String = ""
     }
 
     override val viewModel by lazy {
@@ -49,9 +51,15 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     private fun initIoList(dataList: List<IoModel>) {
         sHLRecycler.layoutManager = LinearLayoutManager(context)
-        sHLRecycler.adapter = StoreHouseListAdapter(
+        val adapter = StoreHouseListAdapter(
             dataList.groupBy { it.ioDate },
             viewModel.beerMap
-        )
+        ).apply {
+            onLongClick = {
+                editingIoDate = it
+                findNavController().navigateUp()
+            }
+        }
+        sHLRecycler.adapter = adapter
     }
 }

@@ -16,6 +16,8 @@ class StoreHouseListAdapter(
     private val beerMap: Map<Int, BeerModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onLongClick: ((date: String) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.sawyobi_list_item_view, parent, false)
@@ -26,6 +28,10 @@ class StoreHouseListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.shlActionDateTv.text = dataMap.keys.toList()[position]
+        holder.itemView.setOnLongClickListener {
+            onLongClick?.invoke(dataMap.values.toList()[position][0].modifyDate)
+            return@setOnLongClickListener true
+        }
 
         val itemData = ioModelToSimpleBeerRow(dataMap.values.toList()[position])
 
