@@ -137,6 +137,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 is ApiResponseState.Success -> {
                     showToast(it.data)
                     resetPage()
+                    viewModel.sleepDoneLiveData()
                     if (viewModel.editMode) {
                         StoreHouseListFragment.editingIoDate = ""
                         findNavController()
@@ -145,11 +146,20 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 }
             }
         })
+        viewModel.editDataReceiveLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResponseState.Loading -> storeHouseProgress.visibleIf(it.showLoading)
+                is ApiResponseState.Success -> {
+                    storeHouseComment.editText?.setText(it.data.comment)
+                }
+            }
+        })
     }
 
     private fun resetPage() {
         storeHouseReceiveBeerSelector.resetForm()
         clearEmptyBarrels()
+        storeHouseComment.editText?.setText("")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -199,7 +209,8 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
                 viewModel.onDoneClick(
                     storeHouseComment.editText?.text.toString(),
-                    collectEmptyBarrels()
+                    collectEmptyBarrels(),
+                    StoreHouseListFragment.editingIoDate
                 )
             }
 

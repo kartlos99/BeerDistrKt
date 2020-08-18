@@ -45,8 +45,8 @@ class StoreHouseViewModel : BaseViewModel() {
     val doneLiveData: LiveData<ApiResponseState<String>>
         get() = _doneLiveData
 
-    private val _editDataReceiveLiveData = MutableLiveData<ApiResponseState<List<IoModel>>>()
-    val editDataReceiveLiveData: LiveData<ApiResponseState<List<IoModel>>>
+    private val _editDataReceiveLiveData = MutableLiveData<ApiResponseState<IoModel>>()
+    val editDataReceiveLiveData: LiveData<ApiResponseState<IoModel>>
         get() = _editDataReceiveLiveData
 
     val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")
@@ -127,7 +127,7 @@ class StoreHouseViewModel : BaseViewModel() {
         getStoreBalance()
     }
 
-    fun onDoneClick(comment: String?, barrelsEntered: List<Int>) {
+    fun onDoneClick(comment: String?, barrelsEntered: List<Int>, operationTime: String) {
         barrelOutItems.clear()
         barrelsEntered.forEachIndexed { index, count ->
             if (count > 0)
@@ -138,9 +138,10 @@ class StoreHouseViewModel : BaseViewModel() {
             comment,
             Session.get().getUserID(),
             if (isChecked) 1 else 0,
+            operationTime = operationTime,
             inputBeer = receivedItemsList.map {
                 StoreInsertRequestModel.ReceiveItem(
-                    0, dateTimeFormat.format(selectedDate.time), it.beer.id, it.canType.id, it.count
+                    0, it.beer.id, it.canType.id, it.count
                 )
             },
             outputBarrels = barrelOutItems
@@ -157,9 +158,9 @@ class StoreHouseViewModel : BaseViewModel() {
                 Log.d("insToStore", it)
                 _doneLiveData.value = ApiResponseState.Success(it)
 
+                barrelOutItems.clear()
                 receivedItemsList.clear()
                 receivedItemsLiveData.value = receivedItemsList
-                barrelOutItems.clear()
 
                 getStoreBalance()
             },
@@ -167,6 +168,10 @@ class StoreHouseViewModel : BaseViewModel() {
                 _doneLiveData.value = ApiResponseState.Loading(false)
             }
         )
+    }
+
+    fun sleepDoneLiveData() {
+        _doneLiveData.value = ApiResponseState.Sleep
     }
 
     fun addBeerReceiveItemToList(beerItem: TempBeerItemModel) {
@@ -190,7 +195,6 @@ class StoreHouseViewModel : BaseViewModel() {
         barrelOutItems.add(
             StoreInsertRequestModel.BarrelOutItem(
                 0,
-                dateTimeFormat.format(selectedDate.time),
                 barrelType,
                 count
             )
@@ -211,12 +215,14 @@ class StoreHouseViewModel : BaseViewModel() {
     }
 
     fun getEditingData(operationTime: String) {
+        editMode = true
         _editDataReceiveLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseIoList(operationTime),
             successWithData = {
                 processIoData(it)
-                _editDataReceiveLiveData.value = ApiResponseState.Success(it)
+                if (it.isNotEmpty())
+                    _editDataReceiveLiveData.value = ApiResponseState.Success(it[0])
             },
             finally = {
                 _editDataReceiveLiveData.value = ApiResponseState.Loading(false)

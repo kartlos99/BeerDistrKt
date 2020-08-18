@@ -9,6 +9,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.sawyobi_list_item_view.view.*
 
 class StoreHouseListAdapter(
@@ -29,9 +30,11 @@ class StoreHouseListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.shlActionDateTv.text = dataMap.keys.toList()[position]
         holder.itemView.setOnLongClickListener {
-            onLongClick?.invoke(dataMap.values.toList()[position][0].modifyDate)
+            onLongClick?.invoke(dataMap.values.toList()[position][0].ioDate)
             return@setOnLongClickListener true
         }
+        holder.itemView.shlComment.visibleIf(!dataMap.values.toList()[position][0].comment.isNullOrEmpty())
+        holder.itemView.shlComment.text = dataMap.values.toList()[position][0].comment
 
         val itemData = ioModelToSimpleBeerRow(dataMap.values.toList()[position])
 
