@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
@@ -33,8 +34,7 @@ class NotificationService : Service() {
         Log.d("msg", "onCreate Servic")
 //        myNotificationInterface?.getComments()
 
-        val messageRef =
-            FirebaseDatabase.getInstance().getReference(getString(R.string.location_en))
+        val messageRef = FirebaseDatabase.getInstance().getReference( BuildConfig.FLAVOR )
         messageRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {}
 
@@ -81,7 +81,7 @@ class NotificationService : Service() {
 
         val notification = NotificationCompat.Builder(
             this,
-            getString(R.string.channel_id)
+            getString(R.string.notif_channel_id)
         )
             .setSmallIcon(R.drawable.ic_comment_icon)
             .setContentTitle(getString(R.string.notif_title))

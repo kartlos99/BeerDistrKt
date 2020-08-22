@@ -16,14 +16,50 @@ android {
         applicationId "com.example.beerdistrkt"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0.14"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+
+    productFlavors {
+        dev {
+            dimension "version"
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "Beer.dev"
+            resValue "string", "notif_channel_name", "channel_tb"
+            resValue "string", "notif_channel_id", "channel_id_tb"
+            buildConfigField "String", "SERVER_URL", '"http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"'
+        }
+        production {
+            dimension "version"
+            resValue "string", "app_name", "Beer"
+            resValue "string", "notif_channel_name", "channel_tb"
+            resValue "string", "notif_channel_id", "channel_id_tb"
+            buildConfigField "String", "SERVER_URL", '"https://apeni.ge/tbilisi/mobile/"'
+        }
+        dev_kh {
+            dimension "version"
+            applicationIdSuffix ".dev.kh"
+            resValue "string", "app_name", "Beer.dev.kh"
+            resValue "string", "notif_channel_name", "channel_kh"
+            resValue "string", "notif_channel_id", "channel_id_kh"
+            buildConfigField "String", "SERVER_URL", '"http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"'
+        }
+        production_kh {
+            dimension "version"
+            applicationIdSuffix ".kh"
+            resValue "string", "app_name", "Beer.kh"
+            resValue "string", "notif_channel_name", "channel_kh"
+            resValue "string", "notif_channel_id", "channel_id_kh"
+            buildConfigField "String", "SERVER_URL", '"https://apeni.ge/tbilisi/mobile/"'
         }
     }
 

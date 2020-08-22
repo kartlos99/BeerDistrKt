@@ -41,7 +41,7 @@
         <item
             android:id="@+id/mInfo"
             android:icon="@drawable/ic_info_24"
-            android:title="@string/curr_version"/>
+            android:title=""/>
 
     </group>
 </menu>

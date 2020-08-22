@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         vBinding.navView.menu.getItem(1).isEnabled = Session.get().userType == UserType.ADMIN
         vBinding.navView.menu.getItem(2).isEnabled = false
         vBinding.navView.menu.getItem(3).isEnabled = Session.get().userType == UserType.ADMIN
+        vBinding.navView.menu.getItem(7).title = BuildConfig.VERSION_NAME
     }
 
     fun logOut() {

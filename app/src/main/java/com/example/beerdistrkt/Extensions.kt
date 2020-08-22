@@ -235,7 +235,7 @@ val Fragment.baseActivity: MainActivity?
     }
 
 fun Fragment.notifyNewComment(text: String) {
-    val refToFB = FirebaseDatabase.getInstance().getReference(getString(R.string.location_en))
+    val refToFB = FirebaseDatabase.getInstance().getReference(BuildConfig.FLAVOR)
     val fullText = "${Date()}|$text"
     refToFB.setValue(fullText)
     SharedPreferenceDataSource.initialize(this.requireContext())

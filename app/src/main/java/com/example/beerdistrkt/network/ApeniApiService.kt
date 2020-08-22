@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
@@ -24,13 +25,13 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-//import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
-//import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-//import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 
 interface ApeniApiService {
@@ -38,12 +39,9 @@ interface ApeniApiService {
     companion object {
         private var instance: ApeniApiService? = null
 
-//        private const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
+        private const val BASE_URL = BuildConfig.SERVER_URL
 //        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
-        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
-
-//        test at server
-//        private const val BASE_URL = TEST_SERVER_URL
+//        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
 
         fun initialize(context: Context) {
             if (instance == null) {

@@ -1,7 +1,5 @@
 <resources>
-    <string name="curr_version">v 2.0.12</string>
-
-    <string name="app_name">BeerDistrKt</string>
+<!--    <string name="app_name">BeerDistrKt</string>-->
     <string name="shekveTebi">შეკვეთები</string>
     <string name="mitana">მიტანა</string>
     <string name="obj_realizacia">ობიექტების რეალიზაცია</string>
@@ -172,8 +170,8 @@
     <string name="mitana_no_order">შეკვეთის გარეშე მიტანა</string>
 
 <!--    kakhetshi kh-->
-    <string name="channel_name">channel_tb</string>
-    <string name="channel_id">channel_id_tb</string>
+<!--    <string name="channel_name">channel_tb</string>-->
+<!--    <string name="channel_id">channel_id_tb</string>-->
     <string name="channel_description">აქ მოდის შეტყობინებები</string>
     <string name="add_comment">კომენტარის დამატება</string>
 
