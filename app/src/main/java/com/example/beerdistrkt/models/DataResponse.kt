@@ -9,6 +9,8 @@ data class DataResponse<T: Any>(
 
     companion object {
 
+        const val UNKNOWN_ERROR = "unknown error"
+
         @JvmField
         val ErrorCodeDataIsNull = 420
 

@@ -6,6 +6,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import com.example.beerdistrkt.utils.Session
@@ -15,8 +16,8 @@ import kotlin.collections.ArrayList
 
 class AmonaweriSubPageViewModel : BaseViewModel() {
 
-    private val _amonaweriLiveData = MutableLiveData<List<Amonaweri>>()
-    val amonaweriLiveData: LiveData<List<Amonaweri>>
+    private val _amonaweriLiveData = MutableLiveData<ApiResponseState<List<Amonaweri>>>()
+    val amonaweriLiveData: LiveData<ApiResponseState<List<Amonaweri>>>
         get() = _amonaweriLiveData
 
     val TAG = "subPageVM"
@@ -40,23 +41,31 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     }
 
     fun getAmonaweriM(date: String) {
+        _amonaweriLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriM(date, clientID),
             successWithData = {
                 amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
+            },
+            finally = {
+                _amonaweriLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
 
     fun getAmonaweriK(date: String) {
+        _amonaweriLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriK(date, clientID),
             successWithData = {
                 amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
                 changeDataStructure(isGrouped)
+            },
+            finally = {
+                _amonaweriLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
@@ -64,9 +73,9 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     fun changeDataStructure(grouped: Boolean) {
         isGrouped = grouped
         if (grouped){
-            _amonaweriLiveData.value = groupAmonaweriList(amonaweriDataList)
+            _amonaweriLiveData.value = ApiResponseState.Success(groupAmonaweriList(amonaweriDataList))
         }else{
-            _amonaweriLiveData.value = amonaweriDataList
+            _amonaweriLiveData.value = ApiResponseState.Success(amonaweriDataList)
         }
     }
 

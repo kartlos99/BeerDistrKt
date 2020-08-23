@@ -44,7 +44,7 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
 ) {
     enqueue(object : Callback<T> {
         override fun onFailure(call: Call<T>, t: Throwable) {
-            Log.d("FailMSG", t.message!!)
+            Log.d("FailMSG", t.message ?: DataResponse.UNKNOWN_ERROR)
             finally?.invoke(false)
             if (t is IOException) {
                 onConnectionFailure(t)
@@ -68,7 +68,7 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
                 } else {
                     responseFailure(
                         body?.errorCode ?: DataResponse.UnknownError,
-                        body?.errorText ?: "Unknown Error")
+                        body?.errorText ?: DataResponse.UNKNOWN_ERROR)
                 }
 
             } else {

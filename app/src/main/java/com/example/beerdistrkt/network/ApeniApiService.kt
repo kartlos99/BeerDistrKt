@@ -32,6 +32,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 
 interface ApeniApiService {
@@ -59,9 +60,18 @@ interface ApeniApiService {
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
+            val okHttpClient = OkHttpClient.Builder()
+//                .retryOnConnectionFailure(false)
+//                .connectTimeout(60, TimeUnit.SECONDS)
+//                .readTimeout(60, TimeUnit.SECONDS)
+//                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build()
+
             val retrofit = Retrofit.Builder()
-                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build())
+                .client(okHttpClient)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
+//                .addCallAdapterFactory()
                 .baseUrl(BASE_URL)
                 .build()
 

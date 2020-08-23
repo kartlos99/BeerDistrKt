@@ -17,12 +17,10 @@ import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.showAskingDialog
-import com.example.beerdistrkt.utils.LOCATION
-import com.example.beerdistrkt.utils.OBJ_ID
-import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
+import com.example.beerdistrkt.utils.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +44,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
     }
 
     override val viewModel: AmonaweriSubPageViewModel by lazy {
-        ViewModelProviders.of(this)[AmonaweriSubPageViewModel::class.java]
+        getViewModel { AmonaweriSubPageViewModel() }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -60,7 +58,6 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         pagePos = arguments?.getInt(LOCATION) ?: 0
         viewModel.pagePos = pagePos
         viewModel.clientID = arguments?.getInt(OBJ_ID) ?: 0
-        vBinding.progressBarAmonaweri.visibility = View.VISIBLE
         viewModel.requestAmonaweriList()
 
         vBinding.amoColumnTitle1.text = getString(R.string.text_tarigi)
@@ -82,11 +79,15 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.amonaweriLiveData.observe(viewLifecycleOwner, Observer {
-            vBinding.progressBarAmonaweri.visibility = View.GONE
-            amonaweriListAdapter = AmonaweriAdapter(context, it, pagePos, viewModel.isGrouped)
-            vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
-            Log.d("sufrObsSize", "${it.size}")
-            Log.d("suAdaper size", "${amonaweriListAdapter.count}")
+            when (it) {
+                is ApiResponseState.Loading -> vBinding.progressBarAmonaweri.visibleIf(it.showLoading)
+                is ApiResponseState.Success -> {
+                    amonaweriListAdapter = AmonaweriAdapter(context, it.data, pagePos, viewModel.isGrouped)
+                    vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
+                    Log.d("sufrObsSize", "${it.data.size}")
+                    Log.d("suAdaper size", "${amonaweriListAdapter.count}")
+                }
+            }
         })
         viewModel.needUpdateLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
