@@ -47,6 +47,8 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         ApeniApiService.initialize(this)
         SharedPreferenceDataSource.initialize(this)
 
+        Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())
+
         val toolBar = vBinding.toolBar
         toolBar.title = getString(R.string.location_ge)
         setSupportActionBar(toolBar)
@@ -77,8 +79,8 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             if (item.itemId == R.id.mChangePass) {
                 changePass()
             }
-            NavigationUI.onNavDestinationSelected(item, navController);
-            vBinding.drawerLayout.closeDrawer(GravityCompat.START);
+            NavigationUI.onNavDestinationSelected(item, navController)
+            vBinding.drawerLayout.closeDrawer(GravityCompat.START)
             return@OnNavigationItemSelectedListener true
         })
 
@@ -91,7 +93,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 //        }
     }
 
-    fun updateNavigationView() {
+    private fun updateNavigationView() {
         val userNameTv = vBinding.navView.getHeaderView(0).findViewById<TextView>(R.id.navHeaderUsername)
         val nameTv = vBinding.navView.getHeaderView(0).findViewById<TextView>(R.id.navHeaderName)
         userNameTv.text = "${Session.get().userName}  ( ${Session.get().userType.name} )"

@@ -38,8 +38,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!Session.get().isUserLogged() && this !is LoginFragment)
+        if (!Session.get().isAccessTokenValid() && this !is LoginFragment) {
+            Session.get().loggedIn = false
             (activity as MainActivity).logOut()
+        }
     }
 
     fun setPageTitle(title: String) {
