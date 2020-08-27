@@ -29,7 +29,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         viewModel.apiFailureLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.NoInternetConnection -> showToast(R.string.error_no_connection)
-                is ApiResponseState.ApiError -> showToast(it.errorText)
+                is ApiResponseState.ApiError -> {
+                    showToast(it.errorText)
+                    if (it.errorCode == 401) {
+                        automatedLogout()
+                    }
+                }
             }
             if (it !is ApiResponseState.Sleep)
                 viewModel.showNetworkFailMsgComplete()
@@ -39,9 +44,13 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     override fun onResume() {
         super.onResume()
         if (!Session.get().isAccessTokenValid() && this !is LoginFragment) {
-            Session.get().loggedIn = false
-            (activity as MainActivity).logOut()
+            automatedLogout()
         }
+    }
+
+    private fun automatedLogout() {
+        Session.get().loggedIn = false
+        (activity as MainActivity).logOut()
     }
 
     fun setPageTitle(title: String) {
