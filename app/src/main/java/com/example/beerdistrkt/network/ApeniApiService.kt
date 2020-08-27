@@ -21,9 +21,12 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -34,6 +37,16 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
+class AuthInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val newRequest = chain.request().newBuilder()
+        ApeniApiService.getHeadersMap().entries.forEach {
+            newRequest.addHeader(it.key, it.value)
+        }
+        return chain.proceed(newRequest.build())
+    }
+
+}
 
 interface ApeniApiService {
 
@@ -43,6 +56,16 @@ interface ApeniApiService {
         private const val BASE_URL = BuildConfig.SERVER_URL
 //        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
 //        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
+
+        fun getHeadersMap(): Map<String, String> {
+            val session = Session.get()
+            return if (session.isUserLogged())
+                mapOf(
+                    "Authorization" to "Bearer ${session.accessToken}",
+                    "Client" to "Android"
+                )
+            else mapOf("Client" to "Android")
+        }
 
         fun initialize(context: Context) {
             if (instance == null) {
@@ -61,10 +84,10 @@ interface ApeniApiService {
                 .build()
 
             val okHttpClient = OkHttpClient.Builder()
-//                .retryOnConnectionFailure(false)
-//                .connectTimeout(60, TimeUnit.SECONDS)
-//                .readTimeout(60, TimeUnit.SECONDS)
-//                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(AuthInterceptor())
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build()
 
@@ -158,9 +181,6 @@ interface ApeniApiService {
     @GET("client/getDebtByID.php")
     fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
 
-    @POST("client/login.php")
-    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
-
     @POST("client/add.php")
     fun addClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
 
@@ -197,6 +217,9 @@ interface ApeniApiService {
     // user
     @POST("user/add.php")
     fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
+
+    @POST("user/login.php")
+    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
 
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>

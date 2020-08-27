@@ -13,6 +13,7 @@ class Session {
     var userType: UserType = UserType.DISTRIBUTOR
     var userName: String? = null
     var displayName: String? = null
+    var accessToken: String? = null
 
     var loggedIn = false
 
@@ -26,6 +27,7 @@ class Session {
         loggedIn = true
         userName = userdata.username
         displayName = userdata.name
+        accessToken = userdata.token
     }
 
     fun clearSession(){

@@ -4,6 +4,7 @@ data class LoginResponse(
     val id: Int,
     val username: String,
     val name: String,
-    val type: Int
+    val type: Int,
+    val token: String
 ) {
 }
