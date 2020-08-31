@@ -147,7 +147,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             when (it) {
                 is ApiResponseState.Success -> {
                     orderListSize = it.data.size
-                    ordersAdapter = ParentOrderAdapter(it.data, viewModel.barrelsList)
+                    ordersAdapter = ParentOrderAdapter(it.data, viewModel.barrelsList,
+                        viewModel::saveDistributorGroupState)
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
                     ordersAdapter.onMitanaClick = View.OnClickListener { view ->
                         view.findNavController().navigate(

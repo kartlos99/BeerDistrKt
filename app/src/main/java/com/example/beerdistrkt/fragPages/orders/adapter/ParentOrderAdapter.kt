@@ -26,7 +26,8 @@ import java.util.*
 
 class ParentOrderAdapter(
     private var orderGroups: MutableList<OrderGroupModel>,
-    private val barrelsList: List<CanModel>
+    private val barrelsList: List<CanModel>,
+    private val onGroupExpand: (dID: Int, state: Boolean) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onOrderDrag: ((orderID: Int, newSortValue: Double) -> Unit)? = null
@@ -75,10 +76,11 @@ class ParentOrderAdapter(
 
                 holder.itemView.viewOrderGroupTitle.setOnClickListener {
                     grItem.isExpanded = !grItem.isExpanded
-                    holder.itemView.viewOrderGroupRecycler.visibleIf(grItem.isExpanded)
-                    holder.itemView.viewOrderGroupCollapseImg.rotation =
-                        if (grItem.isExpanded) 180f else 0f
+                    setGrItemState(holder, grItem.isExpanded)
+                    onGroupExpand.invoke(grItem.distributorID, grItem.isExpanded)
                 }
+
+                setGrItemState(holder, grItem.isExpanded)
 
                 // Create layout manager with initial prefetch item count
                 val layoutManager = LinearLayoutManager(
@@ -229,6 +231,12 @@ class ParentOrderAdapter(
         holder.itemView.addDeliveryBtn.visibleIf(deliveryMode)
         holder.itemView.totalSummedOrderRecycler.visibleIf(!deliveryMode)
         holder.itemView.totalOrderTitle.visibleIf(!deliveryMode)
+    }
+
+    private fun setGrItemState(holder: RecyclerView.ViewHolder, isExpanded: Boolean) {
+        holder.itemView.viewOrderGroupRecycler.visibleIf(isExpanded)
+        holder.itemView.viewOrderGroupCollapseImg.rotation =
+            if (isExpanded) 180f else 0f
     }
 
     fun setData(data: MutableList<OrderGroupModel>) {

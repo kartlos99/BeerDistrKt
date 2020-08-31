@@ -78,7 +78,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         })
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
             initCommentsRecycler(it)
-            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.location_ge)
+            (activity as AppCompatActivity).supportActionBar?.title =
+                getString(R.string.location_ge)
         })
         viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -148,6 +149,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     fun getComments() {
-        viewModel.getComments()
+        if (Session.get().isAccessTokenValid())
+            viewModel.getComments()
     }
 }
