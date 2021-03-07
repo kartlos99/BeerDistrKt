@@ -181,4 +181,7 @@
     <string name="enter_corect_data">შეავსეთ მოთხოვნილი ველები სათანადოდ!</string>
     <string name="cant_add_xarji">ძველი თარიღით ხარჯებს ვერ დაამატებთ!</string>
 
+<!--    v 2.2-->
+    <string name="something_is_wrong">დაფიქსირდა დაურკვველი შეცდომა!</string>
+
 </resources>

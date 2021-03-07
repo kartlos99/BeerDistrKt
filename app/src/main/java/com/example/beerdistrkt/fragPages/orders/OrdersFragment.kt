@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.orders_fragment.*
 import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
-class OrdersFragment : BaseFragment<OrdersViewModel>() {
+class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         fun newInstance() = OrdersFragment()
@@ -161,7 +162,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                     onModeChange(viewModel.deliveryMode)
                     switchToDelivery?.isChecked = viewModel.deliveryMode
                 }
-                is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
+                is ApiResponseState.Loading -> {
+                    if (!it.showLoading) vBinding.ordersSwipeRefresh.isRefreshing = false
+                }
+                is ApiResponseState.ApiError -> showToast(it.errorText)
+                else -> showToast(R.string.something_is_wrong)
             }
         })
         viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
@@ -231,7 +236,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("_KA", "onViewCreated")
+
+        vBinding.ordersSwipeRefresh.setOnRefreshListener(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -252,5 +258,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return false
+    }
+
+    override fun onRefresh() {
+        viewModel.getOrders()
+
     }
 }

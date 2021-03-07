@@ -98,6 +98,7 @@ class OrdersViewModel : BaseViewModel() {
             },
             failure = {
                 Log.d("getOrder", "failed: ${it.message}")
+                ordersLiveData.value = ApiResponseState.ApiError(999, it.message ?: "")
             },
             finally = {
                 ordersLiveData.value = ApiResponseState.Loading(false)
@@ -167,10 +168,6 @@ class OrdersViewModel : BaseViewModel() {
         return usersList.map {
             it.username
         }.toTypedArray()
-    }
-
-    private fun editOrder(order: Order) {
-        Log.d("onEdit", order.toString())
     }
 
     fun changeDistributor(orderID: Int, distributorPos: Int) {
