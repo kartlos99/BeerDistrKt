@@ -13,6 +13,7 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NON_POSITIVE
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
@@ -51,6 +52,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         btnSalesByClient.setOnClickListener(this)
         homeHideStoreHouse.setOnClickListener(this)
         homeAddComment.setOnClickListener(this)
+        homeStoreHouseBkg.setOnClickListener(this)
 
         showStoreHouseData(Session.get().userType == UserType.ADMIN)
         getComments()
@@ -101,7 +103,13 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
         homeStoreHouseRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = SimpleBeerRowAdapter(data)
+        val adapter = SimpleBeerRowAdapter(data.filter {
+            it.values.values.any { barrelCount ->
+                barrelCount > 0
+            }
+        }).apply {
+            barrelsAmountBoldStyle = BOLD_STYLE_NON_POSITIVE
+        }
         adapter.onClick = View.OnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
         }
@@ -121,6 +129,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 view.findNavController()
                     .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
             }
+            R.id.homeStoreHouseBkg,
             R.id.homeHideStoreHouse -> {
                 if (homeStoreHouseRecycler.visibility == View.VISIBLE) {
                     homeStoreHouseRecycler.goAway()

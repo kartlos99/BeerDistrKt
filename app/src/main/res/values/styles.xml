@@ -20,7 +20,7 @@
     <style name="OrderCansAppearance" >
         <item name="android:textSize">@dimen/sp16</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:gravity">center</item>
     </style>
 

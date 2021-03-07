@@ -23,6 +23,13 @@ class BeerAmountRowView @JvmOverloads constructor(
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
+    fun setBoldStyle(style: Int) {
+        orderItemCan50.boltStyle = style
+        orderItemCan30.boltStyle = style
+        orderItemCan20.boltStyle = style
+        orderItemCan10.boltStyle = style
+    }
+
     fun setData(data: SimpleBeerRowModel) {
 
         orderItemNameTv.text = data.title
