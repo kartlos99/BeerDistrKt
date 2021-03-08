@@ -30,7 +30,7 @@ class OrderView @JvmOverloads constructor(
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
-    private fun resetForm(){
+    private fun resetForm() {
         layoutParams =
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         orderComment.visibleIf(false)
@@ -51,8 +51,12 @@ class OrderView @JvmOverloads constructor(
         orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
         if (order.orderStatus != OrderStatus.ACTIVE) {
             orderStatusTv.text = resources.getString(order.orderStatus.textRes)
-            orderMainConstraint.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.red_01))
+            orderMainConstraint.backgroundTintList =
+                ColorStateList.valueOf(resources.getColor(R.color.red_01))
         }
+        if (!order.comment.isNullOrEmpty())
+            orderMainConstraint.backgroundTintList =
+                ColorStateList.valueOf(resources.getColor(R.color.order_with_comment))
 
         val itemList = order.items.groupBy {
             it.beerID

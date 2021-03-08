@@ -34,6 +34,7 @@
     <color name="completed_green">#26C372</color>
     <color name="in_complete_order">#F81A1A</color>
     <color name="red_01">#F6E1E1</color>
+    <color name="order_with_comment">#EFDAF3</color>
     <color name="warning">#FAD82F</color>
 
     <color name="green_01">#CEEFD5</color>

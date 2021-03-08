@@ -33,8 +33,8 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         calendar.add(Calendar.HOUR, 24 + 4) // es dge rom bolomde chaitvalos
     }
 
-    fun requestAmonaweriList(){
-        when(pagePos){
+    fun requestAmonaweriList() {
+        when (pagePos) {
             M_PAGE -> getAmonaweriM(dateFormatDash.format(calendar.time))
             K_PAGE -> getAmonaweriK(dateFormatDash.format(calendar.time))
         }
@@ -72,14 +72,15 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
 
     fun changeDataStructure(grouped: Boolean) {
         isGrouped = grouped
-        if (grouped){
-            _amonaweriLiveData.value = ApiResponseState.Success(groupAmonaweriList(amonaweriDataList))
-        }else{
+        if (grouped) {
+            _amonaweriLiveData.value =
+                ApiResponseState.Success(groupAmonaweriList(amonaweriDataList))
+        } else {
             _amonaweriLiveData.value = ApiResponseState.Success(amonaweriDataList)
         }
     }
 
-    fun groupAmonaweriList(rowList: ArrayList<Amonaweri>): ArrayList<Amonaweri>{
+    fun groupAmonaweriList(rowList: ArrayList<Amonaweri>): ArrayList<Amonaweri> {
         val groupedList = ArrayList<Amonaweri>()
         var grDate = Date()
         var currRowDate = Date()
@@ -95,6 +96,9 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             var bal: Float = rowList[0].balance
             var k_in = 0.0f
             var k_out = 0.0f
+            val totalComment = mutableListOf<String?>()
+            totalComment.add(rowList[0].comment)
+
             for (i in rowList.indices) {
                 try {
                     currRowDate = dateFormatDash.parse(rowList[i].tarigi) ?: Date()
@@ -106,6 +110,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     pay += rowList[i].pay
                     k_in += rowList[i].k_in
                     k_out += rowList[i].k_out
+                    totalComment.add(rowList[i].comment)
                 } else {
                     val currGrRow = Amonaweri()
                     currGrRow.tarigi = dateFormatDash.format(grDate)
@@ -114,6 +119,8 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     currGrRow.balance = bal
                     currGrRow.k_in = k_in
                     currGrRow.k_out = k_out
+                    currGrRow.comment =
+                        totalComment.filter { !it.isNullOrEmpty() }.distinct().joinToString(" | ")
                     groupedList.add(currGrRow)
 
                     grDate = currRowDate
@@ -122,6 +129,9 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     bal = rowList[i].balance
                     k_in = rowList[i].k_in
                     k_out = rowList[i].k_out
+                    totalComment.removeAll { true }
+                    if (!rowList[i].comment.isNullOrEmpty())
+                        totalComment.add(rowList[i].comment)
                 }
             }
             val currGrRow = Amonaweri()
@@ -131,6 +141,8 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             currGrRow.balance = bal
             currGrRow.k_in = k_in
             currGrRow.k_out = k_out
+            currGrRow.comment =
+                totalComment.filter { !it.isNullOrEmpty() }.distinct().joinToString(" | ")
             groupedList.add(currGrRow)
         }
         return groupedList

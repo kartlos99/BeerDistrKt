@@ -12,6 +12,7 @@ import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import com.example.beerdistrkt.utils.MyUtil
+import com.example.beerdistrkt.utils.goAway
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -91,19 +92,12 @@ class AmonaweriAdapter(
             viewHolder.t_p4?.setText(MyUtil.floatToSmartStr(currItem.balance))
         }
         viewHolder.t_comment?.text = currItem.comment ?: ""
-        if (grouped) {
-            viewHolder.t_comment!!.visibility = View.GONE
+        if (currItem.comment.isNullOrEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            viewHolder.t_p3!!.setTextColor(Color.BLACK)
+            viewHolder.t_p2!!.setTextColor(Color.BLACK)
         } else {
-            if (currItem.comment.isNullOrEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                viewHolder.t_p3!!.setTextColor(Color.BLACK)
-                viewHolder.t_p2!!.setTextColor(Color.BLACK)
-            } else { //                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_comment_icon);
-//                ScaleDrawable scaleDrawable = new ScaleDrawable(drawable, Gravity.CENTER, 0.4f, 0.8f);
-//                viewHolder.t_p1.setBackground(scaleDrawable.getDrawable());
-                viewHolder.t_p3!!.setTextColor(Color.MAGENTA)
-                viewHolder.t_p2!!.setTextColor(Color.MAGENTA)
-                //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
-            }
+            viewHolder.t_p3!!.setTextColor(Color.MAGENTA)
+            viewHolder.t_p2!!.setTextColor(Color.MAGENTA)
         }
         return listRowView
     }

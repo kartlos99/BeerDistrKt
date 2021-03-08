@@ -82,7 +82,8 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             when (it) {
                 is ApiResponseState.Loading -> vBinding.progressBarAmonaweri.visibleIf(it.showLoading)
                 is ApiResponseState.Success -> {
-                    amonaweriListAdapter = AmonaweriAdapter(context, it.data, pagePos, viewModel.isGrouped)
+                    amonaweriListAdapter =
+                        AmonaweriAdapter(context, it.data, pagePos, viewModel.isGrouped)
                     vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
                     Log.d("sufrObsSize", "${it.data.size}")
                     Log.d("suAdaper size", "${amonaweriListAdapter.count}")
@@ -96,17 +97,11 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             }
         })
 
-        vBinding.listviewAmonaweri.setOnItemClickListener { parent, view, position, id ->
-            if (!viewModel.isGrouped) {
-                val tvComment = view.findViewById<TextView>(R.id.t_amonaweri_row_comment)
-                val amonaweri: Amonaweri = amonaweriListAdapter.getItem(position)
-                if (!amonaweri.comment.isNullOrEmpty()) {
-                    if (tvComment.visibility == View.VISIBLE) {
-                        tvComment.visibility = View.GONE
-                    } else {
-                        tvComment.visibility = View.VISIBLE
-                    }
-                }
+        vBinding.listviewAmonaweri.setOnItemClickListener { _, view, position, _ ->
+            val tvComment = view.findViewById<TextView>(R.id.t_amonaweri_row_comment)
+            val amonaweri: Amonaweri = amonaweriListAdapter.getItem(position)
+            if (!amonaweri.comment.isNullOrEmpty()) {
+                tvComment.visibleIf(tvComment.visibility != View.VISIBLE)
             }
         }
     }
@@ -114,7 +109,6 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
     fun chengeAmonaweriAppearance(grouped: Boolean) {
         viewModel.changeDataStructure(grouped)
     }
-
 
 
     override fun onCreateContextMenu(
