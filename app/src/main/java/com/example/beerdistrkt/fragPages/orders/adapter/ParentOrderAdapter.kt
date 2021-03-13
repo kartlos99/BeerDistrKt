@@ -38,11 +38,11 @@ class ParentOrderAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-                if (viewType == BOTTOM_ITEM) R.layout.view_order_group_bottom_item else
-                    R.layout.view_order_group,
-                parent,
-                false
-            )
+            if (viewType == BOTTOM_ITEM) R.layout.view_order_group_bottom_item else
+                R.layout.view_order_group,
+            parent,
+            false
+        )
         return ParentViewHolder(view)
     }
 
@@ -101,6 +101,7 @@ class ParentOrderAdapter(
                 var draggingOrder: Order? = null
 
                 var newSortValue: Double? = null
+                var orderBkgColor: ColorStateList? = null
 
                 val touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
@@ -135,8 +136,8 @@ class ParentOrderAdapter(
                         super.clearView(recyclerView, viewHolder)
                         Log.d("drag posFin", "${viewHolder.adapterPosition}")
                         val dragFinalPosition = viewHolder.adapterPosition
-                        viewHolder.itemView.findViewById<ConstraintLayout>(R.id.orderMainConstraint)?.
-                        backgroundTintList = null
+                        viewHolder.itemView.findViewById<ConstraintLayout>(R.id.orderMainConstraint)
+                            ?.backgroundTintList = orderBkgColor
 
                         if (dragStartPosition != dragFinalPosition && dragStartPosition != -1) {
                             if (draggingOrder != null && newSortValue != null) {
@@ -152,8 +153,10 @@ class ParentOrderAdapter(
                     ) {
                         super.onSelectedChanged(viewHolder, actionState)
                         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                            viewHolder?.itemView?.findViewById<ConstraintLayout>(R.id.orderMainConstraint)?.
-                            backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF9696"))
+                            val bkgView = viewHolder?.itemView?.findViewById<ConstraintLayout>(R.id.orderMainConstraint)
+                            orderBkgColor = bkgView?.backgroundTintList
+                            bkgView?.backgroundTintList =
+                                ColorStateList.valueOf(Color.parseColor("#FF9696"))
                             dragStartPosition = viewHolder?.adapterPosition ?: -1
                             if (dragStartPosition >= 0)
                                 draggingOrder = grItem.ordersList[dragStartPosition]

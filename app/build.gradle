@@ -36,7 +36,7 @@ android {
             resValue "string", "app_name", "Beer.dev"
             resValue "string", "notif_channel_name", "channel_tb"
             resValue "string", "notif_channel_id", "channel_id_tb"
-            buildConfigField "String", "SERVER_URL", '"http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"'
+            buildConfigField "String", "SERVER_URL", '"http://192.168.0.106/apeni.localhost.com/tbilisi/mobile/"'
         }
         production {
             dimension "version"

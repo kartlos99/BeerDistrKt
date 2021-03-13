@@ -43,4 +43,6 @@
     <color name="green_09">#229A3C</color>
     <color name="orange_08">#F88439</color>
 
+    <color name="dragging_order_color">#FF9696</color>
+
 </resources>

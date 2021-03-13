@@ -120,7 +120,7 @@
                 android:contentDescription="@string/img_description"
                 android:padding="@dimen/gr_size_4"
                 android:src="@drawable/ic_comment_white_24dp"
-                android:tint="@color/gray_6"
+                app:tint="@color/gray_6"
                 app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
                 app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv" />
 
