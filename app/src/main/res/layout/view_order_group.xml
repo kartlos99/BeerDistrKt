@@ -24,15 +24,24 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="@dimen/sp18"
-            app:layout_constraintEnd_toStartOf="@id/viewOrderGroupCollapseImg"
+            app:layout_constraintEnd_toStartOf="@id/viewOrderGroupTotalLt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/viewOrderGroupTotalLt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lt"
+            app:layout_constraintTop_toTopOf="@id/viewOrderGroupDistributor"
+            app:layout_constraintBottom_toBottomOf="@id/viewOrderGroupDistributor"
+            app:layout_constraintEnd_toStartOf="@id/viewOrderGroupCollapseImg"/>
 
         <ImageView
             android:id="@+id/viewOrderGroupCollapseImg"
             android:layout_width="@dimen/gr_size_32"
             android:layout_height="@dimen/gr_size_32"
-            android:layout_marginEnd="@dimen/gr_size_8"
+
             android:contentDescription="@string/img_description"
             android:padding="@dimen/gr_size_4"
             android:rotation="180"

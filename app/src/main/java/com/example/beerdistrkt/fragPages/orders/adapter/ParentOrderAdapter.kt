@@ -34,6 +34,8 @@ class ParentOrderAdapter(
     var onMitanaClick: View.OnClickListener? = null
     var deliveryMode = false
 
+    private val barrelMap = barrelsList.groupBy { it.id }
+
     private val viewPool = RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,14 +67,22 @@ class ParentOrderAdapter(
             orderGroups[position].let { grItem ->
 
                 holder.itemView.viewOrderGroupDistributor.text = grItem.distributorName
-                val itemList = grItem.ordersList.getSummedRemainingOrder().groupBy {
+                val itemsList = grItem.ordersList.getSummedRemainingOrder()
+
+                var literSum = 0
+                itemsList.forEach {
+                    literSum += it.count * (barrelMap[it.canTypeID]?.get(0)?.volume ?: 0)
+                }
+                holder.itemView.viewOrderGroupTotalLt.text = holder.itemView.context.getString(R.string.lt, literSum)
+
+                val groupedItemsList = itemsList.groupBy {
                     it.beerID
                 }.toMutableMap()
 
                 holder.itemView.viewOrderGroupSumRecycler.layoutManager =
                     LinearLayoutManager(holder.itemView.viewOrderGroupSumRecycler.context)
                 holder.itemView.viewOrderGroupSumRecycler.adapter =
-                    OrderItemAdapter(itemList.toSortedMap())
+                    OrderItemAdapter(groupedItemsList.toSortedMap())
 
                 holder.itemView.viewOrderGroupTitle.setOnClickListener {
                     grItem.isExpanded = !grItem.isExpanded
@@ -216,7 +226,7 @@ class ParentOrderAdapter(
         }
         val remainingOrderSum = allOrders.getSummedRemainingOrder()
         var litraji = 0
-        val barrelMap = barrelsList.groupBy { it.id }
+//        val barrelMap = barrelsList.groupBy { it.id }
         remainingOrderSum.forEach {
             litraji += it.count * (barrelMap[it.canTypeID]?.get(0)?.volume ?: 0)
         }
