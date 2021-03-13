@@ -130,7 +130,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
         vBinding.addOrderStatusSpinner.onItemSelectedListener = this
 
-        vBinding.addOrderCansScroll.postDelayed(Runnable {
+        vBinding.addOrderCansScroll.postDelayed({
             vBinding.addOrderCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
         checkForm()
@@ -142,7 +142,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
     }
 
-    fun getTempOrderItem(): TempBeerItemModel {
+    private fun getTempOrderItem(): TempBeerItemModel {
         return TempBeerItemModel(0,
             viewModel.beerList[beerPos],
             viewModel.selectedCan!!,
@@ -153,11 +153,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             })
     }
 
-    fun formIsValid(): Boolean {
+    private fun formIsValid(): Boolean {
         return vBinding.addOrderCanCountControl.amount > 0 && viewModel.selectedCan != null
     }
 
-    fun resetForm() {
+    private fun resetForm() {
         vBinding.addOrdersChipGr.clearCheck()
         viewModel.selectedCan = null
         vBinding.addOrderCanCountControl.amount = 0
@@ -172,7 +172,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
-            addOrderClientInfo.text = "${it.obieqti.dasaxeleba}"
+            addOrderClientInfo.text = it.obieqti.dasaxeleba
             vBinding.addOrderCheckBox.isChecked = it.obieqti.chek == "1"
         })
         viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer {
@@ -194,13 +194,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             }
         })
         viewModel.addOrderLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ApiResponseState.Success -> {
-                    showToast(it.data)
-                    if (!vBinding.addOrderComment.text.isNullOrEmpty())
-                        notifyNewComment(vBinding.addOrderComment.text.toString())
-                    findNavController().navigateUp()
-                }
+            if (it is ApiResponseState.Success) {
+                showToast(it.data)
+                if (!vBinding.addOrderComment.text.isNullOrEmpty())
+                    notifyNewComment(vBinding.addOrderComment.text.toString())
+                findNavController().navigateUp()
             }
         })
         viewModel.getOrderLiveData.observe(viewLifecycleOwner, Observer {
@@ -214,6 +212,12 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 fillOrderItemForm(it)
 
                 viewModel.orderItemEditLiveData.value = null
+            }
+        })
+        viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
+            if (it is ApiResponseState.Success) {
+                addOrderClientDebt.text =
+                    getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
             }
         })
     }

@@ -54,17 +54,6 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true">
 
-                <!--                <TextView-->
-                <!--                    android:id="@+id/t_mitana_ludi"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="8dp"-->
-                <!--                    android:text="@string/ludis_shetana"-->
-                <!--                    android:textSize="@dimen/plius_minus_TextSize"-->
-                <!--                    app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--                    app:layout_constraintRight_toRightOf="parent"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addDeliveryMitanaGr"
                     android:layout_width="wrap_content"
@@ -136,7 +125,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:contentDescription="@string/img_description"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_arrow_left_24dp"
-                            android:tint="@color/arrow_color_tr"
+                            app:tint="@color/arrow_color_tr"
                             app:layout_constraintBottom_toBottomOf="@+id/addDeliveryBeerRecycler"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/addDeliveryBeerRecycler" />
@@ -150,7 +139,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:rotation="180"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_arrow_left_24dp"
-                            android:tint="@color/arrow_color_tr"
+                            app:tint="@color/arrow_color_tr"
                             app:layout_constraintBottom_toBottomOf="@+id/addDeliveryBeerRecycler"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="@id/addDeliveryBeerRecycler" />

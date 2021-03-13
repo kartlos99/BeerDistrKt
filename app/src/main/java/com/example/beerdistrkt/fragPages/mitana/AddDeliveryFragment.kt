@@ -198,7 +198,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             if (it is ApiResponseState.Success) {
                 addDeliveryClientDebt.text =
                     getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
-                viewModel.getDebtLiveData.value = ApiResponseState.Sleep
             }
         })
     }

@@ -15,6 +15,7 @@ import java.util.*
 
 class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : BaseViewModel() {
 
+    val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
     val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")
@@ -57,6 +58,16 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         clientsLiveData.observeForever { clients = it }
         getClient()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+        getDebt()
+    }
+
+    private fun getDebt(){
+        sendRequest(
+            ApeniApiService.getInstance().getDebt(clientID),
+            successWithData = {
+                getDebtLiveData.value = ApiResponseState.Success(it)
+            }
+        )
     }
 
     private fun getClient() {
