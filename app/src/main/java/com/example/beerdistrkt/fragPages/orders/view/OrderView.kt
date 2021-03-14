@@ -2,6 +2,8 @@ package com.example.beerdistrkt.fragPages.orders.view
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -49,8 +51,15 @@ class OrderView @JvmOverloads constructor(
         orderUnitClientNameTv.text = order.client.dasaxeleba
         orderUnitCommentImg.visibleIf(!order.comment.isNullOrEmpty())
         orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
+        if (order.needCleaning == 1) {
+            orderStatusTv.text = resources.getString(R.string.need_cleaning)
+            orderStatusTv.setTextColor(Color.parseColor("#FFA6A6"))
+        }
         if (order.orderStatus != OrderStatus.ACTIVE) {
-            orderStatusTv.text = resources.getString(order.orderStatus.textRes)
+            if (order.orderStatus != OrderStatus.COMPLETED) {
+                orderStatusTv.text = resources.getString(order.orderStatus.textRes)
+                orderStatusTv.setTextColor(Color.WHITE)
+            }
             orderMainConstraint.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.red_01))
         }

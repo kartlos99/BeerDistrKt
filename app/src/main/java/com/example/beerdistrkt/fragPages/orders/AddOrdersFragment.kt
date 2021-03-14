@@ -218,12 +218,14 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             if (it is ApiResponseState.Success) {
                 addOrderClientDebt.text =
                     getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
+                addOrderWarning.visibleIf(it.data.needCleaning == 1)
             }
         })
     }
 
     private fun fillOrderForm(order: Order) {
         addOrderClientInfo.text = order.client.dasaxeleba
+        addOrderWarning.visibleIf(order.needCleaning == 1)
         vBinding.addOrderCheckBox.isChecked = order.isChecked()
         vBinding.addOrderComment.setText(order.comment)
         vBinding.addOrderOrderDate.text = order.orderDate

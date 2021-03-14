@@ -12,6 +12,7 @@ data class OrderDTO(
     val sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
+    val needCleaning: Int,
     val items: List<Item>,
     val sales: List<Sales>
 ) {
@@ -93,6 +94,7 @@ data class OrderDTO(
             sortValue,
             modifyDate,
             modifyUserID,
+            needCleaning,
             items.map {
                 it.toPm(beerList)
             },

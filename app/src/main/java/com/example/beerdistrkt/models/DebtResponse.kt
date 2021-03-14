@@ -6,7 +6,8 @@ data class DebtResponse(
     val price: Double,
     val barrel: Int,
     val payed: Double,
-    val barrelTakenBack: Int
+    val barrelTakenBack: Int,
+    val needCleaning: Int
 ) {
     fun getMoneyDebt() = price - payed
 

@@ -14,6 +14,7 @@ data class Order(
     var sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
+    val needCleaning: Int,
     val items: List<Item>,
     val sales: List<Sales>,
     private val _onDeleteClick: (Order) -> Unit,

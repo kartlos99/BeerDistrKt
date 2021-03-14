@@ -36,6 +36,7 @@
     <color name="red_01">#F6E1E1</color>
     <color name="order_with_comment">#EFDAF3</color>
     <color name="warning">#FAD82F</color>
+    <color name="warning_text_dark">#FF9696</color>
 
     <color name="green_01">#CEEFD5</color>
     <color name="green_02">#BAF1C6</color>

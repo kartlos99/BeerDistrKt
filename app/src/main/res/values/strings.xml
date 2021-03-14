@@ -184,5 +184,6 @@
 <!--    v 2.2-->
     <string name="something_is_wrong">დაფიქსირდა დაურკვველი შეცდომა!</string>
     <string name="lt">%d ლტ.</string>
+    <string name="need_cleaning">გასაწმენდია</string>
 
 </resources>
