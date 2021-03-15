@@ -98,7 +98,7 @@
                 android:layout_marginEnd="@dimen/gr_size_8"
                 android:paddingStart="@dimen/gr_size_12"
                 android:textSize="@dimen/sp18"
-                app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
+                app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
                 app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -112,6 +112,17 @@
                 android:contentDescription="@string/img_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:id="@+id/orderUnitHistoryImg"
+                android:layout_width="@dimen/gr_size_32"
+                android:layout_height="@dimen/gr_size_32"
+                android:contentDescription="@string/img_description"
+                android:padding="@dimen/gr_size_4"
+                android:src="@drawable/ic_history_24"
+                app:tint="@color/gray_6"
+                app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
+                app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv" />
 
             <ImageView
                 android:id="@+id/orderUnitCommentImg"
@@ -128,7 +139,6 @@
                 android:id="@+id/orderUnitCheckImg"
                 android:layout_width="@dimen/gr_size_32"
                 android:layout_height="@dimen/gr_size_32"
-                android:layout_marginEnd="@dimen/gr_size_8"
                 android:contentDescription="@string/img_description"
                 android:padding="@dimen/gr_size_4"
                 android:src="@drawable/circle"

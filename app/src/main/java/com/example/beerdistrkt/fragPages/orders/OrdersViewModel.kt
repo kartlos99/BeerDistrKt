@@ -137,19 +137,18 @@ class OrdersViewModel : BaseViewModel() {
 
     fun deleteOrder(order: Order) {
         Log.d("onDelete", order.toString())
+        val userID = Session.get().userID ?: return
         sendRequest(
-            ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID)),
+            ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID, userID)),
             success = {
                 listOfGroupedOrders.forEachIndexed { index1, orderGroupModel ->
                     val index = orderGroupModel.ordersList.indexOf(order)
                     if (index != -1) {
+                        orderGroupModel.ordersList[index] = orderGroupModel.ordersList[index].copy(orderStatus = OrderStatus.DELETED)
                         orderDeleteLiveData.value = ApiResponseState.Success(Pair(index1, index))
-                        orderGroupModel.ordersList.remove(order)
                         return@sendRequest
                     }
-
                 }
-
             }
         )
     }

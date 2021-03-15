@@ -260,7 +260,6 @@ class ParentOrderAdapter(
 
     fun removeItem(indexes: Pair<Int, Int>) {
         orderGroups[indexes.first].orderAdapter?.removeItem(indexes.second)
-        orderGroups[indexes.first].orderAdapter?.notifyItemRemoved(indexes.second)
         notifyItemChanged(indexes.first)
     }
 

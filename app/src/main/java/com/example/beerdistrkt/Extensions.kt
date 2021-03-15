@@ -242,12 +242,11 @@ fun Fragment.notifyNewComment(text: String) {
     SharedPreferenceDataSource.getInstance().saveLastMsgDate(fullText)
 }
 
-fun Activity.showToast(message: String?) {
-    if (!message.isNullOrEmpty())
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+fun Context.showToast(text: String) {
+    Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
 
-fun Activity.showToast(strRes: Int) {
+fun Context.showToast(strRes: Int) {
     showToast(getString(strRes))
 }
 
