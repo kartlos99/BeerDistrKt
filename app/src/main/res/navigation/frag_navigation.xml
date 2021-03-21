@@ -107,8 +107,7 @@
         tools:layout="@layout/obj_list_fragment" >
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
-            app:destination="@id/amonaweriFragment"
-            app:popUpTo="@+id/homeFragment" />
+            app:destination="@id/amonaweriFragment"/>
         <action
             android:id="@+id/action_objListFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment"
