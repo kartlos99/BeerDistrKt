@@ -94,7 +94,8 @@
     <string name="finances">ფინანსები</string>
     <string name="pay">გადახდა</string>
     <string name="price">ღირებულება:</string>
-    <string name="taken">აღებული:</string>
+    <string name="taken_by_cash">აღებული ნაღდი:</string>
+    <string name="taken_by_transfer">აღებული ჩარიცვა:</string>
     <string name="msg_noUserFile">can\'t find users file</string>
     <string name="msg_cantDelUserFile">can\'t delete users file</string>
     <string name="msg_enterKasrQuantity">შეავსეთ კასრების რაოდენობა</string>

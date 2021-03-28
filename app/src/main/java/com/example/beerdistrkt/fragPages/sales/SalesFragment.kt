@@ -162,12 +162,13 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     private fun fillPageData() {
         val xarjiSum = viewModel.xarjebi.sumByDouble { it.amount.toDouble() }
+        val atHand = viewModel.getCashAmount() - xarjiSum
+        val transferAmount = viewModel.getTransferAmount()
         vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
         vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, xarjiSum)
-        vBinding.salesAmountAtHand.text = resources.getString(
-            R.string.format_gel,
-            viewModel.realizationDayLiveData.value?.takenMoney?.minus(xarjiSum)
-        )
+        vBinding.salesAmountAtHand.text = resources.getString(R.string.format_gel, atHand)
+        vBinding.salesTakenAmount.text = resources.getString(R.string.format_gel, viewModel.getCashAmount())
+        vBinding.salesTakenTransferAmount.text = resources.getString(R.string.format_gel, transferAmount)
     }
 
     private fun initBarrelBlock(data: List<BarrelIO>) {

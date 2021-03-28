@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
@@ -17,7 +18,7 @@ import kotlin.collections.ArrayList
 class SalesViewModel : BaseViewModel() {
 
     val TAG = "Sales_VM"
-    var takeMoney = 0.0
+    var takeMoney = mutableListOf<MoneyInfo>()
     var priceSum = 0.0
     val xarjebi: ArrayList<Xarji> = ArrayList()
 
@@ -105,8 +106,8 @@ class SalesViewModel : BaseViewModel() {
                 priceSum = sales.sumByDouble { obj -> obj.price }
 
                 Log.d(TAG, it.toString())
-                takeMoney = it.takenMoney
-                Log.d(TAG, takeMoney.toString())
+                takeMoney.clear()
+                takeMoney.addAll(it.takenMoney)
 
                 val barrelIOList = it.barrels
                 barrelIOList.forEach { bIO ->
@@ -120,6 +121,13 @@ class SalesViewModel : BaseViewModel() {
                 Log.d(TAG, "dayReq $it")
             }
         )
+    }
+
+    fun getCashAmount(): Double {
+        return takeMoney.find { it.paymentType == PaymentType.Cash }?.amount ?: .0
+    }
+    fun getTransferAmount(): Double {
+        return takeMoney.find { it.paymentType == PaymentType.Transfer }?.amount ?: .0
     }
 
     fun deleteXarji(request: DeleteRequest) {

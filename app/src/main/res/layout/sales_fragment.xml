@@ -268,7 +268,7 @@
                             style="@style/FinanceAppearance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/taken"
+                            android:text="@string/taken_by_cash"
                             app:layout_constraintBottom_toBottomOf="@id/salesTakenAmount"
                             app:layout_constraintEnd_toStartOf="@+id/guideline3"
                             app:layout_constraintTop_toTopOf="@id/salesTakenAmount" />
@@ -278,9 +278,26 @@
                             style="@style/FinanceAppearance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/format_gel(viewModel.realizationDayLiveData.takenMoney)}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/salesSumPrice" />
+
+                        <TextView
+                            android:id="@+id/salesTakenTransferTitle"
+                            style="@style/FinanceAppearance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/taken_by_transfer"
+                            app:layout_constraintBottom_toBottomOf="@id/salesTakenTransferAmount"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                            app:layout_constraintTop_toTopOf="@id/salesTakenTransferAmount" />
+
+                        <TextView
+                            android:id="@+id/salesTakenTransferAmount"
+                            style="@style/FinanceAppearance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/salesTakenAmount" />
 
                         <TextView
                             android:id="@+id/fragSalesExpenseUnit"
@@ -301,7 +318,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/default_0"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/salesTakenAmount" />
+                            app:layout_constraintTop_toBottomOf="@id/salesTakenTransferAmount" />
 
                         <TextView
                             style="@style/FinanceAppearance"
@@ -326,7 +343,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            app:layout_constraintGuide_percent="0.5"
+                            app:layout_constraintGuide_percent="0.6"
                             tools:layout_editor_absoluteX="192dp"
                             tools:layout_editor_absoluteY="314dp" />
 
