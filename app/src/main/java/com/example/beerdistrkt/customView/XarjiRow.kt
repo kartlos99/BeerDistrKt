@@ -1,32 +1,21 @@
 package com.example.beerdistrkt.customView
 
-import android.bluetooth.BluetoothGattCallback
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.fragPages.sales.SalesViewModel
-import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.utils.MSG_DEL
-import com.example.beerdistrkt.utils.Session
-import java.security.acl.Owner
-import java.util.*
 
 class XarjiRowView(
     private var mContext: Context? = null,
     private var xarji: Xarji,
     private var xarjiAuthor: String,
-    private var xarjebi: ArrayList<Xarji>? = null,
-    private var linearConteiner: LinearLayout? = null,
-//    private var tShowSum: TextView? = null,
     private var canDel: Boolean? = null,
     callback: (id: String) -> Unit
 ) : ConstraintLayout(mContext) {
@@ -47,7 +36,6 @@ class XarjiRowView(
             val dialog: AlertDialog = builder.create()
             dialog.show()
         }
-
     }
 
     private fun initView() {

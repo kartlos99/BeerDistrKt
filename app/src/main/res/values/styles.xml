@@ -44,9 +44,12 @@
         <item name="android:paddingEnd">@dimen/gr_size_8</item>
         <item name="android:paddingTop">@dimen/gr_size_4</item>
         <item name="android:paddingBottom">@dimen/gr_size_4</item>
-        <item name="android:textAlignment">center</item>
+        <item name="android:textAlignment">textEnd</item>
         <item name="android:textSize">@dimen/sp18</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+
     </style>
 
 </resources>

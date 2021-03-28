@@ -45,5 +45,7 @@
     <color name="orange_08">#F88439</color>
 
     <color name="dragging_order_color">#FF9696</color>
+    <color name="linked_text_color">#0E4BE4</color>
+    <color name="transparent">#00ffffff</color>
 
 </resources>

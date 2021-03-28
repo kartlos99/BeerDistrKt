@@ -108,7 +108,8 @@
     <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
     <string name="already_in_list">ეს ლუდის სახეობა ამ კასრთან უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
-    <string name="xarjebi">ხარჯები:</string>
+    <string name="xarjebi"><u>ხარჯები</u>:</string>
+    <string name="expense_title">ხარჯები</string>
     <string name="xelze_tanxa">ხელზე თანხა:</string>
     <string name="odenoba">ოდენობა</string>
     <string name="add_xarji">ხარჯის დამატება</string>

@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.AnimRes
+import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
@@ -128,6 +129,13 @@ inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creato
         ViewModelProvider(this).get(T::class.java)
     else
         ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
+}
+
+inline fun <reified T : ViewModel> Fragment.getActCtxViewModel(noinline creator: (() -> T)? = null): T {
+    return if (creator == null)
+        ViewModelProvider(requireActivity()).get(T::class.java)
+    else
+        ViewModelProvider(requireActivity(), BaseViewModelFactory(creator)).get(T::class.java)
 }
 
 fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negativeText: Int, theme: Int? = null, onClick: () -> Unit?) {
@@ -259,4 +267,8 @@ fun Context.isNetworkAvailable(): Boolean {
         this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
     val activeNetworkInfo = connectivityManager?.activeNetworkInfo
     return activeNetworkInfo != null && activeNetworkInfo.isConnected
+}
+
+fun Context.getDimenPixelOffset(@DimenRes dimenRes: Int): Int {
+    return resources.getDimensionPixelOffset(dimenRes)
 }

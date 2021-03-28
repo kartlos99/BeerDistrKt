@@ -35,10 +35,6 @@ class SalesViewModel : BaseViewModel() {
     val addXarjiLiveData: LiveData<ApiResponseState<String>>
         get() = _addXarjiLiveData
 
-    private val _xarjiListExpandedLiveData = MutableLiveData<Boolean>()
-    val xarjiListExpandedLiveData: LiveData<Boolean>
-        get() = _xarjiListExpandedLiveData
-
     private val _selectedDayLiveData = MutableLiveData<String>()
     val selectedDayLiveData: LiveData<String>
         get() = _selectedDayLiveData
@@ -55,6 +51,10 @@ class SalesViewModel : BaseViewModel() {
     val barrelsLiveData: LiveData<List<BarrelIO>>
         get() = _barrelsLiveData
 
+    private val _expenseLiveData = MutableLiveData<List<Xarji>>()
+    val expenseLiveData: LiveData<List<Xarji>>
+        get() = _expenseLiveData
+
     val usersLiveData = database.getUsers()
 
     var selectedDistributorID = 0
@@ -68,13 +68,8 @@ class SalesViewModel : BaseViewModel() {
         prepareData()
     }
 
-    fun btnXarjExpandClick() {
-        _xarjiListExpandedLiveData.value = !_xarjiListExpandedLiveData.value!!
-    }
-
     fun changeDay(days: Int) {
         calendar.add(Calendar.DAY_OF_MONTH, days)
-        _xarjiListExpandedLiveData.value = false
         prepareData()
     }
 
@@ -82,7 +77,6 @@ class SalesViewModel : BaseViewModel() {
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         Log.d(TAG, selectedDayLiveData.value!!)
         getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
-        _xarjiListExpandedLiveData.value = false
     }
 
     lateinit var userMap: Map<String, List<User>>
@@ -94,12 +88,11 @@ class SalesViewModel : BaseViewModel() {
     init {
         usersList.addAll(realUsersList)
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
-        _xarjiListExpandedLiveData.value = false
 
         getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
     }
 
-    fun getDayInfo(date: String, distributorID: Int) {
+    private fun getDayInfo(date: String, distributorID: Int) {
         sendRequest(
             ApeniApiService.getInstance().getDayInfo(date, distributorID),
             successWithData = {
@@ -107,6 +100,7 @@ class SalesViewModel : BaseViewModel() {
                 sales.addAll(it.sale)
                 xarjebi.clear()
                 xarjebi.addAll(it.xarji)
+                _expenseLiveData.value = xarjebi
 
                 priceSum = sales.sumByDouble { obj -> obj.price }
 
@@ -142,6 +136,7 @@ class SalesViewModel : BaseViewModel() {
                         }
                     }
                 }
+                _expenseLiveData.value = xarjebi
                 _deleteXarjiLiveData.value = ApiResponseState.Success("")
             },
             finally = {
@@ -171,6 +166,7 @@ class SalesViewModel : BaseViewModel() {
                         amount = amount.toFloat()
                     )
                 )
+                _expenseLiveData.value = xarjebi
                 _addXarjiLiveData.value = ApiResponseState.Success("")
             },
             responseFailure = { i: Int, s: String ->
