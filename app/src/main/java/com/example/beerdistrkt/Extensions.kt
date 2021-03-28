@@ -1,23 +1,26 @@
 package com.example.beerdistrkt
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.AnimRes
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.models.DataResponse
@@ -271,4 +274,25 @@ fun Context.isNetworkAvailable(): Boolean {
 
 fun Context.getDimenPixelOffset(@DimenRes dimenRes: Int): Int {
     return resources.getDimensionPixelOffset(dimenRes)
+}
+
+fun EditText.simpleTextChangeListener(onChange: (value: CharSequence) -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(p0: Editable?) {}
+
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            onChange(p0 ?: "")
+        }
+
+    })
+}
+
+fun View.getColor(@ColorRes resId: Int): Int {
+    return ContextCompat.getColor(context, resId)
+}
+
+fun ImageView.setTint(@ColorRes resId: Int) {
+    setColorFilter(getColor(resId))
 }

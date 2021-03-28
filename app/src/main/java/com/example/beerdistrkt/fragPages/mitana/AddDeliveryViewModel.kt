@@ -5,13 +5,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
@@ -52,7 +51,7 @@ class AddDeliveryViewModel(
     val saleItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
 
     val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
-    var moneyOut: SaleRequestModel.MoneyOutItem? = null
+    var moneyOut: MutableList<SaleRequestModel.MoneyOutItem> = mutableListOf()
     var isGift = false
 
     var operation: String? = null
@@ -72,7 +71,7 @@ class AddDeliveryViewModel(
         getDebt()
     }
 
-    private fun getDebt(){
+    private fun getDebt() {
         sendRequest(
             ApeniApiService.getInstance().getDebt(clientID),
             successWithData = {
@@ -128,6 +127,7 @@ class AddDeliveryViewModel(
             },
             barrels = getEmptyBarrelsList(),
             money = moneyOut
+
         )
 
         if (operation == null)
@@ -136,7 +136,7 @@ class AddDeliveryViewModel(
             updateDelivey(saleRequestModel)
     }
 
-    fun addDelivery(saleRequestModel: SaleRequestModel) {
+    private fun addDelivery(saleRequestModel: SaleRequestModel) {
 
         Log.d(TAG, saleRequestModel.toString())
 
@@ -148,14 +148,14 @@ class AddDeliveryViewModel(
                 _addSaleLiveData.value = ApiResponseState.Success(it)
             },
             finally = {
-                moneyOut = null
+                moneyOut.clear()
                 barrelOutItems.clear()
                 _addSaleLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
 
-    fun updateDelivey(saleRequestModel: SaleRequestModel) {
+    private fun updateDelivey(saleRequestModel: SaleRequestModel) {
 
         _addSaleLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
@@ -216,13 +216,28 @@ class AddDeliveryViewModel(
             null
     }
 
-    fun setMoney(text: Editable?) {
-        if (!text.isNullOrEmpty() && (operation == null || operation == M_OUT))
-            moneyOut = SaleRequestModel.MoneyOutItem(
-                recordID,
-                dateTimeFormat.format(saleDateCalendar.time),
-                text.toString().toDouble()
-            )
+    fun setMoney(cashValue: String, transferValue: String) {
+        moneyOut.clear()
+        if (operation == null || operation == M_OUT) {
+            if (cashValue.isNotEmpty() && cashValue.toDouble() > 0)
+                moneyOut.add(
+                    SaleRequestModel.MoneyOutItem(
+                        recordID,
+                        dateTimeFormat.format(saleDateCalendar.time),
+                        cashValue.toDouble(),
+                        PaymentType.Cash
+                    )
+                )
+            if (transferValue.isNotEmpty() && transferValue.toDouble() > 0)
+                moneyOut.add(
+                    SaleRequestModel.MoneyOutItem(
+                        recordID,
+                        dateTimeFormat.format(saleDateCalendar.time),
+                        transferValue.toDouble(),
+                        PaymentType.Transfer
+                    )
+                )
+        }
     }
 
     val saleItemEditLiveData = MutableLiveData<SaleRowModel?>()
@@ -245,7 +260,7 @@ class AddDeliveryViewModel(
                 }
                 if (it.kout != null) {
                     kOutEditLiveData.value = it.kout
-                    selectedCan = cansList.find { b ->  b.id == it.kout.canTypeID } ?: cansList[0]
+                    selectedCan = cansList.find { b -> b.id == it.kout.canTypeID } ?: cansList[0]
 
                     val date = dateTimeFormat.parse(it.kout.outputDate)
                     saleDateCalendar.time = date ?: Date()

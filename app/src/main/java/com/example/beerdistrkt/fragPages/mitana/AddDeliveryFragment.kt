@@ -5,9 +5,6 @@ import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +21,7 @@ import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
@@ -119,16 +117,19 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.btnBeerLeftImg.setOnClickListener(this)
         vBinding.btnBeerRightImg.setOnClickListener(this)
         vBinding.addDeliveryAddSaleItemBtn.setOnClickListener(this)
+        vBinding.addDeliveryMoneyExpander.setOnClickListener(this)
 
-        vBinding.addDeliveryCanCountControl.editCount.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
+        vBinding.addDeliveryMoneyEt.simpleTextChangeListener {
+            vBinding.addDeliveryMoneyCashImg.setTint(getColorForValidationIndicator(it))
+        }
+        vBinding.addDeliveryMoneyTransferEt.simpleTextChangeListener {
+            vBinding.addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        vBinding.addDeliveryCanCountControl.editCount.simpleTextChangeListener {
+            checkForm()
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                checkForm()
-            }
-        })
         vBinding.addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isGift = isChecked
         }
@@ -138,7 +139,15 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryCansScroll.postDelayed(Runnable {
             vBinding.addDeliveryCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
-        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.mitana)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.mitana)
+    }
+
+    private fun getColorForValidationIndicator(value: CharSequence): Int {
+        return if (value.isNotEmpty() && value.toString().toDoubleOrNull() ?: .0 > .0)
+            R.color.green_08
+        else
+            R.color.gray_6
     }
 
     private fun initViewModel() {
@@ -203,7 +212,22 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun fillMoney(moneyRowModel: MoneyRowModel) {
-        vBinding.addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+        vBinding.addDeliveryMoneyExpander.goAway()
+        when (moneyRowModel.paymentType) {
+            PaymentType.Cash -> {
+                vBinding.addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+            }
+            PaymentType.Transfer -> {
+                vBinding.addDeliveryMoneyTransferEt.setText(moneyRowModel.amount.toString())
+                vBinding.addDeliveryMoneyTransferEt.show()
+                vBinding.addDeliveryMoneyTransferImg.show()
+                vBinding.addDeliveryTransferLariSign.show()
+                vBinding.addDeliveryMoneyEt.goAway()
+                vBinding.addDeliveryMoneyCashImg.goAway()
+                vBinding.addDeliveryLariSign.goAway()
+            }
+        }
+
 
         vBinding.addDeliveryComment.editText?.setText(moneyRowModel.comment ?: "")
     }
@@ -248,10 +272,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 when (viewModel.operation) {
                     MITANA -> {
                         viewModel.barrelOutItems.clear()
-                        viewModel.moneyOut = null
+                        viewModel.moneyOut.clear()
                     }
                     K_OUT -> {
-                        viewModel.moneyOut = null
+                        viewModel.moneyOut.clear()
                         viewModel.saleItemsList.clear()
                     }
                     M_OUT -> {
@@ -262,7 +286,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 if (formIsValid() && viewModel.saleItemsList.isEmpty() && viewModel.operation != K_OUT)
                     viewModel.addSaleItemToList(getTempSaleItem())
                 collectEmptyBarrels()
-                viewModel.setMoney(vBinding.addDeliveryMoneyEt.text)
+                viewModel.setMoney(
+                    vBinding.addDeliveryMoneyEt.text.toString(),
+                    vBinding.addDeliveryMoneyTransferEt.text.toString()
+                )
                 viewModel.onDoneClick(vBinding.addDeliveryComment.editText?.text.toString())
             }
             R.id.addDeliveryDateBtn -> {
@@ -291,6 +318,12 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                     viewModel.addSaleItemToList(getTempSaleItem())
                 else
                     showToast(R.string.fill_data)
+            }
+            R.id.addDeliveryMoneyExpander -> {
+                vBinding.addDeliveryMoneyTransferEt.show()
+                vBinding.addDeliveryMoneyTransferImg.show()
+                vBinding.addDeliveryTransferLariSign.show()
+                vBinding.addDeliveryMoneyExpander.goAway()
             }
         }
 
@@ -344,7 +377,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             ColorStateList.valueOf(Color.GREEN)
         else
             ColorStateList.valueOf(Color.RED)
-        vBinding.addDeliveryTotalPrice.text = "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
+        vBinding.addDeliveryTotalPrice.text =
+            "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
     }
 
 
