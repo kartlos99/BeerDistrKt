@@ -97,14 +97,17 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         when (viewModel.operation) {
             MITANA -> {
                 vBinding.addDeliveryMoneyGr.visibleIf(false)
+                vBinding.addDeliveryCheckReplace.visibility = View.GONE
             }
             M_OUT -> {
                 vBinding.addDeliveryMitanaGr.visibleIf(false)
                 vBinding.addDeliveryCheckGift.visibility = View.GONE
+                vBinding.addDeliveryCheckReplace.visibility = View.GONE
             }
             K_OUT -> {
                 vBinding.addDeliveryMoneyGr.visibleIf(false)
                 vBinding.addDeliveryCheckGift.visibility = View.GONE
+                vBinding.addDeliveryCheckReplace.visibility = View.GONE
             }
         }
 
@@ -132,6 +135,9 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
         vBinding.addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isGift = isChecked
+        }
+        vBinding.addDeliveryCheckReplace.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isReplace = isChecked
         }
 
         initViewModel()

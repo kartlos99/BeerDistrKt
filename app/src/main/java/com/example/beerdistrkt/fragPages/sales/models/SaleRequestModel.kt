@@ -7,6 +7,7 @@ data class SaleRequestModel(
     val distributorID: Int,
     val comment: String?,
     val modifyUserID: Int,
+    val isReplace: String = "0",
 
     val sales: List<SaleItem>? = null,
     val barrels: List<BarrelOutItem>? = null,

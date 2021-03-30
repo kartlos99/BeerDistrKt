@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.fragPages.mitana
 
-import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -53,6 +52,7 @@ class AddDeliveryViewModel(
     val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
     var moneyOut: MutableList<SaleRequestModel.MoneyOutItem> = mutableListOf()
     var isGift = false
+    var isReplace = false
 
     var operation: String? = null
     var recordID = 0
@@ -118,11 +118,12 @@ class AddDeliveryViewModel(
             Session.get().getUserID(),
             deliveryDataComment,
             Session.get().getUserID(),
+            isReplace = if (isReplace) "1" else "0",
             sales = saleItemsList.map {
                 it.toRequestSaleItem(
                     dateTimeFormat.format(saleDateCalendar.time),
                     orderID,
-                    isGift
+                    isGift || isReplace
                 )
             },
             barrels = getEmptyBarrelsList(),

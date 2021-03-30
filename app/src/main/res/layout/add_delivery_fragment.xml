@@ -306,13 +306,12 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     android:id="@+id/addDeliveryTotalPrice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/gr_size_4"
+                    android:layout_marginTop="@dimen/gr_size_4"
                     android:textSize="@dimen/sp14"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@id/addDeliveryAddSaleItemBtn"
                     app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/addDeliveryAddSaleItemBtn" />
+                    app:layout_constraintStart_toStartOf="@id/addDeliveryOperationalCard"
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryOperationalCard" />
 
                 <LinearLayout
                     android:id="@+id/addDeliveryTempContainer"
@@ -504,8 +503,8 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:layout_marginBottom="@dimen/gr_size_4"
                             android:text="@string/lari"
                             android:textSize="@dimen/textsize_4"
-                            app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyEt"
                             app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                            app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyEt"
                             app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
 
                         <ImageView
@@ -582,16 +581,34 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     android:backgroundTint="@color/gray_light"
                     android:drawableEnd="@drawable/calendar_icon"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryMoneyOutputCard" />
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyOutputCard" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/addDeliveryCheckGift"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="@string/sachuqari"
+                    app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/addDeliveryDateBtn" />
+                    app:layout_constraintTop_toTopOf="@id/addDeliveryDateBtn" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/addDeliveryCheckReplace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/replace"
+                    app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryCheckGift" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/addDeliveryBarrierForComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="addDeliveryCheckReplace, addDeliveryDateBtn" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/addDeliveryComment"
@@ -604,7 +621,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     android:nextFocusUp="@id/addDeliveryMoneyEt"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryDateBtn"
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrierForComment"
                     tools:layout_editor_absoluteX="8dp">
 
                     <EditText
