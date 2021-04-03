@@ -5,7 +5,9 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.utils.Session
 import kotlinx.android.synthetic.main.obj_list_row.view.*
 
 class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -75,6 +77,7 @@ class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
             menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
+                ?.isEnabled = Session.get().hasPermission(Permission.AddEditClient)
 //            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
         }
 

@@ -188,5 +188,6 @@
     <string name="something_is_wrong">დაფიქსირდა დაურკვველი შეცდომა!</string>
     <string name="lt">%d ლტ.</string>
     <string name="need_cleaning">გასაწმენდია</string>
+    <string name="no_permission_common">არ გაქვთ ამ ქმედების განხორცილების უფლება</string>
 
 </resources>

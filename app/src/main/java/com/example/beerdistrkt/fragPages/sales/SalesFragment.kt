@@ -15,13 +15,14 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
+import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.sales.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.util.*
 
@@ -80,11 +81,16 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             viewModel.usersList.map { it.name }
         )
         vBinding.salesDistributorsSpinner.onItemSelectedListener = this
-        if (Session.get().userType == UserType.DISTRIBUTOR) {
+        if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
             vBinding.salesDistributorsSpinner.setSelection(
                 viewModel.usersList.map { it.id }.indexOf(Session.get().userID)
             )
             vBinding.salesDistributorsSpinner.isEnabled = false
+        }
+        if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
+            vBinding.salesSetDateBtn.isEnabled = false
+            vBinding.salesDayBackBtn.isEnabled = false
+            vBinding.salesDayForwardBtn.isEnabled = false
         }
 
         initViewModel()

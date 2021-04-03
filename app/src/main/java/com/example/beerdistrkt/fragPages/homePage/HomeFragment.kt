@@ -13,6 +13,7 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NON_POSITIVE
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter

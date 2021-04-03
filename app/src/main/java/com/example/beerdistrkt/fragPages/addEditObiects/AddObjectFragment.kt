@@ -150,8 +150,10 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 id = i + 200
                 text = beerList[i].dasaxeleba
             }
-            if (viewModel.clientID > 0)
-                eText.setText(viewModel.clientObject?.prices?.get(i)?.fasi.toString())
+            if (viewModel.clientID > 0) {
+                val priceObj = viewModel.clientObject?.prices?.elementAtOrNull(i)
+                eText.setText((priceObj?.fasi ?: .0f).toString())
+            }
             priceItemView.addView(textView, 0)
             priceItemView.addView(eText, 1)
             addEditClientPricesContainer.addView(priceItemView, i)

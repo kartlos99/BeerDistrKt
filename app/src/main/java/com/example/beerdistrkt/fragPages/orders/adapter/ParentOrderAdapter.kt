@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.getSummedRemainingOrder
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.view_order_group.view.*
 import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
@@ -208,7 +208,10 @@ class ParentOrderAdapter(
                     }
                 })
 
-                if (Session.get().userType == UserType.ADMIN || Session.get().userID == grItem.distributorID.toString())
+                if (Session.get().userType == UserType.ADMIN
+                    || Session.get().userType == UserType.MANAGER
+                    || Session.get().userID == grItem.distributorID.toString()
+                )
                     touchHelper.attachToRecyclerView(holder.itemView.viewOrderGroupRecycler)
 
                 holder.itemView.viewOrderGroupRecycler.layoutManager = layoutManager

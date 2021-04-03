@@ -10,12 +10,14 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.dialogs.XarjebiDialog
+import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
 import kotlinx.android.synthetic.main.fragment_expense.*
+import kotlinx.android.synthetic.main.sawyobi_fragment.*
 import java.util.*
 
 class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
@@ -57,7 +59,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
     private fun onUpdate(expenseList: List<Xarji>?) {
         if (expenseList == null) return
         fragExpenseList.removeAllViews()
-        val canDel = Session.get().userType == UserType.ADMIN ||
+        val canDel = Session.get().hasPermission(Permission.DeleteExpense) ||
                 viewModel.selectedDayLiveData.value == dateFormatDash.format(Date())
 
         Log.d("XARJEBI", expenseList.toString())
@@ -94,9 +96,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
     }
 
     private fun addNewExpense() {
-        if (Session.get().userType == UserType.DISTRIBUTOR && !viewModel.isToday()) {
-            showToast(R.string.cant_add_xarji)
-        } else
+        if (Session.get().hasPermission(Permission.AddExpenseInPast) || viewModel.isToday())
             XarjebiDialog(requireContext()) { comment, amount ->
                 if (amount.isEmpty()) {
                     showToast(getString(R.string.msg_empty_not_saved))
@@ -110,5 +110,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                     }
                 }
             }.show(childFragmentManager, "expenseDialogTag")
+        else
+            showToast(R.string.cant_add_xarji)
     }
 }

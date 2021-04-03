@@ -13,6 +13,8 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.AmonaweriAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
+import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
@@ -130,8 +132,9 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             }
             if (adate != null) {
                 val dateFormat = SimpleDateFormat(getString(R.string.patern_date))
-                if (Session.get().userType == UserType.ADMIN ||
-                    dateFormat.format(adate) == dateFormat.format(Date())
+                if (Session.get().hasPermission(Permission.EditOldSale) ||
+                    (dateFormat.format(adate) == dateFormat.format(Date()) && Session.get()
+                        .hasPermission(Permission.EditSale))
                 ) {
                     if (pagePos == 0) {
                         activity!!.menuInflater.inflate(R.menu.context_menu_amonaw_m, menu)

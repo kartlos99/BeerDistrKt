@@ -20,13 +20,15 @@ import androidx.navigation.ui.NavigationUI
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.HomeFragment
+import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment.Companion.CALL_PERMISSION_REQUEST
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
+
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.change_pass_dialog.view.*
@@ -99,9 +101,9 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         userNameTv.text = "${Session.get().userName}  ( ${Session.get().userType.name} )"
         nameTv.text = Session.get().displayName
 
-        vBinding.navView.menu.getItem(1).isEnabled = Session.get().userType == UserType.ADMIN
+        vBinding.navView.menu.getItem(0).isEnabled = Session.get().hasPermission(Permission.AddEditClient)
+        vBinding.navView.menu.getItem(1).isEnabled = Session.get().hasPermission(Permission.AddEditUser)
         vBinding.navView.menu.getItem(2).isEnabled = false
-        vBinding.navView.menu.getItem(3).isEnabled = Session.get().userType == UserType.ADMIN
         vBinding.navView.menu.getItem(7).title = BuildConfig.VERSION_NAME
     }
 

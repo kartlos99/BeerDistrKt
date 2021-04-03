@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.TempBeerRowView
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.sawyobi_fragment.*
@@ -54,6 +56,9 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         storeHouseCheckBox.setOnClickListener(this)
         storeHouseAddBeerItemBtn.setOnClickListener(this)
         storeHouseDoneBtn.setOnClickListener(this)
+
+        storeHouseDoneBtn.isEnabled = Session.get().hasPermission(Permission.AddEditStoreHouse)
+        storeHouseAddBeerItemBtn.visibleIf(Session.get().hasPermission(Permission.AddEditStoreHouse))
     }
 
     private fun switchToEditMode() {
@@ -169,8 +174,13 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.sawyobiDetail -> view!!.findNavController()
-                .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+            R.id.sawyobiDetail -> {
+                if (Session.get().hasPermission(Permission.AddEditStoreHouse))
+                    view!!.findNavController()
+                        .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+                else
+                    showToast(R.string.no_permission_common)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -200,18 +210,23 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 datePickerDialog.show()
             }
             R.id.storeHouseAddBeerItemBtn -> {
-                if (storeHouseReceiveBeerSelector.formIsValid())
-                    viewModel.addBeerReceiveItemToList(storeHouseReceiveBeerSelector.getTempBeerItem())
-                else
-                    showToast(R.string.fill_data)
+                if (Session.get().hasPermission(Permission.AddEditStoreHouse)) {
+                    if (storeHouseReceiveBeerSelector.formIsValid())
+                        viewModel.addBeerReceiveItemToList(storeHouseReceiveBeerSelector.getTempBeerItem())
+                    else
+                        showToast(R.string.fill_data)
+                } else
+                    showToast(R.string.no_permission_common)
             }
             R.id.storeHouseDoneBtn -> {
-
-                viewModel.onDoneClick(
-                    storeHouseComment.editText?.text.toString(),
-                    collectEmptyBarrels(),
-                    StoreHouseListFragment.editingIoDate
-                )
+                if (Session.get().hasPermission(Permission.AddEditStoreHouse))
+                    viewModel.onDoneClick(
+                        storeHouseComment.editText?.text.toString(),
+                        collectEmptyBarrels(),
+                        StoreHouseListFragment.editingIoDate
+                    )
+                else
+                    showToast(R.string.no_permission_common)
             }
 
         }
