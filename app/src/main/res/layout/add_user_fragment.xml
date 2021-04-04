@@ -33,9 +33,18 @@
 
             <CheckBox
                 android:id="@+id/addUserAdminBox"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/admin_rights"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addUserUsername" />
+
+            <CheckBox
+                android:id="@+id/addUserManagerBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manager_rights"
+                app:layout_constraintStart_toEndOf="@id/addUserAdminBox"
                 app:layout_constraintTop_toBottomOf="@id/addUserUsername" />
 
             <com.google.android.material.textfield.TextInputLayout

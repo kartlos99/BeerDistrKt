@@ -42,7 +42,8 @@
     <string name="saxeli_gvari">სახელი გვარი</string>
     <string name="adress">მისამართი</string>
     <string name="tel">ტელ:</string>
-    <string name="admin_rights">ადმინსტრატორის უფლებები</string>
+    <string name="admin_rights">ადმინსტრატორი</string>
+    <string name="manager_rights">მენეჯერი</string>
     <string name="confirn">გაიმეორეთ პაროლი</string>
     <string name="userslist">მომხმარებლები</string>
     <string name="change_pass">პაროლის შეცვლა</string>

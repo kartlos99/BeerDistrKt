@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.usersList.UserListFragmentDirections
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
@@ -28,6 +29,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     override val viewModel by lazy {
         getViewModel { AddUserViewModel(userID) }
     }
+
+    var userType = UserType.DISTRIBUTOR
 
     val userID by lazy {
         val args = AddUserFragmentArgs.fromBundle(arguments ?: Bundle())
@@ -60,6 +63,20 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             addUserPass.visibleIf(isChecked)
             addUserPassConfirm.visibleIf(isChecked)
         }
+        addUserAdminBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                userType = UserType.ADMIN
+                addUserManagerBox.isChecked = false
+            } else
+                userType = UserType.DISTRIBUTOR
+        }
+        addUserManagerBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                userType = UserType.MANAGER
+                addUserAdminBox.isChecked = false
+            } else
+                userType = UserType.DISTRIBUTOR
+        }
 
         addUserDoneBtn.setOnClickListener {
             if (isFormValid()) {
@@ -88,7 +105,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             userID,
             addUserUsername.editText?.text.toString(),
             addUserName.editText?.text.toString(),
-            if (addUserAdminBox.isChecked) "2" else "1",
+            userType.value,
             addUserPhone.editText?.text.toString(),
             addUserAddress.editText?.text.toString(),
             Session.get().userID ?: "0",
@@ -126,7 +143,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     private fun fillForm(user: User) {
         addUserUsername.editText?.setText(user.username)
         addUserName.editText?.setText(user.name)
-        addUserAdminBox.isChecked = user.type == "2"
+        addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
+        addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
         addUserPhone.editText?.setText(user.tel)
         addUserAddress.editText?.setText(user.adress)
         addUserComment.editText?.setText(user.comment)
