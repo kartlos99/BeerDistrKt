@@ -19,13 +19,10 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.showListDialog
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
@@ -156,10 +153,10 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // item groupID -ში არის პოზიცია
-        val selectedclient = clientListAdapter.getClientObject(item.groupId)
+        val selectedClient = clientListAdapter.getClientObject(item.groupId)
         when (item.itemId) {
             R.id.cm_call -> {
-                selectedclient.tel?.let {
+                selectedClient.tel?.let {
                     clientPhone = it
                     dialTo()
                 }
@@ -168,25 +165,34 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 val arr = listOf(
                     String.format(
                         "ობიექტი: %s\n    %s\n    %s",
-                        selectedclient.dasaxeleba,
-                        selectedclient.sk ?: "-",
-                        selectedclient.adress ?: "-"
+                        selectedClient.dasaxeleba,
+                        selectedClient.sk ?: "-",
+                        selectedClient.adress ?: "-"
                     ),
                     String.format(
                         "საკ.პირი: %s\n    %s",
-                        selectedclient.sakpiri,
-                        selectedclient.tel
+                        selectedClient.sakpiri,
+                        selectedClient.tel
                     ),
-                    String.format(selectedclient.comment ?: "")
+                    String.format(selectedClient.comment ?: "")
                 )
                 context?.showListDialog(R.string.info, arr.toTypedArray()) {}
             }
             R.id.cm_edit_obj -> {
                 val direction = ObjListFragmentDirections.actionObjListFragmentToAddObjectFragment()
-                direction.clientID = selectedclient.id ?: 0
+                direction.clientID = selectedClient.id ?: 0
                 vBinding.root.findNavController().navigate(direction)
             }
             R.id.cm_del -> {
+                requireContext().showAskingDialog(
+                    null,
+                    R.string.confirm_delete_text,
+                    R.string.yes,
+                    R.string.no,
+                    R.style.ThemeOverlay_MaterialComponents_Dialog
+                ) {
+                    viewModel.deactivateClient(selectedClient.id)
+                }
             }
         }
 

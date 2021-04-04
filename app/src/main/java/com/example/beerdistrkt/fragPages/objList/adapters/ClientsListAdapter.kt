@@ -78,7 +78,8 @@ class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
             menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
                 ?.isEnabled = Session.get().hasPermission(Permission.AddEditClient)
-//            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+                ?.isEnabled = Session.get().hasPermission(Permission.DeleteClient)
         }
 
     }

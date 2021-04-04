@@ -187,6 +187,9 @@ interface ApeniApiService {
     @POST("client/update.php")
     fun updateClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
 
+    @POST("client/deactivate.php")
+    fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>
+
     // storeHouse
     @GET("storeHouse/getBalance.php")
     fun getStoreHouseBalance(
