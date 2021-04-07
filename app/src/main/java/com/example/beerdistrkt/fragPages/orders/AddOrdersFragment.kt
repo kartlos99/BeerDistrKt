@@ -120,6 +120,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
         vBinding.addOrderDistributorSpinner.adapter = userAdapter
         vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
+        vBinding.addOrderDistributorSpinner.setSelection(
+            viewModel.usersList.map { it.id }.indexOf(Session.get().userName )
+        )
 
         vBinding.addOrderStatusSpinner.adapter = ArrayAdapter(
             requireContext(),
