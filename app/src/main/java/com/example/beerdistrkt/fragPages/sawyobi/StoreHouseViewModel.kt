@@ -14,12 +14,11 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import java.util.*
 
 class StoreHouseViewModel : BaseViewModel() {
 
-    var selectedDate = Calendar.getInstance()
+    var selectedDate: Calendar = Calendar.getInstance()
     var editMode = false
     var editingItemID = -1
 
@@ -55,14 +54,19 @@ class StoreHouseViewModel : BaseViewModel() {
         ?: listOf()
 
     val receivedItemsList = mutableListOf<TempBeerItemModel>()
-    val barrelOutItems = mutableListOf<StoreInsertRequestModel.BarrelOutItem>()
+    private val barrelOutItems = mutableListOf<StoreInsertRequestModel.BarrelOutItem>()
+    val emptyBarrelsEditingLiveData = MutableLiveData<List<StoreInsertRequestModel.BarrelOutItem>>()
 
     val receivedItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
     val receivedItemDuplicateLiveData = MutableLiveData<Boolean>(false)
 
     init {
         getStoreBalance()
-        _setDayLiveData.value = dateFormatDash.format(selectedDate.time)
+    }
+
+    fun setCurrentTime() {
+        selectedDate.time = Date()
+        _setDayLiveData.value = dateTimeFormat.format(selectedDate.time)
     }
 
     private fun getStoreBalance() {
@@ -123,22 +127,29 @@ class StoreHouseViewModel : BaseViewModel() {
 
     fun onDateSelected(year: Int, month: Int, day: Int) {
         selectedDate.set(year, month, day)
-        _setDayLiveData.value = dateFormatDash.format(selectedDate.time)
+        _setDayLiveData.value = dateTimeFormat.format(selectedDate.time)
         getStoreBalance()
     }
 
-    fun onDoneClick(comment: String?, barrelsEntered: List<Int>, operationTime: String) {
+    fun onSaleTimeSelected(hour: Int, minute: Int) {
+        selectedDate.set(Calendar.HOUR_OF_DAY, hour)
+        selectedDate.set(Calendar.MINUTE, minute)
+        _setDayLiveData.value = dateTimeFormat.format(selectedDate.time)
+    }
+
+    fun onDoneClick(comment: String?, barrelsEntered: List<Int>, groupID: String) {
         barrelOutItems.clear()
         barrelsEntered.forEachIndexed { index, count ->
+            // es gasasworebelia, kasris tipi indexidan ar unda avigo
             if (count > 0)
                 addBarrelToList(index + 1, count)
         }
 
         val storeInsertRequestModel = StoreInsertRequestModel(
             comment,
-            Session.get().getUserID(),
+            if (groupID.isEmpty()) UUID.randomUUID().toString() else groupID ,
             if (isChecked) 1 else 0,
-            operationTime = operationTime,
+            operationTime = dateTimeFormat.format(selectedDate.time),
             inputBeer = receivedItemsList.map {
                 StoreInsertRequestModel.ReceiveItem(
                     0, it.beer.id, it.canType.id, it.count
@@ -191,7 +202,7 @@ class StoreHouseViewModel : BaseViewModel() {
         editingItemID = 0
     }
 
-    fun addBarrelToList(barrelType: Int, count: Int) {
+    private fun addBarrelToList(barrelType: Int, count: Int) {
         barrelOutItems.add(
             StoreInsertRequestModel.BarrelOutItem(
                 0,
@@ -214,15 +225,19 @@ class StoreHouseViewModel : BaseViewModel() {
         receivedItemsLiveData.value = receivedItemsList
     }
 
-    fun getEditingData(operationTime: String) {
+    fun getEditingData(groupID: String) {
         editMode = true
         _editDataReceiveLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
-            ApeniApiService.getInstance().getStoreHouseIoList(operationTime),
+            ApeniApiService.getInstance().getStoreHouseIoList(groupID),
             successWithData = {
                 processIoData(it)
-                if (it.isNotEmpty())
+                if (it.isNotEmpty()) {
                     _editDataReceiveLiveData.value = ApiResponseState.Success(it[0])
+                    val date = dateTimeFormat.parse(it[0].ioDate)
+                    selectedDate.time = date ?: Date()
+                    _setDayLiveData.value = dateTimeFormat.format(selectedDate.time)
+                }
             },
             finally = {
                 _editDataReceiveLiveData.value = ApiResponseState.Loading(false)
@@ -230,12 +245,13 @@ class StoreHouseViewModel : BaseViewModel() {
         )
     }
 
-    fun processIoData(data: List<IoModel>) {
+    private fun processIoData(data: List<IoModel>) {
         data
             .filter { it.beerID == 0 }
             .forEach {
                 addBarrelToList(it.barrelID, it.count)
             }
+        emptyBarrelsEditingLiveData.value = barrelOutItems
 
         data
             .filter { it.beerID > 0 }

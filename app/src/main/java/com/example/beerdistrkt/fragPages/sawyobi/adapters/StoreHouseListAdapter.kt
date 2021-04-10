@@ -28,9 +28,10 @@ class StoreHouseListAdapter(
     override fun getItemCount(): Int = dataMap.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.shlActionDateTv.text = dataMap.keys.toList()[position]
+//        holder.itemView.shlActionDateTv.text = dataMap.keys.toList()[position]
+        holder.itemView.shlActionDateTv.text = dataMap.values.toList()[position][0].ioDate
         holder.itemView.setOnLongClickListener {
-            onLongClick?.invoke(dataMap.values.toList()[position][0].ioDate)
+            onLongClick?.invoke(dataMap.values.toList()[position][0].groupID)
             return@setOnLongClickListener true
         }
         holder.itemView.shlComment.visibleIf(!dataMap.values.toList()[position][0].comment.isNullOrEmpty())

@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.sawyobi
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -35,6 +37,20 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
     }
     private var dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
+
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            timeSetListener,
+            viewModel.selectedDate.get(Calendar.HOUR_OF_DAY),
+            viewModel.selectedDate.get(Calendar.MINUTE),
+            true
+        )
+        timePickerDialog.setCancelable(false)
+        timePickerDialog.show()
+    }
+
+    private val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        viewModel.onSaleTimeSelected(hourOfDay, minute)
     }
 
     var pageTitleRes = R.string.sawyobi
@@ -70,9 +86,10 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
     override fun onStart() {
         super.onStart()
-
-        if (StoreHouseListFragment.editingIoDate.isNotEmpty()) {
-            viewModel.getEditingData(StoreHouseListFragment.editingIoDate)
+        pageTitleRes = R.string.sawyobi
+        viewModel.setCurrentTime()
+        if (StoreHouseListFragment.editingGroupID.isNotEmpty()) {
+            viewModel.getEditingData(StoreHouseListFragment.editingGroupID)
             switchToEditMode()
         }
 
@@ -134,7 +151,6 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                     TempBeerRowView(context = requireContext(), rowData = itemData)
                 )
             }
-            setEmptyBarrels()
         })
         viewModel.doneLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -144,7 +160,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                     resetPage()
                     viewModel.sleepDoneLiveData()
                     if (viewModel.editMode) {
-                        StoreHouseListFragment.editingIoDate = ""
+                        StoreHouseListFragment.editingGroupID = ""
                         findNavController()
                             .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
                     }
@@ -158,6 +174,9 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                     storeHouseComment.editText?.setText(it.data.comment)
                 }
             }
+        })
+        viewModel.emptyBarrelsEditingLiveData.observe(viewLifecycleOwner, Observer {
+            setEmptyBarrels(it)
         })
     }
 
@@ -223,7 +242,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                     viewModel.onDoneClick(
                         storeHouseComment.editText?.text.toString(),
                         collectEmptyBarrels(),
-                        StoreHouseListFragment.editingIoDate
+                        StoreHouseListFragment.editingGroupID
                     )
                 else
                     showToast(R.string.no_permission_common)
@@ -248,8 +267,8 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         storeHouseBarrelOutputCount4.amount = 0
     }
 
-    fun setEmptyBarrels() {
-        viewModel.barrelOutItems.forEach {
+    private fun setEmptyBarrels(data: List<StoreInsertRequestModel.BarrelOutItem>) {
+        data.forEach {
             when (it.canTypeID) {
                 1 -> storeHouseBarrelOutputCount1.amount = it.count
                 2 -> storeHouseBarrelOutputCount2.amount = it.count

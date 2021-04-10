@@ -6,6 +6,7 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 
 data class IoModel(
     val ID: Int,
+    val groupID: String,
     val ioDate: String,
     val distributorID: Int,
     val beerID: Int,

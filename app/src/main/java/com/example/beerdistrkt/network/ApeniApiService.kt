@@ -201,7 +201,7 @@ interface ApeniApiService {
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
 
     @GET("storeHouse/getioList.php")
-    fun getStoreHouseIoList(@Query("operationTime") operationTime: String): Call<DataResponse<List<IoModel>>>
+    fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<List<IoModel>>>
 
     // general
     @GET("general/getComments.php")

@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.home_fragment.*
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     companion object {
-        fun newInstance() = HomeFragment()
+        const val emptyBarrelTitle = "ცარიელი"
     }
 
     override val viewModel: HomeViewModel by lazy {
@@ -58,7 +58,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         showStoreHouseData(Session.get().userType == UserType.ADMIN)
         getComments()
         initViewModel()
-        StoreHouseListFragment.editingIoDate = ""
+        StoreHouseListFragment.editingGroupID = ""
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {
@@ -108,6 +108,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             it.values.values.any { barrelCount ->
                 barrelCount > 0
             }
+                    || it.title == emptyBarrelTitle
         }).apply {
             barrelsAmountBoldStyle = BOLD_STYLE_NON_POSITIVE
         }

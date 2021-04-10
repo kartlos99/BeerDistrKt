@@ -339,6 +339,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun collectEmptyBarrels() {
+        viewModel.barrelOutItems.clear()
         if (viewModel.operation == null) {
             if (vBinding.addDeliveryBarrelOutputCount1.amount > 0)
                 viewModel.addBarrelToList(1, vBinding.addDeliveryBarrelOutputCount1.amount)

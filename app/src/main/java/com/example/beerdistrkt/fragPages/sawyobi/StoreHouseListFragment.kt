@@ -19,7 +19,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     companion object {
         fun newInstance() = StoreHouseListFragment()
-        var editingIoDate: String = ""
+        var editingGroupID: String = ""
     }
 
     override val viewModel by lazy {
@@ -52,14 +52,19 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
     private fun initIoList(dataList: List<IoModel>) {
         sHLRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = StoreHouseListAdapter(
-            dataList.groupBy { it.ioDate },
+            dataList.groupBy { it.groupID },
             viewModel.beerMap
         ).apply {
             onLongClick = {
-                editingIoDate = it
+                editingGroupID = it
                 findNavController().navigateUp()
             }
         }
         sHLRecycler.adapter = adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        editingGroupID = ""
     }
 }

@@ -2,7 +2,7 @@ package com.example.beerdistrkt.fragPages.sawyobi.models
 
 data class StoreInsertRequestModel(
     val comment: String?,
-    val modifyUserID: Int,
+    val groupID: String,
     val chek: Int,
     val operationTime: String = "",
     val inputBeer: List<ReceiveItem>? = null,

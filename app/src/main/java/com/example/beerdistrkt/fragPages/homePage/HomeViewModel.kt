@@ -263,7 +263,7 @@ class HomeViewModel : BaseViewModel() {
         data.empty?.forEach { ebm ->
             valueOfDiff[ebm.barrelID] = ebm.inputEmptyToStore - ebm.outputEmptyFromStoreCount
         }
-        result.add(SimpleBeerRowModel("ცარიელი", valueOfDiff))
+        result.add(SimpleBeerRowModel(HomeFragment.emptyBarrelTitle, valueOfDiff))
 
         _barrelsListLiveData.value = result
     }
