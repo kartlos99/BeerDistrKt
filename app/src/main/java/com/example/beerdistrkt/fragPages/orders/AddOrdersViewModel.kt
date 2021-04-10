@@ -66,6 +66,12 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             ApeniApiService.getInstance().getDebt(clientID),
             successWithData = {
                 getDebtLiveData.value = ApiResponseState.Success(it)
+            },
+            responseFailure = {code, error ->
+                if (code == DataResponse.ErrorCodeDataIsNull)
+                    getDebtLiveData.value = ApiResponseState.Success(
+                        DebtResponse(clientID, "", .0, 0, .0, 0, 0)
+                    )
             }
         )
     }
