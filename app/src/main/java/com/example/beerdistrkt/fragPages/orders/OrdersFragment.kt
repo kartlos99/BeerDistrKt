@@ -52,9 +52,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         vBinding.viewModel = viewModel
         vBinding.addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
-                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
-                    ADD_ORDER
-                )
+
+                OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment()
             )
         }
         vBinding.ordersRecycler.layoutManager =
