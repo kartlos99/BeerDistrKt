@@ -163,7 +163,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     switchToDelivery?.isChecked = viewModel.deliveryMode
                 }
                 is ApiResponseState.Loading -> {
-                    if (!it.showLoading) vBinding.ordersSwipeRefresh.isRefreshing = false
+                    vBinding.ordersSwipeRefresh.isRefreshing = it.showLoading
                 }
                 is ApiResponseState.ApiError -> showToast(it.errorText)
                 else -> showToast(R.string.something_is_wrong)

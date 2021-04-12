@@ -108,7 +108,9 @@ class OrdersViewModel : BaseViewModel() {
 
     private fun groupOrderByDistributor(orders: List<Order>): MutableList<OrderGroupModel> {
         val groupedOrders = mutableListOf<OrderGroupModel>()
-        val ordersMap = orders.groupBy { it.distributorID }
+        val ordersMap = orders
+            .filter { it.items.isNotEmpty() || it.sales.isNotEmpty() }
+            .groupBy { it.distributorID }
         ordersMap.forEach {
             val distributorName = usersList.firstOrNull { user ->
                 user.id == it.key.toString()
