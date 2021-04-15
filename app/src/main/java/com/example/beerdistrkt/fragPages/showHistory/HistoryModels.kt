@@ -7,7 +7,7 @@ data class OrderHistoryDTO(
     val orderStatusID: Int,
     val distributorID: Int,
     val clientID: Int,
-    val comment: String,
+    val comment: String?,
     val modifyDate: String,
     val modifyUserID: Int,
     val items: List<Item>? = null
@@ -23,6 +23,6 @@ data class OrderHistoryDTO(
         val chek: Int,
         val modifyDate: String,
         val modifyUserID: Int,
-        val disrupterUserID: Int
+        val disrupterUserID: Int?
     )
 }

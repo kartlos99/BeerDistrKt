@@ -6,12 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
-import com.example.beerdistrkt.fragPages.sawyobi.adapters.StoreHouseListAdapter
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.android.synthetic.main.fragment_show_history.*
@@ -35,7 +32,8 @@ class ShowHistoryFragment: BaseFragment<ShowHistoryViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        viewModel.getData("25132")
+        val args = ShowHistoryFragmentArgs.fromBundle(arguments ?: Bundle())
+        viewModel.getData(args.recordID)
     }
 
     private fun initViewModel() {

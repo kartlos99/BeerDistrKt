@@ -26,12 +26,25 @@ class OrderView @JvmOverloads constructor(
             field = value
         }
 
+    var order: Order? = null
+        set(value) {
+            if (value != null)
+                fillData(value)
+            field = value
+        }
+
     init {
         View.inflate(context, R.layout.view_order, this)
         layoutParams =
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         orderUnitHistoryImg.setOnClickListener(this)
+        orderUnitCommentImg.setOnClickListener(this)
+        orderUnitChangeDistributorBtn.setOnClickListener(this)
+        orderUnitEditBtn.setOnClickListener(this)
+        orderUnitDeleteBtn.setOnClickListener(this)
+        orderMainConstraint.setOnClickListener(this)
+        orderItemList.setOnClickListener(this)
     }
 
     private fun resetForm() {
@@ -48,7 +61,7 @@ class OrderView @JvmOverloads constructor(
         orderUnitRootSwipe.setLockDrag(lock)
     }
 
-    fun fillData(order: Order) {
+    private fun fillData(order: Order) {
         resetForm()
         orderUnitClientNameTv.text = order.client.dasaxeleba
         orderUnitHistoryImg.visibleIf(order.isEdited > 0)
@@ -86,30 +99,6 @@ class OrderView @JvmOverloads constructor(
 
         orderComment.text = order.comment ?: ""
 
-        orderUnitCommentImg.setOnClickListener {
-            if (!order.comment.isNullOrEmpty())
-                commentIsVisible = !commentIsVisible
-        }
-        orderUnitEditBtn.setOnClickListener {
-            order.onEditClick()
-        }
-        orderUnitDeleteBtn.setOnClickListener {
-            if (order.orderStatus != OrderStatus.DELETED)
-                order.onDeleteClick()
-            else {
-                context.showToast(R.string.deleted)
-                orderUnitRootSwipe.close(true)
-            }
-        }
-        orderUnitChangeDistributorBtn.setOnClickListener {
-            order.onChangeDistributorClick()
-        }
-        orderMainConstraint.setOnClickListener {
-            order.onItemClick()
-        }
-        orderItemList.setOnClickListener {
-            order.onItemClick()
-        }
         orderUnitFrontRoot.postDelayed({
             val lp = orderUnitBackRoot.layoutParams
             lp.height = orderUnitFrontRoot.measuredHeight
@@ -119,7 +108,20 @@ class OrderView @JvmOverloads constructor(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.orderUnitHistoryImg -> context.showToast("show hist, TO DO")
+            R.id.orderUnitHistoryImg -> order?.onHistoryClick?.invoke()
+            R.id.orderUnitCommentImg -> if (!order?.comment.isNullOrEmpty())
+                commentIsVisible = !commentIsVisible
+            R.id.orderUnitChangeDistributorBtn -> order?.onChangeDistributorClick?.invoke()
+            R.id.orderUnitEditBtn -> order?.onEditClick?.invoke()
+            R.id.orderUnitDeleteBtn ->
+                if (order?.orderStatus != OrderStatus.DELETED)
+                    order?.onDeleteClick?.invoke()
+                else {
+                    context.showToast(R.string.deleted)
+                    orderUnitRootSwipe.close(true)
+                }
+            R.id.orderMainConstraint,
+            R.id.orderItemList -> order?.onItemClick?.invoke()
         }
     }
 }

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.Switch
@@ -17,11 +16,7 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.utils.ADD_ORDER
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.visibleIf
-import kotlinx.android.synthetic.main.orders_fragment.*
+import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
@@ -52,8 +47,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         vBinding.viewModel = viewModel
         vBinding.addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
-
-                OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment()
+                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
             )
         }
         vBinding.ordersRecycler.layoutManager =
@@ -226,6 +220,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 )
             }
         })
+        viewModel.onShowHistoryLiveData.observeSingleEvent(viewLifecycleOwner) {
+            view?.findNavController()?.navigate(
+                OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment(it)
+            )
+        }
     }
 
     override fun onResume() {
