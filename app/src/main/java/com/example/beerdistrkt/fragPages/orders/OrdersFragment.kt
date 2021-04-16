@@ -6,8 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,7 +31,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
-    private var switchToDelivery: Switch? = null
+    private var switchToDelivery: SwitchCompat? = null
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -248,7 +248,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         inflater.inflate(R.menu.order_option_menu, menu)
 
         val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
-        switchToDelivery = swView.getChildAt(0) as Switch
+        switchToDelivery = swView.getChildAt(0) as SwitchCompat
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
         }

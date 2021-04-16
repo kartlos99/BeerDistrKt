@@ -191,5 +191,6 @@
     <string name="need_cleaning">გასაწმენდია</string>
     <string name="no_permission_common">არ გაქვთ ამ ქმედების განხორცილების უფლება</string>
     <string name="operator">ოპერატორი:</string>
+    <string name="switch_title">Switch</string>
 
 </resources>

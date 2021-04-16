@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/appBarOrderSwitch"
-        android:title="Switch"
+        android:title="@string/switch_title"
         app:actionLayout="@layout/switch_item"
         app:showAsAction="always" />
 </menu>
