@@ -2,6 +2,7 @@ package com.example.beerdistrkt.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import java.io.Serializable
 
 @Entity(tableName = "user_table")
@@ -21,11 +22,11 @@ data class User(
         fun getBaseUser(): User {
             return User(
                 "0", "ყველა", "ყველა",
-                "1", "","","",""
+                UserType.DISTRIBUTOR.value, "","","",""
             )
         }
 
-        val EMPTY_USER = User("", "", "", "1", "", "", "", "")
+        val EMPTY_USER = User("", "", "", UserType.DISTRIBUTOR.value, "", "", "", "")
     }
 }
 

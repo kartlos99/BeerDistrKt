@@ -34,6 +34,7 @@ class ShowHistoryFragment: BaseFragment<ShowHistoryViewModel>() {
         initViewModel()
         val args = ShowHistoryFragmentArgs.fromBundle(arguments ?: Bundle())
         viewModel.getData(args.recordID)
+        setPageTitle(R.string.order_history_title)
     }
 
     private fun initViewModel() {
@@ -45,7 +46,7 @@ class ShowHistoryFragment: BaseFragment<ShowHistoryViewModel>() {
         })
     }
 
-    private fun showOrderHistory(data: List<OrderHistoryDTO>) {
+    private fun showOrderHistory(data: List<OrderHistory>) {
         fragShowHistoryRc.layoutManager = LinearLayoutManager(context)
         val adapter = HistoryAdapter(
             data,

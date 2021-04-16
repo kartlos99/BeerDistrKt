@@ -193,4 +193,11 @@
     <string name="operator">ოპერატორი:</string>
     <string name="switch_title">Switch</string>
 
+<!--    order history-->
+    <string name="order_history_title">შეკვეთის ისტორია</string>
+    <string name="client_field">ობიექტი: %s</string>
+    <string name="order_date_field">თარიღი: %s</string>
+    <string name="order_status_field">სტატუსი: %s</string>
+    <string name="order_distr_field">დისტრიბუტორი: %s</string>
+
 </resources>

@@ -12,7 +12,7 @@ import com.example.beerdistrkt.models.BeerModel
 import kotlinx.android.synthetic.main.order_history_item_view.view.*
 
 class HistoryAdapter(
-    private val historyData: List<OrderHistoryDTO>,
+    private val historyData: List<OrderHistory>,
     private val beerMap: Map<Int, BeerModel>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -28,14 +28,18 @@ class HistoryAdapter(
     override fun getItemCount(): Int = historyData.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val ctx = holder.itemView.context
 //        holder.itemView.shlActionDateTv.text = dataMap.keys.toList()[position]
-        holder.itemView.orderHistoryOperator.text = historyData[position].modifyUserID.toString()
+        holder.itemView.orderHistoryOperator.text = historyData[position].modifyUser
         holder.itemView.orderHistoryChangesDate.text = historyData[position].modifyDate
-        holder.itemView.orderHistoryClient.text = historyData[position].clientID.toString()
-        holder.itemView.orderHistoryOrderDate.text = historyData[position].orderDate
-        holder.itemView.orderHistoryStatus.text = historyData[position].orderStatusID.toString()
+        holder.itemView.orderHistoryClient.text =
+            ctx.getString(R.string.client_field, historyData[position].clientName)
+        holder.itemView.orderHistoryOrderDate.text =
+            ctx.getString(R.string.order_date_field, historyData[position].orderDate)
+        holder.itemView.orderHistoryStatus.text = ctx.getString(R.string.order_status_field,
+            ctx.getString(historyData[position].orderStatus.textRes))
         holder.itemView.orderHistoryDistributor.text =
-            historyData[position].distributorID.toString()
+            ctx.getString(R.string.order_distr_field, historyData[position].distributor)
         holder.itemView.orderHistoryComment.text = historyData[position].comment
 
         historyData[position].items?.let {
