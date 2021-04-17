@@ -227,6 +227,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                     sb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
                 }
                 addOrderClientDebtBarrels.text = sb.toString()
+                addOrderWarning.text = getString(R.string.need_cleaning, it.data.passDays)
                 addOrderWarning.visibleIf(it.data.needCleaning == 1)
             }
         })
@@ -234,6 +235,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     private fun fillOrderForm(order: Order) {
         addOrderClientInfo.text = order.client.dasaxeleba
+        addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
         addOrderWarning.visibleIf(order.needCleaning == 1)
         vBinding.addOrderCheckBox.isChecked = order.isChecked()
         vBinding.addOrderComment.setText(order.comment)

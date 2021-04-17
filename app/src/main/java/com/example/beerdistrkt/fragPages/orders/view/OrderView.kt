@@ -69,7 +69,7 @@ class OrderView @JvmOverloads constructor(
         orderUnitCommentBkg.visibleIf(!order.comment.isNullOrEmpty())
         orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
         if (order.needCleaning == 1) {
-            orderStatusTv.text = resources.getString(R.string.need_cleaning)
+            orderStatusTv.text = resources.getString(R.string.need_cleaning, order.passDays)
             orderStatusTv.setTextColor(Color.parseColor("#FFA6A6"))
         }
         if (order.orderStatus != OrderStatus.ACTIVE) {
