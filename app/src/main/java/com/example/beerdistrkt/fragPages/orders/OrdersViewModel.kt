@@ -13,6 +13,8 @@ import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
+import com.example.beerdistrkt.utils.eventValue
 import java.util.*
 
 class OrdersViewModel : BaseViewModel() {
@@ -43,6 +45,7 @@ class OrdersViewModel : BaseViewModel() {
     val editOrderLiveData = MutableLiveData<Order?>(null)
     val changeDistributorLiveData = MutableLiveData<Order?>(null)
     val onItemClickLiveData = MutableLiveData<Order?>(null)
+    val onShowHistoryLiveData = SingleMutableLiveDataEvent<String>()
 
     var deliveryMode = false
 
@@ -89,6 +92,9 @@ class OrdersViewModel : BaseViewModel() {
                         },
                         onItemClick = { order ->
                             if (deliveryMode) onItemClickLiveData.value = order
+                        },
+                        onHistoryClick = { orderID ->
+                            onShowHistoryLiveData.eventValue = orderID
                         }
                     )
                 }))
@@ -146,7 +152,8 @@ class OrdersViewModel : BaseViewModel() {
                 listOfGroupedOrders.forEachIndexed { index1, orderGroupModel ->
                     val index = orderGroupModel.ordersList.indexOf(order)
                     if (index != -1) {
-                        orderGroupModel.ordersList[index] = orderGroupModel.ordersList[index].copy(orderStatus = OrderStatus.DELETED)
+                        orderGroupModel.ordersList[index] =
+                            orderGroupModel.ordersList[index].copy(orderStatus = OrderStatus.DELETED)
                         orderDeleteLiveData.value = ApiResponseState.Success(Pair(index1, index))
                         return@sendRequest
                     }

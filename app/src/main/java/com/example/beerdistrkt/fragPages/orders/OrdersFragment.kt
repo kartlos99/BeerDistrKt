@@ -4,11 +4,10 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.RelativeLayout
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,11 +16,7 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.utils.ADD_ORDER
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.visibleIf
-import kotlinx.android.synthetic.main.orders_fragment.*
+import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
@@ -36,7 +31,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
-    private var switchToDelivery: Switch? = null
+    private var switchToDelivery: SwitchCompat? = null
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -52,9 +47,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         vBinding.viewModel = viewModel
         vBinding.addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
-                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
-                    ADD_ORDER
-                )
+                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
             )
         }
         vBinding.ordersRecycler.layoutManager =
@@ -227,6 +220,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 )
             }
         })
+        viewModel.onShowHistoryLiveData.observeSingleEvent(viewLifecycleOwner) {
+            view?.findNavController()?.navigate(
+                OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment(it)
+            )
+        }
     }
 
     override fun onResume() {
@@ -250,7 +248,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         inflater.inflate(R.menu.order_option_menu, menu)
 
         val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
-        switchToDelivery = swView.getChildAt(0) as Switch
+        switchToDelivery = swView.getChildAt(0) as SwitchCompat
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
         }

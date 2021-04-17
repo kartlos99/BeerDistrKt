@@ -18,6 +18,7 @@ import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
+import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
@@ -132,11 +133,12 @@ interface ApeniApiService {
     @GET("get_kasri_list.php")
     fun getCanList(): Call<DataResponse<List<CanModel>>>
 
-    @GET("sales/getDayTotal.php")
-    fun getDayInfo(
-        @Query("tarigi") tarigi: String,
-        @Query("distrid") distrid: Int
-    ): Call<DataResponse<RealizationDay>>
+    // general
+    @GET("general/getComments.php")
+    fun getcomments(): Call<DataResponse<List<CommentModel>>>
+
+    @POST("general/addComment.php")
+    fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>
 
     @POST("general/deleteRecord.php")
     fun deleteRecord(@Body del: DeleteRequest): Call<DataResponse<Any>>
@@ -147,17 +149,12 @@ interface ApeniApiService {
     @POST("general/addXarji.php")
     fun addXarji(@Body data: AddXarjiRequestModel): Call<DataResponse<Int>>
 
+    // Orders
     @GET("order/getByDate.php")
     fun getOrders(@Query("date") date: String): Call<DataResponse<List<OrderDTO>>>
 
     @POST("order/add.php")
     fun addOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
-
-    @POST("sales/add.php")
-    fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
-
-    @POST("sales/update.php")
-    fun updateSale(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
 
     @GET("order/getByID.php")
     fun getOrderByID(@Query("orderID") orderID: Int): Call<DataResponse<List<OrderDTO>>>
@@ -176,6 +173,9 @@ interface ApeniApiService {
 
     @POST("order/updateDistributor.php")
     fun updateOrderDistributor(@Body data: OrderUpdateDistributorRequestModel): Call<DataResponse<String>>
+
+    @GET("order/getHistory.php")
+    fun getOrderHistory(@Query("orderID") orderID: String): Call<DataResponse<List<OrderHistoryDTO>>>
 
     // client
     @GET("client/getDebtByID.php")
@@ -203,13 +203,6 @@ interface ApeniApiService {
     @GET("storeHouse/getioList.php")
     fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<List<IoModel>>>
 
-    // general
-    @GET("general/getComments.php")
-    fun getcomments(): Call<DataResponse<List<CommentModel>>>
-
-    @POST("general/addComment.php")
-    fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>
-
     // other
     @GET("other/getCleaningList.php")
     fun getSysCleaning(): Call<DataResponse<List<SysClearModel>>>
@@ -226,4 +219,18 @@ interface ApeniApiService {
 
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>
+
+    // Sales
+    @POST("sales/add.php")
+    fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
+
+    @POST("sales/update.php")
+    fun updateSale(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
+
+    @GET("sales/getDayTotal.php")
+    fun getDayInfo(
+        @Query("tarigi") tarigi: String,
+        @Query("distrid") distrid: Int
+    ): Call<DataResponse<RealizationDay>>
+
 }

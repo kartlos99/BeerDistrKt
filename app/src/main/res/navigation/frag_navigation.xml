@@ -46,6 +46,11 @@
         <action
             android:id="@+id/action_ordersFragment_to_addOrdersFragment"
             app:destination="@id/addOrdersFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_showHistoryFragment"
+            app:destination="@id/showHistoryFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_right" />
     </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
@@ -184,5 +189,14 @@
             android:name="orderID"
             app:argType="integer"
             android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/showHistoryFragment"
+        android:name="com.example.beerdistrkt.fragPages.showHistory.ShowHistoryFragment"
+        android:label="ShowHistoryFragment"
+        tools:layout="@layout/fragment_show_history">
+        <argument
+            android:name="recordID"
+            app:argType="string" />
     </fragment>
 </navigation>

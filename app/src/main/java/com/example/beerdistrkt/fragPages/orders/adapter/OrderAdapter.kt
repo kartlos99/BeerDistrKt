@@ -23,7 +23,7 @@ class OrderAdapter(
         val itemView = holder.itemView
         if (itemView is OrderView) {
             itemView.lockSwipe(deliveryMode)
-            itemView.fillData(orders[position])
+            itemView.order = orders[position]
         }
     }
 
