@@ -80,7 +80,7 @@ class AddDeliveryViewModel(
             responseFailure = {code, error ->
                 if (code == DataResponse.ErrorCodeDataIsNull)
                     getDebtLiveData.value = ApiResponseState.Success(
-                        DebtResponse(clientID, "", .0, 0, .0, 0, 0)
+                        DebtResponse(clientID, "", .0, 0, .0, 0, 0, listOf())
                     )
             }
         )

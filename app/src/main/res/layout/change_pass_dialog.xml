@@ -13,7 +13,7 @@
         android:hint="@string/zveli_paroli"
         android:inputType="textPassword"
         android:textAlignment="center"
-        android:textSize="@dimen/textsize_3"
+        android:textSize="@dimen/textSize_3"
         tools:ignore="Autofill" />
 
     <EditText
@@ -24,7 +24,7 @@
         android:hint="@string/axali_paroli"
         android:inputType="textPassword"
         android:textAlignment="center"
-        android:textSize="@dimen/textsize_3"
+        android:textSize="@dimen/textSize_3"
         tools:ignore="Autofill" />
 
     <EditText
@@ -35,7 +35,7 @@
         android:hint="@string/confirn"
         android:inputType="textPassword"
         android:textAlignment="center"
-        android:textSize="@dimen/textsize_3"
+        android:textSize="@dimen/textSize_3"
         tools:ignore="Autofill" />
 
 </LinearLayout>

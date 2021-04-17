@@ -142,6 +142,8 @@
     <string name="error_no_connection">შეამოწმეთ ინტერნეტ კავშირი!</string>
     <string name="order_date">შეკვეთის თარიღი:</string>
     <string name="client_debt">დავალიანება\n თანხა: %.2f ₾   _   კასრი: %d ც.</string>
+    <string name="debt">დავალიანება</string>
+    <string name="amount_is">თანხა: %.2f ₾</string>
 
     <string name="active">აქტიური</string>
     <string name="completed">დასრულებული</string>

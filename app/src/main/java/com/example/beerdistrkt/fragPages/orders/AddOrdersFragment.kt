@@ -27,6 +27,7 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
+import kotlinx.android.synthetic.main.add_delivery_fragment.*
 import kotlinx.android.synthetic.main.add_orders_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
@@ -219,8 +220,13 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         })
         viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
             if (it is ApiResponseState.Success) {
-                addOrderClientDebt.text =
-                    getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
+                addOrderClientDebtAmount.text = getString(R.string.amount_is, it.data.getMoneyDebt())
+                val sb = StringBuilder()
+                it.data.barrels.forEach { emptyBarrel ->
+                    if (sb.isNotEmpty()) sb.append("\n")
+                    sb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
+                }
+                addOrderClientDebtBarrels.text = sb.toString()
                 addOrderWarning.visibleIf(it.data.needCleaning == 1)
             }
         })

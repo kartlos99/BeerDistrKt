@@ -14,26 +14,55 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="@dimen/plius_minus_TextSize"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/addDeliveryClientDebt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@color/gray_light"
             android:elevation="@dimen/gr_size_2"
-            android:paddingHorizontal="@dimen/gr_size_16"
+            android:paddingHorizontal="@dimen/gr_size_8"
             android:paddingVertical="@dimen/gr_size_2"
-            android:text="@string/client_debt"
-            android:textAlignment="center"
-            android:textColor="@color/important_info_color"
-            android:textSize="@dimen/textsize_3"
-            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addDeliveryClientInfo" />
+            app:layout_constraintTop_toBottomOf="@+id/addDeliveryClientInfo">
+
+            <TextView
+                android:id="@+id/addDeliveryClientDebtTitle"
+                style="@style/ClientDebt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/debt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/addDeliveryClientDebtAmount"
+                style="@style/ClientDebt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_4"
+                android:text="@string/amount_is"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@id/addDeliveryClientDebtBarrels"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryClientDebtTitle" />
+
+            <TextView
+                android:id="@+id/addDeliveryClientDebtBarrels"
+                style="@style/ClientDebt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/gr_size_2"
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
             android:id="@+id/addDeliveryMainScroll"
@@ -502,7 +531,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/gr_size_4"
                             android:text="@string/lari"
-                            android:textSize="@dimen/textsize_4"
+                            android:textSize="@dimen/textSize_4"
                             app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
                             app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyEt"
                             app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
@@ -550,7 +579,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/gr_size_4"
                             android:text="@string/lari"
-                            android:textSize="@dimen/textsize_4"
+                            android:textSize="@dimen/textSize_4"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
                             app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyTransferEt"

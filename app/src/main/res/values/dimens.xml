@@ -5,9 +5,9 @@
     <dimen name="plius_minus_TextSize">18sp</dimen>
     <dimen name="miniBtnSize">44dp</dimen>
     <dimen name="miniBtnWideSize">50dp</dimen>
-    <dimen name="textsize_2">12sp</dimen>
-    <dimen name="textsize_3">18sp</dimen>
-    <dimen name="textsize_4">24sp</dimen>
+    <dimen name="textSize_2">12sp</dimen>
+    <dimen name="textSize_3">18sp</dimen>
+    <dimen name="textSize_4">24sp</dimen>
     <dimen name="header_hiegth">172dp</dimen>
     <dimen name="buttonMargin">4sp</dimen>
     <dimen name="main_btn_hor_margin">12dp</dimen>

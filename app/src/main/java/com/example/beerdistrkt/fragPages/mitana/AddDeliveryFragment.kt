@@ -211,8 +211,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         })
         viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
             if (it is ApiResponseState.Success) {
-                addDeliveryClientDebt.text =
-                    getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
+                addDeliveryClientDebtAmount.text = getString(R.string.amount_is, it.data.getMoneyDebt())
+                val sb = StringBuilder()
+                it.data.barrels.forEach { emptyBarrel ->
+                    if (sb.isNotEmpty()) sb.append("\n")
+                    sb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
+                }
+                addDeliveryClientDebtBarrels.text = sb.toString()
             }
         })
     }
