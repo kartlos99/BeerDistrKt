@@ -53,6 +53,7 @@ class OrderView @JvmOverloads constructor(
         orderUnitClientNameTv.text = order.client.dasaxeleba
         orderUnitHistoryImg.visibleIf(order.isEdited > 0)
         orderUnitCommentImg.visibleIf(!order.comment.isNullOrEmpty())
+        orderUnitCommentBkg.visibleIf(!order.comment.isNullOrEmpty())
         orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
         if (order.needCleaning == 1) {
             orderStatusTv.text = resources.getString(R.string.need_cleaning)
@@ -66,9 +67,6 @@ class OrderView @JvmOverloads constructor(
             orderMainConstraint.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.red_01))
         }
-        if (!order.comment.isNullOrEmpty())
-            orderMainConstraint.backgroundTintList =
-                ColorStateList.valueOf(resources.getColor(R.color.order_with_comment))
 
         val itemList = order.items.groupBy {
             it.beerID

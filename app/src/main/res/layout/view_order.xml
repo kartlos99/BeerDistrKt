@@ -146,6 +146,13 @@
                 app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg" />
 
             <View
+                android:id="@+id/orderUnitCommentBkg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/gr_size_24"
+                android:background="@drawable/bkg_order_comment"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/gr_size_1"
                 android:layout_marginTop="@dimen/gr_size_6"
