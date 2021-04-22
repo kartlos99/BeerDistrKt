@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
 import com.example.beerdistrkt.getViewModel
@@ -53,6 +54,9 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         vBinding.tabsAmonaweri.setupWithViewPager(vBinding.viewpagerAmonaweri)
 
         vBinding.chkGrAmonaweri.setOnCheckedChangeListener { buttonView, isChecked ->
+//            val args = Bundle()
+//            args.putString("recordID", "25258")
+//            frag.findNavController().navigate(R.id.action_amonaweriFragment_to_salesHistoryFragment, args)
             pagesAdapter?.fragmentM?.chengeAmonaweriAppearance(isChecked)
             pagesAdapter?.fragmentK?.chengeAmonaweriAppearance(isChecked)
             if (pagesAdapter?.fragmentM?.action == null) {

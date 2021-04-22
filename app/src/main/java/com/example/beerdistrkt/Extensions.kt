@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
@@ -19,6 +20,9 @@ import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -295,4 +299,10 @@ fun View.getColor(@ColorRes resId: Int): Int {
 
 fun ImageView.setTint(@ColorRes resId: Int) {
     setColorFilter(getColor(resId))
+}
+
+fun <T : Any> LiveData<T>.observe(viewLifecycleOwner: LifecycleOwner, function: (T) -> Unit) {
+    observe(viewLifecycleOwner, Observer {
+        function(it)
+    })
 }

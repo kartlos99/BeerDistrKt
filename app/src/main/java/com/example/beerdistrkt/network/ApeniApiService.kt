@@ -19,6 +19,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
+import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
@@ -233,4 +234,6 @@ interface ApeniApiService {
         @Query("distrid") distrid: Int
     ): Call<DataResponse<RealizationDay>>
 
+    @GET("sales/getHistory.php")
+    fun getSalesHistory(@Query("saleID") saleID: Int): Call<DataResponse<List<SaleHistoryDTO>>>
 }

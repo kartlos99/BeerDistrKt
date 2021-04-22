@@ -155,6 +155,9 @@
         <action
             android:id="@+id/action_amonaweriFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
+        <action
+            android:id="@+id/action_amonaweriFragment_to_salesHistoryFragment"
+            app:destination="@id/salesHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
@@ -195,6 +198,15 @@
         android:name="com.example.beerdistrkt.fragPages.showHistory.ShowHistoryFragment"
         android:label="ShowHistoryFragment"
         tools:layout="@layout/fragment_show_history">
+        <argument
+            android:name="recordID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/salesHistoryFragment"
+        android:name="com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment"
+        android:label="fragment_sales_history"
+        tools:layout="@layout/fragment_sales_history" >
         <argument
             android:name="recordID"
             app:argType="string" />

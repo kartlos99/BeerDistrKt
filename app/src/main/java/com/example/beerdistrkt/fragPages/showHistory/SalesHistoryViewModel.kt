@@ -1,0 +1,48 @@
+package com.example.beerdistrkt.fragPages.showHistory
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.utils.ApiResponseState
+
+class SalesHistoryViewModel : BaseViewModel() {
+    private val clientsLiveData = database.getAllObieqts()
+    private val userLiveData = database.getUsers()
+    private val beerLiveData = database.getBeerList()
+
+    private lateinit var clients: List<Obieqti>
+    private lateinit var usersList: List<User>
+    private lateinit var beerList: List<BeerModel>
+
+    private val _saleHistoryLiveData = MutableLiveData<ApiResponseState<List<SaleHistory>>>()
+    val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>
+        get() = _saleHistoryLiveData
+
+    init {
+        beerLiveData.observeForever { beerList = it }
+        clientsLiveData.observeForever { clients = it }
+        userLiveData.observeForever { usersList = it }
+    }
+
+    fun getData(saleID: Int) {
+        sendRequest(
+            ApeniApiService.getInstance().getSalesHistory(saleID),
+            successWithData = { historyData ->
+                val pmModel = historyData
+                    .mapNotNull {
+                        it.toPm(
+                            clients,
+                            usersList,
+                            beerList
+                        )
+                    }
+
+                _saleHistoryLiveData.value = ApiResponseState.Success(pmModel)
+            }
+        )
+    }
+}
