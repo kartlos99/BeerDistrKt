@@ -11,6 +11,8 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
 import com.example.beerdistrkt.getViewModel
 import java.text.SimpleDateFormat
 
@@ -54,14 +56,12 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         vBinding.tabsAmonaweri.setupWithViewPager(vBinding.viewpagerAmonaweri)
 
         vBinding.chkGrAmonaweri.setOnCheckedChangeListener { buttonView, isChecked ->
-//            val args = Bundle()
-//            args.putString("recordID", "25258")
-//            frag.findNavController().navigate(R.id.action_amonaweriFragment_to_salesHistoryFragment, args)
             pagesAdapter?.fragmentM?.chengeAmonaweriAppearance(isChecked)
             pagesAdapter?.fragmentK?.chengeAmonaweriAppearance(isChecked)
             if (pagesAdapter?.fragmentM?.action == null) {
                 pagesAdapter?.fragmentM?.action = ::goEditing
                 pagesAdapter?.fragmentK?.action = ::goEditing
+                pagesAdapter?.fragmentM?.onShowHistory = ::showHistory
             }
             if (pagesAdapter?.fragmentM?.updateAnotherPage == null) {
                 pagesAdapter?.fragmentM?.updateAnotherPage = {
@@ -76,6 +76,14 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
             (activity as AppCompatActivity).supportActionBar?.title = it.obieqti.dasaxeleba
         })
+    }
+
+    private fun showHistory(recordID: @ParameterName(name = "saleRecordID") Int) {
+        val args = Bundle().apply {
+            putInt(KEY_RECORD_ID, recordID)
+        }
+        frag.findNavController()
+            .navigate(R.id.action_amonaweriFragment_to_salesHistoryFragment, args)
     }
 
     private fun goEditing(operation: String, recordID: Int) {

@@ -8,6 +8,8 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/fragSalesHistoryBaseInfo"
+        android:textStyle="bold"
+        android:lineSpacingExtra="@dimen/gr_size_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/gr_size_8"

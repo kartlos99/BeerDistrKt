@@ -198,8 +198,15 @@
 <!--    order history-->
     <string name="order_history_title">შეკვეთის ისტორია</string>
     <string name="client_field">ობიექტი: %s</string>
-    <string name="order_date_field">თარიღი: %s</string>
+    <string name="date_field">თარიღი: %s</string>
     <string name="order_status_field">სტატუსი: %s</string>
     <string name="order_distr_field">დისტრიბუტორი: %s</string>
 
+    <string name="sale_history_title">რეალიზაციის ისტორია</string>
+    <string name="history">ისტორია</string>
+    <string name="finance_menu_title">--  თანხები  --</string>
+    <string name="barrel_menu_title">--  კასრები  --</string>
+    <string name="under_construction">მზადების პროცეშია</string>
+    <string name="price_field">ერთულის ფასი: %s</string>
+    <string name="history_not_found">ისტორია ვერ მოიძებნა!</string>
 </resources>

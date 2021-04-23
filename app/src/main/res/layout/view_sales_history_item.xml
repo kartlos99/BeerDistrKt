@@ -2,30 +2,57 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_underline"
+    android:paddingBottom="@dimen/gr_size_4">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/viewSaleHistoryOperator"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary20"
+        android:padding="@dimen/gr_size_4"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/viewSaleHistoryModifyDate"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/viewSaleHistoryModifyDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary20"
+        android:padding="@dimen/gr_size_4"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/viewSaleHistoryDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/gr_size_4"
         app:layout_constraintTop_toBottomOf="@id/viewSaleHistoryOperator" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/viewSaleHistoryDistributor"
+        android:id="@+id/viewSaleHistoryPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/viewSaleHistoryModifyDate" />
+        android:padding="@dimen/gr_size_4"
+        app:layout_constraintTop_toBottomOf="@id/viewSaleHistoryDate" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/viewSaleHistoryAllBody"
+        android:id="@+id/viewSaleHistoryComment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/viewSaleHistoryDistributor" />
+        android:padding="@dimen/gr_size_4"
+        app:layout_constraintTop_toBottomOf="@id/viewSaleHistoryPrice" />
+
+    <com.example.beerdistrkt.customView.BeerAmountRowView
+        android:id="@+id/viewSaleHistoryBeerRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/gr_size_2"
+        app:layout_constraintTop_toBottomOf="@id/viewSaleHistoryComment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

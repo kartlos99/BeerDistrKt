@@ -38,6 +38,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
     var action: ((operation: String, recordID: Int) -> Unit)? = null
     var updateAnotherPage: (() -> Unit)? = null
+    var onShowHistory: ((saleRecordID: Int) -> Unit)? = null
 
     companion object {
         fun newInstance() = AmonaweriSubPageFrag()
@@ -138,11 +139,11 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                 ) {
                     if (pagePos == 0) {
                         activity!!.menuInflater.inflate(R.menu.context_menu_amonaw_m, menu)
-                        menu.setHeaderTitle("--  თანხები  --")
+                        menu.setHeaderTitle(getString(R.string.finance_menu_title))
                     }
                     if (pagePos == 1) {
                         activity!!.menuInflater.inflate(R.menu.context_menu_amonaw_k, menu)
-                        menu.setHeaderTitle("--  კასრები  --")
+                        menu.setHeaderTitle(getString(R.string.barrel_menu_title))
                     }
                 } else {
                     Toast.makeText(context, R.string.no_edit_access, Toast.LENGTH_SHORT).show()
@@ -198,6 +199,13 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                     val tableName = if (amonaweriRow.k_out == 0F) MITANA else K_OUT
                     viewModel.deleteRecord(tableName, amonaweriRow.id)
                 }
+            }
+            R.id.cm_amonaw_m_history -> {
+                val amonaweriRow = amonaweriListAdapter.getItem(info.position)
+                if (amonaweriRow.pay != 0F)
+                    showToast(R.string.under_construction)
+                else
+                    onShowHistory?.invoke(amonaweriRow.id)
             }
         }
 

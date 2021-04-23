@@ -35,7 +35,7 @@ class HistoryAdapter(
         holder.itemView.orderHistoryClient.text =
             ctx.getString(R.string.client_field, historyData[position].clientName)
         holder.itemView.orderHistoryOrderDate.text =
-            ctx.getString(R.string.order_date_field, historyData[position].orderDate)
+            ctx.getString(R.string.date_field, historyData[position].orderDate)
         holder.itemView.orderHistoryStatus.text = ctx.getString(R.string.order_status_field,
             ctx.getString(historyData[position].orderStatus.textRes))
         holder.itemView.orderHistoryDistributor.text =
