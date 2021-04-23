@@ -177,6 +177,7 @@ class HomeViewModel : BaseViewModel() {
                 clearObieqtsList()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
+                        delay(100)
                         it.forEach { obieqti ->
                             insertObiect(obieqti)
                         }
