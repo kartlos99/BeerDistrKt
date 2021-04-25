@@ -1,5 +1,7 @@
 package com.example.beerdistrkt.fragPages.sales.models
 
+import androidx.annotation.DrawableRes
+import com.example.beerdistrkt.R
 import com.squareup.moshi.Json
 
 data class SaleRequestModel(
@@ -40,10 +42,13 @@ data class SaleRequestModel(
     )
 }
 
-enum class PaymentType(val value: String) {
+enum class PaymentType(
+    val value: String,
+    @DrawableRes val iconRes: Int
+) {
     @Json(name = "1")
-    Cash("1"),
+    Cash("1", R.drawable.ic_cash),
 
     @Json(name = "2")
-    Transfer("2");
+    Transfer("2", R.drawable.ic_transfer);
 }

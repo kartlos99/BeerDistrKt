@@ -1,9 +1,11 @@
 package com.example.beerdistrkt.fragPages.showHistory
 
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.User
+import com.squareup.moshi.Json
 
 data class OrderHistoryDTO(
     val hID: Int,
@@ -120,6 +122,54 @@ data class SaleHistory(
     val unitPrice: Double,
     val canTypeID: Int,
     val count: Int,
+    val comment: String?,
+    val modifyDate: String,
+    val modifyUser: User
+)
+
+data class MoneyHistoryDTO(
+    @Json(name = "tarigi")
+    val operationDate: String,
+    @Json(name = "obieqtis_id")
+    val clientID: Int,
+    @Json(name = "distributor_id")
+    val distributorID: Int,
+    @Json(name = "tanxa")
+    val moneyAmount: Double,
+    val paymentType: PaymentType,
+    val comment: String?,
+    val modifyDate: String,
+    val modifyUserID: Int
+) {
+    fun toPm(
+        clients: List<Obieqti>,
+        usersList: List<User>
+    ): MoneyHistory {
+        val client = clients.find {
+            it.id ?: 0 == clientID
+        } ?: Obieqti.emptyModel
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+
+        return MoneyHistory(
+            operationDate,
+            client,
+            distributor,
+            moneyAmount,
+            paymentType,
+            comment,
+            modifyDate,
+            modifyUser
+        )
+    }
+}
+
+data class MoneyHistory(
+    val operationDate: String,
+    val client: Obieqti,
+    val distributor: User,
+    val moneyAmount: Double,
+    val paymentType: PaymentType,
     val comment: String?,
     val modifyDate: String,
     val modifyUser: User

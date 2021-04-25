@@ -22,6 +22,10 @@ class SalesHistoryViewModel : BaseViewModel() {
     val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>
         get() = _saleHistoryLiveData
 
+    private val _moneyHistoryLiveData = MutableLiveData<ApiResponseState<List<MoneyHistory>>>()
+    val moneyHistoryLiveData: LiveData<ApiResponseState<List<MoneyHistory>>>
+        get() = _moneyHistoryLiveData
+
     init {
         beerLiveData.observeForever { beerList = it }
         clientsLiveData.observeForever { clients = it }
@@ -42,6 +46,23 @@ class SalesHistoryViewModel : BaseViewModel() {
                     }
 
                 _saleHistoryLiveData.value = ApiResponseState.Success(pmModel)
+            }
+        )
+    }
+
+    fun getMoneyData(recordID: Int) {
+        sendRequest(
+            ApeniApiService.getInstance().getMoneyHistory(recordID),
+            successWithData = { historyData ->
+                val pmModel = historyData
+                    .mapNotNull {
+                        it.toPm(
+                            clients,
+                            usersList
+                        )
+                    }
+
+                _moneyHistoryLiveData.value = ApiResponseState.Success(pmModel)
             }
         )
     }

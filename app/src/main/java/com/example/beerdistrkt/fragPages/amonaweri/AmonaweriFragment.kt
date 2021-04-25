@@ -12,6 +12,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_HISTORY_OF
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
 import com.example.beerdistrkt.getViewModel
 import java.text.SimpleDateFormat
@@ -78,9 +79,10 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         })
     }
 
-    private fun showHistory(recordID: @ParameterName(name = "saleRecordID") Int) {
+    private fun showHistory(recordID: Int, historyOf: String) {
         val args = Bundle().apply {
             putInt(KEY_RECORD_ID, recordID)
+            putString(KEY_HISTORY_OF, historyOf)
         }
         frag.findNavController()
             .navigate(R.id.action_amonaweriFragment_to_salesHistoryFragment, args)

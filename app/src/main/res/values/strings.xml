@@ -203,6 +203,7 @@
     <string name="order_distr_field">დისტრიბუტორი: %s</string>
 
     <string name="sale_history_title">რეალიზაციის ისტორია</string>
+    <string name="money_history_title">თანხის ისტორია</string>
     <string name="history">ისტორია</string>
     <string name="finance_menu_title">--  თანხები  --</string>
     <string name="barrel_menu_title">--  კასრები  --</string>

@@ -19,6 +19,8 @@ import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.fragPages.showHistory.SaleHistory
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Amonaweri
 import com.example.beerdistrkt.showAskingDialog
@@ -38,7 +40,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
     var action: ((operation: String, recordID: Int) -> Unit)? = null
     var updateAnotherPage: (() -> Unit)? = null
-    var onShowHistory: ((saleRecordID: Int) -> Unit)? = null
+    var onShowHistory: ((recordID: Int, historyOf: String) -> Unit)? = null
 
     companion object {
         fun newInstance() = AmonaweriSubPageFrag()
@@ -203,9 +205,9 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             R.id.cm_amonaw_m_history -> {
                 val amonaweriRow = amonaweriListAdapter.getItem(info.position)
                 if (amonaweriRow.pay != 0F)
-                    showToast(R.string.under_construction)
+                    onShowHistory?.invoke(amonaweriRow.id, SalesHistoryFragment.money)
                 else
-                    onShowHistory?.invoke(amonaweriRow.id)
+                    onShowHistory?.invoke(amonaweriRow.id, SalesHistoryFragment.delivery)
             }
         }
 
