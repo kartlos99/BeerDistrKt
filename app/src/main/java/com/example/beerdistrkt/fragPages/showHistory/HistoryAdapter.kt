@@ -9,6 +9,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.order_history_item_view.view.*
 
 class HistoryAdapter(
@@ -41,8 +42,14 @@ class HistoryAdapter(
         holder.itemView.orderHistoryDistributor.text =
             ctx.getString(R.string.order_distr_field, historyData[position].distributor)
         holder.itemView.orderHistoryComment.text = historyData[position].comment
+        holder.itemView.orderHistoryComment.visibleIf(!historyData[position].comment.isNullOrBlank())
 
-        historyData[position].items?.let {
+        var lastFullItemsIndex = position
+        while (historyData[lastFullItemsIndex].items.isNullOrEmpty() && lastFullItemsIndex > 0) {
+            lastFullItemsIndex--
+        }
+
+        historyData[lastFullItemsIndex].items?.let {
             holder.itemView.orderHistoryItemsRc.layoutManager =
                 LinearLayoutManager(holder.itemView.orderHistoryItemsRc.context)
             val adapter = SimpleBeerRowAdapter(ioModelToSimpleBeerRow(it))

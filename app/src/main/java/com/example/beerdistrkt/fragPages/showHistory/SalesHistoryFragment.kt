@@ -119,7 +119,7 @@ class SalesHistoryFragment: BaseFragment<SalesHistoryViewModel>() {
                 view.viewSaleHistoryOperator.text = item.modifyUser.username
                 view.viewSaleHistoryModifyDate.text = item.modifyDate
                 view.viewSaleHistoryDate.text = getString(R.string.date_field, item.saleDate.split(" ")[0])
-                view.viewSaleHistoryPrice.text = getString(R.string.price_field, item.unitPrice.toString())
+                view.viewSaleHistoryPrice.text = getString(R.string.price_field, item.unitPrice)
                 view.viewSaleHistoryComment.visibleIf(!item.comment.isNullOrBlank())
                 view.viewSaleHistoryComment.text = item.comment
                 view.viewSaleHistoryBeerRow.setData(SimpleBeerRowModel(

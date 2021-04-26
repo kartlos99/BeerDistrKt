@@ -208,6 +208,6 @@
     <string name="finance_menu_title">--  თანხები  --</string>
     <string name="barrel_menu_title">--  კასრები  --</string>
     <string name="under_construction">მზადების პროცეშია</string>
-    <string name="price_field">ერთულის ფასი: %s</string>
+    <string name="price_field">ერთულის ფასი: %.2f ₾</string>
     <string name="history_not_found">ისტორია ვერ მოიძებნა!</string>
 </resources>
