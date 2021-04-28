@@ -4,20 +4,16 @@ import androidx.room.*
 import com.squareup.moshi.Json
 
 
-data class Amonaweri(
+data class StatementModel(
     @Json(name = "dt")
     var tarigi: String = "",
-
     var comment: String? = "",
+
     var k_in: Float = 0f,
     var k_out: Float = 0f,
 
-//    @Json(name = "bal")
-//    var k_balance: Float = 0f,
-
     @Json(name = "pr")
     var price: Float = 0f,
-
     var pay: Float = 0f,
 
     @Json(name = "bal")

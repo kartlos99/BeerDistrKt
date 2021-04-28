@@ -8,33 +8,31 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.models.Amonaweri
+import com.example.beerdistrkt.models.StatementModel
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import com.example.beerdistrkt.utils.MyUtil
-import com.example.beerdistrkt.utils.goAway
 import java.text.DecimalFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class AmonaweriAdapter(
     context: Context?,
-    amonaweriList: List<Amonaweri>,
+    amonaweriList: List<StatementModel>,
     location: Int,
     isGrouped: Boolean
 ) :
     BaseAdapter() {
-    private val amonaweriList: ArrayList<Amonaweri>
+    private val amonaweriList: ArrayList<StatementModel>
     private val layoutInflater: LayoutInflater
     private val location: Int
-    private val grouped: Boolean
+//    private val grouped: Boolean
     var context: Context
 
     override fun getCount(): Int {
         return amonaweriList.size
     }
 
-    override fun getItem(i: Int): Amonaweri {
+    override fun getItem(i: Int): StatementModel {
         return amonaweriList[i]
     }
 
@@ -62,7 +60,7 @@ class AmonaweriAdapter(
             listRowView = convertView
             viewHolder = listRowView.tag as ViewHolderAmo
         }
-        val currItem: Amonaweri = getItem(i)
+        val currItem: StatementModel = getItem(i)
         viewHolder.t_p1?.text = currItem.tarigi
         if (location == M_PAGE) {
             val df = DecimalFormat("#0.00")
@@ -116,7 +114,7 @@ class AmonaweriAdapter(
         layoutInflater =
             context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         this.location = location
-        grouped = isGrouped
+//        grouped = isGrouped
         this.context = context
     }
 }

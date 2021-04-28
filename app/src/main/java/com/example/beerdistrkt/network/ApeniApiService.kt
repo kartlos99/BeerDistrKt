@@ -121,13 +121,13 @@ interface ApeniApiService {
     fun getAmonaweriM(
         @Query("tarigi") tarigi: String,
         @Query("objID") objID: Int
-    ): Call<DataResponse<List<Amonaweri>>>
+    ): Call<DataResponse<List<StatementModel>>>
 
     @GET("get_amonaweri_k.php")
     fun getAmonaweriK(
         @Query("tarigi") tarigi: String,
         @Query("objID") objID: Int
-    ): Call<DataResponse<List<Amonaweri>>>
+    ): Call<DataResponse<List<StatementModel>>>
 
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<DataResponse<List<BeerModel>>>

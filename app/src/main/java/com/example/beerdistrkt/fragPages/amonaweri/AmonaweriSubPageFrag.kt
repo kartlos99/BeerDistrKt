@@ -8,21 +8,20 @@ import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.AmonaweriAdapter
+import com.example.beerdistrkt.adapters.SimpleListAdapter
+import com.example.beerdistrkt.adapters.StatementAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
-import com.example.beerdistrkt.fragPages.showHistory.SaleHistory
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
 import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.models.Amonaweri
+import com.example.beerdistrkt.models.StatementModel
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.*
 import java.text.ParseException
@@ -41,6 +40,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
     var action: ((operation: String, recordID: Int) -> Unit)? = null
     var updateAnotherPage: (() -> Unit)? = null
     var onShowHistory: ((recordID: Int, historyOf: String) -> Unit)? = null
+    lateinit var statementListAdapter: StatementAdapter
 
     companion object {
         fun newInstance() = AmonaweriSubPageFrag()
@@ -80,6 +80,15 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         return vBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initAdapter()
+    }
+
+    private fun initAdapter() {
+//        statementListAdapter = SimpleListAdapter()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -87,6 +96,13 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             when (it) {
                 is ApiResponseState.Loading -> vBinding.progressBarAmonaweri.visibleIf(it.showLoading)
                 is ApiResponseState.Success -> {
+                    val linearLayoutManager = LinearLayoutManager(context)
+                    statementListAdapter = StatementAdapter(it.data, pagePos)
+
+                    vBinding.statementSubPageRc.apply {
+                        layoutManager = linearLayoutManager
+                        adapter = statementListAdapter
+                    }
                     amonaweriListAdapter =
                         AmonaweriAdapter(context, it.data, pagePos, viewModel.isGrouped)
                     vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
@@ -104,7 +120,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
         vBinding.listviewAmonaweri.setOnItemClickListener { _, view, position, _ ->
             val tvComment = view.findViewById<TextView>(R.id.t_amonaweri_row_comment)
-            val amonaweri: Amonaweri = amonaweriListAdapter.getItem(position)
+            val amonaweri: StatementModel = amonaweriListAdapter.getItem(position)
             if (!amonaweri.comment.isNullOrEmpty()) {
                 tvComment.visibleIf(tvComment.visibility != View.VISIBLE)
             }

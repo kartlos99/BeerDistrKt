@@ -50,8 +50,14 @@
 
         <ListView
             android:id="@+id/listview_amonaweri"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/statementSubPageRc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 </layout>

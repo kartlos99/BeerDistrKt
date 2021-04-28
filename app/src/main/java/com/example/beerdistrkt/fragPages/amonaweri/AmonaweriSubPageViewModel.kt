@@ -3,7 +3,7 @@ package com.example.beerdistrkt.fragPages.amonaweri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.Amonaweri
+import com.example.beerdistrkt.models.StatementModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -16,12 +16,12 @@ import kotlin.collections.ArrayList
 
 class AmonaweriSubPageViewModel : BaseViewModel() {
 
-    private val _amonaweriLiveData = MutableLiveData<ApiResponseState<List<Amonaweri>>>()
-    val amonaweriLiveData: LiveData<ApiResponseState<List<Amonaweri>>>
+    private val _amonaweriLiveData = MutableLiveData<ApiResponseState<List<StatementModel>>>()
+    val amonaweriLiveData: LiveData<ApiResponseState<List<StatementModel>>>
         get() = _amonaweriLiveData
 
     val TAG = "subPageVM"
-    var amonaweriDataList = ArrayList<Amonaweri>()
+    var amonaweriDataList = ArrayList<StatementModel>()
     var isGrouped = true
     var clientID = 0
     var pagePos = 0
@@ -74,14 +74,14 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         isGrouped = grouped
         if (grouped) {
             _amonaweriLiveData.value =
-                ApiResponseState.Success(groupAmonaweriList(amonaweriDataList))
+                ApiResponseState.Success(groupStatementList(amonaweriDataList))
         } else {
             _amonaweriLiveData.value = ApiResponseState.Success(amonaweriDataList)
         }
     }
 
-    fun groupAmonaweriList(rowList: ArrayList<Amonaweri>): ArrayList<Amonaweri> {
-        val groupedList = ArrayList<Amonaweri>()
+    private fun groupStatementList(rowList: ArrayList<StatementModel>): ArrayList<StatementModel> {
+        val groupedList = ArrayList<StatementModel>()
         var grDate = Date()
         var currRowDate = Date()
 
@@ -112,7 +112,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                     k_out += rowList[i].k_out
                     totalComment.add(rowList[i].comment)
                 } else {
-                    val currGrRow = Amonaweri()
+                    val currGrRow = StatementModel()
                     currGrRow.tarigi = dateFormatDash.format(grDate)
                     currGrRow.price = pr
                     currGrRow.pay = pay
@@ -134,7 +134,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
                         totalComment.add(rowList[i].comment)
                 }
             }
-            val currGrRow = Amonaweri()
+            val currGrRow = StatementModel()
             currGrRow.tarigi = dateFormatDash.format(grDate)
             currGrRow.price = pr
             currGrRow.pay = pay
