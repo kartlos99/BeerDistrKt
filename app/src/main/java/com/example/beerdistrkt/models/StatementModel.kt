@@ -2,7 +2,6 @@ package com.example.beerdistrkt.models
 
 import android.annotation.SuppressLint
 import androidx.room.*
-import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT

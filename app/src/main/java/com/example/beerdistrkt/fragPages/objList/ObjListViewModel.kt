@@ -3,7 +3,10 @@ package com.example.beerdistrkt.fragPages.objList
 import android.util.Log
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.ClientDeactivateModel
+import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.ObjectCache.Companion.CLIENTS_LIST_ID
 import kotlinx.coroutines.launch
 
 class ObjListViewModel : BaseViewModel() {
@@ -12,6 +15,9 @@ class ObjListViewModel : BaseViewModel() {
 
     init {
         Log.d(TAG, "init_Obj_List")
+        clientsList.observeForever {
+            ObjectCache.getInstance().putList(Obieqti::class, CLIENTS_LIST_ID, it)
+        }
     }
 
     fun delOneObj() {

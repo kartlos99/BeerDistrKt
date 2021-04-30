@@ -50,14 +50,14 @@ class HomeViewModel : BaseViewModel() {
 
         beerLiveData.observeForever {
             beerList = it
-            ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
+            ObjectCache.getInstance().putList(BeerModel::class, ObjectCache.BEER_LIST_ID, it)
         }
         cansLiveData.observeForever {
-            ObjectCache.getInstance().putList(CanModel::class, "canList", it)
+            ObjectCache.getInstance().putList(CanModel::class, ObjectCache.BARREL_LIST_ID, it)
         }
         usersLiveData.observeForever { userList ->
             ObjectCache.getInstance()
-                .putList(User::class, "userList", userList.sortedBy { it.name })
+                .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.name })
         }
     }
 

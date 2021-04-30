@@ -15,6 +15,8 @@ import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.launch
@@ -28,10 +30,10 @@ class AddDeliveryViewModel(
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
     val beerListLiveData = MutableLiveData<List<BeerModel>>()
-    val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")?.toMutableList()
+    val beerList = ObjectCache.getInstance().getList(BeerModel::class, BEER_LIST_ID)?.toMutableList()
         ?: mutableListOf()
 
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
     var selectedCan: CanModel? = null

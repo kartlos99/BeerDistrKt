@@ -8,6 +8,9 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.launch
@@ -18,11 +21,11 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
-    val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")
+    val beerList = ObjectCache.getInstance().getList(BeerModel::class, BEER_LIST_ID)
         ?: mutableListOf()
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
-    val usersList = ObjectCache.getInstance().getList(User::class, "userList")
+    val usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?: listOf()
 
     var selectedCan: CanModel? = null

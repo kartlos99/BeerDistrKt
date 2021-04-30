@@ -10,6 +10,8 @@ import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import java.util.*
@@ -22,10 +24,10 @@ class SalesViewModel : BaseViewModel() {
     var priceSum = 0.0
     val xarjebi: ArrayList<Xarji> = ArrayList()
 
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     val usersList = mutableListOf(User.getBaseUser())
-    private val realUsersList = ObjectCache.getInstance().getList(User::class, "userList")
+    private val realUsersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?: listOf()
 
     private val _deleteXarjiLiveData = MutableLiveData<ApiResponseState<String>>()

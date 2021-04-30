@@ -7,14 +7,15 @@ import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.ObjectCache.Companion.CLIENTS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 
 class SalesHistoryViewModel : BaseViewModel() {
-    private val clientsLiveData = database.getAllObieqts()
     private val userLiveData = database.getUsers()
     private val beerLiveData = database.getBeerList()
 
-    private lateinit var clients: List<Obieqti>
+    var clients: List<Obieqti> = ObjectCache.getInstance().getList(Obieqti::class, CLIENTS_LIST_ID) ?: listOf()
     private lateinit var usersList: List<User>
     private lateinit var beerList: List<BeerModel>
 
@@ -28,7 +29,6 @@ class SalesHistoryViewModel : BaseViewModel() {
 
     init {
         beerLiveData.observeForever { beerList = it }
-        clientsLiveData.observeForever { clients = it }
         userLiveData.observeForever { usersList = it }
     }
 

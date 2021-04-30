@@ -13,6 +13,8 @@ import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import java.util.*
 
@@ -48,9 +50,9 @@ class StoreHouseViewModel : BaseViewModel() {
     val editDataReceiveLiveData: LiveData<ApiResponseState<IoModel>>
         get() = _editDataReceiveLiveData
 
-    val beerList = ObjectCache.getInstance().getList(BeerModel::class, "beerList")
+    val beerList = ObjectCache.getInstance().getList(BeerModel::class, BEER_LIST_ID)
         ?: mutableListOf()
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, "canList")
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
     val receivedItemsList = mutableListOf<TempBeerItemModel>()
