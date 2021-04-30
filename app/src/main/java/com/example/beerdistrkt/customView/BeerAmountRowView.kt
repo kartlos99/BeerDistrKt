@@ -31,6 +31,10 @@ class BeerAmountRowView @JvmOverloads constructor(
     }
 
     fun setData(data: SimpleBeerRowModel) {
+        orderItemCan50.clearData()
+        orderItemCan30.clearData()
+        orderItemCan20.clearData()
+        orderItemCan10.clearData()
 
         orderItemNameTv.text = data.title
 

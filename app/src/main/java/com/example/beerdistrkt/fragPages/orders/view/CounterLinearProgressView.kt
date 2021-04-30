@@ -57,6 +57,13 @@ class CounterLinearProgressView @JvmOverloads constructor(
         updateBoldStyle(count)
     }
 
+    fun clearData() {
+        countTv.text = ""
+        viewProgress.progress = 0
+        viewProgress.max = 1
+        viewProgress.setBackgroundResource(R.color.gray_light)
+    }
+
     private fun updateBoldStyle(number: Int) {
         if (boltStyle.sign == number.sign) countTv.setTypeface(null, Typeface.BOLD)
         when (boltStyle) {
