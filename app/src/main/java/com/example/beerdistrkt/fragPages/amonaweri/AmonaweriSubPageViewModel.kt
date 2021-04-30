@@ -22,7 +22,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
 
     val TAG = "subPageVM"
     var amonaweriDataList = ArrayList<StatementModel>()
-    var isGrouped = true
+    var isGroupedLiveData = MutableLiveData<Boolean>(true)
     var clientID = 0
     var pagePos = 0
     val needUpdateLiveData = MutableLiveData<String?>(null)
@@ -34,20 +34,20 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     }
 
     fun requestAmonaweriList() {
+        amonaweriDataList.clear()
         when (pagePos) {
             M_PAGE -> getAmonaweriM(dateFormatDash.format(calendar.time))
             K_PAGE -> getAmonaweriK(dateFormatDash.format(calendar.time))
         }
     }
 
-    fun getAmonaweriM(date: String) {
+    private fun getAmonaweriM(date: String) {
         _amonaweriLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriM(date, clientID),
             successWithData = {
-                amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
-                changeDataStructure(isGrouped)
+                changeDataStructure(isGroupedLiveData.value)
             },
             finally = {
                 _amonaweriLiveData.value = ApiResponseState.Loading(false)
@@ -55,14 +55,13 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         )
     }
 
-    fun getAmonaweriK(date: String) {
+    private fun getAmonaweriK(date: String) {
         _amonaweriLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getAmonaweriK(date, clientID),
             successWithData = {
-                amonaweriDataList.clear()
                 amonaweriDataList.addAll(it)
-                changeDataStructure(isGrouped)
+                changeDataStructure(isGroupedLiveData.value)
             },
             finally = {
                 _amonaweriLiveData.value = ApiResponseState.Loading(false)
@@ -70,9 +69,9 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         )
     }
 
-    fun changeDataStructure(grouped: Boolean) {
-        isGrouped = grouped
-        if (grouped) {
+    fun changeDataStructure(grouped: Boolean?) {
+        isGroupedLiveData.value = grouped
+        if (grouped == true) {
             _amonaweriLiveData.value =
                 ApiResponseState.Success(groupStatementList(amonaweriDataList))
         } else {
