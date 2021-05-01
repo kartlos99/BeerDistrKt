@@ -117,17 +117,17 @@ interface ApeniApiService {
     @GET("get_fasebi.php")
     fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
-    @GET("get_amonaweri_m.php")
-    fun getAmonaweriM(
-        @Query("tarigi") tarigi: String,
-        @Query("objID") objID: Int
-    ): Call<DataResponse<List<StatementModel>>>
+    @GET("statement/getFinancial.php")
+    fun getFinancialStatement(
+        @Query("offset") offset: Int,
+        @Query("clientID") clientID: Int
+    ): Call<DataResponse<StatementResponse>>
 
-    @GET("get_amonaweri_k.php")
-    fun getAmonaweriK(
-        @Query("tarigi") tarigi: String,
-        @Query("objID") objID: Int
-    ): Call<DataResponse<List<StatementModel>>>
+    @GET("statement/getBarrel.php")
+    fun getBarrelStatement(
+        @Query("offset") offset: Int,
+        @Query("clientID") clientID: Int
+    ): Call<DataResponse<StatementResponse>>
 
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<DataResponse<List<BeerModel>>>
@@ -137,7 +137,7 @@ interface ApeniApiService {
 
     // general
     @GET("general/getComments.php")
-    fun getcomments(): Call<DataResponse<List<CommentModel>>>
+    fun getComments(): Call<DataResponse<List<CommentModel>>>
 
     @POST("general/addComment.php")
     fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>

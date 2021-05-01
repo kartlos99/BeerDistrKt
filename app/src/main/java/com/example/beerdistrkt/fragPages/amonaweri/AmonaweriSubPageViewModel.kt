@@ -26,60 +26,73 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
     var clientID = 0
     var pagePos = 0
     val needUpdateLiveData = MutableLiveData<String?>(null)
+    private var totalCount = 1
 
-    val calendar = Calendar.getInstance()
-
-    init {
-        calendar.add(Calendar.HOUR, 24 + 4) // es dge rom bolomde chaitvalos
-    }
+    val isLastPage
+        get() = amonaweriDataList.size >= totalCount
 
     fun requestAmonaweriList() {
         amonaweriDataList.clear()
-        when (pagePos) {
-            M_PAGE -> getAmonaweriM(dateFormatDash.format(calendar.time))
-            K_PAGE -> getAmonaweriK(dateFormatDash.format(calendar.time))
-        }
+        loadMoreData()
     }
 
-    private fun getAmonaweriM(date: String) {
+    fun loadMoreData() {
+        if (amonaweriDataList.size < totalCount)
+            when (pagePos) {
+                M_PAGE -> getAmonaweriM()
+                K_PAGE -> getAmonaweriK()
+            }
+    }
+
+    private fun getAmonaweriM() {
         _amonaweriLiveData.value = ApiResponseState.Loading(true)
+        loadingCounter++
         sendRequest(
-            ApeniApiService.getInstance().getAmonaweriM(date, clientID),
+            ApeniApiService.getInstance().getFinancialStatement(amonaweriDataList.size, clientID),
             successWithData = {
-                amonaweriDataList.addAll(it)
-                changeDataStructure(isGroupedLiveData.value)
+                totalCount = it.totalCount
+                amonaweriDataList.addAll(it.list)
+                proceedData(it.list)
             },
             finally = {
+                loadingCounter--
                 _amonaweriLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
 
-    private fun getAmonaweriK(date: String) {
+    private fun getAmonaweriK() {
         _amonaweriLiveData.value = ApiResponseState.Loading(true)
+        loadingCounter++
         sendRequest(
-            ApeniApiService.getInstance().getAmonaweriK(date, clientID),
+            ApeniApiService.getInstance().getBarrelStatement(amonaweriDataList.size, clientID),
             successWithData = {
-                amonaweriDataList.addAll(it)
-                changeDataStructure(isGroupedLiveData.value)
+                totalCount = it.totalCount
+                amonaweriDataList.addAll(it.list)
+                proceedData(it.list)
             },
             finally = {
+                loadingCounter--
                 _amonaweriLiveData.value = ApiResponseState.Loading(false)
             }
+        )
+    }
+
+    private fun proceedData(newPart: List<StatementModel>) {
+        _amonaweriLiveData.value = ApiResponseState.Success(
+            if (isGroupedLiveData.value == true)
+                groupStatementList(newPart)
+            else
+                newPart
         )
     }
 
     fun changeDataStructure(grouped: Boolean?) {
         isGroupedLiveData.value = grouped
-        if (grouped == true) {
-            _amonaweriLiveData.value =
-                ApiResponseState.Success(groupStatementList(amonaweriDataList))
-        } else {
-            _amonaweriLiveData.value = ApiResponseState.Success(amonaweriDataList)
-        }
+        proceedData(amonaweriDataList)
     }
 
-    private fun groupStatementList(rowList: ArrayList<StatementModel>): ArrayList<StatementModel> {
+    private fun groupStatementList(rowList: List<StatementModel>): ArrayList<StatementModel> {
         val groupedList = ArrayList<StatementModel>()
         var grDate = Date()
         var currRowDate = Date()

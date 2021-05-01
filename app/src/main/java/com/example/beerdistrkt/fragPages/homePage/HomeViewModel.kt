@@ -277,7 +277,7 @@ class HomeViewModel : BaseViewModel() {
 
     fun getComments() {
         sendRequest(
-            ApeniApiService.getInstance().getcomments(),
+            ApeniApiService.getInstance().getComments(),
             successWithData = {
                 _commentsListLiveData.value = it
             }

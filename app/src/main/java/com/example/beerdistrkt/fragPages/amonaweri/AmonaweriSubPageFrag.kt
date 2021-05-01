@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.adapters.CtxMenuItem
+import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.adapters.StatementAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
@@ -73,6 +74,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         vBinding.statementSubPageRc.apply {
             layoutManager = linearLayoutManager
             adapter = statementListAdapter
+            addOnScrollListener(PaginatedListener(linearLayoutManager))
         }
         viewModel.requestAmonaweriList()
         initViewModel()
@@ -84,7 +86,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         }
         viewModel.amonaweriLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is ApiResponseState.Loading -> vBinding.progressBarAmonaweri.visibleIf(it.showLoading)
+                is ApiResponseState.Loading -> vBinding.statementProgressBar.visibleIf(it.showLoading)
                 is ApiResponseState.Success -> {
                     statementListAdapter.addItems(it.data)
                     Log.d("sufrObsSize", "${it.data.size}")
@@ -152,5 +154,17 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
     fun updateData() {
         statementListAdapter.clearData()
         viewModel.requestAmonaweriList()
+    }
+
+    inner class PaginatedListener(layoutManager: LinearLayoutManager) :
+        PaginatedScrollListener(layoutManager) {
+
+        override fun loadMoreItems() {
+            viewModel.loadMoreData()
+        }
+
+        override fun isLastPage() = viewModel.isLastPage
+
+        override fun isLoading() = viewModel.isLoading
     }
 }

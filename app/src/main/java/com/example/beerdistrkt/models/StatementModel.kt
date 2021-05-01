@@ -9,6 +9,10 @@ import com.squareup.moshi.Json
 import java.text.SimpleDateFormat
 import java.util.*
 
+data class StatementResponse(
+    val totalCount: Int,
+    val list: List<StatementModel>
+)
 
 data class StatementModel(
     @Json(name = "dt")

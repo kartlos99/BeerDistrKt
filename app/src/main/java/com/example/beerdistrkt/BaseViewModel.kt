@@ -20,6 +20,9 @@ abstract class BaseViewModel : ViewModel() {
     protected val ioScope = CoroutineScope(Dispatchers.IO + job)
     protected val uiScope = CoroutineScope(Dispatchers.Main + job)
 
+    protected var loadingCounter = 0
+    val isLoading get() = loadingCounter != 0
+
     private val _apiFailureMutableLiveData = MutableLiveData<ApiResponseState<Nothing>>()
     val apiFailureLiveData: LiveData<ApiResponseState<Nothing>>
         get() = _apiFailureMutableLiveData
