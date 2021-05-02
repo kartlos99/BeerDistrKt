@@ -9,18 +9,35 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/t_p4_objInfo"
+            android:id="@+id/fragStatementClientDebtAmount"
+            style="@style/ClientDebt"
             android:layout_width="0dp"
+            android:padding="@dimen/gr_size_4"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:textSize="@dimen/textSize_3"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/gr_size_4"
+            android:text="@string/amount_is"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@id/fragStatementClientDebtBarrels"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chk_gr_amonaweri" />
+
+        <TextView
+            android:id="@+id/fragStatementClientDebtBarrels"
+            style="@style/ClientDebt"
+            android:padding="@dimen/gr_size_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/gr_size_2"
+            android:gravity="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/fragStatementBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="fragStatementClientDebtAmount, fragStatementClientDebtBarrels"/>
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/chk_gr_amonaweri"
@@ -51,7 +68,7 @@
             android:layout_marginRight="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chk_gr_amonaweri" />
+            app:layout_constraintTop_toBottomOf="@+id/fragStatementBarrier" />
 
 
         <androidx.viewpager.widget.ViewPager
