@@ -1,9 +1,8 @@
 package com.example.beerdistrkt.adapters
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID
@@ -12,8 +11,7 @@ import com.example.beerdistrkt.utils.OBJ_ID
 class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
     androidx.fragment.app.FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private var titles =
-        arrayOf(" დავალიანება ", " კასრები ")
+    private var titles = arrayOf(" ფინანსები ", " კასრები ")
 
     private val mPagerFragments: MutableList<AmonaweriSubPageFrag> = ArrayList()
 
@@ -39,13 +37,18 @@ class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
     }
 
     val fragmentM: AmonaweriSubPageFrag
-        get() = fm.fragments[0] as AmonaweriSubPageFrag
+        get() = fm.findFragmentByTag(makeFragmentTag(0))
+                as AmonaweriSubPageFrag
 
     val fragmentK: AmonaweriSubPageFrag
-        get() = fm.fragments[1] as AmonaweriSubPageFrag
+        get() = fm.findFragmentByTag(makeFragmentTag(1))
+                as AmonaweriSubPageFrag
 
     override fun getPageTitle(position: Int): CharSequence {
         return titles[position]
     }
 
+    private fun makeFragmentTag(id: Long): String? {
+        return "android:switcher:${R.id.viewpager_amonaweri}:$id"
+    }
 }

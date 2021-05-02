@@ -53,9 +53,9 @@
     </style>
 
     <style name="ClientDebt">
-        <item name="android:textSize">@dimen/textSize_3</item>
-        <item name="android:textColor">@color/important_info_color</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:textColor">@color/colorForText_2</item>
+        <item name="android:lineSpacingExtra">@dimen/gr_size_2</item>
     </style>
 
 </resources>

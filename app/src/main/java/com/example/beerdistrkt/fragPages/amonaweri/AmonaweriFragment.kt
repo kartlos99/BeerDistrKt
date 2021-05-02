@@ -10,13 +10,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
+import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_HISTORY_OF
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
 import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.observe
-import com.example.beerdistrkt.utils.ApiResponseState
 import java.text.SimpleDateFormat
 
 class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
@@ -79,17 +77,14 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
             (activity as AppCompatActivity).supportActionBar?.title = it.obieqti.dasaxeleba
         })
-        viewModel.getDebtLiveData.observe(viewLifecycleOwner) {
-            if (it is ApiResponseState.Success) {
-                vBinding.fragStatementClientDebtAmount.text = getString(R.string.amount_is, it.data.getMoneyDebt())
-                val sb = StringBuilder()
-                it.data.barrels.forEach { emptyBarrel ->
-                    if (sb.isNotEmpty()) sb.append("\n")
-                    sb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
-                }
-                vBinding.fragStatementClientDebtBarrels.text = sb.toString()
-            }
-        }
+        showDebt()
+    }
+
+    private fun showDebt() {
+        val debtFragment = ClientDebtFragment.getInstance(clientID)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragStatementDebtContainer, debtFragment)
+            .commit()
     }
 
     private fun showHistory(recordID: Int, historyOf: String) {
