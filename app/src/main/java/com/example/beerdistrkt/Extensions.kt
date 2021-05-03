@@ -3,6 +3,7 @@ package com.example.beerdistrkt
 import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -305,4 +306,10 @@ fun <T : Any> LiveData<T>.observe(viewLifecycleOwner: LifecycleOwner, function: 
     observe(viewLifecycleOwner, Observer {
         function(it)
     })
+}
+
+infix fun Number.waitFor(block: (() -> Unit)) {
+    Handler().postDelayed({
+        block()
+    }, this.toLong())
 }

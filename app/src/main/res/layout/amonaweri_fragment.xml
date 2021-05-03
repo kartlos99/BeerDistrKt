@@ -8,22 +8,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/fragStatementClientInfo"
+            style="@style/ClientInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/chk_gr_amonaweri"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/chk_gr_amonaweri"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="@string/group"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginEnd="@dimen/gr_size_8"
+            app:layout_constraintBottom_toBottomOf="@id/fragStatementClientInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/fragStatementClientInfo" />
 
         <FrameLayout
             android:id="@+id/fragStatementDebtContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/chk_gr_amonaweri"
+            android:layout_marginTop="@dimen/gr_size_8"
             android:background="#FFF"
-            android:elevation="@dimen/gr_size_2"/>
+            android:elevation="@dimen/gr_size_2"
+            app:layout_constraintTop_toBottomOf="@id/fragStatementClientInfo" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs_amonaweri"

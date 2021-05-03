@@ -58,4 +58,10 @@
         <item name="android:lineSpacingExtra">@dimen/gr_size_2</item>
     </style>
 
+    <style name="ClientInfo">
+        <item name="android:textSize">@dimen/sp18</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>

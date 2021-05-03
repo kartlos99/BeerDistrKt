@@ -6,16 +6,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/addOrderClientInfo"
+            style="@style/ClientInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textSize="@dimen/plius_minus_TextSize"
             app:layout_constraintEnd_toStartOf="@id/addOrderWarning"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,62 +32,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/addOrderClientInfo" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/addOrderClientDebt"
+        <FrameLayout
+            android:id="@+id/addOrderDebtContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/gr_size_4"
             android:background="@color/gray_light"
             android:elevation="@dimen/gr_size_2"
-            android:paddingHorizontal="@dimen/gr_size_16"
-            android:paddingVertical="@dimen/gr_size_2"
-            android:text="@string/client_debt"
-            android:textAlignment="center"
-            android:textColor="@color/important_info_color"
-            android:textSize="@dimen/textSize_3"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addOrderClientInfo" >
-
-            <TextView
-                android:id="@+id/addOrderClientDebtTitle"
-                style="@style/ClientDebt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/debt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/addOrderClientDebtAmount"
-                style="@style/ClientDebt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_4"
-                android:text="@string/amount_is"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toStartOf="@id/addOrderClientDebtBarrels"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addOrderClientDebtTitle" />
-
-            <TextView
-                android:id="@+id/addOrderClientDebtBarrels"
-                style="@style/ClientDebt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/gr_size_2"
-                android:gravity="end"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@id/addOrderClientInfo" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addOrderClientDebt">
+            app:layout_constraintTop_toBottomOf="@id/addOrderDebtContainer">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

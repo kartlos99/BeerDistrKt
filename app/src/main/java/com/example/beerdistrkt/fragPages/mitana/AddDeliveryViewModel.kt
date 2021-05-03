@@ -46,8 +46,6 @@ class AddDeliveryViewModel(
     val addSaleLiveData: LiveData<ApiResponseState<String>>
         get() = _addSaleLiveData
 
-    val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
-
     val saleItemsList = mutableListOf<TempBeerItemModel>()
     val saleItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
 
@@ -62,30 +60,12 @@ class AddDeliveryViewModel(
     val saleItemDuplicateLiveData = MutableLiveData<Boolean>(false)
 
     init {
-        // send getDebt request: TODO
-
         getClient()
 
         clientLiveData.observeForever {
             attachPrices(it.prices)
         }
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
-        getDebt()
-    }
-
-    private fun getDebt() {
-        sendRequest(
-            ApeniApiService.getInstance().getDebt(clientID),
-            successWithData = {
-                getDebtLiveData.value = ApiResponseState.Success(it)
-            },
-            responseFailure = {code, error ->
-                if (code == DataResponse.ErrorCodeDataIsNull)
-                    getDebtLiveData.value = ApiResponseState.Success(
-                        DebtResponse(clientID, "", .0, 0, .0, 0, 0, 0, listOf())
-                    )
-            }
-        )
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
@@ -142,7 +122,7 @@ class AddDeliveryViewModel(
         if (operation == null)
             addDelivery(saleRequestModel)
         else
-            updateDelivey(saleRequestModel)
+            updateDelivery(saleRequestModel)
     }
 
     private fun addDelivery(saleRequestModel: SaleRequestModel) {
@@ -164,8 +144,7 @@ class AddDeliveryViewModel(
         )
     }
 
-    private fun updateDelivey(saleRequestModel: SaleRequestModel) {
-
+    private fun updateDelivery(saleRequestModel: SaleRequestModel) {
         _addSaleLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().updateSale(saleRequestModel),
@@ -176,7 +155,6 @@ class AddDeliveryViewModel(
                 _addSaleLiveData.value = ApiResponseState.Loading(false)
             }
         )
-
     }
 
     fun onSaleDateSelected(year: Int, month: Int, day: Int) {
@@ -204,7 +182,6 @@ class AddDeliveryViewModel(
             saleItemsList.add(saleItem)
             saleItemsLiveData.value = saleItemsList
         }
-
     }
 
     fun addBarrelToList(barrelType: Int, count: Int) {
@@ -218,7 +195,7 @@ class AddDeliveryViewModel(
         )
     }
 
-    fun getEmptyBarrelsList(): List<SaleRequestModel.BarrelOutItem>? {
+    private fun getEmptyBarrelsList(): List<SaleRequestModel.BarrelOutItem>? {
         return if (barrelOutItems.size > 0)
             barrelOutItems
         else

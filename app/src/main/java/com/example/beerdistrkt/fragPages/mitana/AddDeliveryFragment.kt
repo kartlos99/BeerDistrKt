@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
@@ -147,6 +148,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }, 100L)
         (activity as AppCompatActivity).supportActionBar?.title =
             resources.getString(R.string.mitana)
+        showDebt()
     }
 
     private fun getColorForValidationIndicator(value: CharSequence): Int {
@@ -209,17 +211,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.mOutEditLiveData.value = null
             }
         })
-        viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
-            if (it is ApiResponseState.Success) {
-                addDeliveryClientDebtAmount.text = getString(R.string.amount_is, it.data.getMoneyDebt())
-                val sb = StringBuilder()
-                it.data.barrels.forEach { emptyBarrel ->
-                    if (sb.isNotEmpty()) sb.append("\n")
-                    sb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
-                }
-                addDeliveryClientDebtBarrels.text = sb.toString()
-            }
-        })
+    }
+
+    private fun showDebt() {
+        val debtFragment = ClientDebtFragment.getInstance(clientID)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.addDeliveryDebtContainer, debtFragment)
+            .commit()
     }
 
     private fun fillMoney(moneyRowModel: MoneyRowModel) {
@@ -239,7 +237,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
         }
 
-
         vBinding.addDeliveryComment.editText?.setText(moneyRowModel.comment ?: "")
     }
 
@@ -255,7 +252,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
     }
 
-    fun fillSale(saleData: SaleRowModel) {
+    private fun fillSale(saleData: SaleRowModel) {
         val data = saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)
         beerPos = viewModel.beerList.indexOf(data.beer)
         vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
@@ -362,7 +359,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
     }
 
-    fun getTempSaleItem(): TempBeerItemModel {
+    private fun getTempSaleItem(): TempBeerItemModel {
         return TempBeerItemModel(viewModel.recordID,
 //            viewModel.beerList[beerPos],
             viewModel.beerListLiveData.value?.get(beerPos)!!,
@@ -374,17 +371,17 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             })
     }
 
-    fun formIsValid(): Boolean {
+    private fun formIsValid(): Boolean {
         return vBinding.addDeliveryCanCountControl.amount > 0 && viewModel.selectedCan != null
     }
 
-    fun resetForm() {
+    private fun resetForm() {
         vBinding.addDeliverysChipGr.clearCheck()
         viewModel.selectedCan = null
         vBinding.addDeliveryCanCountControl.amount = 0
     }
 
-    fun checkForm() {
+    private fun checkForm() {
         vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (formIsValid())
             ColorStateList.valueOf(Color.GREEN)
         else

@@ -211,4 +211,5 @@
     <string name="under_construction">მზადების პროცეშია</string>
     <string name="price_field">ერთულის ფასი: %.2f ₾</string>
     <string name="history_not_found">ისტორია ვერ მოიძებნა!</string>
+    <string name="statement_title">ამონაწერი</string>
 </resources>

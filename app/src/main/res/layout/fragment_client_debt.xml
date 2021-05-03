@@ -5,8 +5,9 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:elevation="@dimen/gr_size_4"
-    android:padding="@dimen/gr_size_8"
-    android:background="@color/red_001">
+    android:paddingHorizontal="@dimen/gr_size_8"
+    android:paddingVertical="@dimen/gr_size_2"
+    android:background="@color/gray_light">
 
     <TextView
         android:id="@+id/fragDebtTitle"

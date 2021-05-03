@@ -15,6 +15,7 @@ import com.example.beerdistrkt.databinding.AmonaweriFragmentBinding
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_HISTORY_OF
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.waitFor
 import java.text.SimpleDateFormat
 
 class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
@@ -52,6 +53,10 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        100 waitFor {
+            (activity as AppCompatActivity).supportActionBar?.title =
+                getString(R.string.statement_title)
+        }
         pagesAdapter = MyPagesAdapter(childFragmentManager, clientID)
         vBinding.viewpagerAmonaweri.adapter = pagesAdapter
         vBinding.tabsAmonaweri.setupWithViewPager(vBinding.viewpagerAmonaweri)
@@ -75,7 +80,7 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         }
 
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
-            (activity as AppCompatActivity).supportActionBar?.title = it.obieqti.dasaxeleba
+            vBinding.fragStatementClientInfo.text = it.obieqti.dasaxeleba
         })
         showDebt()
     }

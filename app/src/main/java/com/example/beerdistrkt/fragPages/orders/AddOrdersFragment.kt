@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.models.Order
@@ -144,6 +145,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             else
                 R.string.add_order
         )
+        showDebt()
     }
 
     private fun getTempOrderItem(): TempBeerItemModel {
@@ -220,17 +222,17 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         })
         viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
             if (it is ApiResponseState.Success) {
-                addOrderClientDebtAmount.text = getString(R.string.amount_is, it.data.getMoneyDebt())
-                val sb = StringBuilder()
-                it.data.barrels.forEach { emptyBarrel ->
-                    if (sb.isNotEmpty()) sb.append("\n")
-                    sb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
-                }
-                addOrderClientDebtBarrels.text = sb.toString()
                 addOrderWarning.text = getString(R.string.need_cleaning, it.data.passDays)
                 addOrderWarning.visibleIf(it.data.needCleaning == 1)
             }
         })
+    }
+
+    private fun showDebt() {
+        val debtFragment = ClientDebtFragment.getInstance(clientID)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.addOrderDebtContainer, debtFragment)
+            .commit()
     }
 
     private fun fillOrderForm(order: Order) {
