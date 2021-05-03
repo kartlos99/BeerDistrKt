@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -76,6 +77,14 @@ class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
                 closeIndex,
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
             )
+            if (text.subSequence(currPos, closeIndex).contains(DOT)) {
+                spText.setSpan(
+                    AbsoluteSizeSpan(resources.getDimensionPixelSize(R.dimen.sp13)),
+                    text.indexOf(DOT, currPos),
+                    text.indexOf(" ", currPos),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                )
+            }
             currPos = text.indexOf(":", closeIndex) + 2
         }
         return spText
@@ -88,6 +97,7 @@ class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
 
     companion object {
         const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
+        const val DOT = "."
 
         fun getInstance(clientID: Int): ClientDebtFragment {
             return ClientDebtFragment().apply {
