@@ -28,7 +28,6 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
-import kotlinx.android.synthetic.main.add_delivery_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 import java.util.*
@@ -122,6 +121,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.btnBeerRightImg.setOnClickListener(this)
         vBinding.addDeliveryAddSaleItemBtn.setOnClickListener(this)
         vBinding.addDeliveryMoneyExpander.setOnClickListener(this)
+        vBinding.addDeliveryMoneyCashImg.setOnClickListener(this)
+        vBinding.addDeliveryMoneyTransferImg.setOnClickListener(this)
 
         vBinding.addDeliveryMoneyEt.simpleTextChangeListener {
             vBinding.addDeliveryMoneyCashImg.setTint(getColorForValidationIndicator(it))
@@ -225,6 +226,9 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         when (moneyRowModel.paymentType) {
             PaymentType.Cash -> {
                 vBinding.addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+                500 waitFor {
+                    vBinding.addDeliveryMoneyCashImg.explodeAnim()
+                }
             }
             PaymentType.Transfer -> {
                 vBinding.addDeliveryMoneyTransferEt.setText(moneyRowModel.amount.toString())
@@ -234,6 +238,9 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 vBinding.addDeliveryMoneyEt.goAway()
                 vBinding.addDeliveryMoneyCashImg.goAway()
                 vBinding.addDeliveryLariSign.goAway()
+                500 waitFor {
+                    vBinding.addDeliveryMoneyTransferImg.explodeAnim()
+                }
             }
         }
 
@@ -332,6 +339,32 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 vBinding.addDeliveryMoneyTransferImg.show()
                 vBinding.addDeliveryTransferLariSign.show()
                 vBinding.addDeliveryMoneyExpander.goAway()
+            }
+            R.id.addDeliveryMoneyCashImg -> {
+                if (viewModel.operation == M_OUT) {
+                    vBinding.addDeliveryMoneyEt.goAway()
+                    vBinding.addDeliveryMoneyCashImg.goAway()
+                    vBinding.addDeliveryLariSign.goAway()
+                    vBinding.addDeliveryMoneyTransferEt.show()
+                    vBinding.addDeliveryMoneyTransferImg.show()
+                    vBinding.addDeliveryTransferLariSign.show()
+
+                    vBinding.addDeliveryMoneyTransferEt.text = vBinding.addDeliveryMoneyEt.text
+                    vBinding.addDeliveryMoneyEt.setText("")
+                }
+            }
+            R.id.addDeliveryMoneyTransferImg -> {
+                if (viewModel.operation == M_OUT) {
+                    vBinding.addDeliveryMoneyTransferEt.goAway()
+                    vBinding.addDeliveryMoneyTransferImg.goAway()
+                    vBinding.addDeliveryTransferLariSign.goAway()
+                    vBinding.addDeliveryMoneyEt.show()
+                    vBinding.addDeliveryMoneyCashImg.show()
+                    vBinding.addDeliveryLariSign.show()
+
+                    vBinding.addDeliveryMoneyEt.text = vBinding.addDeliveryMoneyTransferEt.text
+                    vBinding.addDeliveryMoneyTransferEt.setText("")
+                }
             }
         }
 

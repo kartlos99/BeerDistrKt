@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.utils
 
+import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,4 +26,27 @@ fun View.visibleIf(boolean: Boolean) {
         this.show()
     else
         this.goAway()
+}
+
+fun View.explodeAnim() {
+    this.animate()
+        .setDuration(400)
+        .scaleX(1.2F)
+        .scaleY(1.2F)
+        .setListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {}
+
+            override fun onAnimationEnd(p0: Animator?) {
+                this@explodeAnim.animate()
+                    .setDuration(400)
+                    .scaleX(1F)
+                    .scaleY(1F)
+                    .start()
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {}
+
+            override fun onAnimationStart(p0: Animator?) {}
+        })
+        .start()
 }
