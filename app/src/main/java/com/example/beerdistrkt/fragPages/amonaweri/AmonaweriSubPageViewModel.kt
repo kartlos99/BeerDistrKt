@@ -106,8 +106,8 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
             var pr = 0.0f
             var pay = 0.0f
             var bal: Float = rowList[0].balance
-            var k_in = 0.0f
-            var k_out = 0.0f
+            var k_in = 0
+            var k_out = 0
             val totalComment = mutableListOf<String?>()
             totalComment.add(rowList[0].comment)
 

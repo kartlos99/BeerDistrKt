@@ -77,17 +77,17 @@ class AmonaweriAdapter(
             viewHolder.t_p4?.text = df.format(currItem.balance)
         }
         if (location == K_PAGE) {
-            if (currItem.k_in == 0F) {
-                viewHolder.t_p2!!.text = "-"
-            } else {
-                viewHolder.t_p2?.text = MyUtil.floatToSmartStr(currItem.k_in)
-            }
-            if (currItem.k_out == 0F) {
-                viewHolder.t_p3?.text = "-"
-            } else {
-                viewHolder.t_p3?.setText(MyUtil.floatToSmartStr(currItem.k_out))
-            }
-            viewHolder.t_p4?.setText(MyUtil.floatToSmartStr(currItem.balance))
+//            if (currItem.k_in == 0F) {
+//                viewHolder.t_p2!!.text = "-"
+//            } else {
+//                viewHolder.t_p2?.text = MyUtil.floatToSmartStr(currItem.k_in)
+//            }
+//            if (currItem.k_out == 0F) {
+//                viewHolder.t_p3?.text = "-"
+//            } else {
+//                viewHolder.t_p3?.setText(MyUtil.floatToSmartStr(currItem.k_out))
+//            }
+//            viewHolder.t_p4?.setText(MyUtil.floatToSmartStr(currItem.balance))
         }
         viewHolder.t_comment?.text = currItem.comment ?: ""
         if (currItem.comment.isNullOrEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);

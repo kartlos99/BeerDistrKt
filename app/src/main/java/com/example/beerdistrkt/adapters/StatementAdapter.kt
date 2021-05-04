@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.StatementModel
+import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.amonaweri_list_row.view.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class StatementAdapter(
     private val statementList: MutableList<StatementModel>,
@@ -47,21 +49,29 @@ class StatementAdapter(
         val df = DecimalFormat("#0.00")
         holder.itemView.tag = currItem
         holder.itemView.t_amon_list_tarigi.text = currItem.tarigi
-        holder.itemView.t_amon_list_balance.text = df.format(currItem.balance)
         holder.itemView.t_amonaweri_row_comment.text = currItem.comment.orEmpty()
+
+        val defTextColor = Color.parseColor("#292929")
+        val textColor = if (currItem.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
+
         when (location) {
             M_PAGE -> {
-                holder.itemView.t_amon_list_in.text = getFormattedString(currItem.price, df)
-                holder.itemView.t_amon_list_out.text = getFormattedString(currItem.pay, df)
+                val frictionColor = if (currItem.comment.isNullOrBlank()) Color.parseColor("#808080") else Color.MAGENTA
+                val frSize = holder.itemView.resources.getDimensionPixelSize(R.dimen.sp12)
+                holder.itemView.t_amon_list_in.text = getFormattedString(currItem.price, df).setFrictionSize(frSize, frictionColor)
+                holder.itemView.t_amon_list_out.text = getFormattedString(currItem.pay, df).setFrictionSize(frSize, frictionColor)
+                holder.itemView.t_amon_list_balance.text = df.format(currItem.balance).setFrictionSize(frSize, frictionColor)
             }
             K_PAGE -> {
-                holder.itemView.t_amon_list_in.text = getFormattedString(currItem.k_in, df)
-                holder.itemView.t_amon_list_out.text = getFormattedString(currItem.k_out, df)
+                holder.itemView.t_amon_list_in.text = if (currItem.k_in == 0) DASH else currItem.k_in.toString()
+                holder.itemView.t_amon_list_out.text = if (currItem.k_out == 0) DASH else currItem.k_out.toString()
+                holder.itemView.t_amon_list_balance.text = currItem.balance.roundToInt().toString()
             }
         }
 
-        holder.itemView.t_amon_list_in.setTextColor(if (currItem.comment.isNullOrBlank()) Color.BLACK else Color.MAGENTA)
-        holder.itemView.t_amon_list_out.setTextColor(if (currItem.comment.isNullOrBlank()) Color.BLACK else Color.MAGENTA)
+        holder.itemView.t_amon_list_in.setTextColor(textColor)
+        holder.itemView.t_amon_list_out.setTextColor(textColor)
+        holder.itemView.t_amon_list_balance.setTextColor(textColor)
 
         if (currItem.comment.isNullOrBlank())
             holder.itemView.t_amonaweri_row_comment.goAway()

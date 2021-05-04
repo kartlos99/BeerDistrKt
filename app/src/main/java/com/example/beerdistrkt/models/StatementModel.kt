@@ -19,8 +19,8 @@ data class StatementModel(
     var tarigi: String = "",
     var comment: String? = "",
 
-    var k_in: Float = 0f,
-    var k_out: Float = 0f,
+    var k_in: Int = 0,
+    var k_out: Int = 0,
 
     @Json(name = "pr")
     var price: Float = 0f,
@@ -38,7 +38,7 @@ data class StatementModel(
 
     fun getType(location: Int): String = when {
         location == 0 && pay != 0F -> M_OUT
-        location == 1 && k_out != 0F -> K_OUT
+        location == 1 && k_out != 0 -> K_OUT
         else -> MITANA
     }
 

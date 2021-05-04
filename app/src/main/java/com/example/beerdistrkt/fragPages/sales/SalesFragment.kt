@@ -11,15 +11,12 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.sales.adapter.BarrelsIOAdapter
-import com.example.beerdistrkt.getActCtxViewModel
-import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -170,11 +167,12 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         val xarjiSum = viewModel.xarjebi.sumByDouble { it.amount.toDouble() }
         val atHand = viewModel.getCashAmount() - xarjiSum
         val transferAmount = viewModel.getTransferAmount()
-        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
-        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, xarjiSum)
-        vBinding.salesAmountAtHand.text = resources.getString(R.string.format_gel, atHand)
-        vBinding.salesTakenAmount.text = resources.getString(R.string.format_gel, viewModel.getCashAmount())
-        vBinding.salesTakenTransferAmount.text = resources.getString(R.string.format_gel, transferAmount)
+        val frictionSize = resources.getDimensionPixelSize(R.dimen.sp14)
+        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum).setFrictionSize(frictionSize)
+        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, xarjiSum).setFrictionSize(frictionSize)
+        vBinding.salesAmountAtHand.text = resources.getString(R.string.format_gel, atHand).setFrictionSize(frictionSize)
+        vBinding.salesTakenAmount.text = resources.getString(R.string.format_gel, viewModel.getCashAmount()).setFrictionSize(frictionSize)
+        vBinding.salesTakenTransferAmount.text = resources.getString(R.string.format_gel, transferAmount).setFrictionSize(frictionSize)
     }
 
     private fun initBarrelBlock(data: List<BarrelIO>) {

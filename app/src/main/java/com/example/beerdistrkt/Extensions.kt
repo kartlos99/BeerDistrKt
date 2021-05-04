@@ -5,11 +5,14 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Handler
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
@@ -28,6 +31,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
@@ -68,7 +72,7 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
                 val body = response.body()
                 if (body?.success == true) {
                     success?.invoke()
-                    if (successWithData != null){
+                    if (successWithData != null) {
                         if (body.data == null)
                             responseFailure(DataResponse.ErrorCodeDataIsNull, "Data expected")
                         else
@@ -77,7 +81,8 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
                 } else {
                     responseFailure(
                         body?.errorCode ?: DataResponse.UnknownError,
-                        body?.errorText ?: DataResponse.UNKNOWN_ERROR)
+                        body?.errorText ?: DataResponse.UNKNOWN_ERROR
+                    )
                 }
 
             } else {
@@ -146,7 +151,14 @@ inline fun <reified T : ViewModel> Fragment.getActCtxViewModel(noinline creator:
         ViewModelProvider(requireActivity(), BaseViewModelFactory(creator)).get(T::class.java)
 }
 
-fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negativeText: Int, theme: Int? = null, onClick: () -> Unit?) {
+fun Context.showAskingDialog(
+    title: Int?,
+    text: Int,
+    positiveText: Int,
+    negativeText: Int,
+    theme: Int? = null,
+    onClick: () -> Unit?
+) {
     val builder = if (theme == null)
         AlertDialog.Builder(this)
     else
@@ -163,7 +175,13 @@ fun Context.showAskingDialog(title: Int?, text: Int, positiveText: Int, negative
         }.show()
 }
 
-fun Context.showInfoDialog(title: Int?, text: Int, buttonText: Int, theme: Int? = null, onClick: (() -> Unit)? = null) {
+fun Context.showInfoDialog(
+    title: Int?,
+    text: Int,
+    buttonText: Int,
+    theme: Int? = null,
+    onClick: (() -> Unit)? = null
+) {
     val builder = if (theme == null)
         AlertDialog.Builder(this)
     else
@@ -178,7 +196,13 @@ fun Context.showInfoDialog(title: Int?, text: Int, buttonText: Int, theme: Int? 
         }.show()
 }
 
-fun Context.showInfoDialog(title: Int?, text: CharSequence, buttonText: Int, theme: Int? = null, onClick: (() -> Unit)? = null) {
+fun Context.showInfoDialog(
+    title: Int?,
+    text: CharSequence,
+    buttonText: Int,
+    theme: Int? = null,
+    onClick: (() -> Unit)? = null
+) {
     val builder = if (theme == null)
         AlertDialog.Builder(this)
     else
@@ -197,7 +221,7 @@ fun Context.showListDialog(title: Int?, dataList: Array<String>, onClick: (index
     val builder = AlertDialog.Builder(this)
     if (title != null)
         builder.setTitle(title)
-    builder.setItems(dataList) {_, which ->
+    builder.setItems(dataList) { _, which ->
         onClick.invoke(which)
     }
     builder.create().show()
@@ -213,7 +237,7 @@ fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text
     val view: View = LayoutInflater.from(this).inflate(R.layout.text_input_layout, null)
     builder
         .setView(view)
-        .setPositiveButton(R.string.chawera) {dialog, which ->
+        .setPositiveButton(R.string.chawera) { dialog, which ->
             callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
             dialog.dismiss()
         }.show()
@@ -312,4 +336,27 @@ infix fun Number.waitFor(block: (() -> Unit)) {
     Handler().postDelayed({
         block()
     }, this.toLong())
+}
+
+fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableString {
+    val sp = SpannableString(this)
+    if (this.contains(".")) {
+        val startIndex = this.indexOf(ClientDebtFragment.DOT)
+        var endIndex = this.indexOf(" ", startIndex)
+        if (endIndex == -1) endIndex = this.length
+        sp.setSpan(
+            AbsoluteSizeSpan(fontSize),
+            startIndex,
+            endIndex,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+        if (fontColor != null)
+            sp.setSpan(
+                ForegroundColorSpan(fontColor),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+    }
+    return sp
 }

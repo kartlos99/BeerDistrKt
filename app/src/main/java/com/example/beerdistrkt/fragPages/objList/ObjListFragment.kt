@@ -70,8 +70,10 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.choose_client)
+        100 waitFor {
+            (activity as AppCompatActivity).supportActionBar?.title =
+                resources.getString(R.string.choose_client)
+        }
         val objListObserver = Observer<List<Obieqti>> {
             Log.d("_clientList__size__", it.size.toString())
             initClientsList(it)
