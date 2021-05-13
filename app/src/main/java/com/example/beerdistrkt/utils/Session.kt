@@ -25,6 +25,7 @@ class Session {
     var displayName: String? = null
     var accessToken: String? = null
     var accessTokenCreateTime = 0L
+    var regionID = "1"
 
     var loggedIn = false
 
