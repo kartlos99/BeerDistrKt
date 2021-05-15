@@ -1,10 +1,10 @@
 package com.example.beerdistrkt.fragPages.login
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -18,8 +18,6 @@ class LoginViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().logIn(LoginRequest(username, password)),
             successWithData = {
-                Log.d("user", it.toString())
-                Session.get().justLoggedIn(it)
                 loginResponseLiveData.value = ApiResponseState.Success(it)
             },
             responseFailure = {code, error ->
@@ -30,5 +28,12 @@ class LoginViewModel : BaseViewModel() {
             }
         )
 
+    }
+
+    fun setUserData(data: LoginResponse, selectedRegion: WorkRegion? = null) {
+        selectedRegion?.let {
+            Session.get().region = it
+        }
+        Session.get().justLoggedIn(data)
     }
 }

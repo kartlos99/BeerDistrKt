@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.login
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.fragPages.login.models.LoginResponse
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -88,7 +91,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                         )
                     }
                     viewLoginLoginBtn.isEnabled = false
-                    loginToFirebase(it.data.username)
+                    afterSuccessResponse(it.data)
                     viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                 }
                 is ApiResponseState.ApiError -> {
@@ -101,6 +104,30 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 }
             }
         })
+    }
+
+    private fun afterSuccessResponse(data: LoginResponse) {
+        when {
+            data.regions.size > 1 -> {
+                val lastWorkRegion = Session.get().region
+                if (lastWorkRegion == null || !data.regions.contains(lastWorkRegion))
+                    showRegionSelectorDialog(data.regions) { selectedRegion ->
+                        proceedLogin(data, selectedRegion)
+                    }
+                else
+                    proceedLogin(data, null)
+            }
+            data.regions.size == 1 -> proceedLogin(data, data.regions.first())
+            else -> {
+                showToast(R.string.no_regions_accosiated)
+                viewLoginLoginBtn.isEnabled = true
+            }
+        }
+    }
+
+    private fun proceedLogin(data: LoginResponse, selectedRegion: WorkRegion?) {
+        viewModel.setUserData(data, selectedRegion)
+        loginToFirebase(data.username)
     }
 
     private fun loginToFirebase(username: String) {
@@ -149,4 +176,29 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }
 
+    private fun showRegionSelectorDialog(
+        regions: List<WorkRegion>,
+        onComplete: (selectedRegion: WorkRegion) -> Unit
+    ) {
+        var selectedRegion: WorkRegion? = null
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setTitle(getString(R.string.choose_region_title))
+            .setCancelable(false)
+            .setSingleChoiceItems(regions.map { it.name }.toTypedArray(), -1) { _, i ->
+                selectedRegion = regions[i]
+            }
+            .setPositiveButton(R.string.ok) { _, _ -> }
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (selectedRegion == null)
+                showToast(R.string.choose_region_request)
+            else {
+                onComplete.invoke(selectedRegion!!)
+                alertDialog.dismiss()
+            }
+        }
+    }
 }

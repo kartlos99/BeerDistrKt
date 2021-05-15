@@ -212,4 +212,7 @@
     <string name="price_field">ერთულის ფასი: %.2f ₾</string>
     <string name="history_not_found">ისტორია ვერ მოიძებნა!</string>
     <string name="statement_title">ამონაწერი</string>
+    <string name="choose_region_title">აირჩით სამუშაო რეგიონი</string>
+    <string name="choose_region_request">აირჩიეთ სამუშაო რეგიონი!</string>
+    <string name="no_regions_accosiated">არცერთ რეგიონზე არახართ მიმაგრებული!</string>
 </resources>

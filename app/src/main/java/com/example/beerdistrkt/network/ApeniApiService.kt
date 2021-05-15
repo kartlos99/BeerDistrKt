@@ -66,7 +66,7 @@ interface ApeniApiService {
                 mapOf(
                     "Authorization" to "Bearer ${session.accessToken}",
                     "Client" to "Android",
-                    "Region" to session.regionID
+                    "Region" to session.getRegionID()
                 )
             else mapOf("Client" to "Android")
         }

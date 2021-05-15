@@ -2,6 +2,7 @@ package com.example.beerdistrkt.utils
 
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 
@@ -13,7 +14,8 @@ data class UserInfo(
     val userName: String,
     val displayName: String,
     val accessToken: String,
-    val accessTokenCreateTime: Long
+    val accessTokenCreateTime: Long,
+    val region: WorkRegion
 )
 
 class Session {
@@ -25,13 +27,15 @@ class Session {
     var displayName: String? = null
     var accessToken: String? = null
     var accessTokenCreateTime = 0L
-    var regionID = "1"
+    var region: WorkRegion? = null
 
     var loggedIn = false
 
     fun isUserLogged() = loggedIn
 
     fun getUserID(): Int = userID?.toInt() ?: 0
+
+    fun getRegionID(): String = region?.regionID ?: "0"
 
     fun justLoggedIn(userdata: LoginResponse) {
         userID = userdata.id.toString()
@@ -54,6 +58,7 @@ class Session {
         userName = null
         displayName = null
         accessToken = null
+        region = null
         SharedPreferenceDataSource.getInstance().clearSession()
     }
 
@@ -63,7 +68,7 @@ class Session {
         return false
     }
 
-    fun getUserInfo(): UserInfo {
+    private fun getUserInfo(): UserInfo {
         return UserInfo(
             userID ?: "",
             userType,
@@ -71,7 +76,8 @@ class Session {
             userName ?: "",
             displayName ?: "",
             accessToken ?: "",
-            accessTokenCreateTime
+            accessTokenCreateTime,
+            region ?: WorkRegion("0", "")
         )
     }
 
@@ -85,6 +91,7 @@ class Session {
             displayName = userdata.displayName
             accessToken = userdata.accessToken
             accessTokenCreateTime = userdata.accessTokenCreateTime
+            region = userdata.region
         }
     }
 

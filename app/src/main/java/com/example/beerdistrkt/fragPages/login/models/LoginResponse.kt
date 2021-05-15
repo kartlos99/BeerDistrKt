@@ -8,10 +8,15 @@ data class LoginResponse(
     val name: String,
     val type: UserType,
     val permissions: List<Permission>,
+    val regions: List<WorkRegion>,
     val token: String
 ) {
 }
 
+data class WorkRegion(
+    val regionID: String,
+    val name: String
+)
 
 enum class UserType(val value: String) {
     @Json(name = "9")
