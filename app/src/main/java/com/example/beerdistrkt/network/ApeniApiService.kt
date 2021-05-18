@@ -5,6 +5,7 @@ import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
@@ -192,6 +193,12 @@ interface ApeniApiService {
 
     @POST("client/deactivate.php")
     fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>
+
+    @POST("client/attachTo.php")
+    fun setRegions(@Body model: AttachRegionsRequest): Call<DataResponse<String>>
+
+    @GET("client/getAttachedRegions.php")
+    fun getAttachedRegions(@Query("clientID") clientID: Int): Call<DataResponse<List<AttachedRegion>>>
 
     // storeHouse
     @GET("storeHouse/getBalance.php")

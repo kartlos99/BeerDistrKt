@@ -215,4 +215,7 @@
     <string name="choose_region_title">აირჩით სამუშაო რეგიონი</string>
     <string name="choose_region_request">აირჩიეთ სამუშაო რეგიონი!</string>
     <string name="no_regions_accosiated">არცერთ რეგიონზე არახართ მიმაგრებული!</string>
+    <string name="change_region">რეგიონის შეცვლა</string>
+    <string name="regions">რეგიონები: </string>
+    <string name="associated_regions">ასოცირებული რეგიონები</string>
 </resources>

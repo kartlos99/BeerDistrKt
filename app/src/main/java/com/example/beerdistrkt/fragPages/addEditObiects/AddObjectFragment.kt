@@ -1,5 +1,7 @@
 package com.example.beerdistrkt.fragPages.addEditObiects
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
 import android.view.Gravity
@@ -13,8 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.show
 import kotlinx.android.synthetic.main.add_object_fragment.*
 
 class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
@@ -78,6 +84,18 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
             viewModel.addClient(ObiectWithPrices(client, priceList))
         }
+
+        addEditClientRegionBtn.setOnClickListener {
+            showRegionChooser()
+        }
+
+        if (Session.get().hasPermission(Permission.ManageRegion)) {
+            addEditClientRegionsTv.show()
+            addEditClientRegionBtn.show()
+            if (clientID > 0) {
+                viewModel.getRegionForClient()
+            }
+        }
     }
 
 
@@ -120,6 +138,38 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 }
             }
         })
+        viewModel.clientRegionsLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> showRegions(it.data)
+            }
+        }
+    }
+
+    private fun showRegions(data: List<AttachedRegion>) {
+        val regionsString = data
+            .joinToString(", ", getString(R.string.regions) + " ") { it.name }
+        addEditClientRegionsTv.text = regionsString
+    }
+
+    private fun showRegionChooser() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setTitle(getString(R.string.associated_regions))
+            .setCancelable(true)
+            .setMultiChoiceItems(viewModel.getAllRegionNames(), viewModel.getSelectedRegions()) {dialogInterface: DialogInterface?, i: Int, b: Boolean ->
+                if (b)
+                    viewModel.selectedRegions.add(viewModel.regions[i])
+                else
+                    viewModel.selectedRegions.remove(viewModel.regions[i])
+            }
+            .setPositiveButton(R.string.ok) { _, _ ->
+                viewModel.setNewRegions()
+            }
+            .setNegativeButton(R.string.cancel) {dialogInterface, i -> }
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+
     }
 
     private fun fillForm(clientData: ObiectWithPrices) {
