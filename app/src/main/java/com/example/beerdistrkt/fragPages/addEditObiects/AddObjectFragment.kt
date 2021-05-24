@@ -89,13 +89,8 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
             showRegionChooser()
         }
 
-        if (Session.get().hasPermission(Permission.ManageRegion)) {
-            addEditClientRegionsTv.show()
-            addEditClientRegionBtn.show()
-            if (clientID > 0) {
-                viewModel.getRegionForClient()
-            }
-        }
+        if (Session.get().hasPermission(Permission.ManageRegion) && clientID > 0)
+            viewModel.getRegionForClient()
     }
 
 
@@ -149,6 +144,8 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         val regionsString = data
             .joinToString(", ", getString(R.string.regions) + " ") { it.name }
         addEditClientRegionsTv.text = regionsString
+        addEditClientRegionsTv.show()
+        addEditClientRegionBtn.show()
     }
 
     private fun showRegionChooser() {
@@ -156,7 +153,10 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         builder
             .setTitle(getString(R.string.associated_regions))
             .setCancelable(true)
-            .setMultiChoiceItems(viewModel.getAllRegionNames(), viewModel.getSelectedRegions()) {dialogInterface: DialogInterface?, i: Int, b: Boolean ->
+            .setMultiChoiceItems(
+                viewModel.getAllRegionNames(),
+                viewModel.getSelectedRegions()
+            ) { dialogInterface: DialogInterface?, i: Int, b: Boolean ->
                 if (b)
                     viewModel.selectedRegions.add(viewModel.regions[i])
                 else
@@ -165,7 +165,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
             .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.setNewRegions()
             }
-            .setNegativeButton(R.string.cancel) {dialogInterface, i -> }
+            .setNegativeButton(R.string.cancel) { dialogInterface, i -> }
 
         val alertDialog = builder.create()
         alertDialog.show()

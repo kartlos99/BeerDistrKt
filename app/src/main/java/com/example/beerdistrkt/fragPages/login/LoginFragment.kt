@@ -110,7 +110,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
         when {
             data.regions.size > 1 -> {
                 val lastWorkRegion = Session.get().region
-                if (lastWorkRegion == null || !data.regions.contains(lastWorkRegion))
+                if (Session.get().isLogOutDone() || !data.regions.contains(lastWorkRegion))
                     showRegionSelectorDialog(data.regions) { selectedRegion ->
                         proceedLogin(data, selectedRegion)
                     }

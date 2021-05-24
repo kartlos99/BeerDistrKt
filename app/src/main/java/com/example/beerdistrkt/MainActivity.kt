@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         ApeniApiService.initialize(this)
         SharedPreferenceDataSource.initialize(this)
 
+        Session.get().restoreLastRegion(SharedPreferenceDataSource.getInstance().getRegion())
         Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())
 
         val toolBar = vBinding.toolBar

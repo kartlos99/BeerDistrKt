@@ -46,7 +46,7 @@ class HomeViewModel : BaseViewModel() {
         if (Session.get().isUserLogged())
             getTableVersionsFromServer()
         localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
-        Log.d("localVers", localVersionState.toString())
+        Log.d("homeVM localVers", localVersionState.toString())
 
         beerLiveData.observeForever {
             beerList = it
@@ -137,7 +137,7 @@ class HomeViewModel : BaseViewModel() {
             ApeniApiService.getInstance().getBeerList(),
             successWithData = {
                 saveVersion()
-                Log.d(TAG, "Users_respOK")
+                Log.d(TAG, "getBeerList_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
                         database.clearBeerTable()

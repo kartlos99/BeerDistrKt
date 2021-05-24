@@ -25,7 +25,7 @@ data class AttachedRegion(
 ) {
     var isAttached: Boolean = false
         get() {
-            return attached == 1
+            return attached > 0
         }
         set(value) {
             attached = if (value) 1 else 0

@@ -1,23 +1,21 @@
 package com.example.beerdistrkt.fragPages.addEditUser
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.usersList.UserListFragmentDirections
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
-import com.example.beerdistrkt.showAskingDialog
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.goAway
-import com.example.beerdistrkt.utils.visibleIf
+import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.add_user_fragment.*
 
 class AddUserFragment : BaseFragment<AddUserViewModel>() {
@@ -91,6 +89,12 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 showToast(R.string.enter_corect_data)
             }
         }
+        addUserRegionBtn.setOnClickListener {
+            showRegionChooser()
+        }
+
+        if (Session.get().hasPermission(Permission.ManageRegion) && !userID.isBlank())
+            viewModel.getRegionForUser()
     }
 
     private fun isFormValid(): Boolean {
@@ -138,6 +142,19 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 }
             }
         })
+        viewModel.userRegionsLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> showRegions(it.data)
+            }
+        }
+    }
+
+    private fun showRegions(data: List<AttachedRegion>) {
+        val regionsString = data
+            .joinToString(", ", getString(R.string.regions) + " ") { it.name }
+        addUserRegionsTv.text = regionsString
+        addUserRegionsTv.show()
+        addUserRegionBtn.show()
     }
 
     private fun fillForm(user: User) {
@@ -216,5 +233,29 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             addUserPassConfirm.error = null
             true
         }
+    }
+
+    private fun showRegionChooser() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setTitle(getString(R.string.associated_regions))
+            .setCancelable(true)
+            .setMultiChoiceItems(
+                viewModel.getAllRegionNames(),
+                viewModel.getSelectedRegions()
+            ) { dialogInterface: DialogInterface?, i: Int, b: Boolean ->
+                if (b)
+                    viewModel.selectedRegions.add(viewModel.regions[i])
+                else
+                    viewModel.selectedRegions.remove(viewModel.regions[i])
+            }
+            .setPositiveButton(R.string.ok) { _, _ ->
+                viewModel.setNewRegions()
+            }
+            .setNegativeButton(R.string.cancel) { dialogInterface, i -> }
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+
     }
 }

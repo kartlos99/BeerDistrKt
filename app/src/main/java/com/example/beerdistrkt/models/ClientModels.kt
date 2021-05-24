@@ -9,3 +9,8 @@ data class AttachRegionsRequest(
     val clientID: Int,
     val regionIDs: List<String>
 )
+
+data class UserAttachRegionsRequest(
+    val userID: String,
+    val regionIDs: List<String>
+)

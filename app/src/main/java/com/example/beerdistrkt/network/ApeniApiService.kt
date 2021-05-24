@@ -230,6 +230,12 @@ interface ApeniApiService {
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>
 
+    @POST("user/attachTo.php")
+    fun setRegions(@Body model: UserAttachRegionsRequest): Call<DataResponse<String>>
+
+    @GET("user/getAttachedRegions.php")
+    fun getAttachedRegions(@Query("userID") userID: String): Call<DataResponse<List<AttachedRegion>>>
+
     // Sales
     @POST("sales/add.php")
     fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>

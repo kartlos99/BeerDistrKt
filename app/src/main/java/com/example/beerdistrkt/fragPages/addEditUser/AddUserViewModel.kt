@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
+import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.UserAttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -23,6 +26,10 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
 
     val userLiveData = MutableLiveData<User?>()
     var user: User? = null
+
+    val userRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
+    val regions = mutableListOf<AttachedRegion>()
+    val selectedRegions = mutableListOf<AttachedRegion>()
 
     init {
         if (userID.isNotEmpty()) {
@@ -70,5 +77,40 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
                     deleteUserLiveData.value = ApiResponseState.Success("")
                 }
             )
+    }
+
+    fun getRegionForUser() {
+        sendRequest(
+            ApeniApiService.getInstance().getAttachedRegions(userID),
+            successWithData = {
+                regions.clear()
+                regions.addAll(it)
+                userRegionsLiveData.value =
+                    ApiResponseState.Success(regions.filter { r -> r.isAttached })
+            }
+        )
+    }
+
+    fun getAllRegionNames(): Array<String> {
+        return regions.map { it.name }.toTypedArray()
+    }
+
+    fun getSelectedRegions(): BooleanArray {
+        selectedRegions.clear()
+        selectedRegions.addAll(regions.filter { r -> r.isAttached })
+        return regions.map { it.isAttached }.toBooleanArray()
+    }
+
+    fun setNewRegions() {
+        val request = UserAttachRegionsRequest(
+            userID,
+            selectedRegions.map { it.ID }
+        )
+        sendRequest(
+            ApeniApiService.getInstance().setRegions(request),
+            successWithData = {
+                getRegionForUser()
+            }
+        )
     }
 }

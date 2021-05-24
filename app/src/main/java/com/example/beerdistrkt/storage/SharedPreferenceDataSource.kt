@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.storage
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.utils.UserInfo
 import com.squareup.moshi.JsonAdapter
@@ -16,6 +17,7 @@ class SharedPreferenceDataSource(appContext: Context) {
         .build()
     private val moshiJsonAdapter: JsonAdapter<VcsResponse> = moshi.adapter(VcsResponse::class.java)
     private val moshiSessionAdapter: JsonAdapter<UserInfo> = moshi.adapter(UserInfo::class.java)
+    private val moshiRegionAdapter: JsonAdapter<WorkRegion> = moshi.adapter(WorkRegion::class.java)
 
     fun saveUserName(username: String) {
         sharedPreference.edit().putString(USERNAME, username).apply()
@@ -35,12 +37,16 @@ class SharedPreferenceDataSource(appContext: Context) {
 
     fun saveVersions(version: VcsResponse) {
         val data = moshiJsonAdapter.toJson(version)
-        sharedPreference.edit().putString("vKey", data).apply()
+        sharedPreference.edit().putString(KEY_VERSION, data).apply()
     }
 
     fun getVersions(): VcsResponse? {
-        val jsonData = sharedPreference.getString("vKey", "") ?: ""
+        val jsonData = sharedPreference.getString(KEY_VERSION, "") ?: ""
         return if (jsonData.isNotEmpty()) moshiJsonAdapter.fromJson(jsonData) else null
+    }
+
+    fun clearVersions() {
+        sharedPreference.edit().putString(KEY_VERSION, "").apply()
     }
 
     fun saveLastMsgDate(text: String) {
@@ -68,6 +74,16 @@ class SharedPreferenceDataSource(appContext: Context) {
         else null
     }
 
+    fun saveRegion(region: WorkRegion) {
+        val data = moshiRegionAdapter.toJson(region)
+        sharedPreference.edit().putString(KEY_REGION, data).apply()
+    }
+
+    fun getRegion(): WorkRegion? {
+        val jsonData = sharedPreference.getString(KEY_REGION, "") ?: ""
+        return if (jsonData.isNotEmpty()) moshiRegionAdapter.fromJson(jsonData) else null
+    }
+
     companion object {
         private var instance: SharedPreferenceDataSource? = null
 
@@ -85,5 +101,7 @@ class SharedPreferenceDataSource(appContext: Context) {
         const val PASS = "pass"
         const val MSG_DATE = "msg_date"
         const val KEY_SESSION = "keySession"
+        const val KEY_REGION = "keyRegion"
+        const val KEY_VERSION = "vKey"
     }
 }

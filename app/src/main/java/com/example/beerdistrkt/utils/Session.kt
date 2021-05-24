@@ -14,8 +14,7 @@ data class UserInfo(
     val userName: String,
     val displayName: String,
     val accessToken: String,
-    val accessTokenCreateTime: Long,
-    val region: WorkRegion
+    val accessTokenCreateTime: Long
 )
 
 class Session {
@@ -51,14 +50,13 @@ class Session {
         SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
     }
 
-    fun clearSession(){
+    fun clearSession() {
         userID = null
         userType = UserType.DISTRIBUTOR
         loggedIn = false
         userName = null
         displayName = null
         accessToken = null
-        region = null
         SharedPreferenceDataSource.getInstance().clearSession()
     }
 
@@ -68,6 +66,8 @@ class Session {
         return false
     }
 
+    fun isLogOutDone(): Boolean = userName.isNullOrEmpty()
+
     private fun getUserInfo(): UserInfo {
         return UserInfo(
             userID ?: "",
@@ -76,9 +76,12 @@ class Session {
             userName ?: "",
             displayName ?: "",
             accessToken ?: "",
-            accessTokenCreateTime,
-            region ?: WorkRegion("0", "")
+            accessTokenCreateTime
         )
+    }
+
+    fun restoreLastRegion(lastRegion: WorkRegion?) {
+        region = lastRegion
     }
 
     fun restoreFromSavedInfo(info: UserInfo?) {
@@ -91,7 +94,6 @@ class Session {
             displayName = userdata.displayName
             accessToken = userdata.accessToken
             accessTokenCreateTime = userdata.accessTokenCreateTime
-            region = userdata.region
         }
     }
 
