@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -81,8 +80,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         })
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
             initCommentsRecycler(it)
-            (activity as AppCompatActivity).supportActionBar?.title =
-                getString(R.string.location_ge)
+            setPageTitle(Session.get().region?.name)
         })
         viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -92,6 +90,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     notifyNewComment(it.data)
                     showToast(R.string.data_saved)
                     viewModel.stopAddCommentObserving()
+                }
+                else -> {
                 }
             }
         })

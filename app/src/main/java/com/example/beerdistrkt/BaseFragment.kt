@@ -53,7 +53,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         (activity as MainActivity).logOut()
     }
 
-    fun setPageTitle(title: String) {
+    fun setPageTitle(title: String?) {
         (activity as AppCompatActivity).supportActionBar?.title = title
     }
 

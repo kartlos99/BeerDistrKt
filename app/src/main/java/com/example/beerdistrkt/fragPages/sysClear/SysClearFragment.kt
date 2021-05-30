@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
@@ -34,7 +33,6 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.sys_clean)
         initViewModel()
 
         sysClearModeBtn.setOnClickListener {
@@ -45,7 +43,7 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
         }
     }
 
-    fun onModeChange() {
+    private fun onModeChange() {
         viewModel.activeAdd = !viewModel.activeAdd
         sysClearSaveBtn.visibleIf(viewModel.activeAdd)
         sysCleanSpinner.visibleIf(viewModel.activeAdd)

@@ -148,7 +148,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
         (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.mitana)
+            resources.getString(R.string.delivery)
         showDebt()
     }
 

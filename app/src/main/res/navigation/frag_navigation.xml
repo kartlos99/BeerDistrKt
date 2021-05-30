@@ -60,12 +60,12 @@
     <fragment
         android:id="@+id/sysClearFragment"
         android:name="com.example.beerdistrkt.fragPages.sysClear.SysClearFragment"
-        android:label="sys_clear_fragment"
+        android:label="@string/sys_clean"
         tools:layout="@layout/sys_clear_fragment" />
     <fragment
         android:id="@+id/addObjectFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
-        android:label="add_object_fragment"
+        android:label="@string/create_client"
         tools:layout="@layout/add_object_fragment" >
         <argument
             android:name="clientID"
@@ -75,7 +75,7 @@
     <fragment
         android:id="@+id/addUserFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
-        android:label="add_user_fragment"
+        android:label="@string/add_user"
         tools:layout="@layout/add_user_fragment" >
         <argument
             android:name="userID"
@@ -85,7 +85,7 @@
     <fragment
         android:id="@+id/userListFragment"
         android:name="com.example.beerdistrkt.fragPages.usersList.UserListFragment"
-        android:label="user_list_fragment"
+        android:label="@string/title_users_list"
         tools:layout="@layout/user_list_fragment" >
         <action
             android:id="@+id/action_userListFragment_to_addUserFragment"
@@ -94,7 +94,7 @@
     <fragment
         android:id="@+id/sawyobiFragment"
         android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseFragment"
-        android:label="sawyobi_fragment"
+        android:label="@string/store_house"
         tools:layout="@layout/sawyobi_fragment" >
         <action
             android:id="@+id/action_sawyobiFragment_to_sawyobiListFragment"
@@ -103,12 +103,12 @@
     <fragment
         android:id="@+id/sawyobiListFragment"
         android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment"
-        android:label="sawyobi_list_fragment"
+        android:label="@string/store_house_io_title"
         tools:layout="@layout/sawyobi_list_fragment" />
     <fragment
         android:id="@+id/objListFragment"
         android:name="com.example.beerdistrkt.fragPages.objList.ObjListFragment"
-        android:label="obj_list_fragment"
+        android:label="@string/choose_client"
         tools:layout="@layout/obj_list_fragment" >
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
@@ -131,7 +131,7 @@
     <fragment
         android:id="@+id/salesFragment"
         android:name="com.example.beerdistrkt.fragPages.sales.SalesFragment"
-        android:label="sales_fragment"
+        android:label="@string/daily_sales"
         tools:layout="@layout/sales_fragment" />
     <fragment
         android:id="@+id/loginFragment"
@@ -147,7 +147,7 @@
     <fragment
         android:id="@+id/amonaweriFragment"
         android:name="com.example.beerdistrkt.fragPages.amonaweri.AmonaweriFragment"
-        android:label="amonaweri_fragment"
+        android:label="@string/statement_title"
         tools:layout="@layout/amonaweri_fragment" >
         <argument
             android:name="clientObjectID"

@@ -1,9 +1,9 @@
 <resources>
 <!--    <string name="app_name">BeerDistrKt</string>-->
-    <string name="shekveTebi">შეკვეთები</string>
-    <string name="mitana">მიტანა</string>
-    <string name="obj_realizacia">ობიექტების რეალიზაცია</string>
-    <string name="day_realizacia">დღიური რეალიზაცია</string>
+    <string name="orders">შეკვეთები</string>
+    <string name="delivery">მიტანა</string>
+    <string name="sale_at_the_client">ობიექტების რეალიზაცია</string>
+    <string name="daily_sales">დღიური რეალიზაცია</string>
     <string name="ludsaxarshi">თბილისი</string>
     <string name="text_tarigi">თარიღი</string>
     <string name="shekvetis_damateba">შეკვეთის დამატება</string>
@@ -18,7 +18,7 @@
     <string name="wamogebuli_kasrebi">წამოღებული კასრები</string>
     <string name="gadaxdili_tanxa">გადახდილი თანხა</string>
     <string name="default_0">0</string>
-    <string name="gayidvebi">გაყიდვები</string>
+    <string name="sales">გაყიდვები</string>
     <string name="add_object">ობიექტის დამატება</string>
     <string name="add_user">მომხმარებლის დამატება</string>
     <string name="add_beer">ლუდის დამატება</string>
@@ -44,8 +44,8 @@
     <string name="tel">ტელ:</string>
     <string name="admin_rights">ადმინსტრატორი</string>
     <string name="manager_rights">მენეჯერი</string>
-    <string name="confirn">გაიმეორეთ პაროლი</string>
-    <string name="userslist">მომხმარებლები</string>
+    <string name="confirm">გაიმეორეთ პაროლი</string>
+    <string name="title_users_list">მომხმარებლები</string>
     <string name="change_pass">პაროლის შეცვლა</string>
     <string name="change_pass_done">პაროლი შეიცვალა!</string>
     <string name="group">დაჯგუფება</string>
@@ -73,7 +73,7 @@
     <string name="forward">წინ</string>
     <string name="sachuqari">საჩუქარი</string>
     <string name="replace">შეცვლა</string>
-    <string name="sawyobi">საწყობი</string>
+    <string name="store_house">საწყობი</string>
     <string name="savse">სავსე კასრები</string>
     <string name="nashti">ნაშთი *</string>
     <string name="nashti_at_client">ნაშთი</string>
@@ -218,4 +218,5 @@
     <string name="change_region">რეგიონის შეცვლა</string>
     <string name="regions">რეგიონები: </string>
     <string name="associated_regions">ასოცირებული რეგიონები</string>
+    <string name="store_house_io_title">შეტანა გატანა</string>
 </resources>

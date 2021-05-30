@@ -112,7 +112,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.deliveryMode = checked
         (activity as AppCompatActivity).supportActionBar?.title =
             if (checked)
-                resources.getString(R.string.mitana)
+                resources.getString(R.string.delivery)
             else
                 resources.getString(R.string.order_main)
 

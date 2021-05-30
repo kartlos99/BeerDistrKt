@@ -11,14 +11,11 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
@@ -26,7 +23,6 @@ import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
-import java.util.*
 
 class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
@@ -52,16 +48,22 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         return vBinding.root
     }
 
-    fun navigateTo(clientID: Int) {
+    private fun navigateTo(clientID: Int) {
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
         when (args.directionTo) {
-            ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
-                .actionObjListFragmentToAddOrdersFragment(clientID))
-            MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
-                .actionObjListFragmentToAddDeliveryFragment(clientID,null))
-            AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
-                .actionObjListFragmentToAmonaweriFragment(clientID))
+            ADD_ORDER -> vBinding.root.findNavController().navigate(
+                ObjListFragmentDirections
+                    .actionObjListFragmentToAddOrdersFragment(clientID)
+            )
+            MITANA -> vBinding.root.findNavController().navigate(
+                ObjListFragmentDirections
+                    .actionObjListFragmentToAddDeliveryFragment(clientID, null)
+            )
+            AMONAWERI -> vBinding.root.findNavController().navigate(
+                ObjListFragmentDirections
+                    .actionObjListFragmentToAmonaweriFragment(clientID)
+            )
 //                    else -> // show toast
         }
 
@@ -70,10 +72,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        100 waitFor {
-            (activity as AppCompatActivity).supportActionBar?.title =
-                resources.getString(R.string.choose_client)
-        }
         val objListObserver = Observer<List<Obieqti>> {
             Log.d("_clientList__size__", it.size.toString())
             initClientsList(it)
@@ -117,6 +115,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         clientListAdapter.onItemClick = ::navigateTo
         vBinding.clientsRecycler.adapter = clientListAdapter
 
+/*
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
         ) {
@@ -139,6 +138,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             }
 
         })
+*/
 
 //        touchHelper.attachToRecyclerView(vBinding.clientsRecycler)
     }

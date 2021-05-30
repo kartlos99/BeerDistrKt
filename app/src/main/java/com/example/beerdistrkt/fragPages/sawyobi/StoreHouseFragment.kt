@@ -53,7 +53,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         viewModel.onSaleTimeSelected(hourOfDay, minute)
     }
 
-    var pageTitleRes = R.string.sawyobi
+    var pageTitleRes = R.string.store_house
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,7 +86,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
     override fun onStart() {
         super.onStart()
-        pageTitleRes = R.string.sawyobi
+        pageTitleRes = R.string.store_house
         viewModel.setCurrentTime()
         if (StoreHouseListFragment.editingGroupID.isNotEmpty()) {
             viewModel.getEditingData(StoreHouseListFragment.editingGroupID)

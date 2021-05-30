@@ -2,9 +2,6 @@ package com.example.beerdistrkt.fragPages.usersList
 
 import android.os.Bundle
 import android.view.*
-import android.widget.RelativeLayout
-import android.widget.Switch
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +32,6 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.userslist)
         initViewModel()
     }
 

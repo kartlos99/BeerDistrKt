@@ -11,7 +11,7 @@
             android:id="@+id/userListFragment"
             android:checked="false"
             android:icon="@drawable/ic_persons_24"
-            android:title="@string/userslist" />
+            android:title="@string/title_users_list" />
 
         <item
             android:id="@+id/addBeerFragment"
@@ -21,7 +21,7 @@
         <item
             android:id="@+id/sawyobiFragment"
             android:icon="@drawable/ic_storage_24"
-            android:title="@string/sawyobi"/>
+            android:title="@string/store_house"/>
 
         <item
             android:id="@+id/sysClearFragment"

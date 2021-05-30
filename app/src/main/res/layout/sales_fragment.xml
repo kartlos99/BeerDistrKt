@@ -115,7 +115,7 @@
                             android:layout_width="352dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
-                            android:text="@string/gayidvebi"
+                            android:text="@string/sales"
                             android:textAlignment="center"
                             android:textSize="@dimen/textSize_4"
                             app:layout_constraintEnd_toEndOf="parent"

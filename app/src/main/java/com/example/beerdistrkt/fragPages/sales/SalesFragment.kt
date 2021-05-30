@@ -8,14 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.sales.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -69,8 +67,6 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.day_realizacia)
 
         vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
             requireContext(),
