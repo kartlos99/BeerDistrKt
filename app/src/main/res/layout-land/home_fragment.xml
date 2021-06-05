@@ -124,6 +124,27 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideline"/>
 
+        <ProgressBar
+            android:id="@+id/homeMainStoreHouseLoader"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:elevation="@dimen/gr_size_2"
+            android:background="#4FFF"
+            app:layout_constraintTop_toTopOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintStart_toStartOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintEnd_toEndOf="@id/homeStoreHouseRecycler"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/homeMainProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/gr_size_128"
+            android:elevation="@dimen/gr_size_2"
+            android:background="#6FFF"
+            android:visibility="gone"/>
+
         <ImageView
             android:id="@+id/homeHideStoreHouse"
             android:layout_width="wrap_content"

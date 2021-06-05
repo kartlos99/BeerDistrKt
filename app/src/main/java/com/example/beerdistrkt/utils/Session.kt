@@ -14,7 +14,8 @@ data class UserInfo(
     val userName: String,
     val displayName: String,
     val accessToken: String,
-    val accessTokenCreateTime: Long
+    val accessTokenCreateTime: Long,
+    val regions: List<WorkRegion>
 )
 
 class Session {
@@ -27,6 +28,7 @@ class Session {
     var accessToken: String? = null
     var accessTokenCreateTime = 0L
     var region: WorkRegion? = null
+    var regions: MutableList<WorkRegion> = mutableListOf()
 
     var loggedIn = false
 
@@ -46,7 +48,7 @@ class Session {
         accessTokenCreateTime = System.currentTimeMillis()
         permissions.clear()
         permissions.addAll(userdata.permissions)
-
+        regions = userdata.regions.toMutableList()
         SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
     }
 
@@ -76,7 +78,8 @@ class Session {
             userName ?: "",
             displayName ?: "",
             accessToken ?: "",
-            accessTokenCreateTime
+            accessTokenCreateTime,
+            regions
         )
     }
 
@@ -94,6 +97,7 @@ class Session {
             displayName = userdata.displayName
             accessToken = userdata.accessToken
             accessTokenCreateTime = userdata.accessTokenCreateTime
+            regions = userdata.regions.toMutableList()
         }
     }
 

@@ -20,6 +20,8 @@ class LoginViewModel : BaseViewModel() {
             ApeniApiService.getInstance().logIn(LoginRequest(username, password)),
             successWithData = {
                 loginResponseLiveData.value = ApiResponseState.Success(it)
+                Session.get().regions.clear()
+                Session.get().regions.addAll(it.regions)
             },
             responseFailure = {code, error ->
                 loginResponseLiveData.value = ApiResponseState.ApiError(code, error)
@@ -31,14 +33,7 @@ class LoginViewModel : BaseViewModel() {
 
     }
 
-    fun setUserData(data: LoginResponse, selectedRegion: WorkRegion? = null) {
-        selectedRegion?.let {
-            if (it.regionID != Session.get().region?.regionID) {
-                SharedPreferenceDataSource.getInstance().saveRegion(it)
-                SharedPreferenceDataSource.getInstance().clearVersions()
-            }
-            Session.get().region = it
-        }
+    fun setUserData(data: LoginResponse) {
         Session.get().justLoggedIn(data)
     }
 }

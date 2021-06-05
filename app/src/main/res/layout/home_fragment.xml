@@ -8,16 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/homeMainProgressBar"
-            android:layout_width="@dimen/gr_size_48"
-            android:layout_height="@dimen/gr_size_48"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnOrder"
             style="@style/mainBtnStyle"
@@ -148,6 +138,27 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/homeMainStoreHouseLoader"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:elevation="@dimen/gr_size_2"
+            android:background="#4FFF"
+            app:layout_constraintTop_toTopOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintStart_toStartOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintEnd_toEndOf="@id/homeStoreHouseRecycler"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/homeMainProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/gr_size_128"
+            android:elevation="@dimen/gr_size_2"
+            android:background="#6FFF"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

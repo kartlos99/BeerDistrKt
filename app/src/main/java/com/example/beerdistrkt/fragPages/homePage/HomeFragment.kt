@@ -1,9 +1,8 @@
 package com.example.beerdistrkt.fragPages.homePage
 
+import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -13,6 +12,7 @@ import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NON_POSITIVE
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
@@ -47,6 +47,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         btnOrder.setOnClickListener(this)
         btnSaleResult.setOnClickListener(this)
         btnSalesByClient.setOnClickListener(this)
@@ -58,6 +59,18 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         getComments()
         initViewModel()
         StoreHouseListFragment.editingGroupID = ""
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Session.get().isAccessTokenValid() && Session.get().region == null)
+            showRegionSelectorDialog(
+                Session.get().regions,
+                null
+            ) {
+                onRegionChange(it)
+            }
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {
@@ -76,7 +89,14 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             }
         })
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
-            initStoreHouseRecycler(it)
+            when (it) {
+                is ApiResponseState.Loading -> {
+                    homeMainStoreHouseLoader.visibleIf(it.showLoading)
+                }
+                is ApiResponseState.Success -> initStoreHouseRecycler(it.data)
+                else -> showToast(R.string.some_error)
+            }
+
         })
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
             initCommentsRecycler(it)
@@ -138,7 +158,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     homeHideStoreHouse.rotation = 180f
                 } else {
                     if (homeStoreHouseRecycler.adapter == null) {
-                        initStoreHouseRecycler(viewModel.barrelsListLiveData.value ?: listOf())
+                        initStoreHouseRecycler(viewModel.storeHouseData)
                     } else {
                         homeStoreHouseRecycler.show()
                         homeHideStoreHouse.rotation = 0f
@@ -162,5 +182,66 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     fun getComments() {
         if (Session.get().isAccessTokenValid())
             viewModel.getComments()
+    }
+
+    private fun onRegionChange(region: WorkRegion) {
+        if (Session.get().region == region) return
+        Session.get().region = region
+        viewModel.changeRegion(region)
+        getComments()
+        StoreHouseListFragment.editingGroupID = ""
+        setPageTitle(region.name)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.home_manu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mHomeSwitchRegion -> {
+                showRegionSelectorDialog(
+                    Session.get().regions,
+                    Session.get().region,
+                    true
+                ) {
+                    onRegionChange(it)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun showRegionSelectorDialog(
+        regions: List<WorkRegion>,
+        currentRegion: WorkRegion?,
+        cancelable: Boolean = false,
+        onComplete: (selectedRegion: WorkRegion) -> Unit
+    ) {
+        var selectedRegion: WorkRegion? = currentRegion
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setTitle(getString(R.string.choose_region_title))
+            .setCancelable(cancelable)
+            .setSingleChoiceItems(
+                regions.map { it.name }.toTypedArray(),
+                regions.indexOfFirst { it == currentRegion }
+            ) { _, i ->
+                selectedRegion = regions[i]
+            }
+            .setPositiveButton(R.string.ok) { _, _ -> }
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (selectedRegion == null)
+                showToast(R.string.choose_region_request)
+            else {
+                onComplete.invoke(selectedRegion!!)
+                alertDialog.dismiss()
+            }
+        }
     }
 }

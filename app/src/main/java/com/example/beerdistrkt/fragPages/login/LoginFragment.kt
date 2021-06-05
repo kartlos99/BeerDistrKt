@@ -108,16 +108,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     private fun afterSuccessResponse(data: LoginResponse) {
         when {
-            data.regions.size > 1 -> {
-                val lastWorkRegion = Session.get().region
-                if (Session.get().isLogOutDone() || !data.regions.contains(lastWorkRegion))
-                    showRegionSelectorDialog(data.regions) { selectedRegion ->
-                        proceedLogin(data, selectedRegion)
-                    }
-                else
-                    proceedLogin(data, null)
-            }
-            data.regions.size == 1 -> proceedLogin(data, data.regions.first())
+            data.regions.isNotEmpty() -> proceedLogin(data)
             else -> {
                 showToast(R.string.no_regions_accosiated)
                 viewLoginLoginBtn.isEnabled = true
@@ -125,8 +116,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
         }
     }
 
-    private fun proceedLogin(data: LoginResponse, selectedRegion: WorkRegion?) {
-        viewModel.setUserData(data, selectedRegion)
+    private fun proceedLogin(data: LoginResponse) {
+        viewModel.setUserData(data)
         loginToFirebase(data.username)
     }
 

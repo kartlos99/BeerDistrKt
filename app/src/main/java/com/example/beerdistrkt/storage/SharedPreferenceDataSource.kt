@@ -100,7 +100,7 @@ class SharedPreferenceDataSource(appContext: Context) {
         const val USERNAME = "username"
         const val PASS = "pass"
         const val MSG_DATE = "msg_date"
-        const val KEY_SESSION = "keySession"
+        const val KEY_SESSION = "keySession3"
         const val KEY_REGION = "keyRegion"
         const val KEY_VERSION = "vKey"
     }

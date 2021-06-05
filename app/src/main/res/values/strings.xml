@@ -25,6 +25,7 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="logout">Log Out</string>
+    <string name="need_logout">საჭიროებს გადატვირთვას</string>
     <string name="dasaxeleba">დასახელება</string>
     <string name="username">მომხმარებელი</string>
     <string name="password">პაროლი</string>
@@ -168,6 +169,7 @@
     <string name="registration_fail_firebase">FireBase Registration Failed.</string>
     <string name="orders_sum_title">შეკვეთების ჯამი</string>
     <string name="server_error">სერვერის შეცდომა</string>
+    <string name="some_error">მოხდა შეცდომა</string>
     <string name="ok">კარგი</string>
     <string name="data_saved">მონაცემები შენახულია</string>
     <string name="duplicate_client">ასეთი ობიექტი უკვე არსებობს ბაზაში!</string>
@@ -219,4 +221,7 @@
     <string name="regions">რეგიონები: </string>
     <string name="associated_regions">ასოცირებული რეგიონები</string>
     <string name="store_house_io_title">შეტანა გატანა</string>
+    <string name="add">დამატება</string>
+    <string name="home_def_title">მთავარი გვერდი</string>
+
 </resources>

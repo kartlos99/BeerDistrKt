@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.*
@@ -14,6 +15,7 @@ import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.waitFor
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -30,8 +32,10 @@ class HomeViewModel : BaseViewModel() {
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
-    private val _barrelsListLiveData = MutableLiveData<List<SimpleBeerRowModel>>()
-    val barrelsListLiveData: LiveData<List<SimpleBeerRowModel>>
+    val storeHouseData = mutableListOf<SimpleBeerRowModel>()
+
+    private val _barrelsListLiveData = MutableLiveData<ApiResponseState<List<SimpleBeerRowModel>>>()
+    val barrelsListLiveData: LiveData<ApiResponseState<List<SimpleBeerRowModel>>>
         get() = _barrelsListLiveData
 
     private val _commentsListLiveData = MutableLiveData<List<CommentModel>>()
@@ -59,6 +63,12 @@ class HomeViewModel : BaseViewModel() {
             ObjectCache.getInstance()
                 .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.name })
         }
+    }
+
+    fun changeRegion(selectedRegion: WorkRegion) {
+        SharedPreferenceDataSource.getInstance().saveRegion(selectedRegion)
+        SharedPreferenceDataSource.getInstance().clearVersions()
+        updateAll()
     }
 
     private fun getTableVersionsFromServer() {
@@ -98,6 +108,14 @@ class HomeViewModel : BaseViewModel() {
                 localVersionState = it
             }
         )
+    }
+
+    private fun updateAll() {
+        mainLoaderLiveData.value = true
+        numberOfUpdatingTables = 3
+        getObjects()
+        getPrices()
+        getUsers()
     }
 
     private fun saveVersion() {
@@ -238,13 +256,18 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun getStoreBalance() {
+        _barrelsListLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseBalance(
                 dateFormatDash.format(currentDate.time), 0
             ),
             successWithData = {
                 Log.d("store", it.empty.toString())
-                formAllBarrelsList(it)
+                300 waitFor { formAllBarrelsList(it) }
+            },
+            finally = {
+                if (!it)
+                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
@@ -266,7 +289,10 @@ class HomeViewModel : BaseViewModel() {
         }
         result.add(SimpleBeerRowModel(HomeFragment.emptyBarrelTitle, valueOfDiff))
 
-        _barrelsListLiveData.value = result
+        storeHouseData.clear()
+        storeHouseData.addAll(result)
+        _barrelsListLiveData.value = ApiResponseState.Loading(false)
+        _barrelsListLiveData.value = ApiResponseState.Success(result)
     }
 
     override fun onCleared() {
