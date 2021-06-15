@@ -68,7 +68,8 @@ class HomeViewModel : BaseViewModel() {
     fun changeRegion(selectedRegion: WorkRegion) {
         SharedPreferenceDataSource.getInstance().saveRegion(selectedRegion)
         SharedPreferenceDataSource.getInstance().clearVersions()
-        updateAll()
+        localVersionState = null
+        getTableVersionsFromServer()
     }
 
     private fun getTableVersionsFromServer() {

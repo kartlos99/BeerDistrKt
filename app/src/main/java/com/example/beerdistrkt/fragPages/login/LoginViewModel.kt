@@ -26,6 +26,7 @@ class LoginViewModel : BaseViewModel() {
             responseFailure = {code, error ->
                 loginResponseLiveData.value = ApiResponseState.ApiError(code, error)
             },
+            authFailure = {},
             finally = {
                 loginResponseLiveData.value = ApiResponseState.Loading(false)
             }

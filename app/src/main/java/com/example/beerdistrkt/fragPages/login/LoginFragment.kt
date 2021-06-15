@@ -54,11 +54,9 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             viewLoginLoginBtn.isEnabled = false
         }
 
-        if (Session.get().isUserLogged()) {
-            Session.get().clearSession()
-            SharedPreferenceDataSource.getInstance().saveUserName("")
-            SharedPreferenceDataSource.getInstance().savePassword("")
-        } else
+        if (Session.get().isUserLogged())
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+        else
             checkSavedPass()
 
         initViewModel()

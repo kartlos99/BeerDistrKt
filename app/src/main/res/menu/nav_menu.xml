@@ -34,7 +34,7 @@
             android:title="@string/change_pass"/>
 
         <item
-            android:id="@+id/loginFragment"
+            android:id="@+id/mLogOut"
             android:icon="@drawable/ic_logout_24"
             android:title="@string/logout" />
 

@@ -40,6 +40,11 @@ abstract class BaseViewModel : ViewModel() {
         Log.d("response_Fail", throwable.message!!)
     }
 
+    private fun onAuthFail() {
+        _apiFailureMutableLiveData.value = ApiResponseState.ApiError(401, "No Auth!")
+        Log.d("Auth_Fail", "should log out")
+    }
+
     private fun onResponseFailure(code: Int, error: String) {
         _apiFailureMutableLiveData.value = ApiResponseState.ApiError(code, error)
         Log.d("onServer_response_Fail", "Code: $code - Text: $error")
@@ -51,7 +56,7 @@ abstract class BaseViewModel : ViewModel() {
         successWithData: ((data: F) -> Unit)? = null,
         onConnectionFailure: (Throwable) -> Unit = ::showOnConnFailureDialog,
         failure: (t: Throwable) -> Unit = ::showFailureDialog,
-        authFailure: (() -> Unit)? = null,
+        authFailure: (() -> Unit)? = ::onAuthFail,
         responseFailure: (code: Int, error: String) -> Unit = ::onResponseFailure,
         finally: ((success: Boolean) -> Unit)? = null
     ) {

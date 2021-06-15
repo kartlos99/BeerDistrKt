@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.fragPages.login.LoginFragment
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -43,13 +44,15 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!Session.get().isAccessTokenValid() && this !is LoginFragment) {
+        if (
+            !Session.get().isAccessTokenValid()
+            && this !is LoginFragment
+            && this !is AmonaweriSubPageFrag // because it's placed on another fragment
+        )
             automatedLogout()
-        }
     }
 
     private fun automatedLogout() {
-        Session.get().loggedIn = false
         (activity as MainActivity).logOut()
     }
 

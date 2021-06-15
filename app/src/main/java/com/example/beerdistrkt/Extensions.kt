@@ -79,10 +79,13 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
                             successWithData(body.data)
                     }
                 } else {
-                    responseFailure(
-                        body?.errorCode ?: DataResponse.UnknownError,
-                        body?.errorText ?: DataResponse.UNKNOWN_ERROR
-                    )
+                    if (body?.errorCode == 401 && authFailure != null)
+                        authFailure.invoke()
+                    else
+                        responseFailure(
+                            body?.errorCode ?: DataResponse.UnknownError,
+                            body?.errorText ?: DataResponse.UNKNOWN_ERROR
+                        )
                 }
 
             } else {
