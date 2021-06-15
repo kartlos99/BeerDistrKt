@@ -13,9 +13,7 @@ import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.PrivateKey
-import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.iid.FirebaseInstanceId
@@ -52,6 +50,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 viewLoginPasswordField.text.toString()
             )
             viewLoginLoginBtn.isEnabled = false
+            viewLoginProgress.visibleIf(true)
         }
 
         if (Session.get().isUserLogged())
@@ -75,6 +74,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             viewLoginPasswordField.setText(password)
             viewModel.logIn(userName, password)
             viewLoginLoginBtn.isEnabled = false
+            viewLoginProgress.visibleIf(true)
         }
     }
 
@@ -89,16 +89,20 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                         )
                     }
                     viewLoginLoginBtn.isEnabled = false
+                    viewLoginProgress.visibleIf(true)
                     afterSuccessResponse(it.data)
                     viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                 }
                 is ApiResponseState.ApiError -> {
                     viewLoginLoginBtn.isEnabled = true
+                    viewLoginProgress.goAway()
                     showToast(it.errorText)
                 }
                 is ApiResponseState.Loading -> {
-                    if (!it.showLoading)
+                    if (!it.showLoading) {
                         viewLoginLoginBtn.isEnabled = true
+                        viewLoginProgress.goAway()
+                    }
                 }
             }
         })
@@ -110,6 +114,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             else -> {
                 showToast(R.string.no_regions_accosiated)
                 viewLoginLoginBtn.isEnabled = true
+                viewLoginProgress.goAway()
             }
         }
     }
@@ -161,6 +166,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     private fun onLoginSuccess() {
         viewLoginLoginBtn?.isEnabled = true
+        viewLoginProgress.goAway()
         actViewModel.updateNavHeader()
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }
