@@ -15,6 +15,7 @@ import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.usersList.UserListFragmentDirections
 import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.add_user_fragment.*
 
@@ -145,6 +146,10 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         viewModel.userRegionsLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> showRegions(it.data)
+                is ApiResponseState.ApiError -> {
+                    SharedPreferenceDataSource.getInstance().saveRegion(null)
+                    (activity as MainActivity).logOut()
+                }
             }
         }
     }
@@ -249,7 +254,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 else
                     viewModel.selectedRegions.remove(viewModel.regions[i])
             }
-            .setPositiveButton(R.string.ok) { _, _ ->
+            .setPositiveButton(R.string.common_save) { _, _ ->
                 viewModel.setNewRegions()
             }
             .setNegativeButton(R.string.cancel) { dialogInterface, i -> }

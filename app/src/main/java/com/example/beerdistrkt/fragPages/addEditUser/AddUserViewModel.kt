@@ -16,6 +16,10 @@ import kotlinx.coroutines.launch
 
 class AddUserViewModel(private val userID: String) : BaseViewModel() {
 
+    companion object {
+        const val REGION_RESTRICTION_KAY: Int = 234
+    }
+
     private val _addUserLiveData = MutableLiveData<ApiResponseState<String>>()
     val addUserLiveData: LiveData<ApiResponseState<String>>
         get() = _addUserLiveData
@@ -82,11 +86,25 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
     fun getRegionForUser() {
         sendRequest(
             ApeniApiService.getInstance().getAttachedRegions(userID),
-            successWithData = {
-                regions.clear()
-                regions.addAll(it)
+            successWithData = { regions ->
+                this.regions.clear()
+                this.regions.addAll(regions)
                 userRegionsLiveData.value =
-                    ApiResponseState.Success(regions.filter { r -> r.isAttached })
+                    ApiResponseState.Success(this.regions.filter { it.isAttached })
+
+                if (Session.get().userID == userID) {
+                    Session.get().regions.clear()
+                    Session.get().regions.addAll(regions.filter { it.isAttached }.map { it.toWorkRegion() })
+                    if (!this.regions
+                        .filter { it.isAttached }
+                        .map { it.ID }
+                        .contains(Session.get().region?.regionID ?: -1)
+                    ) {
+                        userRegionsLiveData.value =
+                            ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
+                    }
+
+                }
             }
         )
     }

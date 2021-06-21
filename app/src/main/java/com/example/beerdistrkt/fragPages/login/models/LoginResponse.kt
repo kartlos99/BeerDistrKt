@@ -31,6 +31,10 @@ data class AttachedRegion(
             attached = if (value) 1 else 0
             field = value
         }
+
+    fun toWorkRegion(): WorkRegion {
+        return WorkRegion(ID, name)
+    }
 }
 
 enum class UserType(val value: String) {

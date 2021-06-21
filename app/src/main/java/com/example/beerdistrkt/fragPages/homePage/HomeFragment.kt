@@ -47,7 +47,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
+
         btnOrder.setOnClickListener(this)
         btnSaleResult.setOnClickListener(this)
         btnSalesByClient.setOnClickListener(this)
@@ -64,13 +64,17 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        setHasOptionsMenu(Session.get().regions.size > 1)
         if (Session.get().isAccessTokenValid() && Session.get().region == null)
-            showRegionSelectorDialog(
-                Session.get().regions,
-                null
-            ) {
-                onRegionChange(it)
-            }
+            if (Session.get().regions.size == 1)
+                onRegionChange(Session.get().regions.first())
+            else
+                showRegionSelectorDialog(
+                    Session.get().regions,
+                    null
+                ) {
+                    onRegionChange(it)
+                }
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {

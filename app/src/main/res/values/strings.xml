@@ -223,5 +223,7 @@
     <string name="store_house_io_title">შეტანა გატანა</string>
     <string name="add">დამატება</string>
     <string name="home_def_title">მთავარი გვერდი</string>
+    <string name="common_save">შენახვა</string>
+    <string name="region_is_restricted_msg">გაგეტისათ მიმდინარე რეგიონზე წვდომა!</string>
 
 </resources>

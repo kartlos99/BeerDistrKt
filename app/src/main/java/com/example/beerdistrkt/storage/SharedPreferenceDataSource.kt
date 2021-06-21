@@ -74,8 +74,8 @@ class SharedPreferenceDataSource(appContext: Context) {
         else null
     }
 
-    fun saveRegion(region: WorkRegion) {
-        val data = moshiRegionAdapter.toJson(region)
+    fun saveRegion(region: WorkRegion?) {
+        val data = if (region == null) "" else moshiRegionAdapter.toJson(region)
         sharedPreference.edit().putString(KEY_REGION, data).apply()
     }
 
