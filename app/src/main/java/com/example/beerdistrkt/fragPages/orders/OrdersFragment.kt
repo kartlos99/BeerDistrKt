@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.utils.*
@@ -133,7 +134,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         super.onActivityCreated(savedInstanceState)
         initViewModel()
 
-        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.order_main)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.order_main)
     }
 
     private fun initViewModel() {
@@ -141,8 +143,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             when (it) {
                 is ApiResponseState.Success -> {
                     orderListSize = it.data.size
-                    ordersAdapter = ParentOrderAdapter(it.data, viewModel.barrelsList,
-                        viewModel::saveDistributorGroupState)
+                    ordersAdapter = ParentOrderAdapter(
+                        it.data, viewModel.barrelsList,
+                        viewModel::saveDistributorGroupState
+                    )
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
                     ordersAdapter.onMitanaClick = View.OnClickListener { view ->
                         view.findNavController().navigate(
@@ -167,14 +171,17 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         })
         viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                context?.showAskingDialog(
-                    null,
-                    R.string.confirm_delete_order,
-                    R.string.yes,
-                    R.string.no, R.style.ThemeOverlay_MaterialComponents_Dialog
-                ) {
-                    viewModel.deleteOrder(it)
-                }
+                if (Session.get().hasPermission(Permission.EditOrder)) {
+                    context?.showAskingDialog(
+                        null,
+                        R.string.confirm_delete_order,
+                        R.string.yes,
+                        R.string.no, R.style.ThemeOverlay_MaterialComponents_Dialog
+                    ) {
+                        viewModel.deleteOrder(it)
+                    }
+                } else
+                    showToast(R.string.no_permission_common)
                 viewModel.askForOrderDeleteLiveData.value = null
             }
         })
@@ -190,10 +197,13 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.editOrderLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
-                    val actionOrderEdit =
-                        OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(it.clientID)
-                    actionOrderEdit.orderID = it.ID
-                    vBinding.root.findNavController().navigate(actionOrderEdit)
+                    if (Session.get().hasPermission(Permission.EditOrder)) {
+                        val actionOrderEdit =
+                            OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(it.clientID)
+                        actionOrderEdit.orderID = it.ID
+                        vBinding.root.findNavController().navigate(actionOrderEdit)
+                    } else
+                        showToast(R.string.no_permission_common)
                 } else {
                     showToast(R.string.cannot_edit)
                 }
