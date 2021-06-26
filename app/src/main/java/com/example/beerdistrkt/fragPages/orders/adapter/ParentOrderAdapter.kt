@@ -208,10 +208,10 @@ class ParentOrderAdapter(
                     }
                 })
 
-                if (Session.get().userType == UserType.ADMIN
-                    || Session.get().userType == UserType.MANAGER
-                    || Session.get().userID == grItem.distributorID.toString()
-                )
+//                if (Session.get().userType == UserType.ADMIN
+//                    || Session.get().userType == UserType.MANAGER
+//                    || Session.get().userID == grItem.distributorID.toString()
+//                )
                     touchHelper.attachToRecyclerView(holder.itemView.viewOrderGroupRecycler)
 
                 holder.itemView.viewOrderGroupRecycler.layoutManager = layoutManager
