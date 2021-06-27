@@ -13,6 +13,7 @@ import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.orders.OrdersFragmentDirections
 import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NON_POSITIVE
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
@@ -75,6 +76,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 ) {
                     onRegionChange(it)
                 }
+
+            btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {
@@ -145,7 +148,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnOrder -> {
-                view.findNavController().navigate(R.id.action_homeFragment_to_ordersFragment)
+                if (Session.get().region?.regionID?.toInt() == 3)
+                    view.findNavController().navigate(
+                        HomeFragmentDirections.actionHomeFragmentToObjListFragment(MITANA)
+                    )
+                else
+                    view.findNavController().navigate(R.id.action_homeFragment_to_ordersFragment)
             }
             R.id.btnSaleResult -> {
                 view.findNavController()
@@ -195,6 +203,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         getComments()
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
+        btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
