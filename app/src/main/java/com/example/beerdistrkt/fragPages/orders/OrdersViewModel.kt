@@ -46,6 +46,8 @@ class OrdersViewModel : BaseViewModel() {
     val changeDistributorLiveData = MutableLiveData<Order?>(null)
     val onItemClickLiveData = MutableLiveData<Order?>(null)
     val onShowHistoryLiveData = SingleMutableLiveDataEvent<String>()
+    val allMappedUsers = mutableListOf<MappedUser>()
+    lateinit var clientRegionMap: Map<Int, List<Int>>
 
     var deliveryMode = false
 
@@ -64,6 +66,17 @@ class OrdersViewModel : BaseViewModel() {
         userLiveData.observeForever { usersList = it }
         barrelsLiveData.observeForever { barrelsList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+        getAllUsers()
+    }
+
+    private fun getAllUsers() {
+        sendRequest(
+            ApeniApiService.getInstance().getAllUsers(),
+            successWithData = {
+                allMappedUsers.clear()
+                allMappedUsers.addAll(it)
+            }
+        )
     }
 
     fun saveDistributorGroupState(distributorID: Int, state: Boolean) {
@@ -75,9 +88,14 @@ class OrdersViewModel : BaseViewModel() {
         ordersLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getOrders(dateFormatDash.format(orderDateCalendar.time)),
-            successWithData = {
+            successWithData = { ordersDto ->
+                clientRegionMap = ordersDto.groupBy {
+                    it.clientID
+                }.mapValues {
+                    it.value.first().availableRegions
+                }
                 listOfGroupedOrders.clear()
-                listOfGroupedOrders.addAll(groupOrderByDistributor(it.map { orderDTO ->
+                listOfGroupedOrders.addAll(groupOrderByDistributor(ordersDto.map { orderDTO ->
                     orderDTO.toPm(
                         clients,
                         beers,
@@ -172,17 +190,28 @@ class OrdersViewModel : BaseViewModel() {
         )
     }
 
-    fun getDistributorsArray(): Array<String> {
-        return usersList.map {
-            it.username
+    var distributorsList = listOf<MappedUser>()
+
+    fun getDistributorsArray(clientID: Int): Array<String> {
+        distributorsList = allMappedUsers.filter {
+            clientRegionMap[clientID]?.contains(it.regionID) ?: false
+        }
+        return distributorsList.map {
+            if (clientRegionMap[clientID]?.size == 1)
+                it.username
+            else
+                "${it.username} / ${it.regionName}"
         }.toTypedArray()
     }
 
-    fun changeDistributor(orderID: Int, distributorPos: Int) {
-        val distributorID = usersList[distributorPos].id
+    fun changeDistributor(orderID: Int, selectedPos: Int) {
+        val selectedUser = distributorsList[selectedPos]
+        val distributorID = selectedUser.userID
+        val regionID = selectedUser.regionID
+
         val userID = Session.get().userID ?: return
         val orderChangeDistributor =
-            OrderUpdateDistributorRequestModel(orderID, distributorID, userID)
+            OrderUpdateDistributorRequestModel(orderID, distributorID, regionID, userID)
         sendRequest(
             ApeniApiService.getInstance().updateOrderDistributor(orderChangeDistributor),
             finally = {

@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.models
 
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.squareup.moshi.Json
 
 data class DebtResponse(
@@ -11,7 +12,8 @@ data class DebtResponse(
     val barrelTakenBack: Int,
     val needCleaning: Int,
     val passDays: Int,
-    val barrels: List<EmptyBarrel>
+    val barrels: List<EmptyBarrel>,
+    val availableRegions: List<WorkRegion>
 ) {
     fun getMoneyDebt() = price - payed
 
