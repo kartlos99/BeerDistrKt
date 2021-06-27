@@ -214,7 +214,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             if (order != null) {
                 requireContext().showListDialog(
                     R.string.choose_distributor,
-                    viewModel.getDistributorsArray()
+                    viewModel.getDistributorsArray(order.clientID)
                 ) { distributorPos ->
                     viewModel.changeDistributor(order.ID, distributorPos)
                 }

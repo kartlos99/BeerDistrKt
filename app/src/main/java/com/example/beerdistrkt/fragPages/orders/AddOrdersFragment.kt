@@ -28,7 +28,6 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
-import kotlinx.android.synthetic.main.add_delivery_fragment.*
 import kotlinx.android.synthetic.main.add_orders_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
@@ -115,16 +114,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             }
         })
 
-        val userAdapter = ArrayAdapter(
-            requireContext(),
-            R.layout.simple_dropdown_item,
-            viewModel.usersList.map { it.name }
-        )
-        vBinding.addOrderDistributorSpinner.adapter = userAdapter
-        vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
-        vBinding.addOrderDistributorSpinner.setSelection(
-            viewModel.usersList.map { it.id }.indexOf(Session.get().userName )
-        )
+        initDistributorSpinner()
 
         vBinding.addOrderStatusSpinner.adapter = ArrayAdapter(
             requireContext(),
@@ -146,6 +136,35 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 R.string.add_order
         )
         showDebt()
+    }
+
+    private fun initDistributorSpinner() {
+        val userAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.usersList.map { it.name }
+        )
+        vBinding.addOrderDistributorSpinner.adapter = userAdapter
+        vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
+        vBinding.addOrderDistributorSpinner.setSelection(
+            viewModel.usersList.map { it.id }.indexOf(Session.get().userName)
+        )
+    }
+
+    private fun initRegionSpinner() {
+        val regionAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.availableRegions.map { it.name }
+        )
+        vBinding.addOrderDistributorRegionSpinner.apply {
+            adapter = regionAdapter
+            onItemSelectedListener = this@AddOrdersFragment
+            setSelection(
+                viewModel.availableRegions.map { it.regionID }
+                    .indexOf(Session.get().region?.regionID)
+            )
+        }
     }
 
     private fun getTempOrderItem(): TempBeerItemModel {
@@ -224,6 +243,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             if (it is ApiResponseState.Success) {
                 addOrderWarning.text = getString(R.string.need_cleaning, it.data.passDays)
                 addOrderWarning.visibleIf(it.data.needCleaning == 1)
+                initRegionSpinner()
+                addOrderDistributorRegionTitle.visibleIf(it.data.availableRegions.size > 1)
+                addOrderDistributorRegionSpinner.visibleIf(it.data.availableRegions.size > 1)
             }
         })
     }
@@ -383,6 +405,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
             R.id.addOrderStatusSpinner ->
                 viewModel.selectedStatus = viewModel.orderStatusList[position]
+            R.id.addOrderDistributorRegionSpinner -> {
+                viewModel.updateDistributorList(viewModel.availableRegions[position].regionID.toInt())
+                initDistributorSpinner()
+            }
         }
     }
 }

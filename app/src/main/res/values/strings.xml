@@ -51,6 +51,7 @@
     <string name="change_pass_done">პაროლი შეიცვალა!</string>
     <string name="group">დაჯგუფება</string>
     <string name="choose_distributor">ვის დაევალოს:</string>
+    <string name="choose_distributor_region">რომელ რეგიონს:</string>
     <string name="delete">წაშლა</string>
     <string name="saorient_fasi">საორენტიაციო ფასი</string>
     <string name="uaryofa">უარყოფა</string>

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
@@ -25,11 +26,12 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
-    val usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
+    var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?: listOf()
 
     var selectedCan: CanModel? = null
     var selectedDistributorID: Int = 0
+    var selectedDistributorRegionID: Int = 0
     var selectedStatus = OrderStatus.ACTIVE
     val orderStatusList = listOf(OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
@@ -55,20 +57,51 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     val orderItemEditLiveData = MutableLiveData<TempBeerItemModel?>()
     var editingOrderItemID = -1
 
+    lateinit var availableRegions: List<WorkRegion>
+    private val allMappedUsers = mutableListOf<MappedUser>()
+
     init {
         Log.d("addOrderVM", clientID.toString())
-        getOrder(editingOrderID)
+
         clientsLiveData.observeForever { clients = it }
         getClient()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
         getDebt()
+        getAllUsers()
+    }
+
+    private fun getAllUsers() {
+        sendRequest(
+            ApeniApiService.getInstance().getAllUsers(),
+            successWithData = {
+                allMappedUsers.clear()
+                allMappedUsers.addAll(it)
+            }
+        )
+    }
+
+    fun updateDistributorList(selectedRegionID: Int) {
+        selectedDistributorRegionID = selectedRegionID
+        usersList = allMappedUsers.filter {
+            it.regionID == selectedRegionID
+        }.map {
+            User(
+                it.userID.toString(),
+                it.username,
+                it.userDisplayName,
+                "", "", "", "", ""
+            )
+        }
     }
 
     private fun getDebt(){
         sendRequest(
             ApeniApiService.getInstance().getDebt(clientID),
             successWithData = {
+                availableRegions = it.availableRegions
+                selectedDistributorRegionID = Session.get().region?.regionID?.toInt() ?: availableRegions.first().regionID.toInt()
                 getDebtLiveData.value = ApiResponseState.Success(it)
+                getOrder(editingOrderID)
             }
         )
     }
@@ -133,6 +166,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             OrderStatus.ACTIVE.data,
             selectedDistributorID,
             clientID,
+            selectedDistributorRegionID,
             comment,
             Session.get().userID ?: "0",
             orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0") }
@@ -156,6 +190,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             selectedStatus.data,
             selectedDistributorID,
             clientID,
+            selectedDistributorRegionID,
             comment,
             Session.get().userID ?: "0",
             orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0") }

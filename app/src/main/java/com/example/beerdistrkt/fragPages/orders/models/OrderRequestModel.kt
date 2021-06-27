@@ -6,6 +6,7 @@ data class OrderRequestModel(
     val orderStatus: Int,
     val distributorID: Int,
     val clientID: Int,
+    val regionID: Int,
     val comment: String? = null,
     val modifyUserID: String,
     val items: List<Item>

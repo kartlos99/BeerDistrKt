@@ -16,7 +16,8 @@ data class OrderDTO(
     val needCleaning: Int,
     val passDays: Int,
     val items: List<Item>,
-    val sales: List<Sales>
+    val sales: List<Sales>,
+    val availableRegions: List<Int>
 ) {
     data class Item(
         val ID: Int,

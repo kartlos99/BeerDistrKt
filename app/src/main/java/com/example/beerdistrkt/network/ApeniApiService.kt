@@ -236,6 +236,9 @@ interface ApeniApiService {
     @GET("user/getAttachedRegions.php")
     fun getAttachedRegions(@Query("userID") userID: String): Call<DataResponse<List<AttachedRegion>>>
 
+    @GET("user/getAllUsers.php")
+    fun getAllUsers(): Call<DataResponse<List<MappedUser>>>
+
     // Sales
     @POST("sales/add.php")
     fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>

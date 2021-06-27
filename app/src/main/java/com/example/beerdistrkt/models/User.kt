@@ -53,3 +53,12 @@ class Useri(var id: Int, var username: String) : Serializable {
     }
 
 }
+
+data class MappedUser(
+    val ID: Int,
+    val userID: Int,
+    val regionID: Int,
+    val username: String,
+    val userDisplayName: String,
+    val regionName: String
+)
