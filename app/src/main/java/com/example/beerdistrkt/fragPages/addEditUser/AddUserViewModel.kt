@@ -20,6 +20,7 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
         const val REGION_RESTRICTION_KAY: Int = 234
     }
 
+    private var shouldSave: Boolean = false
     private val _addUserLiveData = MutableLiveData<ApiResponseState<String>>()
     val addUserLiveData: LiveData<ApiResponseState<String>>
         get() = _addUserLiveData
@@ -94,11 +95,16 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
 
                 if (Session.get().userID == userID) {
                     Session.get().regions.clear()
-                    Session.get().regions.addAll(regions.filter { it.isAttached }.map { it.toWorkRegion() })
+                    Session.get().regions.addAll(regions.filter { it.isAttached }
+                        .map { it.toWorkRegion() })
+                    if (shouldSave) {
+                        shouldSave = false
+                        Session.get().saveSession()
+                    }
                     if (!this.regions
-                        .filter { it.isAttached }
-                        .map { it.ID }
-                        .contains(Session.get().region?.regionID ?: -1)
+                            .filter { it.isAttached }
+                            .map { it.ID }
+                            .contains(Session.get().region?.regionID ?: -1)
                     ) {
                         userRegionsLiveData.value =
                             ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
@@ -127,6 +133,7 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().setRegions(request),
             successWithData = {
+                shouldSave = true
                 getRegionForUser()
             }
         )

@@ -105,6 +105,10 @@ class Session {
         return permissions.contains(permission)
     }
 
+    fun saveSession() {
+        SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
+    }
+
     companion object {
         private var session: Session? = null
         const val SESSION_DURATION: Long = 60 * 60 * 1000
