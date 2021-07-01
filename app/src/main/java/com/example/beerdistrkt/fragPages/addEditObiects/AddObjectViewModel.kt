@@ -22,13 +22,14 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
     val selectedRegions = mutableListOf<AttachedRegion>()
 
     init {
-        Log.d("ID", "clientID $clientID")
-        if (clientID > 0) {
-            ioScope.launch {
-                clientObject = database.getObiectsWithPrices(clientID)
-                delay(50)
-                uiScope.launch {
-                    clientObjectLiveData.value = clientObject
+        beersLiveData.observeForever {
+            if (clientID > 0) {
+                ioScope.launch {
+                    clientObject = database.getObiectsWithPrices(clientID)
+                    delay(50)
+                    uiScope.launch {
+                        clientObjectLiveData.value = clientObject
+                    }
                 }
             }
         }

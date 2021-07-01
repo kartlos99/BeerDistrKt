@@ -77,7 +77,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     ): View? {
         vBinding = AddDeliveryFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
-        initBeerRecycler()
+
         return vBinding.root
     }
 
@@ -164,7 +164,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner, Observer {
-            beerAdapter.setData(it)
+            initBeerRecycler(it)
         })
         viewModel.saleItemsLiveData.observe(viewLifecycleOwner, Observer {
             resetForm()
@@ -424,11 +424,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
 
-    private fun initBeerRecycler() {
-        vBinding.addDeliveryBeerRecycler.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        beerAdapter.setData(viewModel.beerList)
-        vBinding.addDeliveryBeerRecycler.adapter = beerAdapter
+    private fun  initBeerRecycler(beerList: List<BeerModel>) {
+        beerAdapter.setData(beerList)
+        vBinding.addDeliveryBeerRecycler.apply {
+            layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = beerAdapter
+        }
         snapHelper.attachToRecyclerView(vBinding.addDeliveryBeerRecycler)
         vBinding.addDeliveryBeerListIndicator.pager =
             getIndicatorPager(vBinding.addDeliveryBeerRecycler)
