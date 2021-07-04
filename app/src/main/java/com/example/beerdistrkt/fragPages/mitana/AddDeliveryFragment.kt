@@ -77,7 +77,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     ): View? {
         vBinding = AddDeliveryFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
-
+        initBeerRecycler()
         return vBinding.root
     }
 
@@ -164,7 +164,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner, Observer {
-            initBeerRecycler(it)
+            beerAdapter.setData(it)
         })
         viewModel.saleItemsLiveData.observe(viewLifecycleOwner, Observer {
             resetForm()
@@ -423,9 +423,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
     }
 
-
-    private fun  initBeerRecycler(beerList: List<BeerModel>) {
-        beerAdapter.setData(beerList)
+    private fun  initBeerRecycler() {
+        beerAdapter.setData(viewModel.beerList)
         vBinding.addDeliveryBeerRecycler.apply {
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

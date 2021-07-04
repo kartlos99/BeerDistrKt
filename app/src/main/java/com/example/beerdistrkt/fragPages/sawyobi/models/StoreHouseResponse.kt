@@ -17,3 +17,13 @@ data class StoreHouseResponse(
         val saleCount: Int
     )
 }
+
+data class GlobalStorageModel(
+    val id: Int,
+    val barrelName: String,
+    val initialAmount: Int,
+    val globalIncome: Int,
+    val globalOutput: Int,
+) {
+    fun getBalance() = initialAmount + globalIncome - globalOutput
+}

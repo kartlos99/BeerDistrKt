@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.fragPages.login
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,8 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
-
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.*
 import com.google.firebase.auth.FirebaseAuth
@@ -171,29 +168,4 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }
 
-    private fun showRegionSelectorDialog(
-        regions: List<WorkRegion>,
-        onComplete: (selectedRegion: WorkRegion) -> Unit
-    ) {
-        var selectedRegion: WorkRegion? = null
-        val builder = AlertDialog.Builder(requireContext())
-        builder
-            .setTitle(getString(R.string.choose_region_title))
-            .setCancelable(false)
-            .setSingleChoiceItems(regions.map { it.name }.toTypedArray(), -1) { _, i ->
-                selectedRegion = regions[i]
-            }
-            .setPositiveButton(R.string.ok) { _, _ -> }
-
-        val alertDialog = builder.create()
-        alertDialog.show()
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            if (selectedRegion == null)
-                showToast(R.string.choose_region_request)
-            else {
-                onComplete.invoke(selectedRegion!!)
-                alertDialog.dismiss()
-            }
-        }
-    }
 }

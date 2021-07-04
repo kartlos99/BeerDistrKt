@@ -15,12 +15,16 @@ data class LoginResponse(
 
 data class WorkRegion(
     val regionID: String,
-    val name: String
-)
+    val name: String,
+    val ownStorage: Int
+) {
+    fun hasOwnStorage(): Boolean = ownStorage == 1
+}
 
 data class AttachedRegion(
     val ID: String,
     val name: String,
+    val ownStorage: Int,
     var attached: Int
 ) {
     var isAttached: Boolean = false
@@ -33,7 +37,7 @@ data class AttachedRegion(
         }
 
     fun toWorkRegion(): WorkRegion {
-        return WorkRegion(ID, name)
+        return WorkRegion(ID, name, ownStorage)
     }
 }
 

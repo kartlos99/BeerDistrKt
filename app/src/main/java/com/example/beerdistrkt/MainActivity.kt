@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         vBinding.navView.menu.getItem(1).isEnabled =
             Session.get().hasPermission(Permission.AddEditUser)
         vBinding.navView.menu.getItem(2).isEnabled = false
+        vBinding.navView.menu.getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
         vBinding.navView.menu.getItem(7).title = BuildConfig.VERSION_NAME
     }
 

@@ -30,6 +30,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     override val viewModel: HomeViewModel by lazy {
         getViewModel { HomeViewModel() }
     }
+    lateinit var actViewModel: MainActViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +45,11 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 //        lifecycleOwner = this
 
         return inflater.inflate(R.layout.home_fragment, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        actViewModel = (activity as MainActivity).viewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +83,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     onRegionChange(it)
                 }
 
-            btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {
@@ -140,7 +146,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             barrelsAmountBoldStyle = BOLD_STYLE_NON_POSITIVE
         }
         adapter.onClick = View.OnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
+            if (Session.get().region?.hasOwnStorage() == true)
+                findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
         }
         homeStoreHouseRecycler.adapter = adapter
     }
@@ -204,6 +211,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
         btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        actViewModel.updateNavHeader()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

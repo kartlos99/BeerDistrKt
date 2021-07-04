@@ -258,6 +258,13 @@ class HomeViewModel : BaseViewModel() {
 
     fun getStoreBalance() {
         _barrelsListLiveData.value = ApiResponseState.Loading(true)
+        if (Session.get().region?.hasOwnStorage() == true)
+            getRegionBalance()
+        else
+            getGlobalBalance()
+    }
+
+    private fun getRegionBalance() {
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseBalance(
                 dateFormatDash.format(currentDate.time), 0
@@ -265,6 +272,30 @@ class HomeViewModel : BaseViewModel() {
             successWithData = {
                 Log.d("store", it.empty.toString())
                 300 waitFor { formAllBarrelsList(it) }
+            },
+            finally = {
+                if (!it)
+                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
+            }
+        )
+    }
+
+    private fun getGlobalBalance() {
+        sendRequest(
+            ApeniApiService.getInstance().getGlobalBalance(
+                dateFormatDash.format(currentDate.time)
+            ),
+            successWithData = {
+                val valueOfDiff = mutableMapOf<Int, Int>()
+                it.forEach { globalModel ->
+                    valueOfDiff[globalModel.id] = globalModel.getBalance()
+                }
+                storeHouseData.clear()
+                storeHouseData.addAll(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
+                300 waitFor {
+                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
+                    _barrelsListLiveData.value = ApiResponseState.Success(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
+                }
             },
             finally = {
                 if (!it)

@@ -16,6 +16,7 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
@@ -212,6 +213,9 @@ interface ApeniApiService {
 
     @GET("storeHouse/getioList.php")
     fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<List<IoModel>>>
+
+    @GET("storeHouse/getGlobalBalance.php")
+    fun getGlobalBalance(@Query("date") date: String): Call<DataResponse<List<GlobalStorageModel>>>
 
     // other
     @GET("other/getCleaningList.php")
