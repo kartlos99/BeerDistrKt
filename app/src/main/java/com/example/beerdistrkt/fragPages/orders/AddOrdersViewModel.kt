@@ -159,6 +159,8 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     }
 
     fun addOrder(comment: String, isChecked: Boolean) {
+        if (callIsBlocked) return
+        callIsBlocked = true
 
         val orderRequestModel = OrderRequestModel(
             0,
@@ -184,6 +186,9 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     }
 
     fun editOrder(comment: String, isChecked: Boolean) {
+        if (callIsBlocked) return
+        callIsBlocked = true
+
         val orderRequestModel = OrderRequestModel(
             editingOrderID,
             dateFormatDash.format(orderDateCalendar.time),

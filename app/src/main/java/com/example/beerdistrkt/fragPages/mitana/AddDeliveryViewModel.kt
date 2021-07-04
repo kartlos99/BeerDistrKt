@@ -101,6 +101,9 @@ class AddDeliveryViewModel(
     }
 
     fun onDoneClick(deliveryDataComment: String) {
+        if (callIsBlocked) return
+        callIsBlocked = true
+
         val saleRequestModel = SaleRequestModel(
             clientID,
             Session.get().getUserID(),

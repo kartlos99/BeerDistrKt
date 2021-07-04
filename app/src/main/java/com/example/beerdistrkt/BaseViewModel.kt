@@ -23,6 +23,15 @@ abstract class BaseViewModel : ViewModel() {
     protected var loadingCounter = 0
     val isLoading get() = loadingCounter != 0
 
+    var callIsBlocked = false
+        set(value) {
+            if (value)
+                2000 waitFor {
+                    field = false
+                }
+            field = value
+        }
+
     private val _apiFailureMutableLiveData = MutableLiveData<ApiResponseState<Nothing>>()
     val apiFailureLiveData: LiveData<ApiResponseState<Nothing>>
         get() = _apiFailureMutableLiveData

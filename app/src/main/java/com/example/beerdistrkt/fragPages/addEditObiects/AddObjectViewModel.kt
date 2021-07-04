@@ -36,6 +36,8 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
     }
 
     fun addClient(clientData: ObiectWithPrices) {
+        if (callIsBlocked) return
+        callIsBlocked = true
 
         if (clientID == 0) {
             clientSaveMutableLiveData.value = ApiResponseState.Loading(true)
