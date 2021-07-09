@@ -65,9 +65,11 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
             }
             if (pagesAdapter?.fragmentM?.updateAnotherPage == null) {
                 pagesAdapter?.fragmentM?.updateAnotherPage = {
+                    showDebt()
                     pagesAdapter?.fragmentK?.updateData()
                 }
                 pagesAdapter?.fragmentK?.updateAnotherPage = {
+                    showDebt()
                     pagesAdapter?.fragmentM?.updateData()
                 }
             }
