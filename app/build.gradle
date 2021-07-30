@@ -45,22 +45,6 @@ android {
             resValue "string", "notif_channel_id", "channel_id_tb"
             buildConfigField "String", "SERVER_URL", '"https://apeni.ge/mr/mobile/"'
         }
-        dev_kh {
-            dimension "version"
-            applicationIdSuffix ".dev.kh"
-            resValue "string", "app_name", "Beer.dev.kh"
-            resValue "string", "notif_channel_name", "channel_kh"
-            resValue "string", "notif_channel_id", "channel_id_kh"
-            buildConfigField "String", "SERVER_URL", '"http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"'
-        }
-        production_kh {
-            dimension "version"
-            applicationIdSuffix ".kh"
-            resValue "string", "app_name", "Beer.kh"
-            resValue "string", "notif_channel_name", "channel_kh"
-            resValue "string", "notif_channel_id", "channel_id_kh"
-            buildConfigField "String", "SERVER_URL", '"https://apeni.ge/tbilisi/mobile/"'
-        }
     }
 
     dataBinding {
