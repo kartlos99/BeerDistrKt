@@ -11,13 +11,11 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.dialogs.XarjebiDialog
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.utils.Session
 import kotlinx.android.synthetic.main.fragment_expense.*
-import kotlinx.android.synthetic.main.sawyobi_fragment.*
 import java.util.*
 
 class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
@@ -70,7 +68,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                 viewModel.userMap[it.distrID]!![0].username,
                 canDel
             ) { recID ->
-                viewModel.deleteXarji(
+                viewModel.deleteExpense(
                     DeleteRequest(
                         recID,
                         "xarjebi",
@@ -103,7 +101,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                 } else {
                     try {
                         val am = amount.toFloat()
-                        viewModel.addXarji(comment, am.toString())
+                        viewModel.addExpense(comment, am.toString())
                     } catch (e: NumberFormatException) {
                         Log.d(SalesFragment.TAG, e.toString())
                         showToast(getString(R.string.msg_invalid_format))

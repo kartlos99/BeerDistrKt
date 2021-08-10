@@ -47,7 +47,7 @@ class OrdersViewModel : BaseViewModel() {
     val onItemClickLiveData = MutableLiveData<Order?>(null)
     val onShowHistoryLiveData = SingleMutableLiveDataEvent<String>()
     val allMappedUsers = mutableListOf<MappedUser>()
-    lateinit var clientRegionMap: Map<Int, List<Int>>
+    private lateinit var clientRegionMap: Map<Int, List<Int>>
 
     var deliveryMode = false
 
@@ -190,12 +190,17 @@ class OrdersViewModel : BaseViewModel() {
         )
     }
 
-    var distributorsList = listOf<MappedUser>()
+    private var distributorsList = listOf<MappedUser>()
 
     fun getDistributorsArray(clientID: Int): Array<String> {
-        distributorsList = allMappedUsers.filter {
-            clientRegionMap[clientID]?.contains(it.regionID) ?: false
-        }
+        distributorsList = allMappedUsers
+            .filter {
+                it.userStatus == UserStatus.ACTIVE &&
+                        clientRegionMap[clientID]?.contains(it.regionID) ?: false
+            }
+            .sortedBy {
+                it.username
+            }
         return distributorsList.map {
             if (clientRegionMap[clientID]?.size == 1)
                 it.username

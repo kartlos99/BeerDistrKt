@@ -19,24 +19,21 @@ import kotlin.collections.ArrayList
 
 class SalesViewModel : BaseViewModel() {
 
-    val TAG = "Sales_VM"
-    var takeMoney = mutableListOf<MoneyInfo>()
+    private var takeMoney = mutableListOf<MoneyInfo>()
     var priceSum = 0.0
-    val xarjebi: ArrayList<Xarji> = ArrayList()
+    val expenses: ArrayList<Xarji> = ArrayList()
 
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
+    private val barrelsList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
-    val usersList = mutableListOf(User.getBaseUser())
-    private val realUsersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
-        ?: listOf()
+    val usersList = mutableListOf<User>()
 
-    private val _deleteXarjiLiveData = MutableLiveData<ApiResponseState<String>>()
-    val deleteXarjiLiveData: LiveData<ApiResponseState<String>>
-        get() = _deleteXarjiLiveData
+    private val _deleteExpenseLiveData = MutableLiveData<ApiResponseState<String>>()
+    val deleteExpenseLiveData: LiveData<ApiResponseState<String>>
+        get() = _deleteExpenseLiveData
 
-    private val _addXarjiLiveData = MutableLiveData<ApiResponseState<String>>()
-    val addXarjiLiveData: LiveData<ApiResponseState<String>>
-        get() = _addXarjiLiveData
+    private val _addExpenseLiveData = MutableLiveData<ApiResponseState<String>>()
+    val addExpanseLiveData: LiveData<ApiResponseState<String>>
+        get() = _addExpenseLiveData
 
     private val _selectedDayLiveData = MutableLiveData<String>()
     val selectedDayLiveData: LiveData<String>
@@ -89,10 +86,18 @@ class SalesViewModel : BaseViewModel() {
     }
 
     init {
-        usersList.addAll(realUsersList)
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
-
         getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
+    }
+
+    fun formUsersList() {
+        usersList.clear()
+        usersList.add(User.getBaseUser())
+        usersList.addAll(
+            ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
+                ?.sortedBy { it.username }
+                ?: listOf()
+        )
     }
 
     private fun getDayInfo(date: String, distributorID: Int) {
@@ -101,9 +106,9 @@ class SalesViewModel : BaseViewModel() {
             successWithData = {
                 val sales: ArrayList<SaleInfo> = ArrayList()
                 sales.addAll(it.sale)
-                xarjebi.clear()
-                xarjebi.addAll(it.xarji)
-                _expenseLiveData.value = xarjebi
+                expenses.clear()
+                expenses.addAll(it.xarji)
+                _expenseLiveData.value = expenses
 
                 priceSum = sales.sumByDouble { obj -> obj.price }
 
@@ -113,7 +118,7 @@ class SalesViewModel : BaseViewModel() {
 
                 val barrelIOList = it.barrels
                 barrelIOList.forEach { bIO ->
-                    bIO.barrelName = cansList.find { can -> can.id == bIO.canTypeID }?.name
+                    bIO.barrelName = barrelsList.find { can -> can.id == bIO.canTypeID }?.name
                 }
                 _barrelsLiveData.value = barrelIOList
                 _realizationDayLiveData.value = it
@@ -128,34 +133,35 @@ class SalesViewModel : BaseViewModel() {
     fun getCashAmount(): Double {
         return takeMoney.find { it.paymentType == PaymentType.Cash }?.amount ?: .0
     }
+
     fun getTransferAmount(): Double {
         return takeMoney.find { it.paymentType == PaymentType.Transfer }?.amount ?: .0
     }
 
-    fun deleteXarji(request: DeleteRequest) {
+    fun deleteExpense(request: DeleteRequest) {
         sendRequest(
             apiRequest = ApeniApiService.getInstance().deleteRecord(request),
             success = {
-                Log.d(TAG, "saccsesfuli Deleted")
+                Log.d(TAG, "successfully Deleted")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    xarjebi.removeIf { x -> x.id == request.recordID }
+                    expenses.removeIf { x -> x.id == request.recordID }
                 } else {
-                    for (xarji in xarjebi) {
-                        if (xarji.id == request.recordID) {
-                            xarjebi.remove(xarji)
+                    for (expense in expenses) {
+                        if (expense.id == request.recordID) {
+                            expenses.remove(expense)
                         }
                     }
                 }
-                _expenseLiveData.value = xarjebi
-                _deleteXarjiLiveData.value = ApiResponseState.Success("")
+                _expenseLiveData.value = expenses
+                _deleteExpenseLiveData.value = ApiResponseState.Success("")
             },
             finally = {
-                Log.d(TAG, "saccsesfuli Deleted = $it")
+                Log.d(TAG, "successfully Deleted = $it")
             }
         )
     }
 
-    fun addXarji(comment: String, amount: String) {
+    fun addExpense(comment: String, amount: String) {
         Log.d(TAG, " comm $amount")
         sendRequest(
             ApeniApiService.getInstance().addXarji(
@@ -168,7 +174,7 @@ class SalesViewModel : BaseViewModel() {
 
             ),
             successWithData = {
-                xarjebi.add(
+                expenses.add(
                     Xarji(
                         comment,
                         Session.get().userID!!,
@@ -176,22 +182,31 @@ class SalesViewModel : BaseViewModel() {
                         amount = amount.toFloat()
                     )
                 )
-                _expenseLiveData.value = xarjebi
-                _addXarjiLiveData.value = ApiResponseState.Success("")
+                _expenseLiveData.value = expenses
+                _addExpenseLiveData.value = ApiResponseState.Success("")
             },
             responseFailure = { i: Int, s: String ->
-                _addXarjiLiveData.value = ApiResponseState.ApiError(i, s)
+                _addExpenseLiveData.value = ApiResponseState.ApiError(i, s)
             }
         )
     }
 
-    fun addXarjiComplited() {
-        if (_addXarjiLiveData.value !is ApiResponseState.Sleep)
-            _addXarjiLiveData.value = ApiResponseState.Sleep
+    fun addExpenseCompleted() {
+        if (_addExpenseLiveData.value !is ApiResponseState.Sleep)
+            _addExpenseLiveData.value = ApiResponseState.Sleep
     }
 
-    fun deleteXarjiComplited() {
-        if (_deleteXarjiLiveData.value !is ApiResponseState.Sleep)
-            _deleteXarjiLiveData.value = ApiResponseState.Sleep
+    fun deleteExpenseCompleted() {
+        if (_deleteExpenseLiveData.value !is ApiResponseState.Sleep)
+            _deleteExpenseLiveData.value = ApiResponseState.Sleep
+    }
+
+    fun setCurrentDate() {
+        calendar = Calendar.getInstance()
+        prepareData()
+    }
+
+    companion object {
+        const val TAG = "Sales_VM"
     }
 }

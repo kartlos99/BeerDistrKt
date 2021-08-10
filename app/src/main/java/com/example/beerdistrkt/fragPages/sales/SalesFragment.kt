@@ -30,7 +30,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     private lateinit var vBinding: SalesFragmentBinding
     override val viewModel: SalesViewModel by lazy {
-        getActCtxViewModel<SalesViewModel>()
+        getActCtxViewModel()
     }
 
     private lateinit var expenseBottomSheet: BottomSheetBehavior<*>
@@ -42,7 +42,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = SalesFragmentBinding.inflate(inflater)
 
         vBinding.viewModel = viewModel
@@ -68,10 +68,11 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.formUsersList()
         vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            viewModel.usersList.map { it.name }
+            viewModel.usersList.map { it.username }
         )
         vBinding.salesDistributorsSpinner.onItemSelectedListener = this
         if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
@@ -81,6 +82,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             vBinding.salesDistributorsSpinner.isEnabled = false
         }
         if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
+            viewModel.setCurrentDate()
             vBinding.salesSetDateBtn.isEnabled = false
             vBinding.salesDayBackBtn.isEnabled = false
             vBinding.salesDayForwardBtn.isEnabled = false
@@ -127,7 +129,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
             viewModel.formUserMap(it)
         })
-        viewModel.deleteXarjiLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.deleteExpenseLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast(getString(R.string.msg_record_deleted))
@@ -137,9 +139,9 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                     showToast(getString(R.string.msg_record_not_deleted))
                 }
             }
-            viewModel.deleteXarjiComplited()
+            viewModel.deleteExpenseCompleted()
         })
-        viewModel.addXarjiLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.addExpanseLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
                     fillPageData()
@@ -149,7 +151,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                     showToast(getString(R.string.msg_record_not_added))
                 }
             }
-            viewModel.addXarjiComplited()
+            viewModel.addExpenseCompleted()
         })
         viewModel.barrelsLiveData.observe(viewLifecycleOwner, Observer {
             initBarrelBlock(it)
@@ -160,12 +162,12 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     }
 
     private fun fillPageData() {
-        val xarjiSum = viewModel.xarjebi.sumByDouble { it.amount.toDouble() }
-        val atHand = viewModel.getCashAmount() - xarjiSum
+        val expenseSum = viewModel.expenses.sumByDouble { it.amount.toDouble() }
+        val atHand = viewModel.getCashAmount() - expenseSum
         val transferAmount = viewModel.getTransferAmount()
         val frictionSize = resources.getDimensionPixelSize(R.dimen.sp14)
         vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum).setFrictionSize(frictionSize)
-        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, xarjiSum).setFrictionSize(frictionSize)
+        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, expenseSum).setFrictionSize(frictionSize)
         vBinding.salesAmountAtHand.text = resources.getString(R.string.format_gel, atHand).setFrictionSize(frictionSize)
         vBinding.salesTakenAmount.text = resources.getString(R.string.format_gel, viewModel.getCashAmount()).setFrictionSize(frictionSize)
         vBinding.salesTakenTransferAmount.text = resources.getString(R.string.format_gel, transferAmount).setFrictionSize(frictionSize)

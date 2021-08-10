@@ -42,7 +42,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = OrdersFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
         vBinding.viewModel = viewModel

@@ -26,8 +26,8 @@ class HomeViewModel : BaseViewModel() {
     private val cansLiveData = database.getCansList()
     lateinit var beerList: List<BeerModel>
 
-    var localVersionState: VcsResponse? = null
-    var numberOfUpdatingTables = 0
+    private var localVersionState: VcsResponse? = null
+    private var numberOfUpdatingTables = 0
 
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
@@ -61,7 +61,7 @@ class HomeViewModel : BaseViewModel() {
         }
         usersLiveData.observeForever { userList ->
             ObjectCache.getInstance()
-                .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.name })
+                .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.username })
         }
     }
 
@@ -109,14 +109,6 @@ class HomeViewModel : BaseViewModel() {
                 localVersionState = it
             }
         )
-    }
-
-    private fun updateAll() {
-        mainLoaderLiveData.value = true
-        numberOfUpdatingTables = 3
-        getObjects()
-        getPrices()
-        getUsers()
     }
 
     private fun saveVersion() {
@@ -329,7 +321,7 @@ class HomeViewModel : BaseViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(TAG, "onCleared job dacenselda")
+        Log.d(TAG, "onCleared job is Canceled")
         job.cancel()
     }
 

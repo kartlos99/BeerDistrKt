@@ -27,10 +27,11 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
-        ?: listOf()
+        ?.sortedBy { it.username }
+        ?: mutableListOf()
 
     var selectedCan: CanModel? = null
-    var selectedDistributorID: Int = 0
+    lateinit var selectedDistributor: User
     var selectedDistributorRegionID: Int = 0
     var selectedStatus = OrderStatus.ACTIVE
     val orderStatusList = listOf(OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED)
@@ -66,6 +67,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         clientsLiveData.observeForever { clients = it }
         getClient()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+        selectedDistributorRegionID = Session.get().region?.regionID?.toInt() ?: 0
         getDebt()
         getAllUsers()
     }
@@ -80,26 +82,11 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         )
     }
 
-    fun updateDistributorList(selectedRegionID: Int) {
-        selectedDistributorRegionID = selectedRegionID
-        usersList = allMappedUsers.filter {
-            it.regionID == selectedRegionID
-        }.map {
-            User(
-                it.userID.toString(),
-                it.username,
-                it.userDisplayName,
-                "", "", "", "", ""
-            )
-        }
-    }
-
-    private fun getDebt(){
+    private fun getDebt() {
         sendRequest(
             ApeniApiService.getInstance().getDebt(clientID),
             successWithData = {
                 availableRegions = it.availableRegions
-                selectedDistributorRegionID = Session.get().region?.regionID?.toInt() ?: availableRegions.first().regionID.toInt()
                 getDebtLiveData.value = ApiResponseState.Success(it)
                 getOrder(editingOrderID)
             }
@@ -126,8 +113,9 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         itemsList.forEach {
             orderItemsList.add(it)
         }
-        orderItemsLiveData.value =
-            orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
+        orderItemsLiveData.value = orderItemsList
+            .sortedBy { it.canType.name }
+            .sortedBy { it.beer.sortValue }
     }
 
     fun addOrderItemToList(item: TempBeerItemModel) {
@@ -142,8 +130,9 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             orderItemDuplicateLiveData.value = true
         else {
             orderItemsList.add(item)
-            orderItemsLiveData.value =
-                orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
+            orderItemsLiveData.value = orderItemsList
+                .sortedBy { it.canType.name }
+                .sortedBy { it.beer.sortValue }
         }
     }
 
@@ -166,7 +155,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             0,
             dateFormatDash.format(orderDateCalendar.time),
             OrderStatus.ACTIVE.data,
-            selectedDistributorID,
+            selectedDistributor.getIntID(),
             clientID,
             selectedDistributorRegionID,
             comment,
@@ -193,7 +182,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             editingOrderID,
             dateFormatDash.format(orderDateCalendar.time),
             selectedStatus.data,
-            selectedDistributorID,
+            selectedDistributor.getIntID(),
             clientID,
             selectedDistributorRegionID,
             comment,
@@ -255,5 +244,25 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
                 if (it > 0) getOrder(it)
             }
         )
+    }
+
+    fun updateDistributorList(selectedRegionID: Int) {
+        selectedDistributorRegionID = selectedRegionID
+        usersList = allMappedUsers
+            .filter { it.regionID == selectedRegionID && it.userStatus == UserStatus.ACTIVE }
+            .map { it.toUser() }
+            .sortedBy { it.username }
+
+    }
+
+    fun getDistributorNamesList(): List<String> {
+        return usersList
+            .map { "${it.username} (${it.name})" }
+    }
+
+    fun getDistributorIndex(distributorID: String): Int {
+        return usersList
+            .map { it.id }
+            .indexOf(distributorID)
     }
 }

@@ -63,11 +63,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         viewModel.onOrderDateSelected(year, month, day)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = AddOrdersFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
 
@@ -142,12 +141,12 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         val userAdapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            viewModel.usersList.map { it.name }
+            viewModel.getDistributorNamesList()
         )
         vBinding.addOrderDistributorSpinner.adapter = userAdapter
         vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
         vBinding.addOrderDistributorSpinner.setSelection(
-            viewModel.usersList.map { it.id }.indexOf(Session.get().userName)
+            viewModel.getDistributorIndex(Session.get().userID ?: return)
         )
     }
 
@@ -161,7 +160,8 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             adapter = regionAdapter
             onItemSelectedListener = this@AddOrdersFragment
             setSelection(
-                viewModel.availableRegions.map { it.regionID }
+                viewModel.availableRegions
+                    .map { it.regionID }
                     .indexOf(Session.get().region?.regionID)
             )
         }
@@ -265,7 +265,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrderComment.setText(order.comment)
         vBinding.addOrderOrderDate.text = order.orderDate
         vBinding.addOrderDistributorSpinner.setSelection(
-            viewModel.usersList.map { it.id }.indexOf(order.distributorID.toString())
+            viewModel.getDistributorIndex(order.distributorID.toString())
         )
         vBinding.addOrderStatusSpinner.setSelection(
             viewModel.orderStatusList.indexOf(order.orderStatus)
@@ -402,7 +402,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent?.id) {
             R.id.addOrderDistributorSpinner ->
-                viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+                viewModel.selectedDistributor = viewModel.usersList[position]
             R.id.addOrderStatusSpinner ->
                 viewModel.selectedStatus = viewModel.orderStatusList[position]
             R.id.addOrderDistributorRegionSpinner -> {
