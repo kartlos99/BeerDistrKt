@@ -226,5 +226,6 @@
     <string name="home_def_title">მთავარი გვერდი</string>
     <string name="common_save">შენახვა</string>
     <string name="region_is_restricted_msg">გაგეტისათ მიმდინარე რეგიონზე წვდომა!</string>
+    <string name="search_title">ძებნა</string>
 
 </resources>

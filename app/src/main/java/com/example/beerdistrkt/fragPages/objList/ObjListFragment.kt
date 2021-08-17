@@ -7,10 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -23,6 +20,7 @@ import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
+import com.example.beerdistrkt.utils.onTextChanged
 
 class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
@@ -36,10 +34,12 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     var clientPhone: String? = null
 
+    private lateinit var searchView: SearchView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = ObjListFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
 
@@ -48,7 +48,14 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         return vBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setHasOptionsMenu(true)
+    }
+
     private fun navigateTo(clientID: Int) {
+        searchView.setOnQueryTextListener(null)
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
         when (args.directionTo) {
@@ -78,21 +85,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         }
         viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
 
-        val filterListener = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                showToast(query)
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                clientListAdapter.filter(newText)
-                return false
-            }
-        }
-
 //        registerForContextMenu(vBinding.clientsRecycler)
-
-        vBinding.clientSearchView.setOnQueryTextListener(filterListener)
 
 //        objListObserver.onChanged(mutableListOf(Obieqti("rame saxeli")))
 //        viewModel.objList.observe(this, objListObserver)
@@ -151,6 +144,29 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onDetach() {
         super.onDetach()
         myCallInterface = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.client_list_page_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = searchItem.actionView as SearchView
+
+        val pendingQuery = viewModel.searchQuery.value
+
+        Log.d("TAG", "onCreateOptionsMenu: $pendingQuery")
+
+        if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+            clientListAdapter.filter(pendingQuery)
+        }
+
+        searchView.onTextChanged { qText ->
+            Log.d("TAG", "onQueryChange: $qText")
+            viewModel.searchQuery.value = qText
+            clientListAdapter.filter(qText)
+        }
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

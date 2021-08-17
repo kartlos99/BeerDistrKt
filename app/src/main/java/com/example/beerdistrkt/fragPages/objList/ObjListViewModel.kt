@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.objList
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.ClientDeactivateModel
 import com.example.beerdistrkt.models.Obieqti
@@ -12,6 +13,10 @@ import kotlinx.coroutines.launch
 class ObjListViewModel : BaseViewModel() {
 
     val clientsList = database.getAllObieqts()
+
+    private val state = SavedStateHandle()
+
+    val searchQuery = state.getLiveData("searchQuery", "")
 
     init {
         Log.d(TAG, "init_Obj_List")
