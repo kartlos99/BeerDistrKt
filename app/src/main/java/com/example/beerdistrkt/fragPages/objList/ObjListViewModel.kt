@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.objList
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.ClientDeactivateModel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 class ObjListViewModel : BaseViewModel() {
 
     val clientsList = database.getAllObieqts()
+    val clients = MutableLiveData<List<Obieqti>>()
 
     private val state = SavedStateHandle()
 
@@ -54,6 +56,12 @@ class ObjListViewModel : BaseViewModel() {
                 }
             }
         )
+    }
+
+    fun onNewQuery(query: String) {
+        clients.value = clientsList.value?.filter {
+            it.dasaxeleba.contains(query)
+        } ?: listOf()
     }
 
     companion object {

@@ -51,6 +51,9 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.clients.observe(viewLifecycleOwner) {
+            clientListAdapter.submitList(it)
+        }
         setHasOptionsMenu(true)
     }
 
@@ -80,7 +83,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         super.onActivityCreated(savedInstanceState)
 
         val objListObserver = Observer<List<Obieqti>> {
-            Log.d("_clientList__size__", it.size.toString())
             initClientsList(it)
         }
         viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
@@ -104,7 +106,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         vBinding.clientsRecycler.setHasFixedSize(true)
 
-        clientListAdapter.setData(list)
+        clientListAdapter.submitList(list)
         clientListAdapter.onItemClick = ::navigateTo
         vBinding.clientsRecycler.adapter = clientListAdapter
 
@@ -153,19 +155,15 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         searchView = searchItem.actionView as SearchView
 
         val pendingQuery = viewModel.searchQuery.value
-
-        Log.d("TAG", "onCreateOptionsMenu: $pendingQuery")
-
         if (pendingQuery != null && pendingQuery.isNotEmpty()) {
             searchItem.expandActionView()
             searchView.setQuery(pendingQuery, false)
-            clientListAdapter.filter(pendingQuery)
+            viewModel.onNewQuery(pendingQuery)
         }
 
-        searchView.onTextChanged { qText ->
-            Log.d("TAG", "onQueryChange: $qText")
-            viewModel.searchQuery.value = qText
-            clientListAdapter.filter(qText)
+        searchView.onTextChanged { query ->
+            viewModel.searchQuery.value = query
+            viewModel.onNewQuery(query)
         }
     }
 
@@ -197,6 +195,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 context?.showListDialog(R.string.info, arr.toTypedArray()) {}
             }
             R.id.cm_edit_obj -> {
+                searchView.setOnQueryTextListener(null)
                 val direction = ObjListFragmentDirections.actionObjListFragmentToAddObjectFragment()
                 direction.clientID = selectedClient.id ?: 0
                 vBinding.root.findNavController().navigate(direction)
@@ -213,7 +212,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 }
             }
         }
-
         return true
     }
 
