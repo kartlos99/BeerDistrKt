@@ -4,383 +4,441 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragPages.orders.AddOrdersFragment">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/addOrderClientInfo"
+            style="@style/ClientInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/addOrderWarning"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/addOrderWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/gr_size_8"
+            android:text="@string/need_cleaning"
+            android:textColor="@color/warning_text_dark"
+            android:textSize="@dimen/sp16"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/addOrderClientInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/addOrderClientInfo" />
+
+        <FrameLayout
+            android:id="@+id/addOrderDebtContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gr_size_4"
+            android:background="@color/gray_light"
+            android:elevation="@dimen/gr_size_2"
+            app:layout_constraintTop_toBottomOf="@id/addOrderClientInfo" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addOrderDebtContainer">
 
-            <TextView
-                android:id="@+id/addOrderClientInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="@dimen/plius_minus_TextSize"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/addOrderOperationalCard"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/cardCornerRadius"
-                app:cardElevation="@dimen/gr_size_2"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderClientInfo"
-                app:layout_constraintVertical_bias="0.0">
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/addOrderOperationalConstraint"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/addOrderOperationalCard"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/cardCornerRadius"
+                    app:cardElevation="@dimen/gr_size_2"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0">
 
-                    <TextView
-                        android:id="@+id/addOrderBeerKindTv"
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/addOrderOperationalConstraint"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/gr_size_8"
-                        android:text="@string/beer_kind"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_height="wrap_content">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/addOrderBeerRecycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/gr_size_16"
-                        app:layout_constraintTop_toBottomOf="@id/addOrderBeerKindTv" />
-
-                    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-                        android:id="@+id/addOrderBeerListIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/gr_size_8"
-                        app:dotsColor="@color/beer_stroke_bkg"
-                        app:dotsSize="@dimen/gr_size_4"
-                        app:dotsSpacing="2dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/addOrderBeerRecycler"
-                        app:selectedDotColor="@color/colorPrimary" />
-
-                    <ImageView
-                        android:id="@+id/btnBeerLeftImg"
-                        android:layout_width="@dimen/gr_size_24"
-                        android:layout_height="@dimen/gr_size_48"
-                        android:layout_margin="@dimen/gr_size_8"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_arrow_left_24dp"
-                        android:tint="@color/arrow_color_tr"
-                        app:layout_constraintBottom_toBottomOf="@+id/addOrderBeerRecycler"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/addOrderBeerRecycler" />
-
-                    <ImageView
-                        android:id="@+id/btnBeerRightImg"
-                        android:layout_width="@dimen/gr_size_24"
-                        android:layout_height="@dimen/gr_size_48"
-                        android:layout_margin="@dimen/gr_size_8"
-                        android:rotation="180"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_arrow_left_24dp"
-                        android:tint="@color/arrow_color_tr"
-                        app:layout_constraintBottom_toBottomOf="@+id/addOrderBeerRecycler"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/addOrderBeerRecycler" />
-
-                    <TextView
-                        android:id="@+id/addOrderCanTypeTv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/gr_size_8"
-                        android:text="@string/can_type"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        app:layout_constraintTop_toBottomOf="@+id/addOrderBeerListIndicator" />
-
-                    <HorizontalScrollView
-                        android:id="@+id/addOrderCansScroll"
-                        android:layout_width="200dp"
-                        android:layout_height="wrap_content"
-                        android:scrollbarStyle="insideOverlay"
-                        android:scrollbars="none"
-                        app:layout_constrainedWidth="true"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/addOrderCanTypeTv">
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/addOrdersChipGr"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/addOrderBeerKindTv"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/gr_size_8"
+                            android:layout_margin="@dimen/gr_size_8"
+                            android:text="@string/beer_kind"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            app:layout_constraintTop_toTopOf="parent" />
 
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/addOrderBeerRecycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/gr_size_16"
+                            app:layout_constraintTop_toBottomOf="@id/addOrderBeerKindTv" />
+
+                        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                            android:id="@+id/addOrderBeerListIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/gr_size_8"
+                            app:dotsColor="@color/beer_stroke_bkg"
+                            app:dotsSize="@dimen/gr_size_4"
+                            app:dotsSpacing="2dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/addOrderCanTypeTv"
-                            app:singleLine="true"
-                            app:singleSelection="true">
+                            app:layout_constraintTop_toBottomOf="@id/addOrderBeerRecycler"
+                            app:selectedDotColor="@color/colorPrimary" />
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/addOrdersCanChip0"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
+                        <ImageView
+                            android:id="@+id/btnBeerLeftImg"
+                            android:layout_width="@dimen/gr_size_24"
+                            android:layout_height="@dimen/gr_size_48"
+                            android:layout_margin="@dimen/gr_size_8"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_arrow_left_24dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/addOrderBeerRecycler"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/addOrderBeerRecycler"
+                            app:tint="@color/arrow_color_tr" />
+
+                        <ImageView
+                            android:id="@+id/btnBeerRightImg"
+                            android:layout_width="@dimen/gr_size_24"
+                            android:layout_height="@dimen/gr_size_48"
+                            android:layout_margin="@dimen/gr_size_8"
+                            android:rotation="180"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_arrow_left_24dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/addOrderBeerRecycler"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addOrderBeerRecycler"
+                            app:tint="@color/arrow_color_tr" />
+
+                        <TextView
+                            android:id="@+id/addOrderCanTypeTv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/gr_size_8"
+                            android:text="@string/can_type"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            app:layout_constraintTop_toBottomOf="@+id/addOrderBeerListIndicator" />
+
+                        <HorizontalScrollView
+                            android:id="@+id/addOrderCansScroll"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:scrollbarStyle="insideOverlay"
+                            android:scrollbars="none"
+                            app:layout_constrainedWidth="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/addOrderCanTypeTv">
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/addOrdersChipGr"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/gr_size_4"
-                                android:checkable="true"
-                                android:checked="false"
-                                android:elevation="@dimen/gr_size_2"
-                                android:gravity="center_vertical"
-                                android:text="@string/_10litri"
-                                android:textStyle="bold"
-                                app:checkedIcon="@drawable/beer_icon"
-                                app:checkedIconEnabled="true"
-                                app:chipStrokeColor="@color/gray_3"
-                                app:chipStrokeWidth="@dimen/gr_size_1" />
+                                android:layout_marginStart="@dimen/gr_size_8"
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/addOrdersCanChip1"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/gr_size_4"
-                                android:checkable="true"
-                                android:checked="false"
-                                android:elevation="@dimen/gr_size_2"
-                                android:gravity="center_vertical"
-                                android:text="@string/_20litri"
-                                android:textStyle="bold"
-                                app:checkedIcon="@drawable/beer_icon"
-                                app:checkedIconEnabled="true"
-                                app:chipStrokeColor="@color/gray_3"
-                                app:chipStrokeWidth="@dimen/gr_size_1" />
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/addOrderCanTypeTv"
+                                app:singleLine="true"
+                                app:singleSelection="true">
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/addOrdersCanChip2"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/gr_size_4"
-                                android:checkable="true"
-                                android:checked="false"
-                                android:elevation="@dimen/gr_size_2"
-                                android:gravity="center_vertical"
-                                android:text="@string/_30litri"
-                                app:checkedIcon="@drawable/beer_icon"
-                                app:checkedIconEnabled="true"
-                                app:chipStrokeColor="@color/gray_3"
-                                app:chipStrokeWidth="@dimen/gr_size_1" />
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/addOrdersCanChip0"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/gr_size_4"
+                                    android:checkable="true"
+                                    android:checked="false"
+                                    android:elevation="@dimen/gr_size_2"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/_10litri"
+                                    android:textStyle="bold"
+                                    app:checkedIcon="@drawable/beer_icon"
+                                    app:checkedIconEnabled="true"
+                                    app:chipStrokeColor="@color/gray_3"
+                                    app:chipStrokeWidth="@dimen/gr_size_1" />
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/addOrdersCanChip3"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/gr_size_4"
-                                android:layout_marginEnd="@dimen/gr_size_16"
-                                android:checkable="true"
-                                android:checked="false"
-                                android:elevation="@dimen/gr_size_2"
-                                android:gravity="center_vertical"
-                                android:text="@string/_50litri"
-                                app:checkedIcon="@drawable/beer_icon"
-                                app:checkedIconEnabled="true"
-                                app:chipStrokeColor="@color/gray_3"
-                                app:chipStrokeWidth="@dimen/gr_size_1" />
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/addOrdersCanChip1"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/gr_size_4"
+                                    android:checkable="true"
+                                    android:checked="false"
+                                    android:elevation="@dimen/gr_size_2"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/_20litri"
+                                    android:textStyle="bold"
+                                    app:checkedIcon="@drawable/beer_icon"
+                                    app:checkedIconEnabled="true"
+                                    app:chipStrokeColor="@color/gray_3"
+                                    app:chipStrokeWidth="@dimen/gr_size_1" />
 
-                        </com.google.android.material.chip.ChipGroup>
-                    </HorizontalScrollView>
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/addOrdersCanChip2"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/gr_size_4"
+                                    android:checkable="true"
+                                    android:checked="false"
+                                    android:elevation="@dimen/gr_size_2"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/_30litri"
+                                    app:checkedIcon="@drawable/beer_icon"
+                                    app:checkedIconEnabled="true"
+                                    app:chipStrokeColor="@color/gray_3"
+                                    app:chipStrokeWidth="@dimen/gr_size_1" />
 
-                    <View
-                        android:layout_width="@dimen/gr_size_16"
-                        android:layout_height="0dp"
-                        app:layout_constraintStart_toStartOf="@id/addOrderCansScroll"
-                        app:layout_constraintTop_toTopOf="@id/addOrderCansScroll"
-                        app:layout_constraintBottom_toBottomOf="@id/addOrderCansScroll"
-                        android:background="@drawable/left_right_gradient" />
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/addOrdersCanChip3"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/gr_size_4"
+                                    android:layout_marginEnd="@dimen/gr_size_16"
+                                    android:checkable="true"
+                                    android:checked="false"
+                                    android:elevation="@dimen/gr_size_2"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/_50litri"
+                                    app:checkedIcon="@drawable/beer_icon"
+                                    app:checkedIconEnabled="true"
+                                    app:chipStrokeColor="@color/gray_3"
+                                    app:chipStrokeWidth="@dimen/gr_size_1" />
 
-                    <View
-                        android:layout_width="@dimen/gr_size_16"
-                        android:layout_height="0dp"
-                        app:layout_constraintEnd_toEndOf="@id/addOrderCansScroll"
-                        app:layout_constraintTop_toTopOf="@id/addOrderCansScroll"
-                        app:layout_constraintBottom_toBottomOf="@id/addOrderCansScroll"
-                        android:background="@drawable/right_left_gradient" />
+                            </com.google.android.material.chip.ChipGroup>
+                        </HorizontalScrollView>
 
-                    <TextView
-                        android:id="@+id/addOrderCanCountTv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/gr_size_8"
-                        android:text="@string/can_count"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        app:layout_constraintTop_toBottomOf="@+id/addOrderCansScroll" />
+                        <View
+                            android:layout_width="@dimen/gr_size_16"
+                            android:layout_height="0dp"
+                            android:background="@drawable/left_right_gradient"
+                            app:layout_constraintBottom_toBottomOf="@id/addOrderCansScroll"
+                            app:layout_constraintStart_toStartOf="@id/addOrderCansScroll"
+                            app:layout_constraintTop_toTopOf="@id/addOrderCansScroll" />
 
-                    <com.example.beerdistrkt.customView.NumericEditText
-                        android:id="@+id/addOrderCanCountControl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/addOrderCanCountTv" />
+                        <View
+                            android:layout_width="@dimen/gr_size_16"
+                            android:layout_height="0dp"
+                            android:background="@drawable/right_left_gradient"
+                            app:layout_constraintBottom_toBottomOf="@id/addOrderCansScroll"
+                            app:layout_constraintEnd_toEndOf="@id/addOrderCansScroll"
+                            app:layout_constraintTop_toTopOf="@id/addOrderCansScroll" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/addOrderCanCountTv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/gr_size_8"
+                            android:text="@string/can_count"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            app:layout_constraintTop_toBottomOf="@+id/addOrderCansScroll" />
 
-            </androidx.cardview.widget.CardView>
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/addOrderCanCountControl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/addOrderCanCountTv" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/addOrderAddItemBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                android:src="@drawable/ic_playlist_add_24dp"
-                android:tint="@color/white"
-                app:backgroundTintMode="src_over"
-                app:fabSize="mini"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderOperationalCard" />
+                </androidx.cardview.widget.CardView>
 
-            <CheckBox
-                android:id="@+id/addOrderCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:checked="true"
-                app:layout_constraintStart_toStartOf="@+id/addOrderOperationalCard"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderOperationalCard" />
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/addOrderAddItemBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp"
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addOrderOrderDate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/gray_light"
-                android:drawableEnd="@drawable/calendar_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderDistributorSpinner" />
+                    android:src="@drawable/ic_playlist_add_24dp"
+                    android:tint="@color/white"
+                    app:backgroundTintMode="src_over"
+                    app:fabSize="mini"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderOperationalCard" />
 
-            <TextView
-                android:id="@+id/addOrderDateTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/order_date"
-                app:layout_constraintBottom_toBottomOf="@+id/addOrderOrderDate"
-                app:layout_constraintEnd_toStartOf="@+id/addOrderOrderDate"
-                app:layout_constraintTop_toTopOf="@+id/addOrderOrderDate" />
+                <CheckBox
+                    android:id="@+id/addOrderCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="true"
+                    app:layout_constraintStart_toStartOf="@+id/addOrderOperationalCard"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderOperationalCard" />
 
-            <LinearLayout
-                android:id="@+id/addOrderItemsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/temp_beer_cont_rect"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addOrderCheckBox">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addOrderOrderDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="@color/gray_light"
+                    android:drawableEnd="@drawable/calendar_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderDistributorSpinner" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/addOrderDateTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/order_date"
+                    app:layout_constraintBottom_toBottomOf="@id/addOrderOrderDate"
+                    app:layout_constraintEnd_toStartOf="@+id/addOrderOrderDate"
+                    app:layout_constraintTop_toTopOf="@id/addOrderOrderDate" />
+
+                <LinearLayout
+                    android:id="@+id/addOrderItemsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/temp_beer_cont_rect"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderCheckBox">
+
+                </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/addOrderDistributorTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/choose_distributor"
-                android:textAlignment="gravity"
-                app:layout_constraintBottom_toBottomOf="@+id/addOrderDistributorSpinner"
-                app:layout_constraintEnd_toStartOf="@+id/addOrderDistributorSpinner"
-                app:layout_constraintTop_toTopOf="@+id/addOrderDistributorSpinner" />
+                <TextView
+                    android:id="@+id/addOrderDistributorRegionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/choose_distributor_region"
+                    android:textAlignment="gravity"
+                    app:layout_constraintBottom_toBottomOf="@id/addOrderDistributorRegionSpinner"
+                    app:layout_constraintEnd_toStartOf="@id/addOrderDistributorRegionSpinner"
+                    app:layout_constraintTop_toTopOf="@id/addOrderDistributorRegionSpinner" />
 
-            <Spinner
-                android:id="@+id/addOrderDistributorSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/gr_size_8"
-                android:background="@drawable/bkg_rounded_white_r8"
-                android:backgroundTint="@color/gray_light"
-                android:elevation="@dimen/gr_size_2"
-                android:minWidth="@dimen/gr_size_48"
-                android:minHeight="@dimen/gr_size_36"
-                android:spinnerMode="dialog"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
+                <Spinner
+                    android:id="@+id/addOrderDistributorRegionSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/gr_size_8"
+                    android:background="@drawable/bkg_rounded_white_r8"
+                    android:backgroundTint="@color/gray_light"
+                    android:elevation="@dimen/gr_size_2"
+                    android:minWidth="@dimen/gr_size_48"
+                    android:minHeight="@dimen/gr_size_36"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
 
-            <TextView
-                android:id="@+id/addOrderStatusTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/status"
-                android:textAlignment="gravity"
-                app:layout_constraintBottom_toBottomOf="@+id/addOrderStatusSpinner"
-                app:layout_constraintEnd_toStartOf="@+id/addOrderStatusSpinner"
-                app:layout_constraintTop_toTopOf="@+id/addOrderStatusSpinner" />
+                <TextView
+                    android:id="@+id/addOrderDistributorTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/choose_distributor"
+                    android:textAlignment="gravity"
+                    app:layout_constraintBottom_toBottomOf="@id/addOrderDistributorSpinner"
+                    app:layout_constraintEnd_toStartOf="@id/addOrderDistributorSpinner"
+                    app:layout_constraintTop_toTopOf="@id/addOrderDistributorSpinner" />
 
-            <Spinner
-                android:id="@+id/addOrderStatusSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                <Spinner
+                    android:id="@+id/addOrderDistributorSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/gr_size_8"
+                    android:background="@drawable/bkg_rounded_white_r8"
+                    android:backgroundTint="@color/gray_light"
+                    android:elevation="@dimen/gr_size_2"
+                    android:minWidth="@dimen/gr_size_48"
+                    android:minHeight="@dimen/gr_size_36"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderDistributorRegionSpinner" />
 
-                android:background="@drawable/bkg_rounded_white_r8"
-                android:backgroundTint="@color/gray_light"
-                android:elevation="@dimen/gr_size_2"
-                android:minHeight="@dimen/gr_size_36"
-                android:minWidth="@dimen/gr_size_16"
-                android:spinnerMode="dialog"
-                app:layout_constraintEnd_toEndOf="@id/addOrderDistributorSpinner"
-                app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderOrderDate" />
+                <TextView
+                    android:id="@+id/addOrderStatusTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/status"
+                    android:textAlignment="gravity"
+                    app:layout_constraintBottom_toBottomOf="@id/addOrderStatusSpinner"
+                    app:layout_constraintEnd_toStartOf="@id/addOrderStatusSpinner"
+                    app:layout_constraintTop_toTopOf="@id/addOrderStatusSpinner" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/addOrderStatusGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="addOrderStatusTv, addOrderStatusSpinner" />
+                <Spinner
+                    android:id="@+id/addOrderStatusSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
 
-            <EditText
-                android:id="@+id/addOrderComment"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:autofillHints="@string/comment"
-                android:hint="@string/comment"
-                android:inputType="text"
-                android:singleLine="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderStatusSpinner"
-                tools:ignore="UnusedAttribute" />
+                    android:background="@drawable/bkg_rounded_white_r8"
+                    android:backgroundTint="@color/gray_light"
+                    android:elevation="@dimen/gr_size_2"
+                    android:minWidth="@dimen/gr_size_16"
+                    android:minHeight="@dimen/gr_size_36"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="@id/addOrderDistributorSpinner"
+                    app:layout_constraintStart_toStartOf="@id/addOrderDistributorSpinner"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderOrderDate" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addOrderDoneBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_16"
-                android:paddingVertical="@dimen/gr_size_24"
-                android:text="@string/dadastureba"
-                android:textSize="@dimen/sp18"
-                app:layout_constraintTop_toBottomOf="@+id/addOrderComment" />
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/addOrderStatusGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="addOrderStatusTv, addOrderStatusSpinner" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <EditText
+                    android:id="@+id/addOrderComment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/comment"
+                    android:hint="@string/comment"
+                    android:inputType="text"
+                    android:singleLine="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addOrderStatusSpinner"
+                    tools:ignore="UnusedAttribute" />
 
-    </ScrollView>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addOrderDoneBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gr_size_16"
+                    android:paddingVertical="@dimen/gr_size_24"
+                    android:text="@string/dadastureba"
+                    android:textSize="@dimen/sp18"
+                    app:layout_constraintTop_toBottomOf="@+id/addOrderComment" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

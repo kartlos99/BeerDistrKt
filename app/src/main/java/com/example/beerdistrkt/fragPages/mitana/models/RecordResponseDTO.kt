@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.mitana.models
 
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
@@ -41,6 +42,7 @@ data class MoneyRowModel(
     val clientID: Int,
     val distributorID: Int,
     val amount: Double,
+    val paymentType: PaymentType,
     val comment: String?
 )
 

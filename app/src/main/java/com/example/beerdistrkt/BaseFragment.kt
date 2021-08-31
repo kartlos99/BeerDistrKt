@@ -2,9 +2,10 @@ package com.example.beerdistrkt
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.fragPages.login.LoginFragment
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -29,7 +30,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         viewModel.apiFailureLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.NoInternetConnection -> showToast(R.string.error_no_connection)
-                is ApiResponseState.ApiError -> showToast(it.errorText)
+                is ApiResponseState.ApiError -> {
+                    showToast(it.errorText)
+                    if (it.errorCode == 401) {
+                        automatedLogout()
+                    }
+                }
             }
             if (it !is ApiResponseState.Sleep)
                 viewModel.showNetworkFailMsgComplete()
@@ -38,7 +44,23 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!Session.get().isUserLogged() && this !is LoginFragment)
-            (activity as MainActivity).logOut()
+        if (
+            !Session.get().isAccessTokenValid()
+            && this !is LoginFragment
+            && this !is AmonaweriSubPageFrag // because it's placed on another fragment
+        )
+            automatedLogout()
     }
+
+    private fun automatedLogout() {
+        (activity as MainActivity).logOut()
+    }
+
+    fun setPageTitle(title: String?) {
+        (activity as AppCompatActivity).supportActionBar?.title = title
+    }
+
+    fun setPageTitle(titleRes: Int) = setPageTitle(getString(titleRes))
+
+    fun isAccessTokenValid() = Session.get().isAccessTokenValid()
 }

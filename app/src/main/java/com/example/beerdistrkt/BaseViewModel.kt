@@ -20,6 +20,18 @@ abstract class BaseViewModel : ViewModel() {
     protected val ioScope = CoroutineScope(Dispatchers.IO + job)
     protected val uiScope = CoroutineScope(Dispatchers.Main + job)
 
+    protected var loadingCounter = 0
+    val isLoading get() = loadingCounter != 0
+
+    var callIsBlocked = false
+        set(value) {
+            if (value)
+                2000 waitFor {
+                    field = false
+                }
+            field = value
+        }
+
     private val _apiFailureMutableLiveData = MutableLiveData<ApiResponseState<Nothing>>()
     val apiFailureLiveData: LiveData<ApiResponseState<Nothing>>
         get() = _apiFailureMutableLiveData
@@ -37,6 +49,11 @@ abstract class BaseViewModel : ViewModel() {
         Log.d("response_Fail", throwable.message!!)
     }
 
+    private fun onAuthFail() {
+        _apiFailureMutableLiveData.value = ApiResponseState.ApiError(401, "No Auth!")
+        Log.d("Auth_Fail", "should log out")
+    }
+
     private fun onResponseFailure(code: Int, error: String) {
         _apiFailureMutableLiveData.value = ApiResponseState.ApiError(code, error)
         Log.d("onServer_response_Fail", "Code: $code - Text: $error")
@@ -48,7 +65,7 @@ abstract class BaseViewModel : ViewModel() {
         successWithData: ((data: F) -> Unit)? = null,
         onConnectionFailure: (Throwable) -> Unit = ::showOnConnFailureDialog,
         failure: (t: Throwable) -> Unit = ::showFailureDialog,
-        authFailure: (() -> Unit)? = null,
+        authFailure: (() -> Unit)? = ::onAuthFail,
         responseFailure: (code: Int, error: String) -> Unit = ::onResponseFailure,
         finally: ((success: Boolean) -> Unit)? = null
     ) {
@@ -64,6 +81,7 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+    val dateTimeFullFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     val dateFormatDash = SimpleDateFormat("yyyy-MM-dd")
     val dateFormat2Dots = SimpleDateFormat("yyyy:MM:dd")
 }

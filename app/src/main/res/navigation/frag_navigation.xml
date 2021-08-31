@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frag_navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.beerdistrkt.fragPages.homePage.HomeFragment"
-        android:label="home_fragment"
+        android:label="@string/home_def_title"
         tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_homeFragment_to_ordersFragment"
@@ -46,6 +46,11 @@
         <action
             android:id="@+id/action_ordersFragment_to_addOrdersFragment"
             app:destination="@id/addOrdersFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_showHistoryFragment"
+            app:destination="@id/showHistoryFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_right" />
     </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
@@ -55,12 +60,12 @@
     <fragment
         android:id="@+id/sysClearFragment"
         android:name="com.example.beerdistrkt.fragPages.sysClear.SysClearFragment"
-        android:label="sys_clear_fragment"
+        android:label="@string/sys_clean"
         tools:layout="@layout/sys_clear_fragment" />
     <fragment
         android:id="@+id/addObjectFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
-        android:label="add_object_fragment"
+        android:label="@string/create_client"
         tools:layout="@layout/add_object_fragment" >
         <argument
             android:name="clientID"
@@ -70,7 +75,7 @@
     <fragment
         android:id="@+id/addUserFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
-        android:label="add_user_fragment"
+        android:label="@string/add_user"
         tools:layout="@layout/add_user_fragment" >
         <argument
             android:name="userID"
@@ -80,7 +85,7 @@
     <fragment
         android:id="@+id/userListFragment"
         android:name="com.example.beerdistrkt.fragPages.usersList.UserListFragment"
-        android:label="user_list_fragment"
+        android:label="@string/title_users_list"
         tools:layout="@layout/user_list_fragment" >
         <action
             android:id="@+id/action_userListFragment_to_addUserFragment"
@@ -89,7 +94,7 @@
     <fragment
         android:id="@+id/sawyobiFragment"
         android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseFragment"
-        android:label="sawyobi_fragment"
+        android:label="@string/store_house"
         tools:layout="@layout/sawyobi_fragment" >
         <action
             android:id="@+id/action_sawyobiFragment_to_sawyobiListFragment"
@@ -97,18 +102,17 @@
     </fragment>
     <fragment
         android:id="@+id/sawyobiListFragment"
-        android:name="com.example.beerdistrkt.fragPages.sawyobi.SawyobiListFragment"
-        android:label="sawyobi_list_fragment"
+        android:name="com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment"
+        android:label="@string/store_house_io_title"
         tools:layout="@layout/sawyobi_list_fragment" />
     <fragment
         android:id="@+id/objListFragment"
         android:name="com.example.beerdistrkt.fragPages.objList.ObjListFragment"
-        android:label="obj_list_fragment"
+        android:label="@string/choose_client"
         tools:layout="@layout/obj_list_fragment" >
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
-            app:destination="@id/amonaweriFragment"
-            app:popUpTo="@+id/homeFragment" />
+            app:destination="@id/amonaweriFragment"/>
         <action
             android:id="@+id/action_objListFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment"
@@ -127,7 +131,7 @@
     <fragment
         android:id="@+id/salesFragment"
         android:name="com.example.beerdistrkt.fragPages.sales.SalesFragment"
-        android:label="sales_fragment"
+        android:label="@string/daily_sales"
         tools:layout="@layout/sales_fragment" />
     <fragment
         android:id="@+id/loginFragment"
@@ -143,7 +147,7 @@
     <fragment
         android:id="@+id/amonaweriFragment"
         android:name="com.example.beerdistrkt.fragPages.amonaweri.AmonaweriFragment"
-        android:label="amonaweri_fragment"
+        android:label="@string/statement_title"
         tools:layout="@layout/amonaweri_fragment" >
         <argument
             android:name="clientObjectID"
@@ -151,6 +155,9 @@
         <action
             android:id="@+id/action_amonaweriFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
+        <action
+            android:id="@+id/action_amonaweriFragment_to_salesHistoryFragment"
+            app:destination="@id/salesHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
@@ -185,5 +192,23 @@
             android:name="orderID"
             app:argType="integer"
             android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/showHistoryFragment"
+        android:name="com.example.beerdistrkt.fragPages.showHistory.ShowHistoryFragment"
+        android:label="ShowHistoryFragment"
+        tools:layout="@layout/fragment_show_history">
+        <argument
+            android:name="recordID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/salesHistoryFragment"
+        android:name="com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment"
+        android:label="fragment_sales_history"
+        tools:layout="@layout/fragment_sales_history" >
+        <argument
+            android:name="recordID"
+            app:argType="string" />
     </fragment>
 </navigation>

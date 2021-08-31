@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.*
@@ -14,6 +15,7 @@ import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.waitFor
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -24,14 +26,16 @@ class HomeViewModel : BaseViewModel() {
     private val cansLiveData = database.getCansList()
     lateinit var beerList: List<BeerModel>
 
-    var localVersionState: VcsResponse? = null
-    var numberOfUpdatingTables = 0
+    private var localVersionState: VcsResponse? = null
+    private var numberOfUpdatingTables = 0
 
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
-    private val _barrelsListLiveData = MutableLiveData<List<SimpleBeerRowModel>>()
-    val barrelsListLiveData: LiveData<List<SimpleBeerRowModel>>
+    val storeHouseData = mutableListOf<SimpleBeerRowModel>()
+
+    private val _barrelsListLiveData = MutableLiveData<ApiResponseState<List<SimpleBeerRowModel>>>()
+    val barrelsListLiveData: LiveData<ApiResponseState<List<SimpleBeerRowModel>>>
         get() = _barrelsListLiveData
 
     private val _commentsListLiveData = MutableLiveData<List<CommentModel>>()
@@ -46,19 +50,26 @@ class HomeViewModel : BaseViewModel() {
         if (Session.get().isUserLogged())
             getTableVersionsFromServer()
         localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
-        Log.d("localVers", localVersionState.toString())
+        Log.d("homeVM localVers", localVersionState.toString())
 
         beerLiveData.observeForever {
             beerList = it
-            ObjectCache.getInstance().putList(BeerModel::class, "beerList", it)
+            ObjectCache.getInstance().putList(BeerModel::class, ObjectCache.BEER_LIST_ID, it)
         }
         cansLiveData.observeForever {
-            ObjectCache.getInstance().putList(CanModel::class, "canList", it)
+            ObjectCache.getInstance().putList(CanModel::class, ObjectCache.BARREL_LIST_ID, it)
         }
         usersLiveData.observeForever { userList ->
             ObjectCache.getInstance()
-                .putList(User::class, "userList", userList.sortedBy { it.name })
+                .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.username })
         }
+    }
+
+    fun changeRegion(selectedRegion: WorkRegion) {
+        SharedPreferenceDataSource.getInstance().saveRegion(selectedRegion)
+        SharedPreferenceDataSource.getInstance().clearVersions()
+        localVersionState = null
+        getTableVersionsFromServer()
     }
 
     private fun getTableVersionsFromServer() {
@@ -137,7 +148,7 @@ class HomeViewModel : BaseViewModel() {
             ApeniApiService.getInstance().getBeerList(),
             successWithData = {
                 saveVersion()
-                Log.d(TAG, "Users_respOK")
+                Log.d(TAG, "getBeerList_respOK")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
                         database.clearBeerTable()
@@ -177,6 +188,7 @@ class HomeViewModel : BaseViewModel() {
                 clearObieqtsList()
                 if (it.isNotEmpty()) {
                     ioScope.launch {
+                        delay(100)
                         it.forEach { obieqti ->
                             insertObiect(obieqti)
                         }
@@ -237,13 +249,49 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun getStoreBalance() {
+        _barrelsListLiveData.value = ApiResponseState.Loading(true)
+        if (Session.get().region?.hasOwnStorage() == true)
+            getRegionBalance()
+        else
+            getGlobalBalance()
+    }
+
+    private fun getRegionBalance() {
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseBalance(
                 dateFormatDash.format(currentDate.time), 0
             ),
             successWithData = {
                 Log.d("store", it.empty.toString())
-                formAllBarrelsList(it)
+                300 waitFor { formAllBarrelsList(it) }
+            },
+            finally = {
+                if (!it)
+                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
+            }
+        )
+    }
+
+    private fun getGlobalBalance() {
+        sendRequest(
+            ApeniApiService.getInstance().getGlobalBalance(
+                dateFormatDash.format(currentDate.time)
+            ),
+            successWithData = {
+                val valueOfDiff = mutableMapOf<Int, Int>()
+                it.forEach { globalModel ->
+                    valueOfDiff[globalModel.id] = globalModel.getBalance()
+                }
+                storeHouseData.clear()
+                storeHouseData.addAll(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
+                300 waitFor {
+                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
+                    _barrelsListLiveData.value = ApiResponseState.Success(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
+                }
+            },
+            finally = {
+                if (!it)
+                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
             }
         )
     }
@@ -263,20 +311,23 @@ class HomeViewModel : BaseViewModel() {
         data.empty?.forEach { ebm ->
             valueOfDiff[ebm.barrelID] = ebm.inputEmptyToStore - ebm.outputEmptyFromStoreCount
         }
-        result.add(SimpleBeerRowModel("ცარიელი", valueOfDiff))
+        result.add(SimpleBeerRowModel(HomeFragment.emptyBarrelTitle, valueOfDiff))
 
-        _barrelsListLiveData.value = result
+        storeHouseData.clear()
+        storeHouseData.addAll(result)
+        _barrelsListLiveData.value = ApiResponseState.Loading(false)
+        _barrelsListLiveData.value = ApiResponseState.Success(result)
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(TAG, "onCleared job dacenselda")
+        Log.d(TAG, "onCleared job is Canceled")
         job.cancel()
     }
 
     fun getComments() {
         sendRequest(
-            ApeniApiService.getInstance().getcomments(),
+            ApeniApiService.getInstance().getComments(),
             successWithData = {
                 _commentsListLiveData.value = it
             }

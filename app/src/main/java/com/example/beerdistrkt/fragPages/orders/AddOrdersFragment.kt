@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.models.Order
@@ -62,11 +63,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         viewModel.onOrderDateSelected(year, month, day)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = AddOrdersFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
 
@@ -113,13 +113,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             }
         })
 
-        val userAdapter = ArrayAdapter(
-            requireContext(),
-            R.layout.simple_dropdown_item,
-            viewModel.usersList.map { it.name }
-        )
-        vBinding.addOrderDistributorSpinner.adapter = userAdapter
-        vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
+        initDistributorSpinner()
 
         vBinding.addOrderStatusSpinner.adapter = ArrayAdapter(
             requireContext(),
@@ -130,7 +124,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
         vBinding.addOrderStatusSpinner.onItemSelectedListener = this
 
-        vBinding.addOrderCansScroll.postDelayed(Runnable {
+        vBinding.addOrderCansScroll.postDelayed({
             vBinding.addOrderCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
         checkForm()
@@ -140,9 +134,40 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             else
                 R.string.add_order
         )
+        showDebt()
     }
 
-    fun getTempOrderItem(): TempBeerItemModel {
+    private fun initDistributorSpinner() {
+        val userAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.getDistributorNamesList()
+        )
+        vBinding.addOrderDistributorSpinner.adapter = userAdapter
+        vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
+        vBinding.addOrderDistributorSpinner.setSelection(
+            viewModel.getDistributorIndex(Session.get().userID ?: return)
+        )
+    }
+
+    private fun initRegionSpinner() {
+        val regionAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            viewModel.availableRegions.map { it.name }
+        )
+        vBinding.addOrderDistributorRegionSpinner.apply {
+            adapter = regionAdapter
+            onItemSelectedListener = this@AddOrdersFragment
+            setSelection(
+                viewModel.availableRegions
+                    .map { it.regionID }
+                    .indexOf(Session.get().region?.regionID)
+            )
+        }
+    }
+
+    private fun getTempOrderItem(): TempBeerItemModel {
         return TempBeerItemModel(0,
             viewModel.beerList[beerPos],
             viewModel.selectedCan!!,
@@ -153,11 +178,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             })
     }
 
-    fun formIsValid(): Boolean {
+    private fun formIsValid(): Boolean {
         return vBinding.addOrderCanCountControl.amount > 0 && viewModel.selectedCan != null
     }
 
-    fun resetForm() {
+    private fun resetForm() {
         vBinding.addOrdersChipGr.clearCheck()
         viewModel.selectedCan = null
         vBinding.addOrderCanCountControl.amount = 0
@@ -172,7 +197,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
-            addOrderClientInfo.text = "${it.obieqti.dasaxeleba}"
+            addOrderClientInfo.text = it.obieqti.dasaxeleba
             vBinding.addOrderCheckBox.isChecked = it.obieqti.chek == "1"
         })
         viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer {
@@ -194,13 +219,11 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             }
         })
         viewModel.addOrderLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ApiResponseState.Success -> {
-                    showToast(it.data)
-                    if (!vBinding.addOrderComment.text.isNullOrEmpty())
-                        notifyNewComment(vBinding.addOrderComment.text.toString())
-                    findNavController().navigateUp()
-                }
+            if (it is ApiResponseState.Success) {
+                showToast(it.data)
+                if (!vBinding.addOrderComment.text.isNullOrEmpty())
+                    notifyNewComment(vBinding.addOrderComment.text.toString())
+                findNavController().navigateUp()
             }
         })
         viewModel.getOrderLiveData.observe(viewLifecycleOwner, Observer {
@@ -216,15 +239,33 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 viewModel.orderItemEditLiveData.value = null
             }
         })
+        viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
+            if (it is ApiResponseState.Success) {
+                addOrderWarning.text = getString(R.string.need_cleaning, it.data.passDays)
+                addOrderWarning.visibleIf(it.data.needCleaning == 1)
+                initRegionSpinner()
+                addOrderDistributorRegionTitle.visibleIf(it.data.availableRegions.size > 1)
+                addOrderDistributorRegionSpinner.visibleIf(it.data.availableRegions.size > 1)
+            }
+        })
+    }
+
+    private fun showDebt() {
+        val debtFragment = ClientDebtFragment.getInstance(clientID)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.addOrderDebtContainer, debtFragment)
+            .commit()
     }
 
     private fun fillOrderForm(order: Order) {
         addOrderClientInfo.text = order.client.dasaxeleba
+        addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
+        addOrderWarning.visibleIf(order.needCleaning == 1)
         vBinding.addOrderCheckBox.isChecked = order.isChecked()
         vBinding.addOrderComment.setText(order.comment)
         vBinding.addOrderOrderDate.text = order.orderDate
         vBinding.addOrderDistributorSpinner.setSelection(
-            viewModel.usersList.map { it.id }.indexOf(order.distributorID.toString())
+            viewModel.getDistributorIndex(order.distributorID.toString())
         )
         vBinding.addOrderStatusSpinner.setSelection(
             viewModel.orderStatusList.indexOf(order.orderStatus)
@@ -361,9 +402,13 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent?.id) {
             R.id.addOrderDistributorSpinner ->
-                viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+                viewModel.selectedDistributor = viewModel.usersList[position]
             R.id.addOrderStatusSpinner ->
                 viewModel.selectedStatus = viewModel.orderStatusList[position]
+            R.id.addOrderDistributorRegionSpinner -> {
+                viewModel.updateDistributorList(viewModel.availableRegions[position].regionID.toInt())
+                initDistributorSpinner()
+            }
         }
     }
 }

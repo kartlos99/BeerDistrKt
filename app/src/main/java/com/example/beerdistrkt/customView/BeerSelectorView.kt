@@ -44,6 +44,8 @@ class BeerSelectorView @JvmOverloads constructor(
     var onDeleteClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
     var onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 
+    private var itemID = 0
+
     init {
         View.inflate(context, R.layout.view_beer_selector, this)
         layoutParams = LayoutParams(
@@ -109,28 +111,32 @@ class BeerSelectorView @JvmOverloads constructor(
     }
 
     fun getTempBeerItem(): TempBeerItemModel {
-        return TempBeerItemModel(0,
+        return TempBeerItemModel(
+            itemID,
             beerList[snapHelper.getSnapPosition(beerSelectorBeerRecycler)],
             selectedCan!!,
             beerSelectorCanCountControl.amount,
             {
                 onDeleteClick?.invoke(it)
-            })
+            },
+            itemID
+        )
     }
 
-    private fun fillBeerItemForm(orderItem: TempBeerItemModel) {
-        beerPos = beerList.indexOf(orderItem.beer)
+    fun fillBeerItemForm(item: TempBeerItemModel) {
+        itemID = item.orderItemID
+        beerPos = beerList.indexOf(item.beer)
         beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
         beerSelectorChipGr.clearCheck()
-        selectedCan = orderItem.canType
-        when (orderItem.canType.id) {
+        selectedCan = item.canType
+        when (item.canType.id) {
             1 -> beerSelectorCanChip3.isChecked = true
             2 -> beerSelectorCanChip2.isChecked = true
             3 -> beerSelectorCanChip1.isChecked = true
             4 -> beerSelectorCanChip0.isChecked = true
         }
 
-        beerSelectorCanCountControl.amount = orderItem.count
+        beerSelectorCanCountControl.amount = item.count
     }
 
     private fun initBeerRecycler() {

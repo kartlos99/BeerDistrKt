@@ -11,15 +11,19 @@ data class Order(
     val clientID: Int,
     val client: Obieqti,
     val comment: String?,
+    val isEdited: Int,
     var sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
+    val needCleaning: Int,
+    val passDays: Int,
     val items: List<Item>,
     val sales: List<Sales>,
     private val _onDeleteClick: (Order) -> Unit,
     private val _onEditClick: (Order) -> Unit,
     private val _onChangeDistributorClick: ((Order) -> Unit)? = null,
-    private val _onItemClick: ((Order) -> Unit)? = null
+    private val _onItemClick: ((Order) -> Unit)? = null,
+    private val _onHistoryClick: ((String) -> Unit)? = null
 ) {
 
     val onDeleteClick = {
@@ -33,6 +37,9 @@ data class Order(
     }
     val onItemClick = {
         _onItemClick?.invoke(this)
+    }
+    val onHistoryClick = {
+        _onHistoryClick?.invoke(this.ID.toString())
     }
 
     data class Item(

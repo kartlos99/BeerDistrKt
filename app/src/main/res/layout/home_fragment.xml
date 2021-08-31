@@ -8,23 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/homeMainProgressBar"
-            android:layout_width="@dimen/gr_size_48"
-            android:layout_height="@dimen/gr_size_48"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnOrder"
             style="@style/mainBtnStyle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/main_btn_hor_margin"
-            android:text="@string/shekveTebi"
+            android:text="@string/orders"
             app:layout_constraintBottom_toTopOf="@+id/btnSaleResult"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginEnd="@dimen/main_btn_hor_margin_half"
-            android:text="@string/day_realizacia"
+            android:text="@string/daily_sales"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toStartOf="@+id/btnSalesByClient"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/main_btn_hor_margin_half"
-            android:text="@string/obj_realizacia"
+            android:text="@string/sale_at_the_client"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnSaleResult"
@@ -115,7 +105,7 @@
             android:layout_marginBottom="@dimen/gr_size_8"
             android:elevation="@dimen/gr_size_2"
             android:padding="@dimen/gr_size_4"
-            android:text="@string/sawyobi"
+            android:text="@string/store_house"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/homeStoreHouseRecycler"
             app:layout_constraintEnd_toEndOf="parent"
@@ -148,6 +138,27 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/homeMainStoreHouseLoader"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:elevation="@dimen/gr_size_2"
+            android:background="#4FFF"
+            app:layout_constraintTop_toTopOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintStart_toStartOf="@id/homeStoreHouseRecycler"
+            app:layout_constraintEnd_toEndOf="@id/homeStoreHouseRecycler"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/homeMainProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/gr_size_128"
+            android:elevation="@dimen/gr_size_2"
+            android:background="#6FFF"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

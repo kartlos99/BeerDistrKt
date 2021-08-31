@@ -5,7 +5,9 @@
     <color name="colorAccent">#C6560A</color>
     <color name="colorAccent_33">#33C6560A</color>
 
-    <color name="colorForText">#252525</color>
+    <color name="colorPrimary20">#35008577</color>
+
+    <color name="colorForText">#292929</color>
     <color name="colorForText_2">#5B5B61</color>
     <color name="blue_1">#BCF1EE</color>
     <color name="blue_01">#D2FAF7</color>
@@ -33,11 +35,20 @@
     <color name="red_delete_bkg">#FDDDDD</color>
     <color name="completed_green">#26C372</color>
     <color name="in_complete_order">#F81A1A</color>
+    <color name="red_001">#FBEEEE</color>
     <color name="red_01">#F6E1E1</color>
+    <color name="order_with_comment">#EFDAF3</color>
     <color name="warning">#FAD82F</color>
+    <color name="warning_text_dark">#FF9696</color>
 
     <color name="green_01">#CEEFD5</color>
     <color name="green_02">#BAF1C6</color>
     <color name="green_08">#32ED5B</color>
+    <color name="green_09">#229A3C</color>
+    <color name="orange_08">#F88439</color>
+
+    <color name="dragging_order_color">#FF9696</color>
+    <color name="linked_text_color">#0E4BE4</color>
+    <color name="transparent">#00ffffff</color>
 
 </resources>

@@ -26,7 +26,7 @@
             android:layout_margin="8dp"
             android:text="@string/nashti"
             android:textAlignment="center"
-            android:textSize="@dimen/textsize_3"
+            android:textSize="@dimen/textSize_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

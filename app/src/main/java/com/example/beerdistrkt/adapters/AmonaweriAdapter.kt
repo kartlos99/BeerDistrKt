@@ -8,32 +8,31 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.models.Amonaweri
+import com.example.beerdistrkt.models.StatementModel
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import com.example.beerdistrkt.utils.MyUtil
 import java.text.DecimalFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class AmonaweriAdapter(
     context: Context?,
-    amonaweriList: List<Amonaweri>,
+    amonaweriList: List<StatementModel>,
     location: Int,
     isGrouped: Boolean
 ) :
     BaseAdapter() {
-    private val amonaweriList: ArrayList<Amonaweri>
+    private val amonaweriList: ArrayList<StatementModel>
     private val layoutInflater: LayoutInflater
     private val location: Int
-    private val grouped: Boolean
+//    private val grouped: Boolean
     var context: Context
 
     override fun getCount(): Int {
         return amonaweriList.size
     }
 
-    override fun getItem(i: Int): Amonaweri {
+    override fun getItem(i: Int): StatementModel {
         return amonaweriList[i]
     }
 
@@ -61,7 +60,7 @@ class AmonaweriAdapter(
             listRowView = convertView
             viewHolder = listRowView.tag as ViewHolderAmo
         }
-        val currItem: Amonaweri = getItem(i)
+        val currItem: StatementModel = getItem(i)
         viewHolder.t_p1?.text = currItem.tarigi
         if (location == M_PAGE) {
             val df = DecimalFormat("#0.00")
@@ -78,32 +77,25 @@ class AmonaweriAdapter(
             viewHolder.t_p4?.text = df.format(currItem.balance)
         }
         if (location == K_PAGE) {
-            if (currItem.k_in == 0F) {
-                viewHolder.t_p2!!.text = "-"
-            } else {
-                viewHolder.t_p2?.text = MyUtil.floatToSmartStr(currItem.k_in)
-            }
-            if (currItem.k_out == 0F) {
-                viewHolder.t_p3?.text = "-"
-            } else {
-                viewHolder.t_p3?.setText(MyUtil.floatToSmartStr(currItem.k_out))
-            }
-            viewHolder.t_p4?.setText(MyUtil.floatToSmartStr(currItem.balance))
+//            if (currItem.k_in == 0F) {
+//                viewHolder.t_p2!!.text = "-"
+//            } else {
+//                viewHolder.t_p2?.text = MyUtil.floatToSmartStr(currItem.k_in)
+//            }
+//            if (currItem.k_out == 0F) {
+//                viewHolder.t_p3?.text = "-"
+//            } else {
+//                viewHolder.t_p3?.setText(MyUtil.floatToSmartStr(currItem.k_out))
+//            }
+//            viewHolder.t_p4?.setText(MyUtil.floatToSmartStr(currItem.balance))
         }
         viewHolder.t_comment?.text = currItem.comment ?: ""
-        if (grouped) {
-            viewHolder.t_comment!!.visibility = View.GONE
+        if (currItem.comment.isNullOrEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            viewHolder.t_p3!!.setTextColor(Color.BLACK)
+            viewHolder.t_p2!!.setTextColor(Color.BLACK)
         } else {
-            if (currItem.comment.isNullOrEmpty()) { //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                viewHolder.t_p3!!.setTextColor(Color.BLACK)
-                viewHolder.t_p2!!.setTextColor(Color.BLACK)
-            } else { //                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_comment_icon);
-//                ScaleDrawable scaleDrawable = new ScaleDrawable(drawable, Gravity.CENTER, 0.4f, 0.8f);
-//                viewHolder.t_p1.setBackground(scaleDrawable.getDrawable());
-                viewHolder.t_p3!!.setTextColor(Color.MAGENTA)
-                viewHolder.t_p2!!.setTextColor(Color.MAGENTA)
-                //                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
-            }
+            viewHolder.t_p3!!.setTextColor(Color.MAGENTA)
+            viewHolder.t_p2!!.setTextColor(Color.MAGENTA)
         }
         return listRowView
     }
@@ -122,7 +114,7 @@ class AmonaweriAdapter(
         layoutInflater =
             context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         this.location = location
-        grouped = isGrouped
+//        grouped = isGrouped
         this.context = context
     }
 }

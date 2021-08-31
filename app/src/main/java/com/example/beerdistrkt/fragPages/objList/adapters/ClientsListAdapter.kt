@@ -1,68 +1,50 @@
 package com.example.beerdistrkt.fragPages.objList.adapters
 
-import android.content.Context
 import android.view.*
-import android.widget.FrameLayout
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.ObjListRowBinding
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.Obieqti
-import kotlinx.android.synthetic.main.obj_list_row.view.*
+import com.example.beerdistrkt.utils.Session
 
-class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ClientsListAdapter :
+    ListAdapter<Obieqti, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
 
-    var showingList: MutableList<Obieqti> = mutableListOf()
-    var originalList: MutableList<Obieqti> = mutableListOf()
     var onItemClick: (clientID: Int) -> Unit = {}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.obj_list_row, null)
-        view.layoutParams = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientViewHolder {
+        val binding = ObjListRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ClientViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return showingList.size
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.clientNameTv.text = showingList[position].dasaxeleba
-        holder.itemView.setOnClickListener {
-            onItemClick.invoke(showingList[position].id ?: -1)
-        }
-        holder.itemView.tag = showingList[position]
-    }
-
-    fun setData(data: List<Obieqti>) {
-        showingList.clear()
-        showingList.addAll(data)
-        originalList.clear()
-        originalList.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    fun filter(query: String?) {
-        showingList.clear()
-        if (query.isNullOrEmpty()) {
-            showingList.addAll(originalList)
-        } else {
-            showingList.addAll(originalList.filter {
-                it.dasaxeleba.contains(query)
-            })
-        }
-        notifyDataSetChanged()
+    override fun onBindViewHolder(holder: ClientViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     fun getClientObject(position: Int): Obieqti {
-        return showingList[position]
+        return getItem(position)
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener {
+    inner class ClientViewHolder(
+        private val binding: ObjListRowBinding
+    ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
         init {
-            itemView.setOnCreateContextMenuListener(this)
+            binding.root.setOnCreateContextMenuListener(this)
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick.invoke(getItem(position).id ?: -1)
+                }
+            }
+        }
+
+        fun bind(client: Obieqti) {
+            binding.clientNameTv.text = client.dasaxeleba
+            itemView.tag = getItem(adapterPosition)
         }
 
         override fun onCreateContextMenu(
@@ -75,8 +57,19 @@ class ClientsListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
             menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
-//            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+                ?.isEnabled = Session.get().hasPermission(Permission.AddEditClient)
+            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+                ?.isEnabled = Session.get().hasPermission(Permission.DeleteClient)
+        }
+    }
+
+    class ClientListDiffUtilCallBack : DiffUtil.ItemCallback<Obieqti>() {
+        override fun areItemsTheSame(oldItem: Obieqti, newItem: Obieqti): Boolean {
+            return oldItem.id == newItem.id
         }
 
+        override fun areContentsTheSame(oldItem: Obieqti, newItem: Obieqti): Boolean {
+            return oldItem == newItem
+        }
     }
 }

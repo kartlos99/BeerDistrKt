@@ -4,27 +4,24 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.RelativeLayout
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.utils.ADD_ORDER
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.visibleIf
-import kotlinx.android.synthetic.main.orders_fragment.*
+import com.example.beerdistrkt.utils.*
 import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
-class OrdersFragment : BaseFragment<OrdersViewModel>() {
+class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         fun newInstance() = OrdersFragment()
@@ -35,7 +32,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
-    private var switchToDelivery: Switch? = null
+    private var switchToDelivery: SwitchCompat? = null
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -45,15 +42,13 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = OrdersFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
         vBinding.viewModel = viewModel
         vBinding.addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
-                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
-                    ADD_ORDER
-                )
+                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
             )
         }
         vBinding.ordersRecycler.layoutManager =
@@ -118,7 +113,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         viewModel.deliveryMode = checked
         (activity as AppCompatActivity).supportActionBar?.title =
             if (checked)
-                resources.getString(R.string.mitana)
+                resources.getString(R.string.delivery)
             else
                 resources.getString(R.string.order_main)
 
@@ -139,7 +134,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         super.onActivityCreated(savedInstanceState)
         initViewModel()
 
-        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.order_main)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.order_main)
     }
 
     private fun initViewModel() {
@@ -147,7 +143,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             when (it) {
                 is ApiResponseState.Success -> {
                     orderListSize = it.data.size
-                    ordersAdapter = ParentOrderAdapter(it.data, viewModel.barrelsList)
+                    ordersAdapter = ParentOrderAdapter(
+                        it.data, viewModel.barrelsList,
+                        viewModel::saveDistributorGroupState
+                    )
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
                     ordersAdapter.onMitanaClick = View.OnClickListener { view ->
                         view.findNavController().navigate(
@@ -160,7 +159,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                     onModeChange(viewModel.deliveryMode)
                     switchToDelivery?.isChecked = viewModel.deliveryMode
                 }
-                is ApiResponseState.Loading -> orderLoaderBar.visibleIf(it.showLoading)
+                is ApiResponseState.Loading -> {
+                    vBinding.ordersSwipeRefresh.isRefreshing = it.showLoading
+                }
+                is ApiResponseState.ApiError -> showToast(it.errorText)
+                else -> showToast(R.string.something_is_wrong)
             }
         })
         viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
@@ -168,14 +171,17 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         })
         viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                context?.showAskingDialog(
-                    null,
-                    R.string.confirm_delete_order,
-                    R.string.yes,
-                    R.string.no, R.style.ThemeOverlay_MaterialComponents_Dialog
-                ) {
-                    viewModel.deleteOrder(it)
-                }
+                if (Session.get().hasPermission(Permission.EditOrder)) {
+                    context?.showAskingDialog(
+                        null,
+                        R.string.confirm_delete_order,
+                        R.string.yes,
+                        R.string.no, R.style.ThemeOverlay_MaterialComponents_Dialog
+                    ) {
+                        viewModel.deleteOrder(it)
+                    }
+                } else
+                    showToast(R.string.no_permission_common)
                 viewModel.askForOrderDeleteLiveData.value = null
             }
         })
@@ -191,10 +197,13 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         viewModel.editOrderLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
-                    val actionOrderEdit =
-                        OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(it.clientID)
-                    actionOrderEdit.orderID = it.ID
-                    vBinding.root.findNavController().navigate(actionOrderEdit)
+                    if (Session.get().hasPermission(Permission.EditOrder)) {
+                        val actionOrderEdit =
+                            OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(it.clientID)
+                        actionOrderEdit.orderID = it.ID
+                        vBinding.root.findNavController().navigate(actionOrderEdit)
+                    } else
+                        showToast(R.string.no_permission_common)
                 } else {
                     showToast(R.string.cannot_edit)
                 }
@@ -205,7 +214,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
             if (order != null) {
                 requireContext().showListDialog(
                     R.string.choose_distributor,
-                    viewModel.getDistributorsArray()
+                    viewModel.getDistributorsArray(order.clientID)
                 ) { distributorPos ->
                     viewModel.changeDistributor(order.ID, distributorPos)
                 }
@@ -221,6 +230,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
                 )
             }
         })
+        viewModel.onShowHistoryLiveData.observeSingleEvent(viewLifecycleOwner) {
+            view?.findNavController()?.navigate(
+                OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment(it)
+            )
+        }
     }
 
     override fun onResume() {
@@ -230,7 +244,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("_KA", "onViewCreated")
+
+        vBinding.ordersSwipeRefresh.setOnRefreshListener(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -243,7 +258,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
         inflater.inflate(R.menu.order_option_menu, menu)
 
         val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
-        switchToDelivery = swView.getChildAt(0) as Switch
+        switchToDelivery = swView.getChildAt(0) as SwitchCompat
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
         }
@@ -251,5 +266,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return false
+    }
+
+    override fun onRefresh() {
+        viewModel.getOrders()
+
     }
 }

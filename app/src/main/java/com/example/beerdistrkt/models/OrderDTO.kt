@@ -9,11 +9,15 @@ data class OrderDTO(
     val distributorID: Int,
     val clientID: Int,
     val comment: String?,
+    val isEdited: Int,
     val sortValue: Double,
     val modifyDate: String,
     val modifyUserID: Int,
+    val needCleaning: Int,
+    val passDays: Int,
     val items: List<Item>,
-    val sales: List<Sales>
+    val sales: List<Sales>,
+    val availableRegions: List<Int>
 ) {
     data class Item(
         val ID: Int,
@@ -69,7 +73,8 @@ data class OrderDTO(
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,
         onChangeDistributorClick: ((Order) -> Unit)? = null,
-        onItemClick: ((Order) -> Unit)? = null
+        onItemClick: ((Order) -> Unit)? = null,
+        onHistoryClick: ((String) -> Unit)? = null
     ): Order {
 
         val client = clients.find {
@@ -90,9 +95,12 @@ data class OrderDTO(
             clientID,
             client,
             comment,
+            isEdited,
             sortValue,
             modifyDate,
             modifyUserID,
+            needCleaning,
+            passDays,
             items.map {
                 it.toPm(beerList)
             },
@@ -102,7 +110,8 @@ data class OrderDTO(
             onDeleteClick,
             onEditClick,
             onChangeDistributorClick,
-            onItemClick
+            onItemClick,
+            onHistoryClick
             )
 
     }

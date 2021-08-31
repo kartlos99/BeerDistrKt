@@ -37,13 +37,20 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlHardcoded" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/ordersRecycler"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/ordersSwipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/gr_size_4"
-            app:layout_constraintTop_toBottomOf="@id/setDateBtn"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setDateBtn">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ordersRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <ProgressBar
             android:id="@+id/orderLoaderBar"
@@ -53,7 +60,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ordersRecycler" />
+            app:layout_constraintTop_toTopOf="@id/ordersSwipeRefresh" />
 
 
         <TextView

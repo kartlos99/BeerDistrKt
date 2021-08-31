@@ -1,9 +1,11 @@
 package com.example.beerdistrkt.network
 
 import android.content.Context
+import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
@@ -14,34 +16,62 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
+import com.example.beerdistrkt.fragPages.showHistory.MoneyHistoryDTO
+import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
+import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-//import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
-//import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-//import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
+class AuthInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val newRequest = chain.request().newBuilder()
+        ApeniApiService.getHeadersMap().entries.forEach {
+            newRequest.addHeader(it.key, it.value)
+        }
+        return chain.proceed(newRequest.build())
+    }
+
+}
 
 interface ApeniApiService {
 
     companion object {
         private var instance: ApeniApiService? = null
 
-//        private const val BASE_URL = "https://apeni.ge/tbilisi/mobile/"
-        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
+        private const val BASE_URL = BuildConfig.SERVER_URL
+//        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
+//        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
 
-//        test at server
-//        private const val BASE_URL = TEST_SERVER_URL
+        fun getHeadersMap(): Map<String, String> {
+            val session = Session.get()
+            return if (session.isUserLogged())
+                mapOf(
+                    "Authorization" to "Bearer ${session.accessToken}",
+                    "Client" to "Android",
+                    "Region" to session.getRegionID()
+                )
+            else mapOf("Client" to "Android")
+        }
 
         fun initialize(context: Context) {
             if (instance == null) {
@@ -59,9 +89,18 @@ interface ApeniApiService {
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
+            val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(AuthInterceptor())
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build()
+
             val retrofit = Retrofit.Builder()
-                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build())
+                .client(okHttpClient)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
+//                .addCallAdapterFactory()
                 .baseUrl(BASE_URL)
                 .build()
 
@@ -81,17 +120,17 @@ interface ApeniApiService {
     @GET("get_fasebi.php")
     fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
-    @GET("get_amonaweri_m.php")
-    fun getAmonaweriM(
-        @Query("tarigi") tarigi: String,
-        @Query("objID") objID: Int
-    ): Call<DataResponse<List<Amonaweri>>>
+    @GET("statement/getFinancial.php")
+    fun getFinancialStatement(
+        @Query("offset") offset: Int,
+        @Query("clientID") clientID: Int
+    ): Call<DataResponse<StatementResponse>>
 
-    @GET("get_amonaweri_k.php")
-    fun getAmonaweriK(
-        @Query("tarigi") tarigi: String,
-        @Query("objID") objID: Int
-    ): Call<DataResponse<List<Amonaweri>>>
+    @GET("statement/getBarrel.php")
+    fun getBarrelStatement(
+        @Query("offset") offset: Int,
+        @Query("clientID") clientID: Int
+    ): Call<DataResponse<StatementResponse>>
 
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<DataResponse<List<BeerModel>>>
@@ -99,11 +138,12 @@ interface ApeniApiService {
     @GET("get_kasri_list.php")
     fun getCanList(): Call<DataResponse<List<CanModel>>>
 
-    @GET("sales/getDayTotal.php")
-    fun getDayInfo(
-        @Query("tarigi") tarigi: String,
-        @Query("distrid") distrid: Int
-    ): Call<DataResponse<RealizationDay>>
+    // general
+    @GET("general/getComments.php")
+    fun getComments(): Call<DataResponse<List<CommentModel>>>
+
+    @POST("general/addComment.php")
+    fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>
 
     @POST("general/deleteRecord.php")
     fun deleteRecord(@Body del: DeleteRequest): Call<DataResponse<Any>>
@@ -114,17 +154,12 @@ interface ApeniApiService {
     @POST("general/addXarji.php")
     fun addXarji(@Body data: AddXarjiRequestModel): Call<DataResponse<Int>>
 
+    // Orders
     @GET("order/getByDate.php")
     fun getOrders(@Query("date") date: String): Call<DataResponse<List<OrderDTO>>>
 
     @POST("order/add.php")
     fun addOrder(@Body order: OrderRequestModel): Call<DataResponse<String>>
-
-    @POST("sales/add.php")
-    fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
-
-    @POST("sales/update.php")
-    fun updateSale(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
 
     @GET("order/getByID.php")
     fun getOrderByID(@Query("orderID") orderID: Int): Call<DataResponse<List<OrderDTO>>>
@@ -144,18 +179,27 @@ interface ApeniApiService {
     @POST("order/updateDistributor.php")
     fun updateOrderDistributor(@Body data: OrderUpdateDistributorRequestModel): Call<DataResponse<String>>
 
+    @GET("order/getHistory.php")
+    fun getOrderHistory(@Query("orderID") orderID: String): Call<DataResponse<List<OrderHistoryDTO>>>
+
     // client
     @GET("client/getDebtByID.php")
     fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
-
-    @POST("client/login.php")
-    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
 
     @POST("client/add.php")
     fun addClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
 
     @POST("client/update.php")
     fun updateClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
+
+    @POST("client/deactivate.php")
+    fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>
+
+    @POST("client/attachTo.php")
+    fun setRegions(@Body model: AttachRegionsRequest): Call<DataResponse<String>>
+
+    @GET("client/getAttachedRegions.php")
+    fun getAttachedRegions(@Query("clientID") clientID: Int): Call<DataResponse<List<AttachedRegion>>>
 
     // storeHouse
     @GET("storeHouse/getBalance.php")
@@ -167,12 +211,11 @@ interface ApeniApiService {
     @POST("storeHouse/add.php")
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
 
-    // general
-    @GET("general/getComments.php")
-    fun getcomments(): Call<DataResponse<List<CommentModel>>>
+    @GET("storeHouse/getioList.php")
+    fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<List<IoModel>>>
 
-    @POST("general/addComment.php")
-    fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>
+    @GET("storeHouse/getGlobalBalance.php")
+    fun getGlobalBalance(@Query("date") date: String): Call<DataResponse<List<GlobalStorageModel>>>
 
     // other
     @GET("other/getCleaningList.php")
@@ -185,6 +228,37 @@ interface ApeniApiService {
     @POST("user/add.php")
     fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
 
+    @POST("user/login.php")
+    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
+
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>
+
+    @POST("user/attachTo.php")
+    fun setRegions(@Body model: UserAttachRegionsRequest): Call<DataResponse<String>>
+
+    @GET("user/getAttachedRegions.php")
+    fun getAttachedRegions(@Query("userID") userID: String): Call<DataResponse<List<AttachedRegion>>>
+
+    @GET("user/getAllUsers.php")
+    fun getAllUsers(): Call<DataResponse<List<MappedUser>>>
+
+    // Sales
+    @POST("sales/add.php")
+    fun addSales(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
+
+    @POST("sales/update.php")
+    fun updateSale(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
+
+    @GET("sales/getDayTotal.php")
+    fun getDayInfo(
+        @Query("tarigi") tarigi: String,
+        @Query("distrid") distrid: Int
+    ): Call<DataResponse<RealizationDay>>
+
+    @GET("sales/getHistory.php")
+    fun getSalesHistory(@Query("saleID") saleID: Int): Call<DataResponse<List<SaleHistoryDTO>>>
+
+    @GET("sales/getMoneyHistory.php")
+    fun getMoneyHistory(@Query("recordID") recordID: Int): Call<DataResponse<List<MoneyHistoryDTO>>>
 }

@@ -1,55 +1,45 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.AdapterView.AdapterContextMenuInfo
-import android.widget.TextView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.adapters.AmonaweriAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.beerdistrkt.*
+import com.example.beerdistrkt.adapters.CtxMenuItem
+import com.example.beerdistrkt.adapters.PaginatedScrollListener
+import com.example.beerdistrkt.adapters.StatementAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
-import com.example.beerdistrkt.models.Amonaweri
-import com.example.beerdistrkt.showAskingDialog
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
+import com.example.beerdistrkt.models.StatementModel
+import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID
-import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.beerdistrkt.utils.visibleIf
 
 class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
     private lateinit var vBinding: AmonaweriSubPageFragmentBinding
 
-    lateinit var simpleDateFormat: SimpleDateFormat
-    lateinit var amonaweriListAdapter: AmonaweriAdapter
-
     private var pagePos: Int = -1
 
     var action: ((operation: String, recordID: Int) -> Unit)? = null
     var updateAnotherPage: (() -> Unit)? = null
+    var onShowHistory: ((recordID: Int, historyOf: String) -> Unit)? = null
+    lateinit var statementListAdapter: StatementAdapter
 
     companion object {
         fun newInstance() = AmonaweriSubPageFrag()
-
         val TAG = "AmonaweriSubPageFrag"
     }
 
     override val viewModel: AmonaweriSubPageViewModel by lazy {
-        ViewModelProviders.of(this)[AmonaweriSubPageViewModel::class.java]
+        getViewModel { AmonaweriSubPageViewModel() }
     }
 
-    @SuppressLint("SimpleDateFormat")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,8 +50,6 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         pagePos = arguments?.getInt(LOCATION) ?: 0
         viewModel.pagePos = pagePos
         viewModel.clientID = arguments?.getInt(OBJ_ID) ?: 0
-        vBinding.progressBarAmonaweri.visibility = View.VISIBLE
-        viewModel.requestAmonaweriList()
 
         vBinding.amoColumnTitle1.text = getString(R.string.text_tarigi)
         if (pagePos == 0) {
@@ -73,20 +61,37 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             vBinding.amoColumnTitle3.text = getString(R.string.wamogebuli_kasrebi)
             vBinding.amoColumnTitle4.text = getString(R.string.nashti_at_client)
         }
-        registerForContextMenu(vBinding.listviewAmonaweri)
 
         return vBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        val linearLayoutManager = LinearLayoutManager(context)
+        statementListAdapter = StatementAdapter(mutableListOf(), pagePos)
+
+        vBinding.statementSubPageRc.apply {
+            layoutManager = linearLayoutManager
+            adapter = statementListAdapter
+            addOnScrollListener(PaginatedListener(linearLayoutManager))
+        }
+        viewModel.requestAmonaweriList()
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        viewModel.isGroupedLiveData.observe(viewLifecycleOwner) { grouped: Boolean ->
+            statementListAdapter.isGrouped = grouped
+        }
         viewModel.amonaweriLiveData.observe(viewLifecycleOwner, Observer {
-            vBinding.progressBarAmonaweri.visibility = View.GONE
-            amonaweriListAdapter = AmonaweriAdapter(context, it, pagePos, viewModel.isGrouped)
-            vBinding.listviewAmonaweri.adapter = amonaweriListAdapter
-            Log.d("sufrObsSize", "${it.size}")
-            Log.d("suAdaper size", "${amonaweriListAdapter.count}")
+            when (it) {
+                is ApiResponseState.Loading -> vBinding.statementProgressBar.visibleIf(it.showLoading)
+                is ApiResponseState.Success -> {
+                    statementListAdapter.addItems(it.data)
+                    Log.d("sufrObsSize", "${it.data.size}")
+                }
+            }
         })
         viewModel.needUpdateLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
@@ -94,120 +99,72 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                 viewModel.needUpdateLiveData.value = null
             }
         })
-
-        vBinding.listviewAmonaweri.setOnItemClickListener { parent, view, position, id ->
-            if (!viewModel.isGrouped) {
-                val tvComment = view.findViewById<TextView>(R.id.t_amonaweri_row_comment)
-                val amonaweri: Amonaweri = amonaweriListAdapter.getItem(position)
-                if (!amonaweri.comment.isNullOrEmpty()) {
-                    if (tvComment.visibility == View.VISIBLE) {
-                        tvComment.visibility = View.GONE
-                    } else {
-                        tvComment.visibility = View.VISIBLE
-                    }
-                }
-            }
-        }
     }
 
     fun chengeAmonaweriAppearance(grouped: Boolean) {
         viewModel.changeDataStructure(grouped)
     }
 
-
-
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        if (viewModel.isGrouped) {
-            showToast(R.string.remove_grouping)
-        } else {
-            val info = menuInfo as AdapterContextMenuInfo
-
-            var adate: Date? = null
-            try {
-                adate = SimpleDateFormat(getString(R.string.patern_datetime))
-                    .parse(amonaweriListAdapter.getItem(info.position).tarigi)
-            } catch (e: ParseException) {
-                e.printStackTrace()
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            CtxMenuItem.Edit.itemID -> if (pagePos == 0) {
+                val statementItem = statementListAdapter.getItem(item.groupId)
+                action?.invoke(statementItem.getType(pagePos), statementItem.id)
+                true
+            } else false
+            CtxMenuItem.EditBarrel.itemID -> if (pagePos == 1) {
+                val statementItem = statementListAdapter.getItem(item.groupId)
+                action?.invoke(statementItem.getType(pagePos), statementItem.id)
+                true
+            } else false
+            CtxMenuItem.Delete.itemID -> if (pagePos == 0) {
+                confirmDeleteStatement(statementListAdapter.getItem(item.groupId))
+                true
+            } else false
+            CtxMenuItem.DeleteBarrel.itemID -> if (pagePos == 1) {
+                confirmDeleteStatement(statementListAdapter.getItem(item.groupId))
+                true
+            } else false
+            CtxMenuItem.History.itemID -> {
+                val statementItem = statementListAdapter.getItem(item.groupId)
+                if (statementItem.pay != 0F)
+                    onShowHistory?.invoke(statementItem.id, SalesHistoryFragment.money)
+                else
+                    onShowHistory?.invoke(statementItem.id, SalesHistoryFragment.delivery)
+                return true
             }
-            if (adate != null) {
-                val dateFormat = SimpleDateFormat(getString(R.string.patern_date))
-                if (Session.get().userType == UserType.ADMIN ||
-                    dateFormat.format(adate) == dateFormat.format(Date())
-                ) {
-                    if (pagePos == 0) {
-                        activity!!.menuInflater.inflate(R.menu.context_menu_amonaw_m, menu)
-                        menu.setHeaderTitle("--  თანხები  --")
-                    }
-                    if (pagePos == 1) {
-                        activity!!.menuInflater.inflate(R.menu.context_menu_amonaw_k, menu)
-                        menu.setHeaderTitle("--  კასრები  --")
-                    }
-                } else {
-                    Toast.makeText(context, R.string.no_edit_access, Toast.LENGTH_SHORT).show()
-                }
-            }
+            else -> return super.onContextItemSelected(item)
         }
-        super.onCreateContextMenu(menu, v, menuInfo)
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-
-        val info = item.menuInfo as AdapterContextMenuInfo
-//        val amonaweriRow = amonaweriListAdapter.getItem(info.position)
-
-        when (item.itemId) {
-            R.id.cm_amonaw_m_edit -> if (pagePos == 0) {
-                val amonaweriRow = amonaweriListAdapter.getItem(info.position)
-                // tanxis agebis redaqtireba
-                if (amonaweriRow.pay != 0F)
-                    action?.invoke(M_OUT, amonaweriRow.id)
-                else
-                    action?.invoke(MITANA, amonaweriRow.id)
-            }
-            R.id.cm_amonaw_k_edit -> if (pagePos == 1) {
-                val amonaweriRow = amonaweriListAdapter.getItem(info.position)
-                if (amonaweriRow.k_out != 0F) { // kasris aRebas vakoreqtireb
-                    action?.invoke(K_OUT, amonaweriRow.id)
-                } else
-                    action?.invoke(MITANA, amonaweriRow.id)
-            }
-            R.id.cm_amonaw_m_del -> if (pagePos == 0) {
-                val amonaweriRow = amonaweriListAdapter.getItem(info.position)
-                requireContext().showAskingDialog(
-                    null,
-                    R.string.confirm_delete_text,
-                    R.string.yes,
-                    R.string.no,
-                    R.style.ThemeOverlay_MaterialComponents_Dialog
-                ) {
-                    val tableName = if (amonaweriRow.pay == 0F) MITANA else M_OUT
-                    viewModel.deleteRecord(tableName, amonaweriRow.id)
-                }
-            }
-            R.id.cm_amonaw_k_del -> if (pagePos == 1) {
-                val amonaweriRow = amonaweriListAdapter.getItem(info.position)
-                requireContext().showAskingDialog(
-                    null,
-                    R.string.confirm_delete_text,
-                    R.string.yes,
-                    R.string.no,
-                    R.style.ThemeOverlay_MaterialComponents_Dialog
-                ) {
-                    val tableName = if (amonaweriRow.k_out == 0F) MITANA else K_OUT
-                    viewModel.deleteRecord(tableName, amonaweriRow.id)
-                }
-            }
+    private fun confirmDeleteStatement(statementModel: StatementModel) {
+        requireContext().showAskingDialog(
+            null,
+            R.string.confirm_delete_text,
+            R.string.yes,
+            R.string.no,
+            R.style.ThemeOverlay_MaterialComponents_Dialog
+        ) {
+            val tableName = statementModel.getType(pagePos)
+            viewModel.deleteRecord(tableName, statementModel.id)
+            statementListAdapter.clearData()
         }
-
-        amonaweriListAdapter.notifyDataSetChanged()
-        return super.onContextItemSelected(item)
     }
 
     fun updateData() {
+        statementListAdapter.clearData()
         viewModel.requestAmonaweriList()
+    }
+
+    inner class PaginatedListener(layoutManager: LinearLayoutManager) :
+        PaginatedScrollListener(layoutManager) {
+
+        override fun loadMoreItems() {
+            viewModel.loadMoreData()
+        }
+
+        override fun isLastPage() = viewModel.isLastPage
+
+        override fun isLoading() = viewModel.isLoading
     }
 }

@@ -3,6 +3,8 @@ package com.example.beerdistrkt.fragPages.addEditObiects
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
+import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -15,21 +17,27 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
     var clientObject: ObiectWithPrices? = null
     val clientObjectLiveData = MutableLiveData<ObiectWithPrices?>()
     val clientSaveMutableLiveData = MutableLiveData<ApiResponseState<ObiectWithPrices?>>()
+    val clientRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
+    val regions = mutableListOf<AttachedRegion>()
+    val selectedRegions = mutableListOf<AttachedRegion>()
 
     init {
-        Log.d("ID", "clientID $clientID")
-        if (clientID > 0) {
-            ioScope.launch {
-                clientObject = database.getObiectsWithPrices(clientID)
-                delay(50)
-                uiScope.launch {
-                    clientObjectLiveData.value = clientObject
+        beersLiveData.observeForever {
+            if (clientID > 0) {
+                ioScope.launch {
+                    clientObject = database.getObiectsWithPrices(clientID)
+                    delay(50)
+                    uiScope.launch {
+                        clientObjectLiveData.value = clientObject
+                    }
                 }
             }
         }
     }
 
     fun addClient(clientData: ObiectWithPrices) {
+        if (callIsBlocked) return
+        callIsBlocked = true
 
         if (clientID == 0) {
             clientSaveMutableLiveData.value = ApiResponseState.Loading(true)
@@ -54,7 +62,7 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
         } else updateClient(clientData)
     }
 
-    fun updateClient(clientData: ObiectWithPrices) {
+    private fun updateClient(clientData: ObiectWithPrices) {
         clientSaveMutableLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().updateClient(clientData),
@@ -71,12 +79,47 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
         )
     }
 
-    fun saveToLocalDB(clientData: ObiectWithPrices) {
+    private fun saveToLocalDB(clientData: ObiectWithPrices) {
         ioScope.launch {
             database.insertObiecti(clientData.obieqti)
             clientData.prices.forEach { beerPrice ->
                 database.insertBeerPrice(beerPrice)
             }
         }
+    }
+
+    fun getRegionForClient() {
+        sendRequest(
+            ApeniApiService.getInstance().getAttachedRegions(clientID),
+            successWithData = {
+                regions.clear()
+                regions.addAll(it)
+                clientRegionsLiveData.value =
+                    ApiResponseState.Success(regions.filter { r -> r.isAttached })
+            }
+        )
+    }
+
+    fun getAllRegionNames(): Array<String> {
+        return regions.map { it.name }.toTypedArray()
+    }
+
+    fun getSelectedRegions(): BooleanArray {
+        selectedRegions.clear()
+        selectedRegions.addAll(regions.filter { r -> r.isAttached })
+        return regions.map { it.isAttached }.toBooleanArray()
+    }
+
+    fun setNewRegions() {
+        val request = AttachRegionsRequest(
+            clientID,
+            selectedRegions.map { it.ID }
+        )
+        sendRequest(
+            ApeniApiService.getInstance().setRegions(request),
+            successWithData = {
+                getRegionForClient()
+            }
+        )
     }
 }

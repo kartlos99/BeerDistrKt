@@ -5,9 +5,6 @@ import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,17 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.models.BeerModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
-import kotlinx.android.synthetic.main.add_delivery_fragment.*
 import kotlinx.android.synthetic.main.beer_item_view.view.*
 import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 import java.util.*
@@ -99,14 +97,17 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         when (viewModel.operation) {
             MITANA -> {
                 vBinding.addDeliveryMoneyGr.visibleIf(false)
+                vBinding.addDeliveryCheckReplace.visibility = View.GONE
             }
             M_OUT -> {
                 vBinding.addDeliveryMitanaGr.visibleIf(false)
                 vBinding.addDeliveryCheckGift.visibility = View.GONE
+                vBinding.addDeliveryCheckReplace.visibility = View.GONE
             }
             K_OUT -> {
                 vBinding.addDeliveryMoneyGr.visibleIf(false)
                 vBinding.addDeliveryCheckGift.visibility = View.GONE
+                vBinding.addDeliveryCheckReplace.visibility = View.GONE
             }
         }
 
@@ -119,18 +120,26 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.btnBeerLeftImg.setOnClickListener(this)
         vBinding.btnBeerRightImg.setOnClickListener(this)
         vBinding.addDeliveryAddSaleItemBtn.setOnClickListener(this)
+        vBinding.addDeliveryMoneyExpander.setOnClickListener(this)
+        vBinding.addDeliveryMoneyCashImg.setOnClickListener(this)
+        vBinding.addDeliveryMoneyTransferImg.setOnClickListener(this)
 
-        vBinding.addDeliveryCanCountControl.editCount.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
+        vBinding.addDeliveryMoneyEt.simpleTextChangeListener {
+            vBinding.addDeliveryMoneyCashImg.setTint(getColorForValidationIndicator(it))
+        }
+        vBinding.addDeliveryMoneyTransferEt.simpleTextChangeListener {
+            vBinding.addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        vBinding.addDeliveryCanCountControl.editCount.simpleTextChangeListener {
+            checkForm()
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                checkForm()
-            }
-        })
         vBinding.addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isGift = isChecked
+        }
+        vBinding.addDeliveryCheckReplace.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isReplace = isChecked
         }
 
         initViewModel()
@@ -138,7 +147,16 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryCansScroll.postDelayed(Runnable {
             vBinding.addDeliveryCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
         }, 100L)
-        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.mitana)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.delivery)
+        showDebt()
+    }
+
+    private fun getColorForValidationIndicator(value: CharSequence): Int {
+        return if (value.isNotEmpty() && value.toString().toDoubleOrNull() ?: .0 > .0)
+            R.color.green_08
+        else
+            R.color.gray_6
     }
 
     private fun initViewModel() {
@@ -194,17 +212,37 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.mOutEditLiveData.value = null
             }
         })
-        viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
-            if (it is ApiResponseState.Success) {
-                addDeliveryClientDebt.text =
-                    getString(R.string.client_debt, it.data.getMoneyDebt(), it.data.getBarrelDebt())
-                viewModel.getDebtLiveData.value = ApiResponseState.Sleep
-            }
-        })
+    }
+
+    private fun showDebt() {
+        val debtFragment = ClientDebtFragment.getInstance(clientID)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.addDeliveryDebtContainer, debtFragment)
+            .commit()
     }
 
     private fun fillMoney(moneyRowModel: MoneyRowModel) {
-        vBinding.addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+        vBinding.addDeliveryMoneyExpander.goAway()
+        when (moneyRowModel.paymentType) {
+            PaymentType.Cash -> {
+                vBinding.addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+                500 waitFor {
+                    vBinding.addDeliveryMoneyCashImg.explodeAnim()
+                }
+            }
+            PaymentType.Transfer -> {
+                vBinding.addDeliveryMoneyTransferEt.setText(moneyRowModel.amount.toString())
+                vBinding.addDeliveryMoneyTransferEt.show()
+                vBinding.addDeliveryMoneyTransferImg.show()
+                vBinding.addDeliveryTransferLariSign.show()
+                vBinding.addDeliveryMoneyEt.goAway()
+                vBinding.addDeliveryMoneyCashImg.goAway()
+                vBinding.addDeliveryLariSign.goAway()
+                500 waitFor {
+                    vBinding.addDeliveryMoneyTransferImg.explodeAnim()
+                }
+            }
+        }
 
         vBinding.addDeliveryComment.editText?.setText(moneyRowModel.comment ?: "")
     }
@@ -221,7 +259,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
     }
 
-    fun fillSale(saleData: SaleRowModel) {
+    private fun fillSale(saleData: SaleRowModel) {
         val data = saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)
         beerPos = viewModel.beerList.indexOf(data.beer)
         vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
@@ -249,10 +287,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 when (viewModel.operation) {
                     MITANA -> {
                         viewModel.barrelOutItems.clear()
-                        viewModel.moneyOut = null
+                        viewModel.moneyOut.clear()
                     }
                     K_OUT -> {
-                        viewModel.moneyOut = null
+                        viewModel.moneyOut.clear()
                         viewModel.saleItemsList.clear()
                     }
                     M_OUT -> {
@@ -263,7 +301,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 if (formIsValid() && viewModel.saleItemsList.isEmpty() && viewModel.operation != K_OUT)
                     viewModel.addSaleItemToList(getTempSaleItem())
                 collectEmptyBarrels()
-                viewModel.setMoney(vBinding.addDeliveryMoneyEt.text)
+                viewModel.setMoney(
+                    vBinding.addDeliveryMoneyEt.text.toString(),
+                    vBinding.addDeliveryMoneyTransferEt.text.toString()
+                )
                 viewModel.onDoneClick(vBinding.addDeliveryComment.editText?.text.toString())
             }
             R.id.addDeliveryDateBtn -> {
@@ -293,6 +334,38 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 else
                     showToast(R.string.fill_data)
             }
+            R.id.addDeliveryMoneyExpander -> {
+                vBinding.addDeliveryMoneyTransferEt.show()
+                vBinding.addDeliveryMoneyTransferImg.show()
+                vBinding.addDeliveryTransferLariSign.show()
+                vBinding.addDeliveryMoneyExpander.goAway()
+            }
+            R.id.addDeliveryMoneyCashImg -> {
+                if (viewModel.operation == M_OUT) {
+                    vBinding.addDeliveryMoneyEt.goAway()
+                    vBinding.addDeliveryMoneyCashImg.goAway()
+                    vBinding.addDeliveryLariSign.goAway()
+                    vBinding.addDeliveryMoneyTransferEt.show()
+                    vBinding.addDeliveryMoneyTransferImg.show()
+                    vBinding.addDeliveryTransferLariSign.show()
+
+                    vBinding.addDeliveryMoneyTransferEt.text = vBinding.addDeliveryMoneyEt.text
+                    vBinding.addDeliveryMoneyEt.setText("")
+                }
+            }
+            R.id.addDeliveryMoneyTransferImg -> {
+                if (viewModel.operation == M_OUT) {
+                    vBinding.addDeliveryMoneyTransferEt.goAway()
+                    vBinding.addDeliveryMoneyTransferImg.goAway()
+                    vBinding.addDeliveryTransferLariSign.goAway()
+                    vBinding.addDeliveryMoneyEt.show()
+                    vBinding.addDeliveryMoneyCashImg.show()
+                    vBinding.addDeliveryLariSign.show()
+
+                    vBinding.addDeliveryMoneyEt.text = vBinding.addDeliveryMoneyTransferEt.text
+                    vBinding.addDeliveryMoneyTransferEt.setText("")
+                }
+            }
         }
 
         if (vBinding.addDeliverysChipGr.checkedChipId == View.NO_ID)
@@ -301,6 +374,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun collectEmptyBarrels() {
+        viewModel.barrelOutItems.clear()
         if (viewModel.operation == null) {
             if (vBinding.addDeliveryBarrelOutputCount1.amount > 0)
                 viewModel.addBarrelToList(1, vBinding.addDeliveryBarrelOutputCount1.amount)
@@ -318,7 +392,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
     }
 
-    fun getTempSaleItem(): TempBeerItemModel {
+    private fun getTempSaleItem(): TempBeerItemModel {
         return TempBeerItemModel(viewModel.recordID,
 //            viewModel.beerList[beerPos],
             viewModel.beerListLiveData.value?.get(beerPos)!!,
@@ -330,30 +404,32 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             })
     }
 
-    fun formIsValid(): Boolean {
+    private fun formIsValid(): Boolean {
         return vBinding.addDeliveryCanCountControl.amount > 0 && viewModel.selectedCan != null
     }
 
-    fun resetForm() {
+    private fun resetForm() {
         vBinding.addDeliverysChipGr.clearCheck()
         viewModel.selectedCan = null
         vBinding.addDeliveryCanCountControl.amount = 0
     }
 
-    fun checkForm() {
+    private fun checkForm() {
         vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (formIsValid())
             ColorStateList.valueOf(Color.GREEN)
         else
             ColorStateList.valueOf(Color.RED)
-        vBinding.addDeliveryTotalPrice.text = "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
+        vBinding.addDeliveryTotalPrice.text =
+            "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
     }
 
-
-    private fun initBeerRecycler() {
-        vBinding.addDeliveryBeerRecycler.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    private fun  initBeerRecycler() {
         beerAdapter.setData(viewModel.beerList)
-        vBinding.addDeliveryBeerRecycler.adapter = beerAdapter
+        vBinding.addDeliveryBeerRecycler.apply {
+            layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = beerAdapter
+        }
         snapHelper.attachToRecyclerView(vBinding.addDeliveryBeerRecycler)
         vBinding.addDeliveryBeerListIndicator.pager =
             getIndicatorPager(vBinding.addDeliveryBeerRecycler)

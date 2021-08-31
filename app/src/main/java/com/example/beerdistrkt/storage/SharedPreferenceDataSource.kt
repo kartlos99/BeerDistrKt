@@ -1,8 +1,9 @@
 package com.example.beerdistrkt.storage
 
-import android.annotation.SuppressLint
 import android.content.Context
+import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.models.VcsResponse
+import com.example.beerdistrkt.utils.UserInfo
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -11,25 +12,12 @@ class SharedPreferenceDataSource(appContext: Context) {
 
     private val sharedPreference = appContext.getSharedPreferences("shPref", Context.MODE_PRIVATE)
 
-    val moshi = Moshi.Builder()
+    private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-    val moshiJsonAdapter: JsonAdapter<VcsResponse> = moshi.adapter(VcsResponse::class.java)
-
-    @SuppressLint("ApplySharedPref")
-    fun saveSession(sessionToken: String) {
-        sharedPreference.edit().putString("accessToken", sessionToken).commit()
-//        sharedPreference.edit().putString("refreshToken", session.refreshToken).commit()
-    }
-
-    fun clearSession() {
-        sharedPreference.edit().putString("accessToken", null).apply()
-//        sharedPreferences.edit().putString("refreshToken", null).apply()
-    }
-
-    fun getSession(): String {
-        return sharedPreference.getString("accessToken", "") ?: ""
-    }
+    private val moshiJsonAdapter: JsonAdapter<VcsResponse> = moshi.adapter(VcsResponse::class.java)
+    private val moshiSessionAdapter: JsonAdapter<UserInfo> = moshi.adapter(UserInfo::class.java)
+    private val moshiRegionAdapter: JsonAdapter<WorkRegion> = moshi.adapter(WorkRegion::class.java)
 
     fun saveUserName(username: String) {
         sharedPreference.edit().putString(USERNAME, username).apply()
@@ -49,12 +37,16 @@ class SharedPreferenceDataSource(appContext: Context) {
 
     fun saveVersions(version: VcsResponse) {
         val data = moshiJsonAdapter.toJson(version)
-        sharedPreference.edit().putString("vKey", data).apply()
+        sharedPreference.edit().putString(KEY_VERSION, data).apply()
     }
 
     fun getVersions(): VcsResponse? {
-        val jsonData = sharedPreference.getString("vKey", "") ?: ""
+        val jsonData = sharedPreference.getString(KEY_VERSION, "") ?: ""
         return if (jsonData.isNotEmpty()) moshiJsonAdapter.fromJson(jsonData) else null
+    }
+
+    fun clearVersions() {
+        sharedPreference.edit().putString(KEY_VERSION, "").apply()
     }
 
     fun saveLastMsgDate(text: String) {
@@ -63,6 +55,33 @@ class SharedPreferenceDataSource(appContext: Context) {
 
     fun getLastMsgDate(): String {
         return sharedPreference.getString(MSG_DATE, "") ?: ""
+    }
+
+    fun clearSession() {
+        sharedPreference.edit().putString(KEY_SESSION, "").apply()
+    }
+
+    fun saveSession(info: UserInfo) {
+        val data = moshiSessionAdapter.toJson(info)
+        sharedPreference.edit().putString(KEY_SESSION, data).apply()
+    }
+
+    fun getUserInfo(): UserInfo? {
+        val jsonData = sharedPreference.getString(KEY_SESSION, "")
+        val info = if (!jsonData.isNullOrEmpty()) moshiSessionAdapter.fromJson(jsonData) else null
+        return if (info != null && info.accessToken.isNotEmpty())
+            info
+        else null
+    }
+
+    fun saveRegion(region: WorkRegion?) {
+        val data = if (region == null) "" else moshiRegionAdapter.toJson(region)
+        sharedPreference.edit().putString(KEY_REGION, data).apply()
+    }
+
+    fun getRegion(): WorkRegion? {
+        val jsonData = sharedPreference.getString(KEY_REGION, "") ?: ""
+        return if (jsonData.isNotEmpty()) moshiRegionAdapter.fromJson(jsonData) else null
     }
 
     companion object {
@@ -81,5 +100,8 @@ class SharedPreferenceDataSource(appContext: Context) {
         const val USERNAME = "username"
         const val PASS = "pass"
         const val MSG_DATE = "msg_date"
+        const val KEY_SESSION = "keySession3"
+        const val KEY_REGION = "keyRegion"
+        const val KEY_VERSION = "vKey"
     }
 }

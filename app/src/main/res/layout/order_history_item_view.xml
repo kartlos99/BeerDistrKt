@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_underline"
+    android:padding="@dimen/gr_size_8">
+
+    <TextView
+        android:id="@+id/orderHistoryOperator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/gr_size_8"
+        android:text="@string/operator"
+        android:textSize="@dimen/gr_size_16"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/orderHistoryChangesDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/orderHistoryChangesDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2020-03-24"
+        android:textSize="@dimen/gr_size_16"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary20"
+        android:elevation="@dimen/gr_size_4"
+        app:layout_constraintBottom_toBottomOf="@id/orderHistoryOperator"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/orderHistoryClient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_4"
+        app:layout_constraintStart_toStartOf="@id/orderHistoryOperator"
+        app:layout_constraintTop_toBottomOf="@id/orderHistoryOperator" />
+
+    <TextView
+        android:id="@+id/orderHistoryOrderDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/orderHistoryOperator"
+        app:layout_constraintTop_toBottomOf="@id/orderHistoryClient" />
+
+    <TextView
+        android:id="@+id/orderHistoryStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/orderHistoryOperator"
+        app:layout_constraintTop_toBottomOf="@id/orderHistoryOrderDate" />
+
+    <TextView
+        android:id="@+id/orderHistoryDistributor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/orderHistoryOperator"
+        app:layout_constraintTop_toBottomOf="@id/orderHistoryStatus" />
+
+    <TextView
+        android:id="@+id/orderHistoryComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_4"
+        android:gravity="end"
+        android:padding="@dimen/gr_size_2"
+        app:layout_constraintTop_toBottomOf="@id/orderHistoryDistributor" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/orderHistoryItemsRc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/orderHistoryComment" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="0dp"
-        android:textSize="@dimen/textsize_4" />
+        android:textSize="@dimen/textSize_4" />
 
     <TextView
         android:id="@+id/userRowDisplayName"
@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:textAlignment="textEnd"
-        android:textSize="@dimen/textsize_2" />
+        android:textSize="@dimen/textSize_2" />
 
 </LinearLayout>

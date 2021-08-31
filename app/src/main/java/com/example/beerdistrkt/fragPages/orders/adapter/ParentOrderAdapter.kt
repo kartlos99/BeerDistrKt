@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.getSummedRemainingOrder
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.UserType
 import com.example.beerdistrkt.utils.visibleIf
 import kotlinx.android.synthetic.main.view_order_group.view.*
 import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
@@ -26,22 +26,25 @@ import java.util.*
 
 class ParentOrderAdapter(
     private var orderGroups: MutableList<OrderGroupModel>,
-    private val barrelsList: List<CanModel>
+    private val barrelsList: List<CanModel>,
+    private val onGroupExpand: (dID: Int, state: Boolean) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onOrderDrag: ((orderID: Int, newSortValue: Double) -> Unit)? = null
     var onMitanaClick: View.OnClickListener? = null
     var deliveryMode = false
 
+    private val barrelMap = barrelsList.groupBy { it.id }
+
     private val viewPool = RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-                if (viewType == BOTTOM_ITEM) R.layout.view_order_group_bottom_item else
-                    R.layout.view_order_group,
-                parent,
-                false
-            )
+            if (viewType == BOTTOM_ITEM) R.layout.view_order_group_bottom_item else
+                R.layout.view_order_group,
+            parent,
+            false
+        )
         return ParentViewHolder(view)
     }
 
@@ -64,21 +67,30 @@ class ParentOrderAdapter(
             orderGroups[position].let { grItem ->
 
                 holder.itemView.viewOrderGroupDistributor.text = grItem.distributorName
-                val itemList = grItem.ordersList.getSummedRemainingOrder().groupBy {
+                val itemsList = grItem.ordersList.getSummedRemainingOrder()
+
+                var literSum = 0
+                itemsList.forEach {
+                    literSum += it.count * (barrelMap[it.canTypeID]?.get(0)?.volume ?: 0)
+                }
+                holder.itemView.viewOrderGroupTotalLt.text = holder.itemView.context.getString(R.string.lt, literSum)
+
+                val groupedItemsList = itemsList.groupBy {
                     it.beerID
                 }.toMutableMap()
 
                 holder.itemView.viewOrderGroupSumRecycler.layoutManager =
                     LinearLayoutManager(holder.itemView.viewOrderGroupSumRecycler.context)
                 holder.itemView.viewOrderGroupSumRecycler.adapter =
-                    OrderItemAdapter(itemList.toSortedMap())
+                    OrderItemAdapter(groupedItemsList.toSortedMap())
 
                 holder.itemView.viewOrderGroupTitle.setOnClickListener {
                     grItem.isExpanded = !grItem.isExpanded
-                    holder.itemView.viewOrderGroupRecycler.visibleIf(grItem.isExpanded)
-                    holder.itemView.viewOrderGroupCollapseImg.rotation =
-                        if (grItem.isExpanded) 180f else 0f
+                    setGrItemState(holder, grItem.isExpanded)
+                    onGroupExpand.invoke(grItem.distributorID, grItem.isExpanded)
                 }
+
+                setGrItemState(holder, grItem.isExpanded)
 
                 // Create layout manager with initial prefetch item count
                 val layoutManager = LinearLayoutManager(
@@ -99,6 +111,7 @@ class ParentOrderAdapter(
                 var draggingOrder: Order? = null
 
                 var newSortValue: Double? = null
+                var orderBkgColor: ColorStateList? = null
 
                 val touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
@@ -133,8 +146,8 @@ class ParentOrderAdapter(
                         super.clearView(recyclerView, viewHolder)
                         Log.d("drag posFin", "${viewHolder.adapterPosition}")
                         val dragFinalPosition = viewHolder.adapterPosition
-                        viewHolder.itemView.findViewById<ConstraintLayout>(R.id.orderMainConstraint)?.
-                        backgroundTintList = null
+                        viewHolder.itemView.findViewById<ConstraintLayout>(R.id.orderMainConstraint)
+                            ?.backgroundTintList = orderBkgColor
 
                         if (dragStartPosition != dragFinalPosition && dragStartPosition != -1) {
                             if (draggingOrder != null && newSortValue != null) {
@@ -150,8 +163,10 @@ class ParentOrderAdapter(
                     ) {
                         super.onSelectedChanged(viewHolder, actionState)
                         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                            viewHolder?.itemView?.findViewById<ConstraintLayout>(R.id.orderMainConstraint)?.
-                            backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF9696"))
+                            val bkgView = viewHolder?.itemView?.findViewById<ConstraintLayout>(R.id.orderMainConstraint)
+                            orderBkgColor = bkgView?.backgroundTintList
+                            bkgView?.backgroundTintList =
+                                ColorStateList.valueOf(Color.parseColor("#FF9696"))
                             dragStartPosition = viewHolder?.adapterPosition ?: -1
                             if (dragStartPosition >= 0)
                                 draggingOrder = grItem.ordersList[dragStartPosition]
@@ -193,7 +208,10 @@ class ParentOrderAdapter(
                     }
                 })
 
-                if (Session.get().userType == UserType.ADMIN || Session.get().userID == grItem.distributorID.toString())
+//                if (Session.get().userType == UserType.ADMIN
+//                    || Session.get().userType == UserType.MANAGER
+//                    || Session.get().userID == grItem.distributorID.toString()
+//                )
                     touchHelper.attachToRecyclerView(holder.itemView.viewOrderGroupRecycler)
 
                 holder.itemView.viewOrderGroupRecycler.layoutManager = layoutManager
@@ -211,7 +229,7 @@ class ParentOrderAdapter(
         }
         val remainingOrderSum = allOrders.getSummedRemainingOrder()
         var litraji = 0
-        val barrelMap = barrelsList.groupBy { it.id }
+//        val barrelMap = barrelsList.groupBy { it.id }
         remainingOrderSum.forEach {
             litraji += it.count * (barrelMap[it.canTypeID]?.get(0)?.volume ?: 0)
         }
@@ -231,6 +249,12 @@ class ParentOrderAdapter(
         holder.itemView.totalOrderTitle.visibleIf(!deliveryMode)
     }
 
+    private fun setGrItemState(holder: RecyclerView.ViewHolder, isExpanded: Boolean) {
+        holder.itemView.viewOrderGroupRecycler.visibleIf(isExpanded)
+        holder.itemView.viewOrderGroupCollapseImg.rotation =
+            if (isExpanded) 180f else 0f
+    }
+
     fun setData(data: MutableList<OrderGroupModel>) {
         // ase ganaxlebis Semdeg drag-i urevda da amovige
         orderGroups = data
@@ -239,7 +263,6 @@ class ParentOrderAdapter(
 
     fun removeItem(indexes: Pair<Int, Int>) {
         orderGroups[indexes.first].orderAdapter?.removeItem(indexes.second)
-        orderGroups[indexes.first].orderAdapter?.notifyItemRemoved(indexes.second)
         notifyItemChanged(indexes.first)
     }
 

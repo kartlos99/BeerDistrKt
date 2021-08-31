@@ -7,29 +7,20 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.showListDialog
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
-import java.util.*
+import com.example.beerdistrkt.utils.onTextChanged
 
 class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
@@ -43,10 +34,12 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     var clientPhone: String? = null
 
+    private lateinit var searchView: SearchView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = ObjListFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
 
@@ -55,16 +48,32 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         return vBinding.root
     }
 
-    fun navigateTo(clientID: Int) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.clients.observe(viewLifecycleOwner) {
+            clientListAdapter.submitList(it)
+        }
+        setHasOptionsMenu(true)
+    }
+
+    private fun navigateTo(clientID: Int) {
+        searchView.setOnQueryTextListener(null)
         val argsBundle = arguments ?: Bundle()
         val args = ObjListFragmentArgs.fromBundle(argsBundle)
         when (args.directionTo) {
-            ADD_ORDER -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
-                .actionObjListFragmentToAddOrdersFragment(clientID))
-            MITANA -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
-                .actionObjListFragmentToAddDeliveryFragment(clientID,null))
-            AMONAWERI -> vBinding.root.findNavController().navigate(ObjListFragmentDirections
-                .actionObjListFragmentToAmonaweriFragment(clientID))
+            ADD_ORDER -> vBinding.root.findNavController().navigate(
+                ObjListFragmentDirections
+                    .actionObjListFragmentToAddOrdersFragment(clientID)
+            )
+            MITANA -> vBinding.root.findNavController().navigate(
+                ObjListFragmentDirections
+                    .actionObjListFragmentToAddDeliveryFragment(clientID, null)
+            )
+            AMONAWERI -> vBinding.root.findNavController().navigate(
+                ObjListFragmentDirections
+                    .actionObjListFragmentToAmonaweriFragment(clientID)
+            )
 //                    else -> // show toast
         }
 
@@ -73,29 +82,12 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.choose_client)
         val objListObserver = Observer<List<Obieqti>> {
-            Log.d("_clientList__size__", it.size.toString())
             initClientsList(it)
         }
         viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
 
-        val filterListener = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                showToast(query)
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                clientListAdapter.filter(newText)
-                return false
-            }
-        }
-
 //        registerForContextMenu(vBinding.clientsRecycler)
-
-        vBinding.clientSearchView.setOnQueryTextListener(filterListener)
 
 //        objListObserver.onChanged(mutableListOf(Obieqti("rame saxeli")))
 //        viewModel.objList.observe(this, objListObserver)
@@ -114,10 +106,11 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         vBinding.clientsRecycler.setHasFixedSize(true)
 
-        clientListAdapter.setData(list)
+        clientListAdapter.submitList(list)
         clientListAdapter.onItemClick = ::navigateTo
         vBinding.clientsRecycler.adapter = clientListAdapter
 
+/*
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
         ) {
@@ -140,6 +133,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             }
 
         })
+*/
 
 //        touchHelper.attachToRecyclerView(vBinding.clientsRecycler)
     }
@@ -154,12 +148,31 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         myCallInterface = null
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.client_list_page_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = searchItem.actionView as SearchView
+
+        val pendingQuery = viewModel.searchQuery.value
+        if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+            viewModel.onNewQuery(pendingQuery)
+        }
+
+        searchView.onTextChanged { query ->
+            viewModel.searchQuery.value = query
+            viewModel.onNewQuery(query)
+        }
+    }
+
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // item groupID -ში არის პოზიცია
-        val selectedclient = clientListAdapter.getClientObject(item.groupId)
+        val selectedClient = clientListAdapter.getClientObject(item.groupId)
         when (item.itemId) {
             R.id.cm_call -> {
-                selectedclient.tel?.let {
+                selectedClient.tel?.let {
                     clientPhone = it
                     dialTo()
                 }
@@ -168,28 +181,37 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 val arr = listOf(
                     String.format(
                         "ობიექტი: %s\n    %s\n    %s",
-                        selectedclient.dasaxeleba,
-                        selectedclient.sk ?: "-",
-                        selectedclient.adress ?: "-"
+                        selectedClient.dasaxeleba,
+                        selectedClient.sk ?: "-",
+                        selectedClient.adress ?: "-"
                     ),
                     String.format(
                         "საკ.პირი: %s\n    %s",
-                        selectedclient.sakpiri,
-                        selectedclient.tel
+                        selectedClient.sakpiri,
+                        selectedClient.tel
                     ),
-                    String.format(selectedclient.comment ?: "")
+                    String.format(selectedClient.comment ?: "")
                 )
                 context?.showListDialog(R.string.info, arr.toTypedArray()) {}
             }
             R.id.cm_edit_obj -> {
+                searchView.setOnQueryTextListener(null)
                 val direction = ObjListFragmentDirections.actionObjListFragmentToAddObjectFragment()
-                direction.clientID = selectedclient.id ?: 0
+                direction.clientID = selectedClient.id ?: 0
                 vBinding.root.findNavController().navigate(direction)
             }
             R.id.cm_del -> {
+                requireContext().showAskingDialog(
+                    null,
+                    R.string.confirm_delete_text,
+                    R.string.yes,
+                    R.string.no,
+                    R.style.ThemeOverlay_MaterialComponents_Dialog
+                ) {
+                    viewModel.deactivateClient(selectedClient.id)
+                }
             }
         }
-
         return true
     }
 

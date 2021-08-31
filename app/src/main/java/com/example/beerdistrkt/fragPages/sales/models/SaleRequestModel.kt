@@ -1,14 +1,19 @@
 package com.example.beerdistrkt.fragPages.sales.models
 
+import androidx.annotation.DrawableRes
+import com.example.beerdistrkt.R
+import com.squareup.moshi.Json
+
 data class SaleRequestModel(
     val clientID: Int,
     val distributorID: Int,
     val comment: String?,
     val modifyUserID: Int,
+    val isReplace: String = "0",
 
     val sales: List<SaleItem>? = null,
     val barrels: List<BarrelOutItem>? = null,
-    val money: MoneyOutItem? = null
+    val money: List<MoneyOutItem>? = null
 ) {
 
     data class SaleItem(
@@ -32,6 +37,18 @@ data class SaleRequestModel(
     data class MoneyOutItem(
         val ID: Int = 0,
         val takeMoneyDate: String? = null,
-        val amount: Double
+        val amount: Double,
+        val paymentType: PaymentType
     )
+}
+
+enum class PaymentType(
+    val value: String,
+    @DrawableRes val iconRes: Int
+) {
+    @Json(name = "1")
+    Cash("1", R.drawable.ic_cash),
+
+    @Json(name = "2")
+    Transfer("2", R.drawable.ic_transfer);
 }

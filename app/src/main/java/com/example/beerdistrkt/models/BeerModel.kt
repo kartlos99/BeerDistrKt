@@ -2,6 +2,7 @@ package com.example.beerdistrkt.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.squareup.moshi.Json
 import java.util.*
 
@@ -45,7 +46,12 @@ data class BarrelIO(
 
 data class RealizationDay(
     val sale: List<SaleInfo>,
-    val takenMoney: Double,
+    val takenMoney: List<MoneyInfo>,
     val barrels: List<BarrelIO>,
     val xarji: List<Xarji>
+)
+
+data class MoneyInfo(
+    val paymentType: PaymentType,
+    val amount: Double
 )

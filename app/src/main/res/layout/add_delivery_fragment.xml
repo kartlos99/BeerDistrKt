@@ -10,60 +10,40 @@
 
         <TextView
             android:id="@+id/addDeliveryClientInfo"
+            style="@style/ClientInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textSize="@dimen/plius_minus_TextSize"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/addDeliveryClientDebt"
+        <FrameLayout
+            android:id="@+id/addDeliveryDebtContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="center"
-            android:background="@color/gray_light"
+            android:layout_marginTop="@dimen/gr_size_4"
+            android:background="#FFF"
             android:elevation="@dimen/gr_size_2"
-            android:paddingHorizontal="@dimen/gr_size_16"
-            android:paddingVertical="@dimen/gr_size_2"
-            android:text="@string/client_debt"
-            android:textColor="@color/important_info_color"
-            android:textSize="@dimen/textsize_3"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addDeliveryClientInfo" />
+            app:layout_constraintTop_toBottomOf="@id/addDeliveryClientInfo" />
 
         <ScrollView
             android:id="@+id/addDeliveryMainScroll"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:focusable="true"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addDeliveryClientDebt">
+            app:layout_constraintTop_toBottomOf="@+id/addDeliveryDebtContainer">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addDeliveryMainContent"
-                android:layout_marginTop="@dimen/gr_size_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_8"
                 android:focusable="true"
                 android:focusableInTouchMode="true">
-
-                <!--                <TextView-->
-                <!--                    android:id="@+id/t_mitana_ludi"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="8dp"-->
-                <!--                    android:text="@string/ludis_shetana"-->
-                <!--                    android:textSize="@dimen/plius_minus_TextSize"-->
-                <!--                    app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--                    app:layout_constraintRight_toRightOf="parent"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addDeliveryMitanaGr"
@@ -136,10 +116,10 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:contentDescription="@string/img_description"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_arrow_left_24dp"
-                            android:tint="@color/arrow_color_tr"
                             app:layout_constraintBottom_toBottomOf="@+id/addDeliveryBeerRecycler"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/addDeliveryBeerRecycler" />
+                            app:layout_constraintTop_toTopOf="@+id/addDeliveryBeerRecycler"
+                            app:tint="@color/arrow_color_tr" />
 
                         <ImageView
                             android:id="@+id/btnBeerRightImg"
@@ -150,10 +130,10 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:rotation="180"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_arrow_left_24dp"
-                            android:tint="@color/arrow_color_tr"
                             app:layout_constraintBottom_toBottomOf="@+id/addDeliveryBeerRecycler"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryBeerRecycler" />
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryBeerRecycler"
+                            app:tint="@color/arrow_color_tr" />
 
                         <TextView
                             android:id="@+id/addDeliveryCanTypeTv"
@@ -261,18 +241,18 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                         <View
                             android:layout_width="@dimen/gr_size_16"
                             android:layout_height="0dp"
-                            app:layout_constraintStart_toStartOf="@id/addDeliveryCansScroll"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryCansScroll"
+                            android:background="@drawable/left_right_gradient"
                             app:layout_constraintBottom_toBottomOf="@id/addDeliveryCansScroll"
-                            android:background="@drawable/left_right_gradient" />
+                            app:layout_constraintStart_toStartOf="@id/addDeliveryCansScroll"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryCansScroll" />
 
                         <View
                             android:layout_width="@dimen/gr_size_16"
                             android:layout_height="0dp"
-                            app:layout_constraintEnd_toEndOf="@id/addDeliveryCansScroll"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryCansScroll"
+                            android:background="@drawable/right_left_gradient"
                             app:layout_constraintBottom_toBottomOf="@id/addDeliveryCansScroll"
-                            android:background="@drawable/right_left_gradient" />
+                            app:layout_constraintEnd_toEndOf="@id/addDeliveryCansScroll"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryCansScroll" />
 
                         <TextView
                             android:id="@+id/addDeliveryCanCountTv"
@@ -317,13 +297,12 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     android:id="@+id/addDeliveryTotalPrice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gr_size_4"
                     android:textSize="@dimen/sp14"
-                    android:padding="@dimen/gr_size_4"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="@id/addDeliveryAddSaleItemBtn"
-                    app:layout_constraintBottom_toBottomOf="@id/addDeliveryAddSaleItemBtn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"/>
+                    app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"
+                    app:layout_constraintStart_toStartOf="@id/addDeliveryOperationalCard"
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryOperationalCard" />
 
                 <LinearLayout
                     android:id="@+id/addDeliveryTempContainer"
@@ -490,17 +469,14 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true">
 
                         <EditText
                             android:id="@+id/addDeliveryMoneyEt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
+                            android:layout_margin="8dp"
                             android:autofillHints="@string/default_0"
                             android:ems="8"
                             android:hint="@string/default_0"
@@ -515,11 +491,73 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                             android:id="@+id/addDeliveryLariSign"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="@dimen/gr_size_4"
                             android:text="@string/lari"
-                            android:textSize="@dimen/textsize_4"
-                            app:layout_constraintStart_toEndOf="@+id/addDeliveryMoneyEt"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:textSize="@dimen/textSize_4"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                            app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyEt"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
+
+                        <ImageView
+                            android:id="@+id/addDeliveryMoneyExpander"
+                            android:layout_width="@dimen/gr_size_48"
+                            android:layout_height="@dimen/gr_size_48"
+                            android:padding="@dimen/gr_size_8"
+                            android:src="@drawable/ic_arrow_down_24dp"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
+
+                        <ImageView
+                            android:id="@+id/addDeliveryMoneyCashImg"
+                            android:layout_width="@dimen/gr_size_48"
+                            android:layout_height="@dimen/gr_size_48"
+                            android:padding="@dimen/gr_size_8"
+                            android:src="@drawable/ic_cash"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt"
+                            app:tint="@color/gray_6" />
+
+                        <EditText
+                            android:id="@+id/addDeliveryMoneyTransferEt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:autofillHints="@string/default_0"
+                            android:ems="8"
+                            android:hint="@string/default_0"
+                            android:inputType="numberDecimal"
+                            android:textAlignment="center"
+                            android:visibility="gone"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyEt"
+                            tools:ignore="UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/addDeliveryTransferLariSign"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/gr_size_4"
+                            android:text="@string/lari"
+                            android:textSize="@dimen/textSize_4"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
+                            app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyTransferEt"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt" />
+
+                        <ImageView
+                            android:id="@+id/addDeliveryMoneyTransferImg"
+                            android:layout_width="@dimen/gr_size_48"
+                            android:layout_height="@dimen/gr_size_48"
+                            android:padding="@dimen/gr_size_8"
+                            android:src="@drawable/ic_transfer"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt"
+                            app:tint="@color/gray_6" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -534,16 +572,34 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     android:backgroundTint="@color/gray_light"
                     android:drawableEnd="@drawable/calendar_icon"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryMoneyOutputCard" />
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyOutputCard" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/addDeliveryCheckGift"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="@string/sachuqari"
+                    app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/addDeliveryDateBtn" />
+                    app:layout_constraintTop_toTopOf="@id/addDeliveryDateBtn" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/addDeliveryCheckReplace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/replace"
+                    app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryCheckGift" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/addDeliveryBarrierForComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="addDeliveryCheckReplace, addDeliveryDateBtn" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/addDeliveryComment"
@@ -556,7 +612,7 @@ addDeliveryBeerListIndicator, btnBeerLeftImg, btnBeerRightImg" />
                     android:nextFocusUp="@id/addDeliveryMoneyEt"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryDateBtn"
+                    app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrierForComment"
                     tools:layout_editor_absoluteX="8dp">
 
                     <EditText

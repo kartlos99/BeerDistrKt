@@ -13,14 +13,37 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
+            <TextView
+                android:id="@+id/addUserRegionsTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="@dimen/gr_size_6"
+                android:minHeight="@dimen/gr_size_48"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/addUserRegionBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addUserRegionBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_region"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/addUserRegionsTv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addUserRegionsTv" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addUserUsername"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_8"
                 app:errorEnabled="true"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/addUserRegionsTv">
 
                 <EditText
                     android:layout_width="match_parent"
@@ -33,9 +56,18 @@
 
             <CheckBox
                 android:id="@+id/addUserAdminBox"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/admin_rights"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addUserUsername" />
+
+            <CheckBox
+                android:id="@+id/addUserManagerBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manager_rights"
+                app:layout_constraintStart_toEndOf="@id/addUserAdminBox"
                 app:layout_constraintTop_toBottomOf="@id/addUserUsername" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -152,7 +184,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/confirn"
+                    android:hint="@string/confirm"
                     android:inputType="textPassword"
                     tools:ignore="Autofill" />
 

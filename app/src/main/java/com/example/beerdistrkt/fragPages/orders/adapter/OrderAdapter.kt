@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.fragPages.orders.view.OrderView
 import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
 
 class OrderAdapter(
     private var orders: MutableList<Order> = mutableListOf()
@@ -22,7 +23,7 @@ class OrderAdapter(
         val itemView = holder.itemView
         if (itemView is OrderView) {
             itemView.lockSwipe(deliveryMode)
-            itemView.fillData(orders[position])
+            itemView.order = orders[position]
         }
     }
 
@@ -33,8 +34,8 @@ class OrderAdapter(
     }
 
     fun removeItem(index: Int){
-        orders.removeAt(index)
-        notifyItemRemoved(index)
+        orders[index] = orders[index].copy(orderStatus = OrderStatus.DELETED)
+        notifyItemChanged(index)
     }
 
     fun setMode(mode: Boolean) {

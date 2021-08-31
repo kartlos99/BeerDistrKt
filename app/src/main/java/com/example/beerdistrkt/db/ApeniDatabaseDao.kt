@@ -20,6 +20,9 @@ interface ApeniDatabaseDao {
     @Query("SELECT * FROM obieqts_table WHERE id = :obiectisID")
     fun getObiectsWithPrices(obiectisID: Int): ObiectWithPrices
 
+    @Query("DELETE FROM obieqts_table WHERE id = :clientID")
+    fun deleteClient(clientID: Int)
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBeerPrice(objToBeerPrice: ObjToBeerPrice): Long

@@ -17,8 +17,8 @@ class ApeniApp : Application() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
             val channel = NotificationChannel(
-                getString(R.string.channel_id),
-                getString(R.string.channel_name),
+                getString(R.string.notif_channel_id),
+                getString(R.string.notif_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             )
             channel.description = getString(R.string.channel_description)

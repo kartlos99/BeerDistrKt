@@ -10,7 +10,11 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
+import com.example.beerdistrkt.utils.eventValue
 import java.util.*
 
 class OrdersViewModel : BaseViewModel() {
@@ -41,28 +45,57 @@ class OrdersViewModel : BaseViewModel() {
     val editOrderLiveData = MutableLiveData<Order?>(null)
     val changeDistributorLiveData = MutableLiveData<Order?>(null)
     val onItemClickLiveData = MutableLiveData<Order?>(null)
+    val onShowHistoryLiveData = SingleMutableLiveDataEvent<String>()
+    val allMappedUsers = mutableListOf<MappedUser>()
+    private lateinit var clientRegionMap: Map<Int, List<Int>>
 
     var deliveryMode = false
 
-    val listOfGroupedOrders: MutableList<OrderGroupModel> = mutableListOf()
+    private val listOfGroupedOrders: MutableList<OrderGroupModel> = mutableListOf()
+
+    private val distributorsExpandedStateMap: MutableMap<Int, Boolean> = mutableMapOf()
 
     init {
+        val recoverState = ObjectCache.getInstance().get(MutableMap::class, SAVED_EXP_STATE)
+            ?: mutableMapOf<Int, Boolean>()
+        recoverState.forEach {
+            distributorsExpandedStateMap[it.key as Int] = (it.value as Boolean)
+        }
         clientsLiveData.observeForever { clients = it }
         beersLiveData.observeForever { beers = it }
         userLiveData.observeForever { usersList = it }
         barrelsLiveData.observeForever { barrelsList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+        getAllUsers()
     }
 
+    private fun getAllUsers() {
+        sendRequest(
+            ApeniApiService.getInstance().getAllUsers(),
+            successWithData = {
+                allMappedUsers.clear()
+                allMappedUsers.addAll(it)
+            }
+        )
+    }
+
+    fun saveDistributorGroupState(distributorID: Int, state: Boolean) {
+        distributorsExpandedStateMap[distributorID] = state
+    }
 
     fun getOrders() {
 
         ordersLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getOrders(dateFormatDash.format(orderDateCalendar.time)),
-            successWithData = {
+            successWithData = { ordersDto ->
+                clientRegionMap = ordersDto.groupBy {
+                    it.clientID
+                }.mapValues {
+                    it.value.first().availableRegions
+                }
                 listOfGroupedOrders.clear()
-                listOfGroupedOrders.addAll(groupOrderByDistributor(it.map { orderDTO ->
+                listOfGroupedOrders.addAll(groupOrderByDistributor(ordersDto.map { orderDTO ->
                     orderDTO.toPm(
                         clients,
                         beers,
@@ -77,6 +110,9 @@ class OrdersViewModel : BaseViewModel() {
                         },
                         onItemClick = { order ->
                             if (deliveryMode) onItemClickLiveData.value = order
+                        },
+                        onHistoryClick = { orderID ->
+                            onShowHistoryLiveData.eventValue = orderID
                         }
                     )
                 }))
@@ -86,6 +122,7 @@ class OrdersViewModel : BaseViewModel() {
             },
             failure = {
                 Log.d("getOrder", "failed: ${it.message}")
+                ordersLiveData.value = ApiResponseState.ApiError(999, it.message ?: "")
             },
             finally = {
                 ordersLiveData.value = ApiResponseState.Loading(false)
@@ -95,7 +132,9 @@ class OrdersViewModel : BaseViewModel() {
 
     private fun groupOrderByDistributor(orders: List<Order>): MutableList<OrderGroupModel> {
         val groupedOrders = mutableListOf<OrderGroupModel>()
-        val ordersMap = orders.groupBy { it.distributorID }
+        val ordersMap = orders
+            .filter { it.items.isNotEmpty() || it.sales.isNotEmpty() }
+            .groupBy { it.distributorID }
         ordersMap.forEach {
             val distributorName = usersList.firstOrNull { user ->
                 user.id == it.key.toString()
@@ -107,7 +146,8 @@ class OrdersViewModel : BaseViewModel() {
                     ordersList = it.value
                         .sortedBy { order -> order.sortValue }
                         .sortedBy { order -> order.orderStatus }
-                        .toMutableList()
+                        .toMutableList(),
+                    isExpanded = distributorsExpandedStateMap[it.key] ?: true
                 )
             )
         }
@@ -123,19 +163,19 @@ class OrdersViewModel : BaseViewModel() {
 
     fun deleteOrder(order: Order) {
         Log.d("onDelete", order.toString())
+        val userID = Session.get().userID ?: return
         sendRequest(
-            ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID)),
+            ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID, userID)),
             success = {
                 listOfGroupedOrders.forEachIndexed { index1, orderGroupModel ->
                     val index = orderGroupModel.ordersList.indexOf(order)
                     if (index != -1) {
+                        orderGroupModel.ordersList[index] =
+                            orderGroupModel.ordersList[index].copy(orderStatus = OrderStatus.DELETED)
                         orderDeleteLiveData.value = ApiResponseState.Success(Pair(index1, index))
-                        orderGroupModel.ordersList.remove(order)
                         return@sendRequest
                     }
-
                 }
-
             }
         )
     }
@@ -150,19 +190,33 @@ class OrdersViewModel : BaseViewModel() {
         )
     }
 
-    fun getDistributorsArray(): Array<String> {
-        return usersList.map {
-            it.username
+    private var distributorsList = listOf<MappedUser>()
+
+    fun getDistributorsArray(clientID: Int): Array<String> {
+        distributorsList = allMappedUsers
+            .filter {
+                it.userStatus == UserStatus.ACTIVE &&
+                        clientRegionMap[clientID]?.contains(it.regionID) ?: false
+            }
+            .sortedBy {
+                it.username
+            }
+        return distributorsList.map {
+            if (clientRegionMap[clientID]?.size == 1)
+                it.username
+            else
+                "${it.username} / ${it.regionName}"
         }.toTypedArray()
     }
 
-    private fun editOrder(order: Order) {
-        Log.d("onEdit", order.toString())
-    }
+    fun changeDistributor(orderID: Int, selectedPos: Int) {
+        val selectedUser = distributorsList[selectedPos]
+        val distributorID = selectedUser.userID
+        val regionID = selectedUser.regionID
 
-    fun changeDistributor(orderID: Int, distributorPos: Int) {
-        val distributorID = usersList[distributorPos].id
-        val orderChangeDistributor = OrderUpdateDistributorRequestModel(orderID, distributorID)
+        val userID = Session.get().userID ?: return
+        val orderChangeDistributor =
+            OrderUpdateDistributorRequestModel(orderID, distributorID, regionID, userID)
         sendRequest(
             ApeniApiService.getInstance().updateOrderDistributor(orderChangeDistributor),
             finally = {
@@ -172,7 +226,14 @@ class OrdersViewModel : BaseViewModel() {
         )
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        ObjectCache.getInstance()
+            .put(MutableMap::class, SAVED_EXP_STATE, distributorsExpandedStateMap)
+    }
+
     companion object {
         const val TAG = "ordersVM"
+        const val SAVED_EXP_STATE = "savedState"
     }
 }
