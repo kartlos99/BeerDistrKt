@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.fragPages.sawyobi.models
 
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 
@@ -19,7 +19,7 @@ data class IoModel(
 ) {
     fun toTempBeerItemModel(
         barrels: List<CanModel>,
-        beerList: List<BeerModel>,
+        beerList: List<BeerModelBase>,
         onRemove: (beerItem: TempBeerItemModel) -> Unit,
         onEdit: (beerItem: TempBeerItemModel) -> Unit
     ): TempBeerItemModel {

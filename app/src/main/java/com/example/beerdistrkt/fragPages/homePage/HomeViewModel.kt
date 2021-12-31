@@ -24,7 +24,7 @@ class HomeViewModel : BaseViewModel() {
     private val usersLiveData = database.getUsers()
     private val beerLiveData = database.getBeerList()
     private val cansLiveData = database.getCansList()
-    lateinit var beerList: List<BeerModel>
+    lateinit var beerList: List<BeerModelBase>
 
     private var localVersionState: VcsResponse? = null
     private var numberOfUpdatingTables = 0
@@ -54,7 +54,7 @@ class HomeViewModel : BaseViewModel() {
 
         beerLiveData.observeForever {
             beerList = it
-            ObjectCache.getInstance().putList(BeerModel::class, ObjectCache.BEER_LIST_ID, it)
+            ObjectCache.getInstance().putList(BeerModelBase::class, ObjectCache.BEER_LIST_ID, it)
         }
         cansLiveData.observeForever {
             ObjectCache.getInstance().putList(CanModel::class, ObjectCache.BARREL_LIST_ID, it)
@@ -221,7 +221,7 @@ class HomeViewModel : BaseViewModel() {
         database.insertUser(user)
     }
 
-    private fun insertBeerToDB(beerModel: BeerModel) {
+    private fun insertBeerToDB(beerModel: BeerModelBase) {
         Log.d(TAG, beerModel.toString())
         database.insertBeer(beerModel)
     }

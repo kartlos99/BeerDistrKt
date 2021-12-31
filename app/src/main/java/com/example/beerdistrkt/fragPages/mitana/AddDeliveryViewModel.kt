@@ -29,8 +29,8 @@ class AddDeliveryViewModel(
 
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
-    val beerListLiveData = MutableLiveData<List<BeerModel>>()
-    val beerList = ObjectCache.getInstance().getList(BeerModel::class, BEER_LIST_ID)?.toMutableList()
+    val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
+    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
         ?: mutableListOf()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
@@ -74,7 +74,7 @@ class AddDeliveryViewModel(
                 bp.beerID == it.id
             }?.fasi?.toDouble() ?: 0.0
 
-            BeerModel(
+            BeerModelBase(
                 it.id,
                 it.dasaxeleba,
                 it.displayColor,

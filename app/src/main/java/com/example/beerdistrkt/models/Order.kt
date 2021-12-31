@@ -46,7 +46,7 @@ data class Order(
         val ID: Int,
         val orderID: Int,
         val beerID: Int,
-        val beer: BeerModel,
+        val beer: BeerModelBase,
         val canTypeID: Int,
         val count: Int,
         val check: Int,
@@ -75,7 +75,7 @@ data class Order(
     data class Sales(
         val orderID: Int,
         val beerID: Int,
-        val beer: BeerModel,
+        val beer: BeerModelBase,
         val check: Int,
         val canTypeID: Int,
         val count: Int

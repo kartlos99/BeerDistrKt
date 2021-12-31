@@ -68,7 +68,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             )
             MITANA -> vBinding.root.findNavController().navigate(
                 ObjListFragmentDirections
-                    .actionObjListFragmentToAddDeliveryFragment(clientID, null)
+                    .actionObjListFragmentToAddDeliveryFragment(clientID, 0,null, 0)
             )
             AMONAWERI -> vBinding.root.findNavController().navigate(
                 ObjListFragmentDirections
@@ -196,8 +196,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             }
             R.id.cm_edit_obj -> {
                 searchView.setOnQueryTextListener(null)
-                val direction = ObjListFragmentDirections.actionObjListFragmentToAddObjectFragment()
-                direction.clientID = selectedClient.id ?: 0
+                val direction = ObjListFragmentDirections.actionObjListFragmentToAddObjectFragment(selectedClient.id ?: 0)
                 vBinding.root.findNavController().navigate(direction)
             }
             R.id.cm_del -> {

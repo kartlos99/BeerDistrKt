@@ -12,14 +12,16 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.FragmentClientDebtBinding
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
-import kotlinx.android.synthetic.main.fragment_client_debt.*
 
 class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
 
     var clientID: Int? = null
+    private val binding by viewBinding(FragmentClientDebtBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,17 +38,13 @@ class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
     private fun getDebt(clientID: Int) {
         ApeniApiService.getInstance().getDebt(clientID).sendRequest(
             successWithData = {
-                fragDebtAmount?.let { tv ->
-                    tv.text = boldDataSpan(getString(R.string.amount_is, it.getMoneyDebt()))
-                }
+                binding.fragDebtAmount.text = boldDataSpan(getString(R.string.amount_is, it.getMoneyDebt()))
                 val ssb = SpannableStringBuilder()
                 it.barrels.forEach { emptyBarrel ->
                     if (ssb.isNotEmpty()) ssb.append("\n")
                     ssb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
                 }
-                fragDebtBarrels?.let { tv ->
-                    tv.text = boldDataSpan(ssb.toString())
-                }
+                binding.fragDebtBarrels.text = boldDataSpan(ssb.toString())
             },
             failure = {
                 showError()
@@ -91,8 +89,8 @@ class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
     }
 
     private fun showError() {
-        fragDebtBarrels.text = ""
-        fragDebtAmount.text = getString(R.string.debt_receive_error_text)
+        binding.fragDebtBarrels.text = ""
+        binding.fragDebtAmount.text = getString(R.string.debt_receive_error_text)
     }
 
     companion object {

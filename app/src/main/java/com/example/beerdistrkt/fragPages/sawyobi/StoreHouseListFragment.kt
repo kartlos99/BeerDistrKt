@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.SawyobiListFragmentBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.StoreHouseListAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
-import kotlinx.android.synthetic.main.sawyobi_list_fragment.*
 
 class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
@@ -21,6 +22,8 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
         fun newInstance() = StoreHouseListFragment()
         var editingGroupID: String = ""
     }
+
+    private val binding by viewBinding(SawyobiListFragmentBinding::bind)
 
     override val viewModel by lazy {
         getViewModel { StoreHouseListViewModel() }
@@ -50,7 +53,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
     }
 
     private fun initIoList(dataList: List<IoModel>) {
-        sHLRecycler.layoutManager = LinearLayoutManager(context)
+        binding.sHLRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = StoreHouseListAdapter(
             dataList.groupBy { it.groupID },
             viewModel.beerMap
@@ -60,7 +63,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
                 findNavController().navigateUp()
             }
         }
-        sHLRecycler.adapter = adapter
+        binding.sHLRecycler.adapter = adapter
     }
 
     override fun onStart() {

@@ -1,32 +1,32 @@
 package com.example.beerdistrkt.fragPages.sales.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.ViewBarrelIoBinding
 import com.example.beerdistrkt.models.BarrelIO
-import kotlinx.android.synthetic.main.view_barrel_io.view.*
 
 class BarrelsIOAdapter (
     private val barrelsList: List<BarrelIO>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_barrel_io, parent, false)
-        return ViewHolder(view)
+) : RecyclerView.Adapter<BarrelsIOAdapter.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BarrelsIOAdapter.ViewHolder {
+        return ViewHolder(ViewBarrelIoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = barrelsList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemView = holder.itemView
-
-        itemView.salesBarrelName.text = barrelsList[position].barrelName ?: "-"
-        itemView.salesBarrelRealized.text = barrelsList[position].saleCount.toString()
-        itemView.salesBarrelReceived.text = barrelsList[position].backCount.toString()
-
+    override fun onBindViewHolder(holder: BarrelsIOAdapter.ViewHolder, position: Int) {
+        holder.bind(barrelsList[position])
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ViewHolder(val binding: ViewBarrelIoBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(barrelIO: BarrelIO) {
+            with(binding) {
+                salesBarrelName.text = barrelIO.barrelName ?: "-"
+                salesBarrelRealized.text = barrelIO.saleCount.toString()
+                salesBarrelReceived.text = barrelIO.backCount.toString()
+            }
+        }
+    }
 }

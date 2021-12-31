@@ -5,11 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -19,18 +19,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.beerdistrkt.databinding.ActivityMainBinding
+import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment
-import com.example.beerdistrkt.fragPages.objList.ObjListFragment.Companion.CALL_PERMISSION_REQUEST
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.change_pass_dialog.view.*
 
 class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
@@ -44,10 +43,10 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         ApeniDataBase.initialize(this)
         ApeniApiService.initialize(this)
         SharedPreferenceDataSource.initialize(this)
+        vBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         Session.get().restoreLastRegion(SharedPreferenceDataSource.getInstance().getRegion())
         Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())
@@ -131,12 +130,11 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
     }
 
     private fun changePass() {
-        val chPassView: View =
-            layoutInflater.inflate(R.layout.change_pass_dialog, null)
+        val chPassView = ChangePassDialogBinding.inflate(layoutInflater)
 
         val builder = AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
         builder
-            .setView(chPassView)
+            .setView(chPassView.root)
             .setTitle(R.string.change_pass)
             .setPositiveButton(R.string.chawera, null)
             .setNegativeButton(R.string.cancel) { dialog, _ ->
@@ -188,7 +186,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CALL_PERMISSION_REQUEST) {
+        if (requestCode == ObjListFragment.CALL_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                findNavController(R.id.mainNavHostFragment).currentDestination?.id = R.id.objListFragment
                 val hostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment)
@@ -204,7 +202,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.CALL_PHONE),
-            CALL_PERMISSION_REQUEST
+            ObjListFragment.CALL_PERMISSION_REQUEST
         )
     }
 

@@ -5,19 +5,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
-import kotlinx.android.synthetic.main.beer_slider_row.view.*
+import com.example.beerdistrkt.databinding.BeerSliderRowBinding
 
 class BeerAdapter(val beers: ArrayList<String>): RecyclerView.Adapter<BeerAdapter.BeerViewHolder>() {
 
-
-    class BeerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class BeerViewHolder(itemView: BeerSliderRowBinding) : RecyclerView.ViewHolder(itemView.root) {
         val tvBeerName = itemView.tvBeerName
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BeerViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.beer_slider_row, parent, false)
-        return BeerViewHolder(view)
+//        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.beer_slider_row, parent, false)
+        val binding = BeerSliderRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return BeerViewHolder(binding)
     }
 
     override fun getItemCount() = beers.size

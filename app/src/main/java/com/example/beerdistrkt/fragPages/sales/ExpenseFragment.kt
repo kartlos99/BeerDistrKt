@@ -6,16 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.XarjiRowView
+import com.example.beerdistrkt.databinding.FragmentExpenseBinding
 import com.example.beerdistrkt.dialogs.XarjebiDialog
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.utils.Session
-import kotlinx.android.synthetic.main.fragment_expense.*
 import java.util.*
 
 class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
@@ -24,6 +25,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
         getActCtxViewModel<SalesViewModel>()
     }
 
+    private val binding by viewBinding(FragmentExpenseBinding::bind)
 
     var onClose: () -> Unit = {}
     var onTitleClick: () -> Unit = {}
@@ -38,10 +40,11 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fragExpenseAddItem.setOnClickListener(this)
-        fragExpenseClose.setOnClickListener(this)
-        fragExpenseTitle.setOnClickListener(this)
-
+        with(binding) {
+            fragExpenseAddItem.setOnClickListener(this@ExpenseFragment)
+            fragExpenseClose.setOnClickListener(this@ExpenseFragment)
+            fragExpenseTitle.setOnClickListener(this@ExpenseFragment)
+        }
         initViewModel()
     }
 
@@ -56,14 +59,14 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
 
     private fun onUpdate(expenseList: List<Xarji>?) {
         if (expenseList == null) return
-        fragExpenseList.removeAllViews()
+        binding.fragExpenseList.removeAllViews()
         val canDel = Session.get().hasPermission(Permission.DeleteExpense) ||
                 viewModel.selectedDayLiveData.value == dateFormatDash.format(Date())
 
         Log.d("XARJEBI", expenseList.toString())
         expenseList.forEach {
-            fragExpenseList.addView(XarjiRowView(
-                context,
+            binding.fragExpenseList.addView(XarjiRowView(
+                requireContext(),
                 it,
                 viewModel.userMap[it.distrID]!![0].username,
                 canDel

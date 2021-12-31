@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.squareup.moshi.Json
 import java.util.*
+/*
 
 @Entity(tableName = "beer_table")
-data class BeerModel(
+data class BeerModelBase(
     @PrimaryKey
     var id: Int = 0,
     var dasaxeleba: String? = null,
@@ -54,4 +55,4 @@ data class RealizationDay(
 data class MoneyInfo(
     val paymentType: PaymentType,
     val amount: Double
-)
+)*/

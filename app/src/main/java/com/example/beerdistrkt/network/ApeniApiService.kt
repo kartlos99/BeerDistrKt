@@ -133,7 +133,7 @@ interface ApeniApiService {
     ): Call<DataResponse<StatementResponse>>
 
     @GET("get_ludi_list.php")
-    fun getBeerList(): Call<DataResponse<List<BeerModel>>>
+    fun getBeerList(): Call<DataResponse<List<BeerModelBase>>>
 
     @GET("get_kasri_list.php")
     fun getCanList(): Call<DataResponse<List<CanModel>>>

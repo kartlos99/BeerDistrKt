@@ -8,22 +8,24 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.databinding.AddUserFragmentBinding
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.fragPages.usersList.UserListFragmentDirections
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.*
-import kotlinx.android.synthetic.main.add_user_fragment.*
 
 class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
     companion object {
         fun newInstance() = AddUserFragment()
     }
+
+    private val binding by viewBinding(AddUserFragmentBinding::bind)
 
     override val viewModel by lazy {
         getViewModel { AddUserViewModel(userID) }
@@ -48,7 +50,13 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             setHasOptionsMenu(true)
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        binding.initView()
 
+        if (Session.get().hasPermission(Permission.ManageRegion) && !userID.isBlank())
+            viewModel.getRegionForUser()
+    }
+
+    private fun AddUserFragmentBinding.initView() {
         if (userID.isEmpty()) {
             addUserChangePassBox.goAway()
             (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_user)
@@ -93,13 +101,10 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         addUserRegionBtn.setOnClickListener {
             showRegionChooser()
         }
-
-        if (Session.get().hasPermission(Permission.ManageRegion) && !userID.isBlank())
-            viewModel.getRegionForUser()
     }
 
     private fun isFormValid(): Boolean {
-        return if (userID.isNotEmpty() && !addUserChangePassBox.isChecked)
+        return if (userID.isNotEmpty() && !binding.addUserChangePassBox.isChecked)
             validateUsername() and validateName()
         else
             validateUsername() and validateName() and validatePassword() and validateConfirmPass()
@@ -108,13 +113,13 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     private fun readUser(): User {
         return User(
             userID,
-            addUserUsername.editText?.text.toString(),
-            addUserName.editText?.text.toString(),
+            binding.addUserUsername.editText?.text.toString(),
+            binding.addUserName.editText?.text.toString(),
             userType.value,
-            addUserPhone.editText?.text.toString(),
-            addUserAddress.editText?.text.toString(),
+            binding.addUserPhone.editText?.text.toString(),
+            binding.addUserAddress.editText?.text.toString(),
             Session.get().userID ?: "0",
-            addUserComment.editText?.text.toString()
+            binding.addUserComment.editText?.text.toString()
         )
     }
 
@@ -157,19 +162,23 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     private fun showRegions(data: List<AttachedRegion>) {
         val regionsString = data
             .joinToString(", ", getString(R.string.regions) + " ") { it.name }
-        addUserRegionsTv.text = regionsString
-        addUserRegionsTv.show()
-        addUserRegionBtn.show()
+        with(binding) {
+            addUserRegionsTv.text = regionsString
+            addUserRegionsTv.show()
+            addUserRegionBtn.show()
+        }
     }
 
     private fun fillForm(user: User) {
-        addUserUsername.editText?.setText(user.username)
-        addUserName.editText?.setText(user.name)
-        addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
-        addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
-        addUserPhone.editText?.setText(user.tel)
-        addUserAddress.editText?.setText(user.adress)
-        addUserComment.editText?.setText(user.comment)
+        with(binding) {
+            addUserUsername.editText?.setText(user.username)
+            addUserName.editText?.setText(user.name)
+            addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
+            addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
+            addUserPhone.editText?.setText(user.tel)
+            addUserAddress.editText?.setText(user.adress)
+            addUserComment.editText?.setText(user.comment)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -196,46 +205,48 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     }
 
     private fun validateUsername(): Boolean {
-        val input = addUserUsername.editText?.text.toString().trim()
+        val input = binding.addUserUsername.editText?.text.toString().trim()
         return if (input.length < 3) {
-            addUserUsername.error = resources.getString(R.string.username_invalid_error_text)
+            binding.addUserUsername.error =
+                resources.getString(R.string.username_invalid_error_text)
             false
         } else {
-            addUserUsername.error = null
+            binding.addUserUsername.error = null
             true
         }
     }
 
     private fun validateName(): Boolean {
-        val input = addUserName.editText?.text.toString().trim()
+        val input = binding.addUserName.editText?.text.toString().trim()
         return if (input.length < 3) {
-            addUserName.error = resources.getString(R.string.username_invalid_error_text)
+            binding.addUserName.error = resources.getString(R.string.username_invalid_error_text)
             false
         } else {
-            addUserName.error = null
+            binding.addUserName.error = null
             true
         }
     }
 
     private fun validatePassword(): Boolean {
-        val input = addUserPass.editText?.text.toString()
+        val input = binding.addUserPass.editText?.text.toString()
         Log.d("pass", input)
         return if (input.length < 6) {
-            addUserPass.error = resources.getString(R.string.password_invalid_error_text)
+            binding.addUserPass.error = resources.getString(R.string.password_invalid_error_text)
             false
         } else {
-            addUserPass.error = null
+            binding.addUserPass.error = null
             true
         }
     }
 
     private fun validateConfirmPass(): Boolean {
-        val input = addUserPassConfirm.editText?.text.toString()
-        return if (addUserPass.editText?.text.toString() != input) {
-            addUserPassConfirm.error = resources.getString(R.string.password_confirm_error_text)
+        val input = binding.addUserPassConfirm.editText?.text.toString()
+        return if (binding.addUserPass.editText?.text.toString() != input) {
+            binding.addUserPassConfirm.error =
+                resources.getString(R.string.password_confirm_error_text)
             false
         } else {
-            addUserPassConfirm.error = null
+            binding.addUserPassConfirm.error = null
             true
         }
     }

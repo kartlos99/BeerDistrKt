@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
@@ -33,7 +34,7 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
         args.clientObjectID
     }
 
-    private lateinit var vBinding: AmonaweriFragmentBinding
+    private val vBinding by viewBinding(AmonaweriFragmentBinding::bind)
     lateinit var simpleDateFormat: SimpleDateFormat
 
     var pagesAdapter: MyPagesAdapter? = null
@@ -41,11 +42,8 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        vBinding = AmonaweriFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = this //viewLifecycleOwner
-
-        return vBinding.root
+    ): View {
+        return inflater.inflate(R.layout.amonaweri_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,8 +97,7 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
 
     private fun goEditing(operation: String, recordID: Int) {
         val action = AmonaweriFragmentDirections
-            .actionAmonaweriFragmentToAddDeliveryFragment(clientID, operation)
-        action.recordID = recordID
+            .actionAmonaweriFragmentToAddDeliveryFragment(clientID, 0, operation, recordID)
         frag.findNavController().navigate(action)
     }
 

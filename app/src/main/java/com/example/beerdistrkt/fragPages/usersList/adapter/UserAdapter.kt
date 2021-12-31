@@ -1,32 +1,31 @@
 package com.example.beerdistrkt.fragPages.usersList.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.UserRowBinding
 import com.example.beerdistrkt.models.User
-import kotlinx.android.synthetic.main.user_row.view.*
 
 class UserAdapter(
 private val dataList: List<User>
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+): RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     var onClick: ((userID: String) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.user_row, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(UserRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = dataList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.userRowUserName.text = dataList[position].username
-        holder.itemView.userRowDisplayName.text = dataList[position].name
-        holder.itemView.setOnClickListener {
-            onClick?.invoke(dataList[position].id)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        with(holder.binding) {
+            userRowUserName.text = dataList[position].username
+            userRowDisplayName.text = dataList[position].name
+            root.setOnClickListener {
+                onClick?.invoke(dataList[position].id)
+            }
         }
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(val binding: UserRowBinding) : RecyclerView.ViewHolder(binding.root)
 }

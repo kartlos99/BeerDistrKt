@@ -7,25 +7,27 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
-import com.example.beerdistrkt.fragPages.orders.OrdersFragmentDirections
 import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NON_POSITIVE
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.utils.*
-import kotlinx.android.synthetic.main.home_fragment.*
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     companion object {
         const val emptyBarrelTitle = "ცარიელი"
     }
+
+    private val binding by viewBinding(HomeFragmentBinding::bind)
 
     override val viewModel: HomeViewModel by lazy {
         getViewModel { HomeViewModel() }
@@ -39,9 +41,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
 //        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.home_fragment, container, false)
-
 //        val application = requireNotNull(this.activity).application
-
 //        lifecycleOwner = this
 
         return inflater.inflate(R.layout.home_fragment, container, false)
@@ -55,12 +55,16 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btnOrder.setOnClickListener(this)
-        btnSaleResult.setOnClickListener(this)
-        btnSalesByClient.setOnClickListener(this)
-        homeHideStoreHouse.setOnClickListener(this)
-        homeAddComment.setOnClickListener(this)
-        homeStoreHouseBkg.setOnClickListener(this)
+        with(binding) {
+            btnOrder.setOnClickListener(this@HomeFragment)
+            btnOrder.setOnClickListener(this@HomeFragment)
+            btnSaleResult.setOnClickListener(this@HomeFragment)
+            btnSalesByClient.setOnClickListener(this@HomeFragment)
+            homeHideStoreHouse.setOnClickListener(this@HomeFragment)
+            homeAddComment.setOnClickListener(this@HomeFragment)
+            homeStoreHouseBkg.setOnClickListener(this@HomeFragment)
+        }
+
 
         showStoreHouseData(Session.get().userType == UserType.ADMIN)
         getComments()
@@ -83,20 +87,20 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     onRegionChange(it)
                 }
 
-        btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {
-        homeStoreHouseRecycler.visibleIf(shouldShow)
-        homeHideStoreHouse.visibleIf(shouldShow)
-        homeStoreHouseTitle.visibleIf(shouldShow)
-        homeStoreHouseBkg.visibleIf(shouldShow)
+        binding.homeStoreHouseRecycler.visibleIf(shouldShow)
+        binding.homeHideStoreHouse.visibleIf(shouldShow)
+        binding.homeStoreHouseTitle.visibleIf(shouldShow)
+        binding.homeStoreHouseBkg.visibleIf(shouldShow)
     }
 
     private fun initViewModel() {
         viewModel.mainLoaderLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
-                homeMainProgressBar?.visibleIf(it)
+                binding.homeMainProgressBar.visibleIf(it)
                 if (!it)
                     viewModel.getStoreBalance()
             }
@@ -104,7 +108,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Loading -> {
-                    homeMainStoreHouseLoader.visibleIf(it.showLoading)
+                    binding.homeMainStoreHouseLoader.visibleIf(it.showLoading)
                 }
                 is ApiResponseState.Success -> initStoreHouseRecycler(it.data)
                 else -> showToast(R.string.some_error)
@@ -131,12 +135,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     private fun initCommentsRecycler(data: List<CommentModel>) {
-        homeCommentsRecycler.layoutManager = LinearLayoutManager(context)
-        homeCommentsRecycler.adapter = CommentsAdapter(data)
+        binding.homeCommentsRecycler.layoutManager = LinearLayoutManager(context)
+        binding.homeCommentsRecycler.adapter = CommentsAdapter(data)
     }
 
     private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
-        homeStoreHouseRecycler.layoutManager = LinearLayoutManager(context)
+        binding.homeStoreHouseRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = SimpleBeerRowAdapter(data.filter {
             it.values.values.any { barrelCount ->
                 barrelCount > 0
@@ -149,7 +153,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             if (Session.get().region?.hasOwnStorage() == true)
                 findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
         }
-        homeStoreHouseRecycler.adapter = adapter
+        binding.homeStoreHouseRecycler.adapter = adapter
     }
 
     override fun onClick(view: View?) {
@@ -171,7 +175,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
             }
             R.id.homeStoreHouseBkg,
-            R.id.homeHideStoreHouse -> {
+            R.id.homeHideStoreHouse -> with(binding) {
                 if (homeStoreHouseRecycler.visibility == View.VISIBLE) {
                     homeStoreHouseRecycler.goAway()
                     homeHideStoreHouse.rotation = 180f
@@ -210,7 +214,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         getComments()
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
-        btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
         actViewModel.updateNavHeader()
     }
 

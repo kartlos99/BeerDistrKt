@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.ApeniApiService
@@ -21,7 +21,7 @@ class ShowHistoryViewModel : BaseViewModel() {
 
 
     private val beerLiveData = database.getBeerList()
-    lateinit var beerMap: Map<Int, BeerModel>
+    lateinit var beerMap: Map<Int, BeerModelBase>
 
     private val _orderHistoryLiveData = MutableLiveData<ApiResponseState<List<OrderHistory>>>()
     val orderHistoryLiveData: LiveData<ApiResponseState<List<OrderHistory>>>

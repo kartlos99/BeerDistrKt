@@ -19,10 +19,6 @@ import java.util.*
 
 class OrdersViewModel : BaseViewModel() {
 
-    private val _response = MutableLiveData<String>()
-    val response: LiveData<String>
-        get() = _response
-
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
     private val userLiveData = database.getUsers()
@@ -30,7 +26,7 @@ class OrdersViewModel : BaseViewModel() {
     val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
     private lateinit var clients: List<Obieqti>
-    private lateinit var beers: List<BeerModel>
+    private lateinit var beers: List<BeerModelBase>
     private lateinit var usersList: List<User>
     lateinit var barrelsList: List<CanModel>
 

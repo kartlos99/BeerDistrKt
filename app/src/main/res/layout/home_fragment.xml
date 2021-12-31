@@ -1,165 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragPages.homePage.HomeFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnOrder"
+        style="@style/mainBtnStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/main_btn_hor_margin"
+        android:text="@string/orders"
+        app:layout_constraintBottom_toTopOf="@+id/btnSaleResult"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnOrder"
-            style="@style/mainBtnStyle"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/main_btn_hor_margin"
-            android:text="@string/orders"
-            app:layout_constraintBottom_toTopOf="@+id/btnSaleResult"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSaleResult"
+        style="@style/mainBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/main_btn_hor_margin_half"
+        android:text="@string/daily_sales"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toStartOf="@+id/btnSalesByClient"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnOrder" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSaleResult"
-            style="@style/mainBtnStyle"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/main_btn_hor_margin_half"
-            android:text="@string/daily_sales"
-            app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintEnd_toStartOf="@+id/btnSalesByClient"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnOrder" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSalesByClient"
-            style="@style/mainBtnStyle"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/main_btn_hor_margin_half"
-            android:text="@string/sale_at_the_client"
-            app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnSaleResult"
-            app:layout_constraintTop_toTopOf="@+id/btnSaleResult" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSalesByClient"
+        style="@style/mainBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/main_btn_hor_margin_half"
+        android:text="@string/sale_at_the_client"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnSaleResult"
+        app:layout_constraintTop_toTopOf="@+id/btnSaleResult" />
 
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.35" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
 
-        <TextView
-            android:id="@+id/homeCommentsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/comments"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline2" />
+    <TextView
+        android:id="@+id/homeCommentsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/comments"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
-        <ImageView
-            android:id="@+id/homeAddComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/main_btn_hor_margin"
-            android:padding="@dimen/gr_size_4"
-            android:src="@drawable/ic_add_24dp"
-            app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
+    <ImageView
+        android:id="@+id/homeAddComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/main_btn_hor_margin"
+        android:padding="@dimen/gr_size_4"
+        android:src="@drawable/ic_add_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/homeCommentsRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="@dimen/gr_size_8"
-            android:layout_marginBottom="@dimen/gr_size_8"
-            android:background="@drawable/comments_rect"
-            android:padding="4dp"
-            app:layout_constraintBottom_toTopOf="@id/homeStoreHouseBkg"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/homeCommentsRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        android:layout_marginBottom="@dimen/gr_size_8"
+        android:background="@drawable/comments_rect"
+        android:padding="4dp"
+        app:layout_constraintBottom_toTopOf="@id/homeStoreHouseBkg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle" />
 
 
-        <View
-            android:id="@+id/homeStoreHouseBkg"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/gr_size_8"
-            android:layout_marginEnd="@dimen/gr_size_8"
-            android:layout_marginBottom="@dimen/gr_size_8"
-            android:background="@drawable/bkg_rounded_white_r8"
-            android:elevation="@dimen/gr_size_2"
-            android:minHeight="@dimen/gr_size_64"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle" />
+    <View
+        android:id="@+id/homeStoreHouseBkg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/gr_size_8"
+        android:layout_marginEnd="@dimen/gr_size_8"
+        android:layout_marginBottom="@dimen/gr_size_8"
+        android:background="@drawable/bkg_rounded_white_r8"
+        android:elevation="@dimen/gr_size_2"
+        android:minHeight="@dimen/gr_size_64"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle" />
 
-        <TextView
-            android:id="@+id/homeStoreHouseTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/gr_size_8"
-            android:elevation="@dimen/gr_size_2"
-            android:padding="@dimen/gr_size_4"
-            android:text="@string/store_house"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/homeStoreHouseRecycler"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/homeStoreHouseTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/gr_size_8"
+        android:elevation="@dimen/gr_size_2"
+        android:padding="@dimen/gr_size_4"
+        android:text="@string/store_house"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/homeStoreHouseRecycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/homeHideStoreHouse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/main_btn_hor_margin"
-            android:elevation="@dimen/gr_size_2"
-            android:padding="@dimen/gr_size_4"
-            android:src="@drawable/ic_arrow_down_24dp"
-            app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle" />
+    <ImageView
+        android:id="@+id/homeHideStoreHouse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/main_btn_hor_margin"
+        android:elevation="@dimen/gr_size_2"
+        android:padding="@dimen/gr_size_4"
+        android:src="@drawable/ic_arrow_down_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/homeStoreHouseRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/gr_size_8"
-            android:layout_marginBottom="@dimen/gr_size_8"
-            android:clickable="true"
-            android:elevation="@dimen/gr_size_2"
-            android:focusable="true"
-            android:paddingHorizontal="@dimen/gr_size_8"
-            android:paddingBottom="@dimen/gr_size_4"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/homeStoreHouseRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        android:layout_marginBottom="@dimen/gr_size_8"
+        android:clickable="true"
+        android:elevation="@dimen/gr_size_2"
+        android:focusable="true"
+        android:paddingHorizontal="@dimen/gr_size_8"
+        android:paddingBottom="@dimen/gr_size_4"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/homeMainStoreHouseLoader"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:elevation="@dimen/gr_size_2"
-            android:background="#4FFF"
-            app:layout_constraintTop_toTopOf="@id/homeStoreHouseRecycler"
-            app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseRecycler"
-            app:layout_constraintStart_toStartOf="@id/homeStoreHouseRecycler"
-            app:layout_constraintEnd_toEndOf="@id/homeStoreHouseRecycler"
-            android:visibility="gone"/>
+    <ProgressBar
+        android:id="@+id/homeMainStoreHouseLoader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#4FFF"
+        android:elevation="@dimen/gr_size_2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseRecycler"
+        app:layout_constraintEnd_toEndOf="@id/homeStoreHouseRecycler"
+        app:layout_constraintStart_toStartOf="@id/homeStoreHouseRecycler"
+        app:layout_constraintTop_toTopOf="@id/homeStoreHouseRecycler" />
 
-        <ProgressBar
-            android:id="@+id/homeMainProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/gr_size_128"
-            android:elevation="@dimen/gr_size_2"
-            android:background="#6FFF"
-            android:visibility="gone"/>
+    <ProgressBar
+        android:id="@+id/homeMainProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#6FFF"
+        android:elevation="@dimen/gr_size_2"
+        android:padding="@dimen/gr_size_128"
+        android:visibility="gone" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

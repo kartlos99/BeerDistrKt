@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.adapters.CtxMenuItem
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
@@ -22,7 +23,7 @@ import com.example.beerdistrkt.utils.visibleIf
 
 class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
-    private lateinit var vBinding: AmonaweriSubPageFragmentBinding
+    private val vBinding by viewBinding(AmonaweriSubPageFragmentBinding::bind)
 
     private var pagePos: Int = -1
 
@@ -43,13 +44,17 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        vBinding = AmonaweriSubPageFragmentBinding.inflate(inflater)
+    ): View {
 
         pagePos = arguments?.getInt(LOCATION) ?: 0
         viewModel.pagePos = pagePos
         viewModel.clientID = arguments?.getInt(OBJ_ID) ?: 0
+
+        return inflater.inflate(R.layout.amonaweri_sub_page_fragment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         vBinding.amoColumnTitle1.text = getString(R.string.text_tarigi)
         if (pagePos == 0) {
@@ -61,12 +66,6 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             vBinding.amoColumnTitle3.text = getString(R.string.wamogebuli_kasrebi)
             vBinding.amoColumnTitle4.text = getString(R.string.nashti_at_client)
         }
-
-        return vBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         val linearLayoutManager = LinearLayoutManager(context)
         statementListAdapter = StatementAdapter(mutableListOf(), pagePos)

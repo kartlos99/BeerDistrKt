@@ -23,14 +23,12 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
+import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
-import kotlinx.android.synthetic.main.add_orders_fragment.*
-import kotlinx.android.synthetic.main.beer_item_view.view.*
-import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 import java.util.*
 
 class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListener,
@@ -103,15 +101,22 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrderDoneBtn.setOnClickListener(this)
         vBinding.addOrderOrderDate.setOnClickListener(this)
 
-        vBinding.addOrderCanCountControl.editCount.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
+        vBinding.addOrderCanCountControl.getEditTextView()
+            .addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                checkForm()
-            }
-        })
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    checkForm()
+                }
+            })
 
         initDistributorSpinner()
 
@@ -197,14 +202,14 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
-            addOrderClientInfo.text = it.obieqti.dasaxeleba
+            vBinding.addOrderClientInfo.text = it.obieqti.dasaxeleba
             vBinding.addOrderCheckBox.isChecked = it.obieqti.chek == "1"
         })
         viewModel.orderItemsLiveData.observe(viewLifecycleOwner, Observer {
             resetForm()
-            addOrderItemsContainer.removeAllViews()
+            vBinding.addOrderItemsContainer.removeAllViews()
             it.forEach { orderItem ->
-                addOrderItemsContainer.addView(
+                vBinding.addOrderItemsContainer.addView(
                     TempBeerRowView(context = requireContext(), rowData = orderItem)
                 )
             }
@@ -241,11 +246,13 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         })
         viewModel.getDebtLiveData.observe(viewLifecycleOwner, Observer {
             if (it is ApiResponseState.Success) {
-                addOrderWarning.text = getString(R.string.need_cleaning, it.data.passDays)
-                addOrderWarning.visibleIf(it.data.needCleaning == 1)
-                initRegionSpinner()
-                addOrderDistributorRegionTitle.visibleIf(it.data.availableRegions.size > 1)
-                addOrderDistributorRegionSpinner.visibleIf(it.data.availableRegions.size > 1)
+                with(vBinding) {
+                    addOrderWarning.text = getString(R.string.need_cleaning, it.data.passDays)
+                    addOrderWarning.visibleIf(it.data.needCleaning == 1)
+                    initRegionSpinner()
+                    addOrderDistributorRegionTitle.visibleIf(it.data.availableRegions.size > 1)
+                    addOrderDistributorRegionSpinner.visibleIf(it.data.availableRegions.size > 1)
+                }
             }
         })
     }
@@ -258,20 +265,22 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     private fun fillOrderForm(order: Order) {
-        addOrderClientInfo.text = order.client.dasaxeleba
-        addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
-        addOrderWarning.visibleIf(order.needCleaning == 1)
-        vBinding.addOrderCheckBox.isChecked = order.isChecked()
-        vBinding.addOrderComment.setText(order.comment)
-        vBinding.addOrderOrderDate.text = order.orderDate
-        vBinding.addOrderDistributorSpinner.setSelection(
-            viewModel.getDistributorIndex(order.distributorID.toString())
-        )
-        vBinding.addOrderStatusSpinner.setSelection(
-            viewModel.orderStatusList.indexOf(order.orderStatus)
-        )
-        vBinding.addOrderStatusGroup.visibleIf(viewModel.editingOrderID > 0)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_order)
+        with(vBinding) {
+            addOrderClientInfo.text = order.client.dasaxeleba
+            addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
+            addOrderWarning.visibleIf(order.needCleaning == 1)
+            addOrderCheckBox.isChecked = order.isChecked()
+            addOrderComment.setText(order.comment)
+            addOrderOrderDate.text = order.orderDate
+            addOrderDistributorSpinner.setSelection(
+                viewModel.getDistributorIndex(order.distributorID.toString())
+            )
+            addOrderStatusSpinner.setSelection(
+                viewModel.orderStatusList.indexOf(order.orderStatus)
+            )
+            addOrderStatusGroup.visibleIf(viewModel.editingOrderID > 0)
+            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_order)
+        }
     }
 
     private fun fillOrderItemForm(orderItem: TempBeerItemModel) {
@@ -301,21 +310,30 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         beerPos = pos
     }
 
-    inner class BeerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class BeerAdapter : RecyclerView.Adapter<BeerItemViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            BeerItemViewHolder(parent.inflate(R.layout.beer_item_view))
+            BeerItemViewHolder(
+                BeerItemViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
 
         override fun getItemCount() = viewModel.beerList.size
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            holder.itemView.tBeerNameItm.text = viewModel.beerList[position].dasaxeleba
-            holder.itemView.tBeerNameItm.backgroundTintList = ColorStateList
-                .valueOf(Color.parseColor(viewModel.beerList[position].displayColor))
+        override fun onBindViewHolder(holder: BeerItemViewHolder, position: Int) {
+            with(holder.binding) {
+                tBeerNameItm.text = viewModel.beerList[position].dasaxeleba
+                tBeerNameItm.backgroundTintList = ColorStateList
+                    .valueOf(Color.parseColor(viewModel.beerList[position].displayColor))
+            }
         }
     }
 
-    inner class BeerItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class BeerItemViewHolder(val binding: BeerItemViewBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
 
     private fun getIndicatorPager(rv: RecyclerView): BaseDotsIndicator.Pager {

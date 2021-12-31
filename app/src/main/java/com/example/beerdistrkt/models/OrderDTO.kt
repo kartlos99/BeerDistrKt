@@ -30,8 +30,8 @@ data class OrderDTO(
         val modifyDate: String,
         val modifyUserID: Int
     ) {
-        fun toPm(beerList: List<BeerModel>): Order.Item {
-            val beer = beerList.find { it.id == beerID } ?: BeerModel()
+        fun toPm(beerList: List<BeerModelBase>): Order.Item {
+            val beer = beerList.find { it.id == beerID } ?: BeerModelBase()
             return Order.Item(
                 ID,
                 orderID,
@@ -54,8 +54,8 @@ data class OrderDTO(
         val canTypeID: Int,
         val count: Int
     ) {
-        fun toPm(beerList: List<BeerModel>): Order.Sales {
-            val beer = beerList.find { it.id == beerID } ?: BeerModel()
+        fun toPm(beerList: List<BeerModelBase>): Order.Sales {
+            val beer = beerList.find { it.id == beerID } ?: BeerModelBase()
             return Order.Sales(
                 orderID,
                 beerID,
@@ -69,7 +69,7 @@ data class OrderDTO(
 
     fun toPm(
         clients: List<Obieqti>,
-        beerList: List<BeerModel>,
+        beerList: List<BeerModelBase>,
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,
         onChangeDistributorClick: ((Order) -> Unit)? = null,

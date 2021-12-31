@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.fragPages.mitana.models
 
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 
@@ -23,7 +23,7 @@ data class SaleRowModel(
     val orderID: Int,
     val comment: String?
 ) {
-    fun toTempBeerItemModel(barrels: List<CanModel>, beerList: List<BeerModel>): TempBeerItemModel {
+    fun toTempBeerItemModel(barrels: List<CanModel>, beerList: List<BeerModelBase>): TempBeerItemModel {
         val canType = barrels.find { it.id == canTypeID }
         val beer = beerList.find { it.id == beerID }
         return TempBeerItemModel(

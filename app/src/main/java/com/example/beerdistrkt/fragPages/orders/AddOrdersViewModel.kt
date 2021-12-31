@@ -22,7 +22,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
-    val beerList = ObjectCache.getInstance().getList(BeerModel::class, BEER_LIST_ID)
+    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
         ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()

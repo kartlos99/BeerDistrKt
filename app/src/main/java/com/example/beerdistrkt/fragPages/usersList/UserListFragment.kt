@@ -5,18 +5,21 @@ import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.UserListFragmentBinding
 import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
-import kotlinx.android.synthetic.main.user_list_fragment.*
 
 class UserListFragment : BaseFragment<UserListViewModel>() {
 
     companion object {
         fun newInstance() = UserListFragment()
     }
+
+    private val binding by viewBinding(UserListFragmentBinding::bind)
 
     override val viewModel by lazy {
         getViewModel { UserListViewModel() }
@@ -42,14 +45,14 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
     }
 
     private fun initUsersRecycler(users: List<User>) {
-        usersRecycler.layoutManager = LinearLayoutManager(context)
+        binding.usersRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = UserAdapter(users)
         adapter.onClick = {
-            val direction = UserListFragmentDirections.actionUserListFragmentToAddUserFragment()
-            direction.userID = it
-            findNavController().navigate(direction)
+            findNavController().navigate(
+                UserListFragmentDirections.actionUserListFragmentToAddUserFragment(it)
+            )
         }
-        usersRecycler.adapter = adapter
+        binding.usersRecycler.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
+import com.example.beerdistrkt.databinding.ViewOrderGroupBottomItemBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.utils.*
-import kotlinx.android.synthetic.main.view_order_group_bottom_item.view.*
 import java.util.*
 
 class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRefreshListener {
@@ -44,8 +44,6 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         savedInstanceState: Bundle?
     ): View {
         vBinding = OrdersFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = this
-        vBinding.viewModel = viewModel
         vBinding.addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
                 OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
@@ -119,9 +117,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
 
         if (vBinding.ordersRecycler.layoutManager?.itemCount ?: 0 > 0) {
             vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
-                it.addDeliveryBtn.visibleIf(checked)
-                it.totalSummedOrderRecycler.visibleIf(!checked)
-                it.totalOrderTitle.visibleIf(!checked)
+                with(ViewOrderGroupBottomItemBinding.bind(it)) {
+                    addDeliveryBtn.visibleIf(checked)
+                    totalSummedOrderRecycler.visibleIf(!checked)
+                    totalOrderTitle.visibleIf(!checked)
+                }
             }
             ordersAdapter.updateLastItem(checked)
         }
@@ -198,10 +198,12 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
                     if (Session.get().hasPermission(Permission.EditOrder)) {
-                        val actionOrderEdit =
-                            OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(it.clientID)
-                        actionOrderEdit.orderID = it.ID
-                        vBinding.root.findNavController().navigate(actionOrderEdit)
+                        vBinding.root.findNavController().navigate(
+                            OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(
+                                it.clientID,
+                                it.ID
+                            )
+                        )
                     } else
                         showToast(R.string.no_permission_common)
                 } else {
@@ -226,7 +228,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 viewModel.onItemClickLiveData.value = null
                 vBinding.root.findNavController().navigate(
                     OrdersFragmentDirections
-                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, null)
+                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, 0, null, 0)
                 )
             }
         })
@@ -270,6 +272,5 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
 
     override fun onRefresh() {
         viewModel.getOrders()
-
     }
 }

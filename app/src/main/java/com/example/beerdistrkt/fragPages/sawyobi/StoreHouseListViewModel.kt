@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 
 class StoreHouseListViewModel : BaseViewModel() {
 
     private val beerLiveData = database.getBeerList()
-    lateinit var beerMap : Map<Int, BeerModel>
+    lateinit var beerMap : Map<Int, BeerModelBase>
 
     private val _ioDoneLiveData = MutableLiveData<ApiResponseState<List<IoModel>>>()
     val ioDoneLiveData: LiveData<ApiResponseState<List<IoModel>>>

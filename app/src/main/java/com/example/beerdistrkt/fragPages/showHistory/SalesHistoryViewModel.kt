@@ -3,7 +3,7 @@ package com.example.beerdistrkt.fragPages.showHistory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.ApeniApiService
@@ -17,7 +17,7 @@ class SalesHistoryViewModel : BaseViewModel() {
 
     var clients: List<Obieqti> = ObjectCache.getInstance().getList(Obieqti::class, CLIENTS_LIST_ID) ?: listOf()
     private lateinit var usersList: List<User>
-    private lateinit var beerList: List<BeerModel>
+    private lateinit var beerList: List<BeerModelBase>
 
     private val _saleHistoryLiveData = MutableLiveData<ApiResponseState<List<SaleHistory>>>()
     val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>

@@ -4,9 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 
@@ -31,7 +29,6 @@ class LoginViewModel : BaseViewModel() {
                 loginResponseLiveData.value = ApiResponseState.Loading(false)
             }
         )
-
     }
 
     fun setUserData(data: LoginResponse) {

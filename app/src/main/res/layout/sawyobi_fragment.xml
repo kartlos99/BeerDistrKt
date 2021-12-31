@@ -1,347 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/storeHouseMainScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".fragPages.sawyobi.StoreHouseFragment">
 
-
-    <ScrollView
-        android:id="@+id/storeHouseMainScroll"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/storeHouseFullBarrelsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/savse"
+            android:textSize="@dimen/textSize_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="124dp" />
+
+        <CheckBox
+            android:id="@+id/storeHouseCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/storeHouseFullBarrelsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gr_size_4"
+            android:layout_marginTop="@dimen/gr_size_8"
+            android:background="@drawable/bkg_rounded_white_r8"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_4"
+            app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsTitle"
+            tools:itemCount="3" />
+
+        <TextView
+            android:id="@+id/storeHouseReceiveTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/chamotana"
+            android:textSize="@dimen/textSize_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsRecycler"
+            tools:layout_editor_absoluteX="119dp" />
+
+        <LinearLayout
+            android:id="@+id/storeHouseReceiveContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gr_size_4"
+            android:background="@drawable/bkg_rounded_white_r8"
+            android:elevation="@dimen/gr_size_2"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeHouseReceiveTitle"
+            tools:layout_editor_absoluteX="0dp"
+            android:orientation="vertical">
+
+            <com.example.beerdistrkt.customView.BeerSelectorView
+                android:id="@+id/storeHouseReceiveBeerSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/storeHouseAddBeerItemBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:src="@drawable/ic_playlist_add_24dp"
+            app:backgroundTintMode="src_over"
+            app:fabSize="mini"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeHouseReceiveContainer" />
+
+        <LinearLayout
+            android:id="@+id/storeHouseSelectedBeerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/temp_beer_cont_rect"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/storeHouseAddBeerItemBtn" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:id="@+id/storeHouseEmptyBarrelManageBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeHouseSelectedBeerContainer"
+            tools:layout_editor_absoluteX="0dp">
+
 
             <TextView
-                android:id="@+id/storeHouseFullBarrelsTitle"
+                android:id="@+id/storeHouseEmptyBarrelTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="@string/savse"
+                android:text="@string/carieli"
                 android:textSize="@dimen/textSize_3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="124dp" />
+                tools:layout_editor_absoluteX="105dp" />
 
-            <CheckBox
-                android:id="@+id/storeHouseCheckBox"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/storeHouseEmptyBarrelsListBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:height="12dp"
+                android:background="#00008088"
+                android:text="@string/list"
+                android:textSize="@dimen/textSize_2"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/storeHouseFullBarrelsRecycler"
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/storeHouseEmptyBarrelDataContainer"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/gr_size_4"
-                android:layout_marginTop="@dimen/gr_size_8"
-                android:background="@drawable/bkg_rounded_white_r8"
-                android:elevation="@dimen/gr_size_2"
+                android:layout_margin="8dp"
                 android:padding="@dimen/gr_size_4"
-                app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsTitle"
-                tools:itemCount="3" />
+
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/gr_size_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelTitle"
+                tools:layout_editor_absoluteX="8dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/gr_size_4">
+
+                    <com.example.beerdistrkt.customView.BeerAmountRowView
+                        android:id="@+id/storeHouseEmptyBarrelsAtHouse"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.example.beerdistrkt.customView.BeerAmountRowView
+                        android:id="@+id/storeHouseEmptyBarrelsAtClients"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/storeHouseEmptyBarrelsAtHouse" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/storeHouseReceiveTitle"
+                android:id="@+id/storeHouseSendEmptyTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="@string/chamotana"
+                android:text="@string/wageba"
                 android:textSize="@dimen/textSize_3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsRecycler"
-                tools:layout_editor_absoluteX="119dp" />
+                app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelDataContainer"
+                tools:layout_editor_absoluteX="132dp" />
 
-            <LinearLayout
-                android:id="@+id/storeHouseReceiveContainer"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/storeHouseBarrelOutputCard"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/gr_size_4"
-                android:background="@drawable/bkg_rounded_white_r8"
-                android:elevation="@dimen/gr_size_2"
-                android:paddingBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeHouseReceiveTitle"
-                tools:layout_editor_absoluteX="0dp">
-
-                <com.example.beerdistrkt.customView.BeerSelectorView
-                    android:id="@+id/storeHouseReceiveBeerSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/storeHouseAddBeerItemBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:src="@drawable/ic_playlist_add_24dp"
-                app:backgroundTintMode="src_over"
-                app:fabSize="mini"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeHouseReceiveContainer" />
-
-            <LinearLayout
-                android:id="@+id/storeHouseSelectedBeerContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="118dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/temp_beer_cont_rect"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/storeHouseAddBeerItemBtn" />
+                app:cardBackgroundColor="@color/gray_light"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/gr_size_2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/storeHouseSendEmptyTitle"
+                app:layout_constraintVertical_bias="0.0">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/storeHouseEmptyBarrelManageBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeHouseSelectedBeerContainer"
-                tools:layout_editor_absoluteX="0dp">
-
-
-                <TextView
-                    android:id="@+id/storeHouseEmptyBarrelTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="@string/carieli"
-                    android:textSize="@dimen/textSize_3"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="105dp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/storeHouseEmptyBarrelsListBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:height="12dp"
-                    android:background="#00008088"
-                    android:text="@string/list"
-                    android:textSize="@dimen/textSize_2"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/storeHouseEmptyBarrelDataContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:padding="@dimen/gr_size_4"
-
-                    app:cardCornerRadius="@dimen/cardCornerRadius"
-                    app:cardElevation="@dimen/gr_size_2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelTitle"
-                    tools:layout_editor_absoluteX="8dp">
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="@dimen/gr_size_4">
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bkg_empty_barrels">
 
-                        <com.example.beerdistrkt.customView.BeerAmountRowView
-                            android:id="@+id/storeHouseEmptyBarrelsAtHouse"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/storeHouseBarrelOutput1Tv"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/_50litri"
+                            app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount1"
+                            app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount1" />
+
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/storeHouseBarrelOutputCount1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <com.example.beerdistrkt.customView.BeerAmountRowView
-                            android:id="@+id/storeHouseEmptyBarrelsAtClients"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/storeHouseBarrelOutput2Tv"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/storeHouseEmptyBarrelsAtHouse" />
+                            android:text="@string/_30litri"
+                            app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount2"
+                            app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount2"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount2" />
 
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/storeHouseBarrelOutputCount2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCount1" />
+
+                        <TextView
+                            android:id="@+id/storeHouseBarrelOutput3Tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_20litri"
+                            app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount3"
+                            app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount3"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount3" />
+
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/storeHouseBarrelOutputCount3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCount2" />
+
+                        <TextView
+                            android:id="@+id/storeHouseBarrelOutput4Tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_10litri"
+                            app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount4"
+                            app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount4"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount4" />
+
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/storeHouseBarrelOutputCount4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCount3" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </androidx.core.widget.NestedScrollView>
 
-                <TextView
-                    android:id="@+id/storeHouseSendEmptyTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="@string/wageba"
-                    android:textSize="@dimen/textSize_3"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelDataContainer"
-                    tools:layout_editor_absoluteX="132dp" />
+            </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/storeHouseBarrelOutputCard"
-                    android:layout_width="0dp"
-                    android:layout_height="118dp"
-                    android:layout_margin="8dp"
-                    app:cardBackgroundColor="@color/gray_light"
-                    app:cardCornerRadius="@dimen/cardCornerRadius"
-                    app:cardElevation="@dimen/gr_size_2"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeHouseSendEmptyTitle"
-                    app:layout_constraintVertical_bias="0.0">
-
-                    <androidx.core.widget.NestedScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bkg_empty_barrels">
-
-                            <TextView
-                                android:id="@+id/storeHouseBarrelOutput1Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_50litri"
-                                app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount1"
-                                app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount1"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount1" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/storeHouseBarrelOutputCount1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/storeHouseBarrelOutput2Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_30litri"
-                                app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount2"
-                                app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount2"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount2" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/storeHouseBarrelOutputCount2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCount1" />
-
-                            <TextView
-                                android:id="@+id/storeHouseBarrelOutput3Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_20litri"
-                                app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount3"
-                                app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount3"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount3" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/storeHouseBarrelOutputCount3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCount2" />
-
-                            <TextView
-                                android:id="@+id/storeHouseBarrelOutput4Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_10litri"
-                                app:layout_constraintBottom_toBottomOf="@id/storeHouseBarrelOutputCount4"
-                                app:layout_constraintEnd_toStartOf="@id/storeHouseBarrelOutputCount4"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/storeHouseBarrelOutputCount4" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/storeHouseBarrelOutputCount4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCount3" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </androidx.core.widget.NestedScrollView>
-
-                </androidx.cardview.widget.CardView>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/gr_size_4"
-                    app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCard" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/storeHouseSetDateBtn"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/drois_archeva"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelManageBox"
-                tools:layout_editor_absoluteX="230dp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/storeHouseComment"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:nextFocusLeft="@+id/btn_beerInputDone"
-                android:nextFocusUp="@+id/e_TakeMoney"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/storeHouseSetDateBtn"
-                tools:layout_editor_absoluteX="0dp">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/comment"
-                    android:inputType="text"
-                    tools:ignore="Autofill" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/storeHouseDoneBtn"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-
-                android:text="@string/chawera"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeHouseComment"
-                tools:layout_editor_absoluteX="8dp" />
-
-            <ProgressBar
-                android:id="@+id/storeHouseProgress"
-                android:layout_width="@dimen/gr_size_56"
-                android:layout_height="@dimen/gr_size_56"
-                android:layout_marginBottom="@dimen/gr_size_24"
-                android:elevation="@dimen/gr_size_2"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/gr_size_4"
+                app:layout_constraintTop_toBottomOf="@id/storeHouseBarrelOutputCard" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-</layout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/storeHouseSetDateBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/drois_archeva"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeHouseEmptyBarrelManageBox"
+            tools:layout_editor_absoluteX="230dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/storeHouseComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:nextFocusLeft="@+id/btn_beerInputDone"
+            android:nextFocusUp="@+id/e_TakeMoney"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/storeHouseSetDateBtn"
+            tools:layout_editor_absoluteX="0dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/comment"
+                android:inputType="text"
+                tools:ignore="Autofill" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/storeHouseDoneBtn"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+
+            android:text="@string/chawera"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeHouseComment"
+            tools:layout_editor_absoluteX="8dp" />
+
+        <ProgressBar
+            android:id="@+id/storeHouseProgress"
+            android:layout_width="@dimen/gr_size_56"
+            android:layout_height="@dimen/gr_size_56"
+            android:layout_marginBottom="@dimen/gr_size_24"
+            android:elevation="@dimen/gr_size_2"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -14,14 +14,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.databinding.AddObjectFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.show
-import kotlinx.android.synthetic.main.add_object_fragment.*
 
 class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
@@ -33,6 +34,8 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         val args = AddObjectFragmentArgs.fromBundle(arguments ?: Bundle())
         args.clientID
     }
+
+    val binding by viewBinding(AddObjectFragmentBinding::bind)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +53,13 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
             else
                 resources.getString(R.string.create_client)
 
+        binding.initView()
+
+        if (Session.get().hasPermission(Permission.ManageRegion) && clientID > 0)
+            viewModel.getRegionForClient()
+    }
+
+    private fun AddObjectFragmentBinding.initView() {
         addEditClientDoneBtn.setOnClickListener {
             val client = Obieqti(addEditClientName.editText?.text.toString().trim()).apply {
                 id = viewModel.clientID
@@ -88,11 +98,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         addEditClientRegionBtn.setOnClickListener {
             showRegionChooser()
         }
-
-        if (Session.get().hasPermission(Permission.ManageRegion) && clientID > 0)
-            viewModel.getRegionForClient()
     }
-
 
     private fun initViewModel() {
         viewModel.beersLiveData.observe(viewLifecycleOwner, Observer {
@@ -143,9 +149,11 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     private fun showRegions(data: List<AttachedRegion>) {
         val regionsString = data
             .joinToString(", ", getString(R.string.regions) + " ") { it.name }
-        addEditClientRegionsTv.text = regionsString
-        addEditClientRegionsTv.show()
-        addEditClientRegionBtn.show()
+        with(binding) {
+            addEditClientRegionsTv.text = regionsString
+            addEditClientRegionsTv.show()
+            addEditClientRegionBtn.show()
+        }
     }
 
     private fun showRegionChooser() {
@@ -173,16 +181,18 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     }
 
     private fun fillForm(clientData: ObiectWithPrices) {
-        addEditClientName.editText?.setText(clientData.obieqti.dasaxeleba)
-        addEditClientSK.editText?.setText(clientData.obieqti.sk ?: "")
-        addEditClientPerson.editText?.setText(clientData.obieqti.sakpiri ?: "")
-        addEditClientAdress.editText?.setText(clientData.obieqti.adress ?: "")
-        addEditClientPhone.editText?.setText(clientData.obieqti.tel ?: "")
-        addEditComment.editText?.setText(clientData.obieqti.comment ?: "")
-        addEditClientChek.isChecked = clientData.obieqti.chek == "1"
+        with(binding) {
+            addEditClientName.editText?.setText(clientData.obieqti.dasaxeleba)
+            addEditClientSK.editText?.setText(clientData.obieqti.sk ?: "")
+            addEditClientPerson.editText?.setText(clientData.obieqti.sakpiri ?: "")
+            addEditClientAdress.editText?.setText(clientData.obieqti.adress ?: "")
+            addEditClientPhone.editText?.setText(clientData.obieqti.tel ?: "")
+            addEditComment.editText?.setText(clientData.obieqti.comment ?: "")
+            addEditClientChek.isChecked = clientData.obieqti.chek == "1"
+        }
     }
 
-    private fun drawBeerPrices(beerList: List<BeerModel>) {
+    private fun drawBeerPrices(beerList: List<BeerModelBase>) {
         for (i in beerList.indices) {
             val priceItemView = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -206,7 +216,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
             }
             priceItemView.addView(textView, 0)
             priceItemView.addView(eText, 1)
-            addEditClientPricesContainer.addView(priceItemView, i)
+            binding.addEditClientPricesContainer.addView(priceItemView, i)
         }
     }
 

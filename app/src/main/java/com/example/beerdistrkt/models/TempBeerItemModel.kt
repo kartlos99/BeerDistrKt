@@ -5,7 +5,7 @@ import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 
 data class TempBeerItemModel(
     val ID: Int = 0,
-    val beer: BeerModel,
+    val beer: BeerModelBase,
     val canType: CanModel,
     val count: Int,
     val onRemoveClick: (beerItem: TempBeerItemModel) -> Unit,

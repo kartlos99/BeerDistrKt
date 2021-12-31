@@ -7,20 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
+import com.example.beerdistrkt.databinding.LoginFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.iid.FirebaseInstanceId
-import kotlinx.android.synthetic.main.login_fragment.*
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginFragment : BaseFragment<LoginViewModel>() {
 
     companion object {
         fun newInstance() = LoginFragment()
     }
+
+    private val binding by viewBinding(LoginFragmentBinding::bind)
 
     override val viewModel by lazy {
         getViewModel { LoginViewModel() }
@@ -41,13 +44,15 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLoginLoginBtn.setOnClickListener {
-            viewModel.logIn(
-                viewLoginUserField.text.toString(),
-                viewLoginPasswordField.text.toString()
-            )
-            viewLoginLoginBtn.isEnabled = false
-            viewLoginProgress.visibleIf(true)
+        with(binding) {
+            viewLoginLoginBtn.setOnClickListener {
+                viewModel.logIn(
+                    viewLoginUserField.text.toString(),
+                    viewLoginPasswordField.text.toString()
+                )
+                viewLoginLoginBtn.isEnabled = false
+                viewLoginProgress.visibleIf(true)
+            }
         }
 
         if (Session.get().isUserLogged())
@@ -67,39 +72,44 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
         val userName = SharedPreferenceDataSource.getInstance().getUserName()
         val password = SharedPreferenceDataSource.getInstance().getPass()
         if (userName.isNotEmpty() && password.isNotEmpty()) {
-            viewLoginUserField.setText(userName)
-            viewLoginPasswordField.setText(password)
-            viewModel.logIn(userName, password)
-            viewLoginLoginBtn.isEnabled = false
-            viewLoginProgress.visibleIf(true)
+            with(binding) {
+                viewLoginUserField.setText(userName)
+                viewLoginPasswordField.setText(password)
+                viewModel.logIn(userName, password)
+                viewLoginLoginBtn.isEnabled = false
+                viewLoginProgress.visibleIf(true)
+            }
         }
     }
 
     private fun initViewModel() {
         viewModel.loginResponseLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ApiResponseState.Success -> {
-                    if (viewLoginSaveChk.isChecked) {
-                        SharedPreferenceDataSource(requireContext()).saveUserName(it.data.username)
-                        SharedPreferenceDataSource(requireContext()).savePassword(
-                            viewLoginPasswordField.text.toString()
-                        )
+            with(binding) {
+                when (it) {
+                    is ApiResponseState.Success -> {
+                        if (viewLoginSaveChk.isChecked) {
+                            SharedPreferenceDataSource(requireContext()).saveUserName(it.data.username)
+                            SharedPreferenceDataSource(requireContext()).savePassword(
+                                viewLoginPasswordField.text.toString()
+                            )
+                        }
+                        viewLoginLoginBtn.isEnabled = false
+                        viewLoginProgress.visibleIf(true)
+                        afterSuccessResponse(it.data)
+                        viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                     }
-                    viewLoginLoginBtn.isEnabled = false
-                    viewLoginProgress.visibleIf(true)
-                    afterSuccessResponse(it.data)
-                    viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
-                }
-                is ApiResponseState.ApiError -> {
-                    viewLoginLoginBtn.isEnabled = true
-                    viewLoginProgress.goAway()
-                    showToast(it.errorText)
-                }
-                is ApiResponseState.Loading -> {
-                    if (!it.showLoading) {
+                    is ApiResponseState.ApiError -> {
                         viewLoginLoginBtn.isEnabled = true
                         viewLoginProgress.goAway()
+                        showToast(it.errorText)
                     }
+                    is ApiResponseState.Loading -> {
+                        if (!it.showLoading) {
+                            viewLoginLoginBtn.isEnabled = true
+                            viewLoginProgress.goAway()
+                        }
+                    }
+                    else -> {}
                 }
             }
         })
@@ -110,8 +120,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             data.regions.isNotEmpty() -> proceedLogin(data)
             else -> {
                 showToast(R.string.no_regions_accosiated)
-                viewLoginLoginBtn.isEnabled = true
-                viewLoginProgress.goAway()
+                binding.viewLoginLoginBtn.isEnabled = true
+                binding.viewLoginProgress.goAway()
             }
         }
     }
@@ -129,9 +139,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("auth", "SignIN:success")
                     onLoginSuccess()
-                    FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                        val newToken = it.token
-                        Log.d("token", newToken)
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                        Log.d("token-msg", it.result, it.exception)
                     }
                 } else {
                     if (task.exception is FirebaseAuthInvalidUserException) {
@@ -162,8 +171,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     }
 
     private fun onLoginSuccess() {
-        viewLoginLoginBtn?.isEnabled = true
-        viewLoginProgress.goAway()
+        binding.viewLoginLoginBtn.isEnabled = true
+        binding.viewLoginProgress.goAway()
         actViewModel.updateNavHeader()
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }

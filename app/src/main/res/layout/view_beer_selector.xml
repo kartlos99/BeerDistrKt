@@ -42,10 +42,10 @@
         android:layout_margin="@dimen/gr_size_8"
         android:scaleType="fitXY"
         android:src="@drawable/ic_arrow_left_24dp"
-        android:tint="@color/arrow_color_tr"
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/beerSelectorBeerRecycler" />
+        app:layout_constraintTop_toTopOf="@+id/beerSelectorBeerRecycler"
+        app:tint="@color/arrow_color_tr" />
 
     <ImageView
         android:id="@+id/beerSelectorBtnRightImg"
@@ -55,10 +55,10 @@
         android:rotation="180"
         android:scaleType="fitXY"
         android:src="@drawable/ic_arrow_left_24dp"
-        android:tint="@color/arrow_color_tr"
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/beerSelectorBeerRecycler" />
+        app:layout_constraintTop_toTopOf="@id/beerSelectorBeerRecycler"
+        app:tint="@color/arrow_color_tr" />
 
     <TextView
         android:id="@+id/beerSelectorCanTypeTv"

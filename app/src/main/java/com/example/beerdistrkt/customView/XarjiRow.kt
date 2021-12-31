@@ -12,8 +12,8 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.utils.MSG_DEL
 
-class XarjiRowView(
-    private var mContext: Context? = null,
+class XarjiRowView @JvmOverloads constructor(
+    private var mContext: Context,
     private var xarji: Xarji,
     private var xarjiAuthor: String,
     private var canDel: Boolean? = null,
@@ -50,9 +50,9 @@ class XarjiRowView(
         val tAmount: TextView = thisRootView.findViewById(R.id.t_xarj_row_amount)
         btnItemRemove = thisRootView.findViewById(R.id.btn_xarj_remove)
         if (!canDel!!) btnItemRemove!!.visibility = View.GONE
-        tComment.setText(xarji.comment)
-        tAmount.setText(mContext!!.getString(R.string.format_gel, xarji.amount))
-        tDistr.setText(xarjiAuthor)
+        tComment.text = xarji.comment
+        tAmount.text = mContext.getString(R.string.format_gel, xarji.amount)
+        tDistr.text = xarjiAuthor
     }
 
     val view: View

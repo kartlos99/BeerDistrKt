@@ -1,30 +1,31 @@
 package com.example.beerdistrkt.fragPages.orders.adapter
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.beerdistrkt.R
+import com.example.beerdistrkt.customView.BeerAmountRowView
 import com.example.beerdistrkt.fragPages.orders.view.OrderView
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 
 class OrderAdapter(
     private var orders: MutableList<Order> = mutableListOf()
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
 
     private var deliveryMode = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(OrderView(parent.context))
     }
 
     override fun getItemCount(): Int = orders.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemView = holder.itemView
-        if (itemView is OrderView) {
-            itemView.lockSwipe(deliveryMode)
-            itemView.order = orders[position]
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.orderView.lockSwipe(deliveryMode)
+        holder.orderView.order = orders[position]
     }
 
     fun setData(orders: List<Order>){
@@ -43,5 +44,5 @@ class OrderAdapter(
         notifyDataSetChanged()
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(val orderView: OrderView) : RecyclerView.ViewHolder(orderView)
 }

@@ -8,7 +8,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.network.ApeniApiService
@@ -50,7 +50,7 @@ class StoreHouseViewModel : BaseViewModel() {
     val editDataReceiveLiveData: LiveData<ApiResponseState<IoModel>>
         get() = _editDataReceiveLiveData
 
-    val beerList = ObjectCache.getInstance().getList(BeerModel::class, BEER_LIST_ID)
+    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
         ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()

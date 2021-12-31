@@ -3,10 +3,10 @@ package com.example.beerdistrkt.customView
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.beerdistrkt.R
-import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
+import com.example.beerdistrkt.databinding.NumericEdittextViewBinding
 
 class NumericEditText
 @JvmOverloads
@@ -18,14 +18,17 @@ constructor(
 
     private val maxValue = 999
     private val minValue = 0
+    private var binding = NumericEdittextViewBinding.bind(
+        inflate(context, R.layout.numeric_edittext_view, this)
+    )
 
     var amount: Int = 0
         set(value) {
-            editCount.setText(value.toString())
+            binding.editCount.setText(value.toString())
             field = value
         }
         get() {
-            val etValue = editCount.text.toString()
+            val etValue = binding.editCount.text.toString()
             return if (etValue.isEmpty())
                 0
             else
@@ -37,16 +40,18 @@ constructor(
     }
 
     private fun initView() {
-        View.inflate(context, R.layout.numeric_edittext_view, this)
 
-        btnInc.setOnClickListener {
+
+        binding.btnInc.setOnClickListener {
             if (amount < maxValue)
                 amount++
         }
-        btnDec.setOnClickListener {
+        binding.btnDec.setOnClickListener {
             if (amount > minValue)
                 amount--
         }
     }
+
+    fun getEditTextView(): EditText = binding.editCount
 
 }

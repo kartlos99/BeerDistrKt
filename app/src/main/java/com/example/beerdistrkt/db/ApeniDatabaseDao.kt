@@ -48,13 +48,13 @@ interface ApeniDatabaseDao {
 
     // beer operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertBeer(beerModel: BeerModel)
+    fun insertBeer(beerModel: BeerModelBase)
 
     @Query("DELETE FROM beer_table")
     fun clearBeerTable()
 
     @Query("Select * from beer_table order by sortValue")
-    fun getBeerList(): LiveData<List<BeerModel>>
+    fun getBeerList(): LiveData<List<BeerModelBase>>
 
     // cans (kasrebi)
     @Insert(onConflict = OnConflictStrategy.REPLACE)

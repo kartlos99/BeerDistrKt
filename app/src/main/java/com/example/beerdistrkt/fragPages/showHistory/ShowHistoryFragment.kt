@@ -7,15 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.FragmentShowHistoryBinding
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
-import kotlinx.android.synthetic.main.fragment_show_history.*
 
 class ShowHistoryFragment: BaseFragment<ShowHistoryViewModel>() {
 
     private val TAG = "ShowHistoryFragment"
+
+    private val binding by viewBinding(FragmentShowHistoryBinding::bind)
 
     override val viewModel by lazy {
         getViewModel { ShowHistoryViewModel() }
@@ -47,11 +50,11 @@ class ShowHistoryFragment: BaseFragment<ShowHistoryViewModel>() {
     }
 
     private fun showOrderHistory(data: List<OrderHistory>) {
-        fragShowHistoryRc.layoutManager = LinearLayoutManager(context)
+        binding.fragShowHistoryRc.layoutManager = LinearLayoutManager(context)
         val adapter = HistoryAdapter(
             data,
             viewModel.beerMap
         )
-        fragShowHistoryRc.adapter = adapter
+        binding.fragShowHistoryRc.adapter = adapter
     }
 }

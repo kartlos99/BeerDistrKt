@@ -6,47 +6,49 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.SawyobiListItemViewBinding
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.utils.visibleIf
-import kotlinx.android.synthetic.main.sawyobi_list_item_view.view.*
 
 class StoreHouseListAdapter(
     private val dataMap: Map<String, List<IoModel>>,
-    private val beerMap: Map<Int, BeerModel>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val beerMap: Map<Int, BeerModelBase>
+) : RecyclerView.Adapter<StoreHouseListAdapter.ViewHolder>() {
 
     var onLongClick: ((date: String) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.sawyobi_list_item_view, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(SawyobiListItemViewBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = dataMap.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 //        holder.itemView.shlActionDateTv.text = dataMap.keys.toList()[position]
-        holder.itemView.shlActionDateTv.text = dataMap.values.toList()[position][0].ioDate
-        holder.itemView.setOnLongClickListener {
-            onLongClick?.invoke(dataMap.values.toList()[position][0].groupID)
-            return@setOnLongClickListener true
+        with(holder.binding) {
+            shlActionDateTv.text = dataMap.values.toList()[position][0].ioDate
+            root.setOnLongClickListener {
+                onLongClick?.invoke(dataMap.values.toList()[position][0].groupID)
+                return@setOnLongClickListener true
+            }
+            shlComment.visibleIf(!dataMap.values.toList()[position][0].comment.isNullOrEmpty())
+            shlComment.text = dataMap.values.toList()[position][0].comment
+
+            val itemData = ioModelToSimpleBeerRow(dataMap.values.toList()[position])
+
+            shlSubRecycler.layoutManager =
+                LinearLayoutManager(shlSubRecycler.context)
+            val adapter = SimpleBeerRowAdapter(itemData)
+            adapter.onClick = View.OnClickListener {}
+            shlSubRecycler.adapter = adapter
         }
-        holder.itemView.shlComment.visibleIf(!dataMap.values.toList()[position][0].comment.isNullOrEmpty())
-        holder.itemView.shlComment.text = dataMap.values.toList()[position][0].comment
-
-        val itemData = ioModelToSimpleBeerRow(dataMap.values.toList()[position])
-
-        holder.itemView.shlSubRecycler.layoutManager =
-            LinearLayoutManager(holder.itemView.shlSubRecycler.context)
-        val adapter = SimpleBeerRowAdapter(itemData)
-        adapter.onClick = View.OnClickListener {}
-        holder.itemView.shlSubRecycler.adapter = adapter
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(val binding: SawyobiListItemViewBinding) : RecyclerView.ViewHolder(binding.root)
+
 
     private fun ioModelToSimpleBeerRow(itemData: List<IoModel>): List<SimpleBeerRowModel> {
         val result = mutableListOf<SimpleBeerRowModel>()

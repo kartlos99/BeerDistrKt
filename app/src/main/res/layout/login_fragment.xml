@@ -1,72 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragPages.login.LoginFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/viewLoginUserField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="36dp"
+        android:drawableStart="@drawable/ic_user"
+        android:hint="@string/username"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
 
-        <EditText
-            android:id="@+id/viewLoginUserField"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="36dp"
-            android:drawableStart="@drawable/ic_user"
-            android:hint="@string/username"
-            android:inputType="textEmailAddress"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2" />
+    <EditText
+        android:id="@+id/viewLoginPasswordField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_8"
+        android:drawableStart="@drawable/ic_lock"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@id/viewLoginUserField"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/viewLoginUserField"
+        app:layout_constraintTop_toBottomOf="@+id/viewLoginUserField" />
 
-        <EditText
-            android:id="@+id/viewLoginPasswordField"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gr_size_8"
-            android:drawableStart="@drawable/ic_lock"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="@id/viewLoginUserField"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="@id/viewLoginUserField"
-            app:layout_constraintTop_toBottomOf="@+id/viewLoginUserField" />
+    <CheckBox
+        android:id="@+id/viewLoginSaveChk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/damimaxsovre"
+        android:textSize="@dimen/textSize_2"
+        app:layout_constraintEnd_toEndOf="@id/viewLoginPasswordField"
+        app:layout_constraintStart_toStartOf="@id/viewLoginPasswordField"
+        app:layout_constraintTop_toBottomOf="@id/viewLoginPasswordField" />
 
-        <CheckBox
-            android:id="@+id/viewLoginSaveChk"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/damimaxsovre"
-            android:textSize="@dimen/textSize_2"
-            app:layout_constraintEnd_toEndOf="@id/viewLoginPasswordField"
-            app:layout_constraintStart_toStartOf="@id/viewLoginPasswordField"
-            app:layout_constraintTop_toBottomOf="@id/viewLoginPasswordField" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/viewLoginLoginBtn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:padding="12dp"
+        android:text="@string/login"
+        app:layout_constraintEnd_toEndOf="@id/viewLoginUserField"
+        app:layout_constraintStart_toStartOf="@id/viewLoginUserField"
+        app:layout_constraintTop_toBottomOf="@+id/viewLoginSaveChk" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/viewLoginLoginBtn"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="8dp"
-            android:padding="12dp"
-            android:text="@string/login"
-            app:layout_constraintEnd_toEndOf="@id/viewLoginUserField"
-            app:layout_constraintStart_toStartOf="@id/viewLoginUserField"
-            app:layout_constraintTop_toBottomOf="@+id/viewLoginSaveChk" />
+    <ProgressBar
+        android:id="@+id/viewLoginProgress"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:elevation="@dimen/gr_size_2"
+        android:padding="@dimen/gr_size_8"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/viewLoginLoginBtn"
+        app:layout_constraintTop_toTopOf="@id/viewLoginLoginBtn" />
 
-        <ProgressBar
-            android:id="@+id/viewLoginProgress"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="@dimen/gr_size_8"
-            android:elevation="@dimen/gr_size_2"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/viewLoginLoginBtn"
-            app:layout_constraintTop_toTopOf="@id/viewLoginLoginBtn" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

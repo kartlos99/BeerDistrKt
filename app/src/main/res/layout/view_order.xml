@@ -1,187 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/orderUnitRootSwipe"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:dragEdge="right"
-    app:layout_constraintTop_toTopOf="parent"
-    app:mode="normal">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/orderUnitBackRoot"
-        android:layout_width="168dp"
-        android:layout_height="wrap_content"
 
-        android:gravity="end"
-        android:orientation="horizontal"
-        android:paddingVertical="@dimen/gr_size_4">
-
-        <ImageButton
-            android:id="@+id/orderUnitChangeDistributorBtn"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/green_01"
-            android:contentDescription="@string/img_description"
-            android:paddingHorizontal="@dimen/gr_size_4"
-            android:paddingVertical="@dimen/gr_size_16"
-            android:tint="@color/green_08"
-            app:srcCompat="@drawable/ic_redirect_24" />
-
-        <ImageButton
-            android:id="@+id/orderUnitEditBtn"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/blue_edit_bkg"
-            android:contentDescription="@string/img_description"
-            android:paddingHorizontal="@dimen/gr_size_4"
-            android:paddingVertical="@dimen/gr_size_16"
-            android:tint="@color/blue_edit"
-            app:srcCompat="@drawable/ic_edit_white_24dp" />
-
-        <ImageButton
-            android:id="@+id/orderUnitDeleteBtn"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/red_delete_bkg"
-            android:contentDescription="@string/img_description"
-            android:paddingHorizontal="@dimen/gr_size_4"
-            android:tint="@color/red_delete"
-            app:srcCompat="@drawable/ic_delete_white_24dp" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/orderUnitFrontRoot"
+    <com.chauthai.swipereveallayout.SwipeRevealLayout
+        android:id="@+id/orderUnitRootSwipe"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:dragEdge="right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mode="normal">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/orderMainConstraint"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/orderUnitBackRoot"
+            android:layout_width="168dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/gr_size_12"
-            android:layout_marginTop="@dimen/gr_size_4"
-            android:layout_marginEnd="-8dp"
-            android:layout_marginBottom="@dimen/gr_size_4"
-            android:background="@drawable/bkg_rounded_white_r8"
-            android:clickable="true"
-            android:elevation="2dp"
-            android:focusable="true"
-            android:foreground="?selectableItemBackground"
-            android:paddingEnd="@dimen/gr_size_8"
-            tools:ignore="RtlSymmetry">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/orderStatusTv"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="@dimen/gr_size_8"
-                android:gravity="center"
-                android:textColor="@color/gray_light"
-                android:textSize="@dimen/sp36"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:paddingVertical="@dimen/gr_size_4">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/orderUnitClientNameTv"
+            <ImageButton
+                android:id="@+id/orderUnitChangeDistributorBtn"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/green_01"
+                android:contentDescription="@string/img_description"
+                android:paddingHorizontal="@dimen/gr_size_4"
+                android:paddingVertical="@dimen/gr_size_16"
+                app:srcCompat="@drawable/ic_redirect_24"
+                app:tint="@color/green_08" />
+
+            <ImageButton
+                android:id="@+id/orderUnitEditBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/blue_edit_bkg"
+                android:contentDescription="@string/img_description"
+                android:paddingHorizontal="@dimen/gr_size_4"
+                android:paddingVertical="@dimen/gr_size_16"
+                app:srcCompat="@drawable/ic_edit_white_24dp"
+                app:tint="@color/blue_edit" />
+
+            <ImageButton
+                android:id="@+id/orderUnitDeleteBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/red_delete_bkg"
+                android:contentDescription="@string/img_description"
+                android:paddingHorizontal="@dimen/gr_size_4"
+                app:srcCompat="@drawable/ic_delete_white_24dp"
+                app:tint="@color/red_delete" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/orderUnitFrontRoot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/orderMainConstraint"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_2"
-                android:layout_marginEnd="@dimen/gr_size_8"
-                android:paddingStart="@dimen/gr_size_12"
-                android:textSize="@dimen/sp18"
-                app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
-                app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/orderUnitDragImg"
-                android:layout_width="@dimen/gr_size_32"
-                android:layout_height="@dimen/gr_size_32"
-                android:padding="@dimen/gr_size_4"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_drag_indicator_24"
-                android:contentDescription="@string/img_description"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <ImageView
-                android:id="@+id/orderUnitHistoryImg"
-                android:layout_width="@dimen/gr_size_32"
-                android:layout_height="@dimen/gr_size_32"
-                android:contentDescription="@string/img_description"
-                android:padding="@dimen/gr_size_4"
-                android:src="@drawable/ic_history_24"
-                app:tint="@color/gray_6"
-                app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
-                app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv" />
-
-            <ImageView
-                android:id="@+id/orderUnitCommentImg"
-                android:layout_width="@dimen/gr_size_32"
-                android:layout_height="@dimen/gr_size_32"
-                android:contentDescription="@string/img_description"
-                android:padding="@dimen/gr_size_4"
-                android:src="@drawable/ic_comment_white_24dp"
-                app:tint="@color/gray_6"
-                app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
-                app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv" />
-
-            <ImageView
-                android:id="@+id/orderUnitCheckImg"
-                android:layout_width="@dimen/gr_size_32"
-                android:layout_height="@dimen/gr_size_32"
-                android:contentDescription="@string/img_description"
-                android:padding="@dimen/gr_size_4"
-                android:src="@drawable/circle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg" />
-
-            <View
-                android:id="@+id/orderUnitCommentBkg"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/gr_size_24"
-                android:background="@drawable/bkg_order_comment"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/gr_size_1"
-                android:layout_marginTop="@dimen/gr_size_6"
                 android:layout_marginStart="@dimen/gr_size_12"
-                android:background="@color/gray_3"
-                app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+                android:layout_marginTop="@dimen/gr_size_4"
+                android:layout_marginEnd="-8dp"
+                android:layout_marginBottom="@dimen/gr_size_4"
+                android:background="@drawable/bkg_rounded_white_r8"
+                android:clickable="true"
+                android:elevation="2dp"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground"
+                android:paddingEnd="@dimen/gr_size_8"
+                tools:ignore="RtlSymmetry">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/orderItemList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_12"
-                android:layout_marginBottom="@dimen/gr_size_8"
-                android:paddingBottom="@dimen/gr_size_4"
-                android:paddingStart="@dimen/gr_size_12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/orderStatusTv"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_margin="@dimen/gr_size_8"
+                    android:gravity="center"
+                    android:textColor="@color/gray_light"
+                    android:textSize="@dimen/sp36"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/orderComment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/gr_size_4"
-                app:layout_constraintTop_toBottomOf="@id/orderItemList"
-                android:visibility="gone"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/orderUnitClientNameTv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gr_size_2"
+                    android:layout_marginEnd="@dimen/gr_size_8"
+                    android:paddingStart="@dimen/gr_size_12"
+                    android:textSize="@dimen/sp18"
+                    app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
+                    app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/orderUnitDragImg"
+                    android:layout_width="@dimen/gr_size_32"
+                    android:layout_height="@dimen/gr_size_32"
+                    android:contentDescription="@string/img_description"
+                    android:padding="@dimen/gr_size_4"
+                    android:src="@drawable/ic_baseline_drag_indicator_24"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    </FrameLayout>
+                <ImageView
+                    android:id="@+id/orderUnitHistoryImg"
+                    android:layout_width="@dimen/gr_size_32"
+                    android:layout_height="@dimen/gr_size_32"
+                    android:contentDescription="@string/img_description"
+                    android:padding="@dimen/gr_size_4"
+                    android:src="@drawable/ic_history_24"
+                    app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
+                    app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv"
+                    app:tint="@color/gray_6" />
 
-</com.chauthai.swipereveallayout.SwipeRevealLayout>
+                <ImageView
+                    android:id="@+id/orderUnitCommentImg"
+                    android:layout_width="@dimen/gr_size_32"
+                    android:layout_height="@dimen/gr_size_32"
+                    android:contentDescription="@string/img_description"
+                    android:padding="@dimen/gr_size_4"
+                    android:src="@drawable/ic_comment_white_24dp"
+                    app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
+                    app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv"
+                    app:tint="@color/gray_6" />
+
+                <ImageView
+                    android:id="@+id/orderUnitCheckImg"
+                    android:layout_width="@dimen/gr_size_32"
+                    android:layout_height="@dimen/gr_size_32"
+                    android:contentDescription="@string/img_description"
+                    android:padding="@dimen/gr_size_4"
+                    android:src="@drawable/circle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg" />
+
+                <View
+                    android:id="@+id/orderUnitCommentBkg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/gr_size_24"
+                    android:background="@drawable/bkg_order_comment"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/gr_size_1"
+                    android:layout_marginStart="@dimen/gr_size_12"
+                    android:layout_marginTop="@dimen/gr_size_6"
+                    android:background="@color/gray_3"
+                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/orderItemList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gr_size_12"
+                    android:layout_marginBottom="@dimen/gr_size_8"
+                    android:paddingStart="@dimen/gr_size_12"
+                    android:paddingBottom="@dimen/gr_size_4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+
+                <TextView
+                    android:id="@+id/orderComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/gr_size_4"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/orderItemList" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+    </com.chauthai.swipereveallayout.SwipeRevealLayout>
+
+</LinearLayout>

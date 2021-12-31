@@ -10,9 +10,9 @@ import com.example.beerdistrkt.models.*
     Obieqti::class,
     ObjToBeerPrice::class,
     User::class,
-    BeerModel::class,
+    BeerModelBase::class,
     CanModel::class
-], version = 8, exportSchema = false)
+], version = 11, exportSchema = false)
 abstract class ApeniDataBase : RoomDatabase() {
 
     abstract val apeniDataBaseDao: ApeniDatabaseDao
@@ -30,7 +30,7 @@ abstract class ApeniDataBase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         ApeniDataBase::class.java,
-                        "apeni_local_db"
+                        "apeni_db"
                     )
                         .fallbackToDestructiveMigration()
                         .build()

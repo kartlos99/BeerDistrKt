@@ -12,6 +12,4 @@
 /captures
 .externalNativeBuild
 .cxx
-.idea/
-app/google-services.json
-app/src/main/java/com/example/beerdistrkt/utils/PrivateKey.kt
+local.properties

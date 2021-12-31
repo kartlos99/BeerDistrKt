@@ -19,17 +19,16 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
+import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
-import com.example.beerdistrkt.models.BeerModel
+import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
-import kotlinx.android.synthetic.main.beer_item_view.view.*
-import kotlinx.android.synthetic.main.numeric_edittext_view.view.*
 import java.util.*
 
 class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickListener {
@@ -74,7 +73,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         vBinding = AddDeliveryFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
         initBeerRecycler()
@@ -131,7 +130,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
         }
 
-        vBinding.addDeliveryCanCountControl.editCount.simpleTextChangeListener {
+        vBinding.addDeliveryCanCountControl.getEditTextView().simpleTextChangeListener {
             checkForm()
         }
 
@@ -423,7 +422,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
     }
 
-    private fun  initBeerRecycler() {
+    private fun initBeerRecycler() {
         beerAdapter.setData(viewModel.beerList)
         vBinding.addDeliveryBeerRecycler.apply {
             layoutManager =
@@ -439,28 +438,38 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         beerPos = pos
     }
 
-    inner class BeerAdapter(private var bList: List<BeerModel> = mutableListOf()) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class BeerAdapter(private var bList: List<BeerModelBase> = mutableListOf()) :
+        RecyclerView.Adapter<BeerItemViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            BeerItemViewHolder(parent.inflate(R.layout.beer_item_view))
+            BeerItemViewHolder(
+                BeerItemViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
 
         override fun getItemCount() = bList.size
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            holder.itemView.tBeerNameItm.text =
-                "${bList[position].dasaxeleba}\n${bList[position].fasi} ₾"
-            holder.itemView.tBeerNameItm.backgroundTintList = ColorStateList
-                .valueOf(Color.parseColor(bList[position].displayColor))
+        override fun onBindViewHolder(holder: BeerItemViewHolder, position: Int) {
+            with(holder.binding) {
+                tBeerNameItm.text =
+                    "${bList[position].dasaxeleba}\n${bList[position].fasi} ₾"
+                tBeerNameItm.backgroundTintList = ColorStateList
+                    .valueOf(Color.parseColor(bList[position].displayColor))
+            }
         }
 
-        fun setData(beerList: List<BeerModel>) {
+        fun setData(beerList: List<BeerModelBase>) {
             bList = beerList
             notifyDataSetChanged()
         }
     }
 
-    inner class BeerItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class BeerItemViewHolder(val binding: BeerItemViewBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
 
     private fun getIndicatorPager(rv: RecyclerView): BaseDotsIndicator.Pager {
         return object : BaseDotsIndicator.Pager {
