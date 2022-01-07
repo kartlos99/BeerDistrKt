@@ -133,7 +133,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     private fun loginToFirebase(username: String) {
         val userMail = "$username@apeni.ge"
-        mAuth.signInWithEmailAndPassword(userMail, PrivateKey.FIREBASE_PASS)
+        mAuth.signInWithEmailAndPassword(userMail, BuildConfig.FIREBASE_PASS)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
@@ -156,7 +156,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     }
 
     private fun registerInFirebase(username: String) {
-        mAuth.createUserWithEmailAndPassword(username, PrivateKey.FIREBASE_PASS)
+        mAuth.createUserWithEmailAndPassword(username, BuildConfig.FIREBASE_PASS)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("auth", "createUserWithEmail:success")

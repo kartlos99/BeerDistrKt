@@ -12,4 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+.idea/misc.xml
+app/google-services.json
+localdata.gradle
 local.properties
