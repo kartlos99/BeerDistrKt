@@ -36,6 +36,7 @@ import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
 import retrofit2.Call
 import retrofit2.Callback
@@ -363,3 +364,12 @@ fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableStri
     }
     return sp
 }
+
+fun TextInputLayout.text(): String =
+    this.editText?.text.toString()
+
+fun TextInputLayout.setText(text: CharSequence) =
+    this.editText?.setText(text)
+
+fun TextInputLayout.setText(resID: Int) =
+    this.editText?.setText(resID)

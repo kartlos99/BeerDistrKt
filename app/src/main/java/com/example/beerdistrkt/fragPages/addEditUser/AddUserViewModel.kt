@@ -27,6 +27,8 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
 
     val deleteUserLiveData = MutableLiveData<ApiResponseState<String>>()
 
+    val userValidatorLiveData = MutableLiveData<UserValidationResult>()
+
     val usersLiveData = database.getUsers()
 
     val userLiveData = MutableLiveData<User?>()
@@ -47,7 +49,25 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
         }
     }
 
-    fun onDoneClick(model: AddUserRequestModel) {
+    fun onDoneClick(
+        userData: User,
+        isChangingPassword: Boolean,
+        password: String,
+        confirmPassword: String
+    ) {
+        val requestModel = AddUserRequestModel(
+            userData,
+            password,
+            isChangingPassword
+        )
+        val userValidatorResult =
+            UserValidator(userData, isChangingPassword, password, confirmPassword).validate()
+        userValidatorLiveData.value = userValidatorResult
+        if (userValidatorResult is UserValidationResult.Success)
+            addOrUpdateUser(requestModel)
+    }
+
+    private fun addOrUpdateUser(model: AddUserRequestModel) {
         _addUserLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().addUpdateUser(model),
