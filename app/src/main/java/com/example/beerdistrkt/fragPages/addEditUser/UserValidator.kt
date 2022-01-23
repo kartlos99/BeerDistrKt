@@ -14,7 +14,6 @@ class UserValidator(
         const val MIN_NAME_LENGTH = 3
     }
 
-    val result = UserValidationResult.Success
     private val errors = mutableListOf<UserValidationResult.ErrorType>()
 
     fun validate(): UserValidationResult {
