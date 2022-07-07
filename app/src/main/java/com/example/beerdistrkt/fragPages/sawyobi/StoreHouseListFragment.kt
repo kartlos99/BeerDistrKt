@@ -48,6 +48,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
                 is ApiResponseState.Success -> {
                     initIoList(it.data)
                 }
+                else -> {}
             }
         })
     }

@@ -138,6 +138,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                 is ApiResponseState.ApiError -> {
                     showToast(getString(R.string.msg_record_not_deleted))
                 }
+                else -> {}
             }
             viewModel.deleteExpenseCompleted()
         })
@@ -150,6 +151,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                 is ApiResponseState.ApiError -> {
                     showToast(getString(R.string.msg_record_not_added))
                 }
+                else -> {}
             }
             viewModel.addExpenseCompleted()
         })

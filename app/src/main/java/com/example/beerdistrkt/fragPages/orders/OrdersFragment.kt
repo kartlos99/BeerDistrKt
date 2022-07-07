@@ -192,6 +192,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     ordersAdapter.removeItem(it.data)
                     viewModel.orderDeleteLiveData.value = ApiResponseState.Sleep
                 }
+                else -> {}
             }
         })
         viewModel.editOrderLiveData.observe(viewLifecycleOwner, Observer {
@@ -228,7 +229,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 viewModel.onItemClickLiveData.value = null
                 vBinding.root.findNavController().navigate(
                     OrdersFragmentDirections
-                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, 0, null, 0)
+                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, null)
                 )
             }
         })

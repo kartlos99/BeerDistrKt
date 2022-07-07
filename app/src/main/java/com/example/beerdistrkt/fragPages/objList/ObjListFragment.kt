@@ -68,7 +68,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             )
             MITANA -> vBinding.root.findNavController().navigate(
                 ObjListFragmentDirections
-                    .actionObjListFragmentToAddDeliveryFragment(clientID, 0,null, 0)
+                    .actionObjListFragmentToAddDeliveryFragment(clientID, null)
             )
             AMONAWERI -> vBinding.root.findNavController().navigate(
                 ObjListFragmentDirections

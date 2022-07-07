@@ -191,6 +191,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                         notifyNewComment(vBinding.addDeliveryComment.editText?.text.toString())
                     findNavController().navigateUp()
                 }
+                else -> {}
             }
         })
         viewModel.saleItemEditLiveData.observe(viewLifecycleOwner, Observer {

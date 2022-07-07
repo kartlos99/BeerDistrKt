@@ -1,13 +1,12 @@
 package com.example.beerdistrkt.fragPages.addBeer
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.getViewModel
 
 class AddBeerFragment : Fragment() {
 
@@ -15,19 +14,15 @@ class AddBeerFragment : Fragment() {
         fun newInstance() = AddBeerFragment()
     }
 
-    private lateinit var viewModel: AddBeerViewModel
+    private val viewModel by lazy {
+        getViewModel { AddBeerViewModel() }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.add_beer_fragment, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(AddBeerViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

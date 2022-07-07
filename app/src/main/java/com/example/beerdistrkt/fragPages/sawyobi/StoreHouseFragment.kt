@@ -128,7 +128,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             viewModel.fullBarrelsListLiveData.observe(viewLifecycleOwner) {
                 initFullRecycler(it)
             }
-            viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner, {
+            viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner) {
                 if (it.size > 1) {
                     storeHouseEmptyBarrelsAtHouse.setData(
                         SimpleBeerRowModel(
@@ -143,7 +143,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                         )
                     )
                 }
-            })
+            }
             viewModel.receivedItemDuplicateLiveData.observe(viewLifecycleOwner) {
                 if (it) {
                     showToast(R.string.already_in_list)
@@ -176,6 +176,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                                 .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
                         }
                     }
+                    else -> {}
                 }
             }
             viewModel.editDataReceiveLiveData.observe(viewLifecycleOwner) {
@@ -184,6 +185,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                     is ApiResponseState.Success -> {
                         storeHouseComment.editText?.setText(it.data.comment)
                     }
+                    else -> {}
                 }
             }
             viewModel.emptyBarrelsEditingLiveData.observe(viewLifecycleOwner) {

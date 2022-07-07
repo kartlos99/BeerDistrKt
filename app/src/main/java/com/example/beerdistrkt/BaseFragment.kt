@@ -36,6 +36,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                         automatedLogout()
                     }
                 }
+                else -> {}
             }
             if (it !is ApiResponseState.Sleep)
                 viewModel.showNetworkFailMsgComplete()

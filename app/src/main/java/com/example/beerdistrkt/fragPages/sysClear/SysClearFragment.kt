@@ -62,6 +62,7 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                 is ApiResponseState.Loading -> {
                 }
                 is ApiResponseState.Success -> initRecycler(it.data)
+                else -> {}
             }
         })
         viewModel.clientListLiveData.observe(viewLifecycleOwner, Observer { clientsList ->
@@ -86,6 +87,7 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                     if (viewModel.activeAdd)
                         onModeChange()
                 }
+                else -> {}
             }
         })
     }
