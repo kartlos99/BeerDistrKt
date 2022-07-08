@@ -8,16 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.showInfoDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 
 
@@ -43,7 +40,11 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        beerListAdapter = BeerListAdapter(viewModel.beerList)
+        beerListAdapter = BeerListAdapter(
+            viewModel.beerList,
+            ::onEditClick,
+            ::onDeleteClick
+        )
         binding.beerRv.adapter = beerListAdapter
         binding.beerRv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -68,7 +69,8 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                     BeerModelBase(
                         beerID,
                         binding.eBeerName.editText?.text.toString(),
-                        String.format("#%02X%02X%02X",
+                        String.format(
+                            "#%02X%02X%02X",
                             Color.red(beerColor),
                             Color.green(beerColor),
                             Color.blue(beerColor)
@@ -87,7 +89,6 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
             colorDialog.show(childFragmentManager, beerColor.toString())
         }
         myColor(beerColor)
-//        registerForContextMenu(listViewBeer)
         initViewModel()
     }
 
@@ -111,36 +112,49 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                 else -> {}
             }
         }
-    }
-
-/*
-
-    fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenuInfo?) {
-//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        this.getMenuInflater().inflate(R.menu.context_menu_order, menu)
-        super.onCreateContextMenu(menu!!, v!!, menuInfo)
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        val info = item.getMenuInfo() as AdapterContextMenuInfo
-        val beer: BeerModel = beerListAdapter.getItem(info.position) as BeerModel
-        when (item.getItemId()) {
-            R.id.cm_order_edit -> {
-                eBeerName.setText(beer.getDasaxeleba())
-                eBeerPr.setText(java.lang.String.valueOf(beer.getFasi()))
-                beerID = beer.getId()
-                btn_beerDone.setText("რედაქტირება")
-                tTitle!!.text = "რედაქტირება"
-                btn_uaryofa.setVisibility(View.VISIBLE)
-                beerColor = Color.parseColor(beer.getDisplayColor())
-                myColor(beerColor)
+        viewModel.deleteBeerLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> {
+                    binding.btnBeerDone.isEnabled = true
+                    showToast("ლუდის სახეობა წაიშალა!")
+                    findNavController().navigateUp()
+                }
+                is ApiResponseState.ApiError -> {
+                    context?.showInfoDialog(
+                        R.string.server_error,
+                        "${it.errorCode} : ${it.errorText}",
+                        R.string.ok,
+                        R.style.ThemeOverlay_MaterialComponents_Dialog
+                    )
+                    binding.btnBeerDone.isEnabled = true
+                }
+                else -> {}
             }
-            R.id.cm_order_del -> removeBeer(beer.getId())
         }
-        return super.onContextItemSelected(item)
     }
-*/
 
+    private fun onEditClick(beer: BeerModelBase) = with(binding) {
+        eBeerName.editText?.setText(beer.dasaxeleba)
+        eBeerPr.editText?.setText((beer.fasi ?: 0).toString())
+        beerID = beer.id
+        btnBeerDone.text = "ჩაწერა"
+        tAddeditBeer.text = "რედაქტირება"
+        btnBeerUaryofa.isVisible = true
+        beerColor = Color.parseColor(beer.displayColor)
+        myColor(beerColor)
+    }
+
+    private fun onDeleteClick(beerID: Int) {
+        requireContext().showAskingDialog(
+            R.string.delete,
+            R.string.confirm_delete_text,
+            R.string.yes,
+            R.string.no,
+            R.style.ThemeOverlay_MaterialComponents_Dialog
+        ) {
+            viewModel.removeBeer(beerID)
+        }
+    }
 
     private fun myColor(color: Int) {
         beerColor = color
