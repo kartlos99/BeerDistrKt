@@ -47,8 +47,8 @@ class HomeViewModel : BaseViewModel() {
         get() = _addCommentLiveData
 
     init {
-        if (Session.get().isUserLogged())
-            getTableVersionsFromServer()
+//        if (Session.get().isUserLogged())
+//            getTableVersionsFromServer()
         localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
         Log.d("homeVM localVers", localVersionState.toString())
 
@@ -72,7 +72,11 @@ class HomeViewModel : BaseViewModel() {
         getTableVersionsFromServer()
     }
 
+    fun checkVersionUpdates() = getTableVersionsFromServer()
+
     private fun getTableVersionsFromServer() {
+        Log.d("homeVM getTableVersionsFromServer", localVersionState.toString())
+        if (!Session.get().isUserLogged()) return
         sendRequest(
             ApeniApiService.getInstance().getTableVersions(),
             successWithData = {

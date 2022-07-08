@@ -23,6 +23,7 @@ import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             Session.get().hasPermission(Permission.AddEditClient)
         vBinding.navView.menu.getItem(1).isEnabled =
             Session.get().hasPermission(Permission.AddEditUser)
-        vBinding.navView.menu.getItem(2).isEnabled = false
+        vBinding.navView.menu.getItem(2).isEnabled = Session.get().userType == UserType.ADMIN
         vBinding.navView.menu.getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
         vBinding.navView.menu.getItem(7).title = BuildConfig.VERSION_NAME
     }

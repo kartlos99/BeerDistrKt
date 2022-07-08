@@ -75,6 +75,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        viewModel.checkVersionUpdates()
         setHasOptionsMenu(Session.get().regions.size > 1)
         if (Session.get().isAccessTokenValid() && Session.get().region == null)
             if (Session.get().regions.size == 1)

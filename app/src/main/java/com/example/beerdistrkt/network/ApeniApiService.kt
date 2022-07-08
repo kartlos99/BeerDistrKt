@@ -261,4 +261,9 @@ interface ApeniApiService {
 
     @GET("sales/getMoneyHistory.php")
     fun getMoneyHistory(@Query("recordID") recordID: Int): Call<DataResponse<List<MoneyHistoryDTO>>>
+
+    // Beer
+    @POST("beer/add.php")
+    fun addBeer(@Body beer: BeerModelBase): Call<DataResponse<String>>
+
 }
