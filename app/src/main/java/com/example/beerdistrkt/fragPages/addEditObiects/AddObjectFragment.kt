@@ -213,7 +213,10 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 text = beerList[i].dasaxeleba
             }
             if (viewModel.clientID > 0) {
-                val priceObj = viewModel.clientObject?.prices?.elementAtOrNull(i)
+//                val priceObj = viewModel.clientObject?.prices?.elementAtOrNull(i)
+                val priceObj = viewModel.clientObject?.prices?.find {
+                    it.beerID == beerList[i].id
+                }
                 eText.setText((priceObj?.fasi ?: .0f).toString())
             }
             priceItemView.addView(textView, 0)

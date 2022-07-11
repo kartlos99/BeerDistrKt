@@ -308,7 +308,10 @@ class HomeViewModel : BaseViewModel() {
             it.forEach { fbm ->
                 valueOfDiff[fbm.barrelID] = fbm.inputToStore - fbm.saleCount
             }
-            val title = beerList.first { b -> b.id == it[0].beerID }.dasaxeleba ?: "_"
+            val currBeer = beerList.firstOrNull { beerModel ->
+                beerModel.id == it[0].beerID
+            }
+            val title = currBeer?.dasaxeleba ?: "_"
             result.add(SimpleBeerRowModel(title, valueOfDiff))
         }
         val valueOfDiff = mutableMapOf<Int, Int>()
