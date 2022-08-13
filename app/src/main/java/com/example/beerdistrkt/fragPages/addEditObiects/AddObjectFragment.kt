@@ -104,7 +104,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         viewModel.beersLiveData.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty() && clientID == 0) drawBeerPrices(it)
         })
-        viewModel.clientObjectLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.clientObjectLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 fillForm(it)
                 viewModel.clientObjectLiveData.value = null
@@ -112,7 +112,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                     drawBeerPrices(beerList)
                 }
             }
-        })
+        }
         viewModel.clientSaveMutableLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Loading -> {

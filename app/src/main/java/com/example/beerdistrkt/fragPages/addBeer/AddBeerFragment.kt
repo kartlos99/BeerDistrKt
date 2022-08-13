@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -26,9 +27,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
 
     private val binding by viewBinding(AddBeerFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { AddBeerViewModel() }
-    }
+    override val viewModel : AddBeerViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
