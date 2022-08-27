@@ -28,11 +28,9 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
             if (clientID > 0) {
                 repository.getCustomerData(clientID).observeForever { customerData ->
                     clientObject = customerData
-                    ioScope.launch {
+                    uiScope.launch {
                         delay(50)
-                        uiScope.launch {
-                            clientObjectLiveData.value = clientObject
-                        }
+                        clientObjectLiveData.value = clientObject
                     }
                 }
             }

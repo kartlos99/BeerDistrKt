@@ -3,7 +3,6 @@ package com.example.beerdistrkt.fragPages.orders.view
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.beerdistrkt.R
@@ -34,7 +33,6 @@ class OrderItemView @JvmOverloads constructor(
 
         with(binding) {
             orderItemNameTv.text = thisBeer.dasaxeleba ?: ""
-            Log.d("Kd--", "fillData: $thisBeer")
             orderItemNameUnderline.setBackgroundColor(
                 Color.parseColor(thisBeer.displayColor ?: "#444444")
             )

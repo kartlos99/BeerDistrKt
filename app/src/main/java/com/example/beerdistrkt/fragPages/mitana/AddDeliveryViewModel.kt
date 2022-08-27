@@ -67,10 +67,6 @@ class AddDeliveryViewModel(
     val infoSharedFlow = MutableSharedFlow<String>()
 
     init {
-//        clientLiveData.observeForever {
-//            attachPrices(it.prices)
-//        }
-        getClient()
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
         repository.getCustomerData(clientID).observeForever { customerData ->
             clientLiveData.value = customerData
@@ -92,15 +88,6 @@ class AddDeliveryViewModel(
                 it.sortValue
             )
         }
-    }
-
-    private fun getClient() {
-/*        ioScope.launch {
-            val clientData = database.getCustomerWithPrices(clientID)
-            uiScope.launch {
-                clientLiveData.value = clientData
-            }
-        }*/
     }
 
     fun setCan(pos: Int) {
