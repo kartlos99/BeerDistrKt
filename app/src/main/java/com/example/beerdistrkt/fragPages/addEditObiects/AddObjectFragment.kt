@@ -195,6 +195,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     }
 
     private fun drawBeerPrices(beerList: List<BeerModelBase>) {
+        binding.addEditClientPricesContainer.removeAllViews()
         for (i in beerList.indices) {
             val priceItemView = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL

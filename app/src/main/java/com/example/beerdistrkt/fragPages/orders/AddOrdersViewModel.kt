@@ -95,7 +95,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     private fun getClient() {
         ioScope.launch {
-            val clientData = database.getObiectsWithPrices(clientID)
+            val clientData = database.getCustomerWithPrices(clientID)
             uiScope.launch {
                 clientLiveData.value = clientData
             }

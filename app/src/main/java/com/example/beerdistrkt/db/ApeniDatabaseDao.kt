@@ -17,8 +17,12 @@ interface ApeniDatabaseDao {
     fun getAllObieqts(): LiveData<List<Obieqti>>
 
     @Transaction
-    @Query("SELECT * FROM obieqts_table WHERE id = :obiectisID")
-    fun getObiectsWithPrices(obiectisID: Int): ObiectWithPrices
+    @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
+    fun getCustomerWithPrices(customerID: Int): ObiectWithPrices
+
+    @Transaction
+    @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
+    fun getCustomerWithPricesLiveData(customerID: Int): LiveData<ObiectWithPrices>
 
     @Query("DELETE FROM obieqts_table WHERE id = :clientID")
     fun deleteClient(clientID: Int)
@@ -26,6 +30,12 @@ interface ApeniDatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBeerPrice(objToBeerPrice: ObjToBeerPrice): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertBeerPrices(prices: List<ObjToBeerPrice>)
+
+    @Query("DELETE FROM prices_table WHERE objID = :customerID")
+    fun deletePricesForCustomer(customerID: Int)
 
     @Query("DELETE FROM prices_table")
     fun clearPricesTable()
@@ -49,6 +59,9 @@ interface ApeniDatabaseDao {
     // beer operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBeer(beerModel: BeerModelBase)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertBeers(beerModels: List<BeerModelBase>)
 
     @Query("DELETE FROM beer_table")
     fun clearBeerTable()

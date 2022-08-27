@@ -202,6 +202,9 @@ interface ApeniApiService {
     @GET("client/getAttachedRegions.php")
     fun getAttachedRegions(@Query("clientID") clientID: Int): Call<DataResponse<List<AttachedRegion>>>
 
+    @GET("client/getAllData.php")
+    fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDataDTO>>
+
     // storeHouse
     @GET("storeHouse/getBalance.php")
     fun getStoreHouseBalance(

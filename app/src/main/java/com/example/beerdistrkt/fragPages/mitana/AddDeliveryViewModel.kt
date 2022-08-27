@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.mitana
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
@@ -13,12 +14,14 @@ import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -57,15 +60,22 @@ class AddDeliveryViewModel(
     var operation: String? = null
     var recordID = 0
 
-    val saleItemDuplicateLiveData = MutableLiveData<Boolean>(false)
+    val saleItemDuplicateLiveData = MutableLiveData(false)
+
+    private val repository = ApeniRepo()
+
+    val infoSharedFlow = MutableSharedFlow<String>()
 
     init {
+//        clientLiveData.observeForever {
+//            attachPrices(it.prices)
+//        }
         getClient()
-
-        clientLiveData.observeForever {
-            attachPrices(it.prices)
-        }
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+        repository.getCustomerData(clientID).observeForever { customerData ->
+            clientLiveData.value = customerData
+            attachPrices(customerData.prices)
+        }
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
@@ -85,12 +95,12 @@ class AddDeliveryViewModel(
     }
 
     private fun getClient() {
-        ioScope.launch {
-            val clientData = database.getObiectsWithPrices(clientID)
+/*        ioScope.launch {
+            val clientData = database.getCustomerWithPrices(clientID)
             uiScope.launch {
                 clientLiveData.value = clientData
             }
-        }
+        }*/
     }
 
     fun setCan(pos: Int) {
@@ -103,6 +113,16 @@ class AddDeliveryViewModel(
     fun onDoneClick(deliveryDataComment: String) {
         if (callIsBlocked) return
         callIsBlocked = true
+
+        val hasZeroPrice = saleItemsList.any {
+            (it.beer.fasi ?: .0) < 0.01
+        }
+        if (hasZeroPrice && !isGift) {
+            viewModelScope.launch {
+                infoSharedFlow.emit("რომელიღაც ლუდს ფასი არ ააქვს გაწერილი!")
+            }
+            return
+        }
 
         val saleRequestModel = SaleRequestModel(
             clientID,
