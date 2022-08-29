@@ -9,7 +9,8 @@ import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.C
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 
 class SimpleBeerRowAdapter(
-    private val dataList: List<SimpleBeerRowModel>
+    private val dataList: List<SimpleBeerRowModel>,
+    private val isHomePage: Boolean = false
 ) : RecyclerView.Adapter<SimpleBeerRowAdapter.ViewHolder>() {
 
     var onClick: View.OnClickListener? = null
@@ -23,11 +24,13 @@ class SimpleBeerRowAdapter(
     override fun getItemCount(): Int = dataList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val itemView = holder.view
-
-        itemView.setBoldStyle(barrelsAmountBoldStyle)
-        itemView.setData(dataList[position])
-        itemView.setOnClickListener(onClick)
+        holder.view.apply {
+            setOnClickListener(onClick)
+            isHomePage = this@SimpleBeerRowAdapter.isHomePage
+            showLiters = this@SimpleBeerRowAdapter.isHomePage
+            setBoldStyle(barrelsAmountBoldStyle)
+            setData(dataList[position])
+        }
 
     }
 
