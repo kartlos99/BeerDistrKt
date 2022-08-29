@@ -27,10 +27,12 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
         beersLiveData.observeForever {
             if (clientID > 0) {
                 repository.getCustomerData(clientID).observeForever { customerData ->
-                    clientObject = customerData
-                    uiScope.launch {
-                        delay(50)
-                        clientObjectLiveData.value = clientObject
+                    if (customerData != null) {
+                        clientObject = customerData
+                        uiScope.launch {
+                            delay(50)
+                            clientObjectLiveData.value = clientObject
+                        }
                     }
                 }
             }

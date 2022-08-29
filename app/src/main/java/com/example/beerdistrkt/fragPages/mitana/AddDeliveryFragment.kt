@@ -162,7 +162,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun initViewModel() {
-        viewModel.clientLiveData.observeForever {
+        viewModel.clientLiveData.observe(viewLifecycleOwner) {
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner, Observer {

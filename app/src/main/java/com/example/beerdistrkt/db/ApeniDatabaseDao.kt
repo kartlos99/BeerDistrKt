@@ -22,7 +22,7 @@ interface ApeniDatabaseDao {
 
     @Transaction
     @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
-    fun getCustomerWithPricesLiveData(customerID: Int): LiveData<ObiectWithPrices>
+    fun getCustomerWithPricesLiveData(customerID: Int): LiveData<ObiectWithPrices?>
 
     @Query("DELETE FROM obieqts_table WHERE id = :clientID")
     fun deleteClient(clientID: Int)

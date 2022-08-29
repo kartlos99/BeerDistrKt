@@ -32,7 +32,7 @@ class ApeniRepo {
         return database.getBeerList()
     }
 
-    fun getCustomerData(customerID: Int): LiveData<ObiectWithPrices> {
+    fun getCustomerData(customerID: Int): LiveData<ObiectWithPrices?> {
         ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
             successWithData = { customerData ->
                 ioScope.launch {

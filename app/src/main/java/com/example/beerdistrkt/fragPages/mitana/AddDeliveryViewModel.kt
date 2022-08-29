@@ -69,8 +69,14 @@ class AddDeliveryViewModel(
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
         repository.getCustomerData(clientID).observeForever { customerData ->
-            clientLiveData.value = customerData
-            attachPrices(customerData.prices)
+            if (customerData == null) {
+                viewModelScope.launch {
+                    infoSharedFlow.emit("ობიექტი არ იძებნება")
+                }
+            } else {
+                clientLiveData.value = customerData
+                attachPrices(customerData.prices)
+            }
         }
     }
 
