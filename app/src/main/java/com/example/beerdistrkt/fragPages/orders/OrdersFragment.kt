@@ -18,6 +18,7 @@ import com.example.beerdistrkt.databinding.ViewOrderGroupBottomItemBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.storage.UserPreferencesRepository
 import com.example.beerdistrkt.utils.*
 import java.util.*
 
@@ -27,7 +28,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         fun newInstance() = OrdersFragment()
     }
 
-    override val viewModel: OrdersViewModel by lazy { getViewModel<OrdersViewModel>() }
+    override val viewModel: OrdersViewModel by lazy {
+        getViewModel {
+            OrdersViewModel(UserPreferencesRepository(requireActivity().dataStore))
+        }
+    }
 
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter
@@ -89,17 +94,18 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             )
             datePickerDialog.setCancelable(false)
             datePickerDialog.show()
-//            val view = snapHelper.findSnapView(vBinding.testRecycler.layoutManager)
-//            view?.let {
-//                val tv = it.findViewById<TextView>(R.id.tvBeerName)
-//                tv?.text =
-//                    "oorraaaaA" + vBinding.testRecycler.getChildAdapterPosition(it).toString()
-//
-//                val layoutManager = vBinding.testRecycler.layoutManager
-//                val snapView = snapHelper.findSnapView(layoutManager)
-//                snapHelper.calculateDistanceToFinalSnap(layoutManager!!, it)
-//                Log.d("testPos", layoutManager.getPosition(it).toString())
-//            }
+/*
+            val view = snapHelper.findSnapView(vBinding.testRecycler.layoutManager)
+            view?.let {
+                val tv = it.findViewById<TextView>(R.id.tvBeerName)
+                tv?.text =
+                    "oorraaaaA" + vBinding.testRecycler.getChildAdapterPosition(it).toString()
+                val layoutManager = vBinding.testRecycler.layoutManager
+                val snapView = snapHelper.findSnapView(layoutManager)
+                snapHelper.calculateDistanceToFinalSnap(layoutManager!!, it)
+                Log.d("testPos", layoutManager.getPosition(it).toString())
+            }
+*/
 
         }
 
@@ -115,7 +121,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             else
                 resources.getString(R.string.order_main)
 
-        if (vBinding.ordersRecycler.layoutManager?.itemCount ?: 0 > 0) {
+        if ((vBinding.ordersRecycler.layoutManager?.itemCount ?: 0) > 0) {
             vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
                 with(ViewOrderGroupBottomItemBinding.bind(it)) {
                     addDeliveryBtn.visibleIf(checked)
@@ -134,8 +140,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         super.onActivityCreated(savedInstanceState)
         initViewModel()
 
-        (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.order_main)
+        setPageTitle(resources.getString(R.string.order_main))
     }
 
     private fun initViewModel() {
@@ -144,7 +149,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 is ApiResponseState.Success -> {
                     orderListSize = it.data.size
                     ordersAdapter = ParentOrderAdapter(
-                        it.data, viewModel.barrelsList,
+                        it.data,
+                        viewModel.barrelsList,
                         viewModel::saveDistributorGroupState
                     )
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
@@ -169,7 +175,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.setDateBtn.text = it
         })
-        viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (Session.get().hasPermission(Permission.EditOrder)) {
                     context?.showAskingDialog(
@@ -184,7 +190,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     showToast(R.string.no_permission_common)
                 viewModel.askForOrderDeleteLiveData.value = null
             }
-        })
+        }
         viewModel.orderDeleteLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -195,7 +201,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 else -> {}
             }
         })
-        viewModel.editOrderLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.editOrderLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
                     if (Session.get().hasPermission(Permission.EditOrder)) {
@@ -212,8 +218,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 }
                 viewModel.editOrderLiveData.value = null
             }
-        })
-        viewModel.changeDistributorLiveData.observe(viewLifecycleOwner, Observer { order ->
+        }
+        viewModel.changeDistributorLiveData.observe(viewLifecycleOwner) { order ->
             if (order != null) {
                 requireContext().showListDialog(
                     R.string.choose_distributor,
@@ -223,8 +229,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 }
                 viewModel.changeDistributorLiveData.value = null
             }
-        })
-        viewModel.onItemClickLiveData.observe(viewLifecycleOwner, Observer { order ->
+        }
+        viewModel.onItemClickLiveData.observe(viewLifecycleOwner) { order ->
             if (order != null) {
                 viewModel.onItemClickLiveData.value = null
                 vBinding.root.findNavController().navigate(
@@ -232,7 +238,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                         .actionOrdersFragmentToAddDeliveryFragment(order.clientID, null)
                 )
             }
-        })
+        }
         viewModel.onShowHistoryLiveData.observeSingleEvent(viewLifecycleOwner) {
             view?.findNavController()?.navigate(
                 OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment(it)
@@ -265,6 +271,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.saveFoldsState()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

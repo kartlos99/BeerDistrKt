@@ -93,6 +93,13 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_coroutine"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_coroutine"
 
+    // coroutine lifecycle Scopes
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+
+    // Preferences DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "com.tbuonomo.andrui:viewpagerdotsindicator:${dotsIndicatorVer}"
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
@@ -104,11 +111,6 @@ dependencies {
 
     // viewBinding
     implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.2'
-
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-
 
     // testing
     testImplementation 'io.mockk:mockk:1.12.2'

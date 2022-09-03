@@ -3,6 +3,8 @@ package com.example.beerdistrkt.fragPages.orders
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
@@ -10,14 +12,18 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
+import com.example.beerdistrkt.storage.UserPreferencesRepository
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
 import com.example.beerdistrkt.utils.eventValue
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.sign
 
-class OrdersViewModel : BaseViewModel() {
+class OrdersViewModel(
+    private val userPreferencesRepository: UserPreferencesRepository
+) : BaseViewModel() {
 
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
@@ -42,7 +48,7 @@ class OrdersViewModel : BaseViewModel() {
     val changeDistributorLiveData = MutableLiveData<Order?>(null)
     val onItemClickLiveData = MutableLiveData<Order?>(null)
     val onShowHistoryLiveData = SingleMutableLiveDataEvent<String>()
-    val allMappedUsers = mutableListOf<MappedUser>()
+    private val allMappedUsers = mutableListOf<MappedUser>()
     private lateinit var clientRegionMap: Map<Int, List<Int>>
 
     var deliveryMode = false
@@ -51,17 +57,19 @@ class OrdersViewModel : BaseViewModel() {
 
     private val distributorsExpandedStateMap: MutableMap<Int, Boolean> = mutableMapOf()
 
+    private val foldsLiveData = userPreferencesRepository.userPreferencesFlow.asLiveData()
+
     init {
-        val recoverState = ObjectCache.getInstance().get(MutableMap::class, SAVED_EXP_STATE)
-            ?: mutableMapOf<Int, Boolean>()
-        recoverState.forEach {
-            distributorsExpandedStateMap[it.key as Int] = (it.value as Boolean)
-        }
         clientsLiveData.observeForever { clients = it }
         beersLiveData.observeForever { beers = it }
         userLiveData.observeForever { usersList = it }
         barrelsLiveData.observeForever { barrelsList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
+        foldsLiveData.observeForever {
+            it?.let { foldsStateString ->
+                extractFoldData(foldsStateString)
+            }
+        }
         getAllUsers()
     }
 
@@ -222,14 +230,29 @@ class OrdersViewModel : BaseViewModel() {
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        ObjectCache.getInstance()
-            .put(MutableMap::class, SAVED_EXP_STATE, distributorsExpandedStateMap)
+    private fun extractFoldData(foldsStateString: String) = foldsStateString
+        .split(SEPARATOR)
+        .forEach { item ->
+            if (item.trim().isNotEmpty()) {
+                val intData = item.trim().toInt()
+                val expanded = intData.sign > 0
+                val key = if (intData.sign > 0) intData else -intData
+                distributorsExpandedStateMap[key] = expanded
+            }
+        }
+
+    fun saveFoldsState() {
+        viewModelScope.launch {
+            userPreferencesRepository.saveFoldsState(
+                distributorsExpandedStateMap.map { entry ->
+                    if (entry.value) entry.key else -entry.key
+                }.joinToString(SEPARATOR)
+            )
+        }
     }
 
     companion object {
         const val TAG = "ordersVM"
-        const val SAVED_EXP_STATE = "savedState"
+        const val SEPARATOR = ","
     }
 }
