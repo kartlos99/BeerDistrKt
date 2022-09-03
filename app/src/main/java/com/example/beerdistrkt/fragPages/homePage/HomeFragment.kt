@@ -15,7 +15,6 @@ import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
-import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NON_POSITIVE
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
@@ -38,12 +37,6 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-//        val binding: HomeFragmentBinding = DataBindingUtil.inflate(
-//            inflater, R.layout.home_fragment, container, false)
-//        val application = requireNotNull(this.activity).application
-//        lifecycleOwner = this
-
         return inflater.inflate(R.layout.home_fragment, container, false)
     }
 
@@ -88,7 +81,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     onRegionChange(it)
                 }
 
-        binding.btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text =
+            getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
     }
 
     private fun showStoreHouseData(shouldShow: Boolean) {
@@ -99,13 +93,13 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     private fun initViewModel() {
-        viewModel.mainLoaderLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.mainLoaderLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 binding.homeMainProgressBar.visibleIf(it)
                 if (!it)
                     viewModel.getStoreBalance()
             }
-        })
+        }
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Loading -> {
@@ -142,14 +136,14 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
         binding.homeStoreHouseRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = SimpleBeerRowAdapter(data.filter {
-            it.values.values.any { barrelCount ->
-                barrelCount > 0
-            }
-                    || it.title == emptyBarrelTitle
-        }).apply {
-            barrelsAmountBoldStyle = BOLD_STYLE_NON_POSITIVE
-        }
+        val adapter = SimpleBeerRowAdapter(
+            data.filter { beerRowModel ->
+                beerRowModel.values.values.any { barrelCount ->
+                    barrelCount > 0
+                } || beerRowModel.title == emptyBarrelTitle
+            },
+            true
+        )
         adapter.onClick = View.OnClickListener {
             if (Session.get().region?.hasOwnStorage() == true)
                 findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
@@ -215,7 +209,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         getComments()
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
-        binding.btnOrder.text = getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text =
+            getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
         actViewModel.updateNavHeader()
     }
 

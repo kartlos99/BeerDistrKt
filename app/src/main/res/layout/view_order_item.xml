@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/orderItemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,8 +14,8 @@
         android:ellipsize="end"
         android:lines="1"
         android:textSize="14sp"
+        tools:text="apeni"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/orderMiddleIcon"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,11 +40,25 @@
         app:layout_constraintEnd_toStartOf="@id/orderItemCan10"
         app:layout_constraintTop_toTopOf="@id/orderItemCan10" />
 
+    <TextView
+        android:id="@+id/totalAmountLT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:gravity="end"
+        android:textSize="14sp"
+        android:text="@string/lt"
+        android:paddingBottom="@dimen/gr_size_2"
+        app:layout_constraintTop_toBottomOf="@id/orderItemNameUnderline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/orderMiddleIcon"/>
+
     <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan20"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,7 +66,7 @@
         android:id="@+id/orderItemCan20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan30"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +74,7 @@
         android:id="@+id/orderItemCan30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan50"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,7 +82,7 @@
         android:id="@+id/orderItemCan50"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
