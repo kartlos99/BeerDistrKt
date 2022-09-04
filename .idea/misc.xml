@@ -32,8 +32,12 @@
         <entry key="..\:/Projects/apeni/android/BeerDistrKt/app/src/main/res/layout/view_order_item.xml" value="0.5" />
         <entry key="..\:/Projects/apeni/android/BeerDistrKt/app/src/main/res/layout/view_temp_beer_row.xml" value="0.36666666666666664" />
         <entry key="..\:/Projects/apeni/android/BeerDistrKt/app/src/main/res/layout/xarji_row.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/drawable/bkg_rounded_r32.xml" value="0.2735" />
+        <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/drawable/bkg_rounded_white_r8.xml" value="0.2735" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/drawable/bkg_underline.xml" value="0.33" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/drawable/bkg_underline_dots.xml" value="0.2735" />
+        <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/drawable/ic_arrow_down_24dp.xml" value="0.259" />
+        <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout-land/home_fragment.xml" value="0.24583333333333332" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/add_beer_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/add_delivery_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/add_object_fragment.xml" value="0.36666666666666664" />
@@ -41,6 +45,7 @@
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/beer_row.xml" value="0.5" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/beer_slider_row.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/choose_color.xml" value="0.365625" />
+        <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/fragment_storehouse_info.xml" value="0.486096807415036" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/home_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/objects_list_fragment.xml" value="0.20380434782608695" />
         <entry key="..\:/Users/kartl/AndroidStudioProjects/BeerDistrKt/app/src/main/res/layout/orders_fragment.xml" value="0.36666666666666664" />

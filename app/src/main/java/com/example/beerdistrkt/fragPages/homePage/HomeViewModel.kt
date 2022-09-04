@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.homePage
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
@@ -17,6 +18,8 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.waitFor
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -33,7 +36,7 @@ class HomeViewModel : BaseViewModel() {
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
-    val storeHouseData = mutableListOf<SimpleBeerRowModel>()
+    private val storeHouseData = mutableListOf<SimpleBeerRowModel>()
 
     private val _barrelsListLiveData = MutableLiveData<ApiResponseState<List<SimpleBeerRowModel>>>()
     val barrelsListLiveData: LiveData<ApiResponseState<List<SimpleBeerRowModel>>>
@@ -46,6 +49,9 @@ class HomeViewModel : BaseViewModel() {
     private val _addCommentLiveData = MutableLiveData<ApiResponseState<String>>()
     val addCommentLiveData: LiveData<ApiResponseState<String>>
         get() = _addCommentLiveData
+
+    private val _bottomSheetStateFlow = MutableStateFlow(0)
+    val bottomSheetStateFlow = _bottomSheetStateFlow.asStateFlow()
 
     init {
 //        if (Session.get().isUserLogged())
@@ -64,6 +70,10 @@ class HomeViewModel : BaseViewModel() {
             ObjectCache.getInstance()
                 .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.username })
         }
+    }
+
+    fun updateBottomSheetState(state: Int) = viewModelScope.launch {
+        _bottomSheetStateFlow.emit(state)
     }
 
     fun changeRegion(selectedRegion: WorkRegion) {
@@ -291,7 +301,14 @@ class HomeViewModel : BaseViewModel() {
                 storeHouseData.addAll(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
                 300 waitFor {
                     _barrelsListLiveData.value = ApiResponseState.Loading(false)
-                    _barrelsListLiveData.value = ApiResponseState.Success(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
+                    _barrelsListLiveData.value = ApiResponseState.Success(
+                        listOf(
+                            SimpleBeerRowModel(
+                                "კასრები:საწარმოში",
+                                valueOfDiff
+                            )
+                        )
+                    )
                 }
             },
             finally = {

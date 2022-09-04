@@ -3,9 +3,9 @@ package com.example.beerdistrkt.fragPages.homePage
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
@@ -16,9 +16,8 @@ import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
-import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
-import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.utils.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
@@ -29,9 +28,11 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     private val binding by viewBinding(HomeFragmentBinding::bind)
 
     override val viewModel: HomeViewModel by lazy {
-        getViewModel { HomeViewModel() }
+        getActCtxViewModel()
     }
     lateinit var actViewModel: MainActViewModel
+
+    private lateinit var storeHouseBottomSheet: BottomSheetBehavior<*>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,17 +54,13 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             btnOrder.setOnClickListener(this@HomeFragment)
             btnSaleResult.setOnClickListener(this@HomeFragment)
             btnSalesByClient.setOnClickListener(this@HomeFragment)
-            homeHideStoreHouse.setOnClickListener(this@HomeFragment)
             homeAddComment.setOnClickListener(this@HomeFragment)
-            homeStoreHouseBkg.setOnClickListener(this@HomeFragment)
         }
 
-
-        showStoreHouseData(Session.get().userType == UserType.ADMIN)
+        showStoreHouseData()
         getComments()
         initViewModel()
         StoreHouseListFragment.editingGroupID = ""
-
     }
 
     override fun onResume() {
@@ -85,11 +82,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
     }
 
-    private fun showStoreHouseData(shouldShow: Boolean) {
-        binding.homeStoreHouseRecycler.visibleIf(shouldShow)
-        binding.homeHideStoreHouse.visibleIf(shouldShow)
-        binding.homeStoreHouseTitle.visibleIf(shouldShow)
-        binding.homeStoreHouseBkg.visibleIf(shouldShow)
+    private fun showStoreHouseData() {
+        if (Session.get().userType == UserType.ADMIN) {
+            createInfoFragment()
+            initBottomSheet()
+        } else
+            binding.storeHouseInfoContainer.isVisible = false
     }
 
     private fun initViewModel() {
@@ -100,16 +98,6 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     viewModel.getStoreBalance()
             }
         }
-        viewModel.barrelsListLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ApiResponseState.Loading -> {
-                    binding.homeMainStoreHouseLoader.visibleIf(it.showLoading)
-                }
-                is ApiResponseState.Success -> initStoreHouseRecycler(it.data)
-                else -> showToast(R.string.some_error)
-            }
-
-        })
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
             initCommentsRecycler(it)
             setPageTitle(Session.get().region?.name)
@@ -123,8 +111,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     showToast(R.string.data_saved)
                     viewModel.stopAddCommentObserving()
                 }
-                else -> {
-                }
+                else -> {}
             }
         })
     }
@@ -132,23 +119,6 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     private fun initCommentsRecycler(data: List<CommentModel>) {
         binding.homeCommentsRecycler.layoutManager = LinearLayoutManager(context)
         binding.homeCommentsRecycler.adapter = CommentsAdapter(data)
-    }
-
-    private fun initStoreHouseRecycler(data: List<SimpleBeerRowModel>) {
-        binding.homeStoreHouseRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = SimpleBeerRowAdapter(
-            data.filter { beerRowModel ->
-                beerRowModel.values.values.any { barrelCount ->
-                    barrelCount > 0
-                } || beerRowModel.title == emptyBarrelTitle
-            },
-            true
-        )
-        adapter.onClick = View.OnClickListener {
-            if (Session.get().region?.hasOwnStorage() == true)
-                findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
-        }
-        binding.homeStoreHouseRecycler.adapter = adapter
     }
 
     override fun onClick(view: View?) {
@@ -168,20 +138,6 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             R.id.btnSalesByClient -> {
                 view.findNavController()
                     .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
-            }
-            R.id.homeStoreHouseBkg,
-            R.id.homeHideStoreHouse -> with(binding) {
-                if (homeStoreHouseRecycler.visibility == View.VISIBLE) {
-                    homeStoreHouseRecycler.goAway()
-                    homeHideStoreHouse.rotation = 180f
-                } else {
-                    if (homeStoreHouseRecycler.adapter == null) {
-                        initStoreHouseRecycler(viewModel.storeHouseData)
-                    } else {
-                        homeStoreHouseRecycler.show()
-                        homeHideStoreHouse.rotation = 0f
-                    }
-                }
             }
             R.id.homeAddComment -> {
                 context?.showTextInputDialog(
@@ -264,5 +220,42 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 alertDialog.dismiss()
             }
         }
+    }
+
+    private fun initBottomSheet() {
+        storeHouseBottomSheet = BottomSheetBehavior.from(binding.storeHouseInfoContainer).apply {
+            peekHeight = context?.getDimenPixelOffset(R.dimen.gr_size_48) ?: 0
+            isHideable = Session.get().userType != UserType.ADMIN
+            state = if (Session.get().userType == UserType.ADMIN)
+                BottomSheetBehavior.STATE_EXPANDED
+            else
+                BottomSheetBehavior.STATE_HIDDEN
+        }
+        storeHouseBottomSheet.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                viewModel.updateBottomSheetState(newState)
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+        })
+        viewModel.updateBottomSheetState(storeHouseBottomSheet.state)
+    }
+
+    private fun createInfoFragment() {
+        val fragment = StorehouseInfoFragment().apply {
+            onToggle = {
+                if (storeHouseBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED)
+                    storeHouseBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+                else
+                    storeHouseBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+        childFragmentManager
+            .beginTransaction()
+            .replace(R.id.storeHouseInfoContainer, fragment)
+            .commit()
     }
 }
