@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.OrdersFragmentBinding
-import com.example.beerdistrkt.databinding.ViewOrderGroupBottomItemBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
@@ -43,19 +41,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.onDateSelected(year, month, day)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         vBinding = OrdersFragmentBinding.inflate(inflater)
-        vBinding.addOrderBtn.setOnClickListener {
-            it.findNavController().navigate(
-                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
-            )
-        }
-        vBinding.ordersRecycler.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 //        vBinding.ordersRecycler.adapter = ordersAdapter
 
         /*val beerList: ArrayList<String> = ArrayList<String>()
@@ -82,18 +72,36 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })*/
+        return vBinding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        vBinding.initView()
+    }
 
-        vBinding.setDateBtn.setOnClickListener {
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                dateSetListener,
-                viewModel.orderDateCalendar.get(Calendar.YEAR),
-                viewModel.orderDateCalendar.get(Calendar.MONTH),
-                viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
+    private fun OrdersFragmentBinding.initView() {
+        addOrderBtn.setOnClickListener {
+            it.findNavController().navigate(
+                OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
             )
-            datePickerDialog.setCancelable(false)
-            datePickerDialog.show()
+        }
+        setDateBtn.setOnClickListener { showDateDialog() }
+        ordersRecycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        ordersSwipeRefresh.setOnRefreshListener(this@OrdersFragment)
+    }
+
+    private fun showDateDialog() {
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            dateSetListener,
+            viewModel.orderDateCalendar.get(Calendar.YEAR),
+            viewModel.orderDateCalendar.get(Calendar.MONTH),
+            viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.setCancelable(false)
+        datePickerDialog.show()
 /*
             val view = snapHelper.findSnapView(vBinding.testRecycler.layoutManager)
             view?.let {
@@ -106,29 +114,19 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 Log.d("testPos", layoutManager.getPosition(it).toString())
             }
 */
-
-        }
-
-
-        return vBinding.root
     }
 
     private fun onModeChange(checked: Boolean) {
         viewModel.deliveryMode = checked
-        (activity as AppCompatActivity).supportActionBar?.title =
-            if (checked)
-                resources.getString(R.string.delivery)
-            else
-                resources.getString(R.string.order_main)
+        setPageTitle(if (checked) resources.getString(R.string.delivery) else resources.getString(R.string.order_main))
 
         if ((vBinding.ordersRecycler.layoutManager?.itemCount ?: 0) > 0) {
-            vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
+            /*vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
                 with(ViewOrderGroupBottomItemBinding.bind(it)) {
-                    addDeliveryBtn.visibleIf(checked)
                     totalSummedOrderRecycler.visibleIf(!checked)
                     totalOrderTitle.visibleIf(!checked)
                 }
-            }
+            }*/
             ordersAdapter.updateLastItem(checked)
         }
         vBinding.orderRootConstraint.setBackgroundColor(
@@ -154,13 +152,6 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                         viewModel::saveDistributorGroupState
                     )
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
-                    ordersAdapter.onMitanaClick = View.OnClickListener { view ->
-                        view.findNavController().navigate(
-                            OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(
-                                MITANA
-                            )
-                        )
-                    }
                     vBinding.ordersRecycler.adapter = ordersAdapter
                     onModeChange(viewModel.deliveryMode)
                     switchToDelivery?.isChecked = viewModel.deliveryMode
@@ -251,11 +242,6 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.getOrders()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        vBinding.ordersSwipeRefresh.setOnRefreshListener(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -266,10 +252,12 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.order_option_menu, menu)
 
+        val deliveryItem = menu.findItem(R.id.topBarDelivery)
         val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
         switchToDelivery = swView.getChildAt(0) as SwitchCompat
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
+            deliveryItem.isVisible = isChecked
         }
     }
 
@@ -279,6 +267,14 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.topBarDelivery -> {
+                vBinding.root.findNavController().navigate(
+                    OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(MITANA)
+                )
+                return true
+            }
+        }
         return false
     }
 

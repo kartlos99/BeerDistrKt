@@ -258,7 +258,6 @@ class ParentOrderAdapter(
             totalSummedOrderRecycler.adapter =
                 OrderItemAdapter(itemList.toSortedMap())
 
-            addDeliveryBtn.visibleIf(deliveryMode)
             totalSummedOrderRecycler.visibleIf(!deliveryMode)
             totalOrderTitle.visibleIf(!deliveryMode)
         }

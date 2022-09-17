@@ -66,4 +66,8 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="MyToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorSecondary">#fff</item>
+    </style>
+
 </resources>
