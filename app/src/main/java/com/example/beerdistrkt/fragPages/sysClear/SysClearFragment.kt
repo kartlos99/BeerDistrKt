@@ -62,6 +62,7 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                 is ApiResponseState.Loading -> {
                 }
                 is ApiResponseState.Success -> initRecycler(it.data)
+                else -> {}
             }
         })
         viewModel.clientListLiveData.observe(viewLifecycleOwner, Observer { clientsList ->
@@ -77,7 +78,7 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                 sysCleanSpinner.onItemSelectedListener = this@SysClearFragment
             }
         })
-        viewModel.addClearLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.addClearLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Loading -> {
                 }
@@ -86,8 +87,9 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                     if (viewModel.activeAdd)
                         onModeChange()
                 }
+                else -> {}
             }
-        })
+        }
     }
 
     private fun initRecycler(data: List<SysClearModel>) {

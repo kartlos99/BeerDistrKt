@@ -90,6 +90,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                     statementListAdapter.addItems(it.data)
                     Log.d("sufrObsSize", "${it.data.size}")
                 }
+                else -> {}
             }
         })
         viewModel.needUpdateLiveData.observe(viewLifecycleOwner, Observer {

@@ -35,9 +35,9 @@ fun View.explodeAnim() {
         .scaleX(1.2F)
         .scaleY(1.2F)
         .setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {}
+            override fun onAnimationRepeat(p0: Animator) {}
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 this@explodeAnim.animate()
                     .setDuration(400)
                     .scaleX(1F)
@@ -45,9 +45,9 @@ fun View.explodeAnim() {
                     .start()
             }
 
-            override fun onAnimationCancel(p0: Animator?) {}
+            override fun onAnimationCancel(p0: Animator) {}
 
-            override fun onAnimationStart(p0: Animator?) {}
+            override fun onAnimationStart(p0: Animator) {}
         })
         .start()
 }

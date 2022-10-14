@@ -97,7 +97,7 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
 
     private fun goEditing(operation: String, recordID: Int) {
         val action = AmonaweriFragmentDirections
-            .actionAmonaweriFragmentToAddDeliveryFragment(clientID, 0, operation, recordID)
+            .actionAmonaweriFragmentToAddDeliveryFragment(clientID, operation, 0, recordID)
         frag.findNavController().navigate(action)
     }
 

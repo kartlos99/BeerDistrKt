@@ -47,13 +47,9 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         return inflater.inflate(R.layout.home_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        actViewModel = (activity as MainActivity).viewModel
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        actViewModel = (activity as MainActivity).viewModel
 
         with(binding) {
             btnOrder.setOnClickListener(this@HomeFragment)

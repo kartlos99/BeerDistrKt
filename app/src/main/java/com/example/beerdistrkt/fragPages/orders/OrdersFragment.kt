@@ -115,7 +115,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             else
                 resources.getString(R.string.order_main)
 
-        if (vBinding.ordersRecycler.layoutManager?.itemCount ?: 0 > 0) {
+        if ((vBinding.ordersRecycler.layoutManager?.itemCount ?: 0) > 0) {
             vBinding.ordersRecycler.layoutManager?.findViewByPosition(orderListSize)?.let {
                 with(ViewOrderGroupBottomItemBinding.bind(it)) {
                     addDeliveryBtn.visibleIf(checked)
@@ -128,14 +128,6 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         vBinding.orderRootConstraint.setBackgroundColor(
             if (checked) resources.getColor(R.color.colorAccent_33) else Color.WHITE
         )
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initViewModel()
-
-        (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.order_main)
     }
 
     private fun initViewModel() {
@@ -169,7 +161,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.setDateBtn.text = it
         })
-        viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (Session.get().hasPermission(Permission.EditOrder)) {
                     context?.showAskingDialog(
@@ -184,7 +176,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     showToast(R.string.no_permission_common)
                 viewModel.askForOrderDeleteLiveData.value = null
             }
-        })
+        }
         viewModel.orderDeleteLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -192,9 +184,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     ordersAdapter.removeItem(it.data)
                     viewModel.orderDeleteLiveData.value = ApiResponseState.Sleep
                 }
+                else -> {}
             }
         })
-        viewModel.editOrderLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.editOrderLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
                     if (Session.get().hasPermission(Permission.EditOrder)) {
@@ -211,7 +204,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 }
                 viewModel.editOrderLiveData.value = null
             }
-        })
+        }
         viewModel.changeDistributorLiveData.observe(viewLifecycleOwner, Observer { order ->
             if (order != null) {
                 requireContext().showListDialog(
@@ -223,15 +216,15 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 viewModel.changeDistributorLiveData.value = null
             }
         })
-        viewModel.onItemClickLiveData.observe(viewLifecycleOwner, Observer { order ->
+        viewModel.onItemClickLiveData.observe(viewLifecycleOwner) { order ->
             if (order != null) {
                 viewModel.onItemClickLiveData.value = null
                 vBinding.root.findNavController().navigate(
                     OrdersFragmentDirections
-                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, 0, null, 0)
+                        .actionOrdersFragmentToAddDeliveryFragment(order.clientID, null, 0, 0)
                 )
             }
-        })
+        }
         viewModel.onShowHistoryLiveData.observeSingleEvent(viewLifecycleOwner) {
             view?.findNavController()?.navigate(
                 OrdersFragmentDirections.actionOrdersFragmentToShowHistoryFragment(it)
@@ -246,7 +239,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewModel()
 
+        (activity as AppCompatActivity).supportActionBar?.title =
+            resources.getString(R.string.order_main)
         vBinding.ordersSwipeRefresh.setOnRefreshListener(this)
     }
 

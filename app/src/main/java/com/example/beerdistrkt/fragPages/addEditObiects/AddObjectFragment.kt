@@ -137,11 +137,13 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                     showToast(R.string.data_saved)
                     findNavController().navigateUp()
                 }
+                else -> {}
             }
         })
         viewModel.clientRegionsLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> showRegions(it.data)
+                else -> {}
             }
         }
     }

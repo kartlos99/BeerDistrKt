@@ -44,6 +44,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        actViewModel = (activity as MainActivity).viewModel
         with(binding) {
             viewLoginLoginBtn.setOnClickListener {
                 viewModel.logIn(
@@ -61,11 +62,6 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             checkSavedPass()
 
         initViewModel()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        actViewModel = (activity as MainActivity).viewModel
     }
 
     private fun checkSavedPass() {

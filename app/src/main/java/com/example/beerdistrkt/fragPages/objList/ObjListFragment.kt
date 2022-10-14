@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -51,6 +50,11 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val objListObserver = Observer<List<Obieqti>> {
+            initClientsList(it)
+        }
+        viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
+
         viewModel.clients.observe(viewLifecycleOwner) {
             clientListAdapter.submitList(it)
         }
@@ -68,7 +72,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             )
             MITANA -> vBinding.root.findNavController().navigate(
                 ObjListFragmentDirections
-                    .actionObjListFragmentToAddDeliveryFragment(clientID, 0,null, 0)
+                    .actionObjListFragmentToAddDeliveryFragment(clientID, null, 0, 0)
             )
             AMONAWERI -> vBinding.root.findNavController().navigate(
                 ObjListFragmentDirections
@@ -78,14 +82,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         }
 
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val objListObserver = Observer<List<Obieqti>> {
-            initClientsList(it)
-        }
-        viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
 
 //        registerForContextMenu(vBinding.clientsRecycler)
 
@@ -99,7 +95,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 //                vBinding.progresBarObjList.visibility = View.GONE
 //            }
 //        })
-    }
 
     private fun initClientsList(list: List<Obieqti>) {
         vBinding.clientsRecycler.layoutManager =
@@ -196,7 +191,8 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             }
             R.id.cm_edit_obj -> {
                 searchView.setOnQueryTextListener(null)
-                val direction = ObjListFragmentDirections.actionObjListFragmentToAddObjectFragment(selectedClient.id ?: 0)
+                val direction = ObjListFragmentDirections
+                    .actionObjListFragmentToAddObjectFragment(selectedClient.id ?: 0)
                 vBinding.root.findNavController().navigate(direction)
             }
             R.id.cm_del -> {

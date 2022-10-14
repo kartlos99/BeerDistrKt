@@ -1,6 +1,7 @@
 package com.example.beerdistrkt
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -25,8 +26,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         showToast(getString(strRes))
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.apiFailureLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.NoInternetConnection -> showToast(R.string.error_no_connection)
@@ -36,6 +37,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                         automatedLogout()
                     }
                 }
+                else -> {}
             }
             if (it !is ApiResponseState.Sleep)
                 viewModel.showNetworkFailMsgComplete()

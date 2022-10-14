@@ -132,6 +132,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                     showToast(it.data)
                     findNavController().navigateUp()
                 }
+                else -> {}
             }
         })
         viewModel.userLiveData.observe(viewLifecycleOwner, Observer { user ->
@@ -146,6 +147,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                     showToast(R.string.deleted)
                     findNavController().navigateUp()
                 }
+                else -> {}
             }
         })
         viewModel.userRegionsLiveData.observe(viewLifecycleOwner) {
@@ -155,6 +157,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                     SharedPreferenceDataSource.getInstance().saveRegion(null)
                     (activity as MainActivity).logOut()
                 }
+                else -> {}
             }
         }
     }
