@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -29,6 +30,8 @@ import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickListener {
@@ -152,14 +155,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun getColorForValidationIndicator(value: CharSequence): Int {
-        return if (value.isNotEmpty() && value.toString().toDoubleOrNull() ?: .0 > .0)
+        return if (value.isNotEmpty() && (value.toString().toDoubleOrNull() ?: .0) > .0)
             R.color.green_08
         else
             R.color.gray_6
     }
 
     private fun initViewModel() {
-        viewModel.clientLiveData.observeForever {
+        viewModel.clientLiveData.observe(viewLifecycleOwner) {
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner, Observer {
@@ -212,6 +215,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.mOutEditLiveData.value = null
             }
         })
+        lifecycleScope.launch {
+            viewModel.infoSharedFlow.collectLatest {
+                showToast(it)
+            }
+        }
     }
 
     private fun showDebt() {
@@ -393,8 +401,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun getTempSaleItem(): TempBeerItemModel {
-        return TempBeerItemModel(viewModel.recordID,
-//            viewModel.beerList[beerPos],
+        return TempBeerItemModel(
+            viewModel.recordID,
             viewModel.beerListLiveData.value?.get(beerPos)!!,
             viewModel.selectedCan!!,
             vBinding.addDeliveryCanCountControl.amount,

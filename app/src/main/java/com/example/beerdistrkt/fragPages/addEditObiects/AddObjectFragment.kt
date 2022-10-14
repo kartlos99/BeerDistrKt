@@ -104,7 +104,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         viewModel.beersLiveData.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty() && clientID == 0) drawBeerPrices(it)
         })
-        viewModel.clientObjectLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.clientObjectLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 fillForm(it)
                 viewModel.clientObjectLiveData.value = null
@@ -112,7 +112,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                     drawBeerPrices(beerList)
                 }
             }
-        })
+        }
         viewModel.clientSaveMutableLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Loading -> {
@@ -195,6 +195,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     }
 
     private fun drawBeerPrices(beerList: List<BeerModelBase>) {
+        binding.addEditClientPricesContainer.removeAllViews()
         for (i in beerList.indices) {
             val priceItemView = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -213,7 +214,10 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 text = beerList[i].dasaxeleba
             }
             if (viewModel.clientID > 0) {
-                val priceObj = viewModel.clientObject?.prices?.elementAtOrNull(i)
+//                val priceObj = viewModel.clientObject?.prices?.elementAtOrNull(i)
+                val priceObj = viewModel.clientObject?.prices?.find {
+                    it.beerID == beerList[i].id
+                }
                 eText.setText((priceObj?.fasi ?: .0f).toString())
             }
             priceItemView.addView(textView, 0)

@@ -33,7 +33,7 @@ class ObjListViewModel : BaseViewModel() {
 //            database.insertObiecti(Obieqti("NEW_TEST_OBJ_KT"))
 //        }
         ioScope.launch {
-            val objectWithPrices = database.getObiectsWithPrices(27)
+            val objectWithPrices = database.getCustomerWithPrices(27)
             Log.d("--------------", objectWithPrices.toString())
         }
 //        _objList.value?.removeAt(2)

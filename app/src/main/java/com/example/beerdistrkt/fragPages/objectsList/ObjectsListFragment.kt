@@ -14,7 +14,7 @@ class ObjectsListFragment : Fragment() {
         fun newInstance() = ObjectsListFragment()
     }
 
-    val viewModel by lazy {
+    private val viewModel by lazy {
         getViewModel { ObjectsListViewModel() }
     }
 

@@ -14,10 +14,10 @@ android {
 
     defaultConfig {
         applicationId "com.example.beerdistrkt"
-        minSdk 21
+        minSdk 23
         targetSdk 33
-        versionCode 11
-        versionName "3.2.0"
+        versionCode 15
+        versionName "3.3.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField ("String", "FIREBASE_PASS", '"' + fbPass + '"')
@@ -38,7 +38,7 @@ android {
             resValue "string", "app_name", "Beer.dev"
             resValue "string", "notif_channel_name", "channel_tb"
             resValue "string", "notif_channel_id", "channel_id_tb"
-            buildConfigField "String", "SERVER_URL", '"http://192.168.1.107/apeni.localhost.com/mr/mobile/"'
+            buildConfigField "String", "SERVER_URL", '"http://192.168.0.105/apeni.localhost.com/mr/mobile/"'
         }
         production {
             dimension "version"
@@ -50,11 +50,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         dataBinding true
@@ -94,6 +94,13 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_coroutine"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_coroutine"
 
+    // coroutine lifecycle Scopes
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+
+    // Preferences DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "com.tbuonomo.andrui:viewpagerdotsindicator:${dotsIndicatorVer}"
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
@@ -105,4 +112,8 @@ dependencies {
 
     // viewBinding
     implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.2'
+
+    // testing
+    testImplementation 'io.mockk:mockk:1.12.2'
+    androidTestImplementation 'io.mockk:mockk-android:1.12.2'
 }

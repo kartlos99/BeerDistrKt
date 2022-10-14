@@ -21,9 +21,9 @@ class OrderItemAdapter(
         if (itemView is OrderItemView) {
             // key is beerID
             val key = orderItems.keys.elementAt(position)
-            orderItems[key]?.let {
+            orderItems[key]?.let { orderItemsList ->
                 val salesOfThisBeer = saleItems[key]
-                itemView.fillData(it, salesOfThisBeer?.toMutableList())
+                itemView.fillData(orderItemsList, salesOfThisBeer?.toMutableList())
             }
 
         }

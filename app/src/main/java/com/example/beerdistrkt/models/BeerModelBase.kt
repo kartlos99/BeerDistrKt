@@ -14,7 +14,7 @@ data class BeerModelBase(
     @Json(name = "color")
     var displayColor: String? = null,
     var fasi: Double? = null,
-    val sortValue: String = ""
+    var sortValue: String = ""
 )
 
 data class PeerObjPrice(var obj_id: Int) {

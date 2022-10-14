@@ -19,7 +19,7 @@ class AmonaweriViewModel(val clientID: Int) : BaseViewModel() {
 
     private fun getClient() {
         ioScope.launch {
-            val clientData = database.getObiectsWithPrices(clientID)
+            val clientData = database.getCustomerWithPrices(clientID)
             uiScope.launch {
                 clientLiveData.value = clientData
             }

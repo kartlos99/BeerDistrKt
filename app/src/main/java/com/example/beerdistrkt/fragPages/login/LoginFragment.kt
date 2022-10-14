@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -25,9 +26,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     private val binding by viewBinding(LoginFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { LoginViewModel() }
-    }
+    override val viewModel: LoginViewModel by viewModels()
 
     lateinit var actViewModel: MainActViewModel
 

@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.fragPages.addBeer.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
@@ -201,6 +202,9 @@ interface ApeniApiService {
     @GET("client/getAttachedRegions.php")
     fun getAttachedRegions(@Query("clientID") clientID: Int): Call<DataResponse<List<AttachedRegion>>>
 
+    @GET("client/getAllData.php")
+    fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDataDTO>>
+
     // storeHouse
     @GET("storeHouse/getBalance.php")
     fun getStoreHouseBalance(
@@ -261,4 +265,12 @@ interface ApeniApiService {
 
     @GET("sales/getMoneyHistory.php")
     fun getMoneyHistory(@Query("recordID") recordID: Int): Call<DataResponse<List<MoneyHistoryDTO>>>
+
+    // Beer
+    @POST("beer/add.php")
+    fun addBeer(@Body beer: BeerModelBase): Call<DataResponse<String>>
+
+    @POST("beer/delete.php")
+    fun deleteBeer(@Body deleteBeerModel: DeleteBeerModel): Call<DataResponse<String>>
+
 }

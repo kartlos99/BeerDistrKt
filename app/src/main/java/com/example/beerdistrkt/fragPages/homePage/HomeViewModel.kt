@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.homePage
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
@@ -16,7 +17,10 @@ import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.waitFor
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.*
 
 class HomeViewModel : BaseViewModel() {
@@ -32,7 +36,7 @@ class HomeViewModel : BaseViewModel() {
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
-    val storeHouseData = mutableListOf<SimpleBeerRowModel>()
+    private val storeHouseData = mutableListOf<SimpleBeerRowModel>()
 
     private val _barrelsListLiveData = MutableLiveData<ApiResponseState<List<SimpleBeerRowModel>>>()
     val barrelsListLiveData: LiveData<ApiResponseState<List<SimpleBeerRowModel>>>
@@ -46,9 +50,12 @@ class HomeViewModel : BaseViewModel() {
     val addCommentLiveData: LiveData<ApiResponseState<String>>
         get() = _addCommentLiveData
 
+    private val _bottomSheetStateFlow = MutableStateFlow(0)
+    val bottomSheetStateFlow = _bottomSheetStateFlow.asStateFlow()
+
     init {
-        if (Session.get().isUserLogged())
-            getTableVersionsFromServer()
+//        if (Session.get().isUserLogged())
+//            getTableVersionsFromServer()
         localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
         Log.d("homeVM localVers", localVersionState.toString())
 
@@ -65,6 +72,10 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
+    fun updateBottomSheetState(state: Int) = viewModelScope.launch {
+        _bottomSheetStateFlow.emit(state)
+    }
+
     fun changeRegion(selectedRegion: WorkRegion) {
         SharedPreferenceDataSource.getInstance().saveRegion(selectedRegion)
         SharedPreferenceDataSource.getInstance().clearVersions()
@@ -72,7 +83,11 @@ class HomeViewModel : BaseViewModel() {
         getTableVersionsFromServer()
     }
 
+    fun checkVersionUpdates() = getTableVersionsFromServer()
+
     private fun getTableVersionsFromServer() {
+        Log.d("homeVM getTableVersionsFromServer", localVersionState.toString())
+        if (!Session.get().isUserLogged()) return
         sendRequest(
             ApeniApiService.getInstance().getTableVersions(),
             successWithData = {
@@ -286,7 +301,14 @@ class HomeViewModel : BaseViewModel() {
                 storeHouseData.addAll(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
                 300 waitFor {
                     _barrelsListLiveData.value = ApiResponseState.Loading(false)
-                    _barrelsListLiveData.value = ApiResponseState.Success(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
+                    _barrelsListLiveData.value = ApiResponseState.Success(
+                        listOf(
+                            SimpleBeerRowModel(
+                                "კასრები:საწარმოში",
+                                valueOfDiff
+                            )
+                        )
+                    )
                 }
             },
             finally = {
@@ -304,7 +326,10 @@ class HomeViewModel : BaseViewModel() {
             it.forEach { fbm ->
                 valueOfDiff[fbm.barrelID] = fbm.inputToStore - fbm.saleCount
             }
-            val title = beerList.first { b -> b.id == it[0].beerID }.dasaxeleba ?: "_"
+            val currBeer = beerList.firstOrNull { beerModel ->
+                beerModel.id == it[0].beerID
+            }
+            val title = currBeer?.dasaxeleba ?: "_"
             result.add(SimpleBeerRowModel(title, valueOfDiff))
         }
         val valueOfDiff = mutableMapOf<Int, Int>()

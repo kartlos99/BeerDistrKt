@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
@@ -21,9 +20,7 @@ import java.util.*
 
 class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
 
-    override val viewModel: SalesViewModel by lazy {
-        getActCtxViewModel<SalesViewModel>()
-    }
+    override val viewModel: SalesViewModel by lazy { getActCtxViewModel() }
 
     private val binding by viewBinding(FragmentExpenseBinding::bind)
 
@@ -49,12 +46,12 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
     }
 
     private fun initViewModel() {
-        viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.usersLiveData.observe(viewLifecycleOwner) {
             viewModel.formUserMap(it)
-        })
-        viewModel.expenseLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.expenseLiveData.observe(viewLifecycleOwner) {
             onUpdate(it)
-        })
+        }
     }
 
     private fun onUpdate(expenseList: List<Xarji>?) {

@@ -1,12 +1,12 @@
 package com.example.beerdistrkt.fragPages.addEditObiects
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,14 +21,18 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
     val regions = mutableListOf<AttachedRegion>()
     val selectedRegions = mutableListOf<AttachedRegion>()
 
+    private val repository = ApeniRepo()
+
     init {
         beersLiveData.observeForever {
             if (clientID > 0) {
-                ioScope.launch {
-                    clientObject = database.getObiectsWithPrices(clientID)
-                    delay(50)
-                    uiScope.launch {
-                        clientObjectLiveData.value = clientObject
+                repository.getCustomerData(clientID).observeForever { customerData ->
+                    if (customerData != null) {
+                        clientObject = customerData
+                        uiScope.launch {
+                            delay(50)
+                            clientObjectLiveData.value = clientObject
+                        }
                     }
                 }
             }

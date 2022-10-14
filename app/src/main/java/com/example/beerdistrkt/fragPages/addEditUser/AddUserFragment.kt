@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.AddUserFragmentBinding
-import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
@@ -86,42 +85,28 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
 
         addUserDoneBtn.setOnClickListener {
-            if (isFormValid()) {
-                val user = readUser()
-                val requestModel = AddUserRequestModel(
-                    user,
-                    addUserPass.editText?.text.toString(),
-                    addUserChangePassBox.isChecked
-                )
-                viewModel.onDoneClick(requestModel)
-            } else {
-                showToast(R.string.enter_corect_data)
-            }
+            viewModel.onDoneClick(
+                readUser(),
+                addUserChangePassBox.isChecked,
+                addUserPass.text(),
+                addUserPassConfirm.text()
+            )
         }
         addUserRegionBtn.setOnClickListener {
             showRegionChooser()
         }
     }
 
-    private fun isFormValid(): Boolean {
-        return if (userID.isNotEmpty() && !binding.addUserChangePassBox.isChecked)
-            validateUsername() and validateName()
-        else
-            validateUsername() and validateName() and validatePassword() and validateConfirmPass()
-    }
-
-    private fun readUser(): User {
-        return User(
-            userID,
-            binding.addUserUsername.editText?.text.toString(),
-            binding.addUserName.editText?.text.toString(),
-            userType.value,
-            binding.addUserPhone.editText?.text.toString(),
-            binding.addUserAddress.editText?.text.toString(),
-            Session.get().userID ?: "0",
-            binding.addUserComment.editText?.text.toString()
-        )
-    }
+    private fun readUser() = User(
+        userID,
+        binding.addUserUsername.text(),
+        binding.addUserName.text(),
+        userType.value,
+        binding.addUserPhone.text(),
+        binding.addUserAddress.text(),
+        Session.get().userID ?: "0",
+        binding.addUserComment.text()
+    )
 
     private fun initViewModel() {
         viewModel.addUserLiveData.observe(viewLifecycleOwner, Observer {
@@ -160,6 +145,39 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 else -> {}
             }
         }
+        viewModel.userValidatorLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is UserValidationResult.Success -> clearFormErrors()
+                is UserValidationResult.Error -> showErrors(it.errors)
+            }
+        }
+    }
+
+    private fun showErrors(errors: List<UserValidationResult.ErrorType>) {
+        showToast(R.string.enter_corect_data)
+        clearFormErrors()
+        errors.forEach {
+            when (it) {
+                UserValidationResult.ErrorType.InvalidUsername ->
+                    binding.addUserUsername.error =
+                        resources.getString(R.string.username_invalid_error_text)
+                UserValidationResult.ErrorType.InvalidName -> binding.addUserName.error =
+                    resources.getString(R.string.username_invalid_error_text)
+                UserValidationResult.ErrorType.InvalidPassword -> binding.addUserPass.error =
+                    resources.getString(R.string.password_invalid_error_text)
+                UserValidationResult.ErrorType.PasswordNotMatch -> binding.addUserPassConfirm.error =
+                    resources.getString(R.string.password_confirm_error_text)
+            }
+        }
+    }
+
+    private fun clearFormErrors() {
+        with(binding) {
+            addUserUsername.error = null
+            addUserName.error = null
+            addUserPass.error = null
+            addUserPassConfirm.error = null
+        }
     }
 
     private fun showRegions(data: List<AttachedRegion>) {
@@ -174,13 +192,13 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
     private fun fillForm(user: User) {
         with(binding) {
-            addUserUsername.editText?.setText(user.username)
-            addUserName.editText?.setText(user.name)
+            addUserUsername.setText(user.username)
+            addUserName.setText(user.name)
             addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
             addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
-            addUserPhone.editText?.setText(user.tel)
-            addUserAddress.editText?.setText(user.adress)
-            addUserComment.editText?.setText(user.comment)
+            addUserPhone.setText(user.tel)
+            addUserAddress.setText(user.adress)
+            addUserComment.setText(user.comment)
         }
     }
 
@@ -192,66 +210,21 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.mDeleteUser -> {
-                requireContext().showAskingDialog(
-                    R.string.delete,
-                    R.string.confirm_delete_text,
-                    R.string.yes,
-                    R.string.no,
-                    R.style.ThemeOverlay_MaterialComponents_Dialog
-                ) {
-                    viewModel.deleteUser()
-                }
+                showDeleteDialog()
                 return true
             }
         }
         return false
     }
 
-    private fun validateUsername(): Boolean {
-        val input = binding.addUserUsername.editText?.text.toString().trim()
-        return if (input.length < 3) {
-            binding.addUserUsername.error =
-                resources.getString(R.string.username_invalid_error_text)
-            false
-        } else {
-            binding.addUserUsername.error = null
-            true
-        }
-    }
-
-    private fun validateName(): Boolean {
-        val input = binding.addUserName.editText?.text.toString().trim()
-        return if (input.length < 3) {
-            binding.addUserName.error = resources.getString(R.string.username_invalid_error_text)
-            false
-        } else {
-            binding.addUserName.error = null
-            true
-        }
-    }
-
-    private fun validatePassword(): Boolean {
-        val input = binding.addUserPass.editText?.text.toString()
-        Log.d("pass", input)
-        return if (input.length < 6) {
-            binding.addUserPass.error = resources.getString(R.string.password_invalid_error_text)
-            false
-        } else {
-            binding.addUserPass.error = null
-            true
-        }
-    }
-
-    private fun validateConfirmPass(): Boolean {
-        val input = binding.addUserPassConfirm.editText?.text.toString()
-        return if (binding.addUserPass.editText?.text.toString() != input) {
-            binding.addUserPassConfirm.error =
-                resources.getString(R.string.password_confirm_error_text)
-            false
-        } else {
-            binding.addUserPassConfirm.error = null
-            true
-        }
+    private fun showDeleteDialog() = requireContext().showAskingDialog(
+        R.string.delete,
+        R.string.confirm_delete_text,
+        R.string.yes,
+        R.string.no,
+        R.style.ThemeOverlay_MaterialComponents_Dialog
+    ) {
+        viewModel.deleteUser()
     }
 
     private fun showRegionChooser() {

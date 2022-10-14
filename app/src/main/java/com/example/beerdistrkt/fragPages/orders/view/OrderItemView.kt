@@ -34,7 +34,7 @@ class OrderItemView @JvmOverloads constructor(
         with(binding) {
             orderItemNameTv.text = thisBeer.dasaxeleba ?: ""
             orderItemNameUnderline.setBackgroundColor(
-                Color.parseColor(thisBeer.displayColor ?: "#444")
+                Color.parseColor(thisBeer.displayColor ?: "#444444")
             )
             orderItems.forEach {
                 val saleItem = salesOfThisBeer?.find { sItem ->

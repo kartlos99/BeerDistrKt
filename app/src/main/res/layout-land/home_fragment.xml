@@ -1,158 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragPages.homePage.HomeFragment">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnOrder"
-        style="@style/mainBtnStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/main_btn_hor_margin"
-        android:text="@string/orders"
-        app:layout_constraintBottom_toTopOf="@+id/btnSaleResult"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSaleResult"
-        style="@style/mainBtnStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/daily_sales"
-        app:layout_constraintBottom_toTopOf="@id/btnSalesByClient"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnOrder" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSalesByClient"
-        style="@style/mainBtnStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/sale_at_the_client"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSaleResult" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <TextView
-        android:id="@+id/homeCommentsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/comments"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/homeAddComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/main_btn_hor_margin"
-        android:padding="@dimen/gr_size_4"
-        android:src="@drawable/ic_add_24dp"
-        app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homeCommentsRecycler"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/comments_rect"
-        android:padding="4dp"
-        app:layout_constraintBottom_toTopOf="@id/homeStoreHouseTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle" />
-
-    <View
-        android:id="@+id/homeStoreHouseBkg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/gr_size_8"
-        android:layout_marginEnd="@dimen/gr_size_8"
-        android:layout_marginBottom="@dimen/gr_size_8"
-        android:background="@drawable/bkg_rounded_white_r8"
-        android:elevation="@dimen/gr_size_2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle" />
-
-    <TextView
-        android:id="@+id/homeStoreHouseTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gr_size_8"
-        android:elevation="@dimen/gr_size_2"
-        android:padding="@dimen/gr_size_4"
-        android:text="@string/store_house"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/homeStoreHouseRecycler"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homeStoreHouseRecycler"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/gr_size_8"
-        android:layout_marginBottom="@dimen/gr_size_8"
-        android:elevation="@dimen/gr_size_2"
-        android:paddingHorizontal="@dimen/gr_size_8"
-        android:paddingBottom="@dimen/gr_size_4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline" />
-
-    <ProgressBar
-        android:id="@+id/homeMainStoreHouseLoader"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#4FFF"
-        android:elevation="@dimen/gr_size_2"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseRecycler"
-        app:layout_constraintEnd_toEndOf="@id/homeStoreHouseRecycler"
-        app:layout_constraintStart_toStartOf="@id/homeStoreHouseRecycler"
-        app:layout_constraintTop_toTopOf="@id/homeStoreHouseRecycler" />
-
-    <ProgressBar
-        android:id="@+id/homeMainProgressBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#6FFF"
-        android:elevation="@dimen/gr_size_2"
-        android:padding="@dimen/gr_size_128"
-        android:visibility="gone" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/homeHideStoreHouse"
-        android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnOrder"
+            style="@style/mainBtnStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/main_btn_hor_margin"
+            android:text="@string/orders"
+            app:layout_constraintBottom_toTopOf="@+id/btnSaleResult"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaleResult"
+            style="@style/mainBtnStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/daily_sales"
+            app:layout_constraintBottom_toTopOf="@id/btnSalesByClient"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnOrder" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSalesByClient"
+            style="@style/mainBtnStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/sale_at_the_client"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSaleResult" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4" />
+
+        <TextView
+            android:id="@+id/homeCommentsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/comments"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/homeAddComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/main_btn_hor_margin"
+            android:padding="@dimen/gr_size_4"
+            android:src="@drawable/ic_add_24dp"
+            app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeCommentsRecycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/gr_size_8"
+            android:layout_marginBottom="@dimen/gr_size_48"
+            android:background="@drawable/comments_rect"
+            android:padding="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle" />
+
+        <ProgressBar
+            android:id="@+id/homeMainProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#6FFF"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_128"
+            android:visibility="gone" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/storeHouseInfoContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/main_btn_hor_margin"
-        android:elevation="@dimen/gr_size_2"
-        android:padding="@dimen/gr_size_4"
-        android:src="@drawable/ic_arrow_down_24dp"
-        app:layout_constraintBottom_toBottomOf="@id/homeStoreHouseTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/homeStoreHouseTitle" />
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

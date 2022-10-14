@@ -5,14 +5,14 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -23,6 +23,7 @@ import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
@@ -30,6 +31,10 @@ import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
+
+
+const val PREF_NAME = "folds"
+val Context.dataStore by preferencesDataStore(name = PREF_NAME)
 
 class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
@@ -113,13 +118,13 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         userNameTv.text = "${Session.get().userName}  ( ${Session.get().userType.name} )"
         nameTv.text = Session.get().displayName
 
-        vBinding.navView.menu.getItem(0).isEnabled =
-            Session.get().hasPermission(Permission.AddEditClient)
-        vBinding.navView.menu.getItem(1).isEnabled =
-            Session.get().hasPermission(Permission.AddEditUser)
-        vBinding.navView.menu.getItem(2).isEnabled = false
-        vBinding.navView.menu.getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
-        vBinding.navView.menu.getItem(7).title = BuildConfig.VERSION_NAME
+        with(vBinding.navView.menu) {
+            getItem(0).isEnabled = Session.get().hasPermission(Permission.AddEditClient)
+            getItem(1).isEnabled = Session.get().hasPermission(Permission.AddEditUser)
+            getItem(2).isEnabled = Session.get().userType == UserType.ADMIN
+            getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
+            getItem(7).title = BuildConfig.VERSION_NAME
+        }
     }
 
     fun logOut() {

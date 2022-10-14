@@ -36,6 +36,7 @@ import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
 import retrofit2.Call
 import retrofit2.Callback
@@ -135,23 +136,23 @@ class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory 
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProvider(this).get(T::class.java)
+        ViewModelProvider(this)[T::class.java]
     else
-        ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(this, BaseViewModelFactory(creator))[T::class.java]
 }
 
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProvider(this).get(T::class.java)
+        ViewModelProvider(this)[T::class.java]
     else
-        ViewModelProvider(this, BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(this, BaseViewModelFactory(creator))[T::class.java]
 }
 
 inline fun <reified T : ViewModel> Fragment.getActCtxViewModel(noinline creator: (() -> T)? = null): T {
     return if (creator == null)
-        ViewModelProvider(requireActivity()).get(T::class.java)
+        ViewModelProvider(requireActivity())[T::class.java]
     else
-        ViewModelProvider(requireActivity(), BaseViewModelFactory(creator)).get(T::class.java)
+        ViewModelProvider(requireActivity(), BaseViewModelFactory(creator))[T::class.java]
 }
 
 fun Context.showAskingDialog(
@@ -363,3 +364,12 @@ fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableStri
     }
     return sp
 }
+
+fun TextInputLayout.text(): String =
+    this.editText?.text.toString()
+
+fun TextInputLayout.setText(text: CharSequence) =
+    this.editText?.setText(text)
+
+fun TextInputLayout.setText(resID: Int) =
+    this.editText?.setText(resID)
