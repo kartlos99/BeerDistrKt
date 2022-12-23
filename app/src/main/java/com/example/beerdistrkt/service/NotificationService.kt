@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
@@ -77,7 +78,11 @@ class NotificationService : Service() {
         val intent = Intent(this, MainActivity::class.java)
 //        intent.putExtra("ID", msg.notificationID)
         val pendingIntent =
-            PendingIntent.getActivity(this, 123, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                PendingIntent.getActivity(this, 123, intent, PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getActivity(this, 123, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            }
 
         val notification = NotificationCompat.Builder(
             this,
