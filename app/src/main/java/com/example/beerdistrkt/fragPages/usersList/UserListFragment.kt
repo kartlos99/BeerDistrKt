@@ -12,6 +12,7 @@ import com.example.beerdistrkt.databinding.UserListFragmentBinding
 import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.UserStatus
 
 class UserListFragment : BaseFragment<UserListViewModel>() {
 
@@ -39,9 +40,9 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
     }
 
     private fun initViewModel() {
-        viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
-            initUsersRecycler(it)
-        })
+        viewModel.usersLiveData.observe(viewLifecycleOwner) { users ->
+            initUsersRecycler(users)
+        }
     }
 
     private fun initUsersRecycler(users: List<User>) {

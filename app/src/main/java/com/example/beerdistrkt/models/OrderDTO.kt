@@ -78,7 +78,7 @@ data class OrderDTO(
     ): Order {
 
         val client = clients.find {
-            it.id ?: 0 == clientID
+            (it.id ?: 0) == clientID
         } ?: Obieqti.emptyModel
 
         return Order(

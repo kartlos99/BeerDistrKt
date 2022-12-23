@@ -72,7 +72,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            viewModel.usersList.map { it.username }
+            viewModel.getDistributorNamesList()
         )
         vBinding.salesDistributorsSpinner.onItemSelectedListener = this
         if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {

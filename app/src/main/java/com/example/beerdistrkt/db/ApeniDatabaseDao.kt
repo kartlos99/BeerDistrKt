@@ -47,6 +47,9 @@ interface ApeniDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUsers(users: List<User>)
+
     @Query("DELETE FROM user_table")
     fun clearUserTable()
 
@@ -55,6 +58,9 @@ interface ApeniDatabaseDao {
 
     @Query("Select * from user_table order by username")
     fun getUsers(): LiveData<List<User>>
+
+    @Query("Select * from user_table WHERE userStatus = :status order by username")
+    fun getActiveUsers(status: UserStatus = UserStatus.ACTIVE): LiveData<List<User>>
 
     // beer operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
