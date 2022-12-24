@@ -227,5 +227,8 @@
     <string name="common_save">შენახვა</string>
     <string name="region_is_restricted_msg">გაგეტისათ მიმდინარე რეგიონზე წვდომა!</string>
     <string name="search_title">ძებნა</string>
+    <string name="add_order_item">add order item</string>
+    <string name="next">next</string>
+    <string name="prev">prev</string>
 
 </resources>

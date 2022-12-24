@@ -70,4 +70,23 @@
         <item name="colorSecondary">#fff</item>
     </style>
 
+    <style name="SpinnerTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/gr_size_8</item>
+        <item name="android:paddingEnd">@dimen/gr_size_8</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="SpinnerInOrderForm">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bkg_rounded_white_r8</item>
+        <item name="android:backgroundTint">@color/gray_light</item>
+        <item name="android:elevation">@dimen/gr_size_2</item>
+        <item name="android:minWidth">@dimen/gr_size_48</item>
+        <item name="android:minHeight">@dimen/gr_size_36</item>
+        <item name="android:spinnerMode">dialog</item>
+    </style>
+
 </resources>
