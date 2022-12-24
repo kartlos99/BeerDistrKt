@@ -13,7 +13,10 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.LoginFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import com.example.beerdistrkt.utils.*
+import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.visibleIf
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.messaging.FirebaseMessaging
@@ -28,7 +31,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     override val viewModel: LoginViewModel by viewModels()
 
-    lateinit var actViewModel: MainActViewModel
+    private lateinit var actViewModel: MainActViewModel
 
     private val mAuth by lazy {
         FirebaseAuth.getInstance()
@@ -53,6 +56,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 viewLoginLoginBtn.isEnabled = false
                 viewLoginProgress.visibleIf(true)
             }
+            tvBuildInfo.text = getBuildInfo()
         }
 
         if (Session.get().isUserLogged())
@@ -61,6 +65,11 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             checkSavedPass()
 
         initViewModel()
+    }
+
+    private fun getBuildInfo(): String {
+        return if (BuildConfig.DEBUG) "${BuildConfig.BUILD_TYPE} ${BuildConfig.FLAVOR} ${BuildConfig.VERSION_NAME}"
+        else BuildConfig.VERSION_NAME
     }
 
     private fun checkSavedPass() {
