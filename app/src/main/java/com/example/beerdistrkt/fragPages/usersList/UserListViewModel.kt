@@ -4,7 +4,7 @@ import com.example.beerdistrkt.BaseViewModel
 
 class UserListViewModel : BaseViewModel() {
 
-    val usersLiveData = database.getUsers()
+    val usersLiveData = database.getActiveUsers()
 
 
 }

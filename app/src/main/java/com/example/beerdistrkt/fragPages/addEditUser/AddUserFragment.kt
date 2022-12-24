@@ -15,6 +15,7 @@ import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.UserStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.*
 
@@ -105,7 +106,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         binding.addUserPhone.text(),
         binding.addUserAddress.text(),
         Session.get().userID ?: "0",
-        binding.addUserComment.text()
+        binding.addUserComment.text(),
+        UserStatus.ACTIVE
     )
 
     private fun initViewModel() {

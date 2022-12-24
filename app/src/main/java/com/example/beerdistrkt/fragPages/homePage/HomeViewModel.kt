@@ -145,13 +145,11 @@ class HomeViewModel : BaseViewModel() {
             ApeniApiService.getInstance().getUsersList(),
             successWithData = {
                 saveVersion()
-                Log.d(TAG, "Users_respOK")
+                Log.d(TAG, "Users_respOK. size: ${it.size}")
                 if (it.isNotEmpty()) {
                     ioScope.launch {
                         database.clearUserTable()
-                        it.forEach { user ->
-                            insertUserToDB(user)
-                        }
+                        database.insertUsers(it)
                     }
                 }
             }
@@ -229,11 +227,6 @@ class HomeViewModel : BaseViewModel() {
                 }
             }
         )
-    }
-
-    private fun insertUserToDB(user: User) {
-        Log.d(TAG, user.toString())
-        database.insertUser(user)
     }
 
     private fun insertBeerToDB(beerModel: BeerModelBase) {

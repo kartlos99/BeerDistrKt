@@ -24,7 +24,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
         ?: mutableListOf()
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
+    private val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?.sortedBy { it.username }
@@ -32,7 +32,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     var selectedCan: CanModel? = null
     lateinit var selectedDistributor: User
-    var selectedDistributorRegionID: Int = 0
+    private var selectedDistributorRegionID: Int = 0
     var selectedStatus = OrderStatus.ACTIVE
     val orderStatusList = listOf(OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
@@ -45,7 +45,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     val orderDayLiveData: LiveData<String>
         get() = _orderDayLiveData
 
-    val orderItemDuplicateLiveData = MutableLiveData<Boolean>(false)
+    val orderItemDuplicateLiveData = MutableLiveData(false)
 
     private val _addOrderLiveData = MutableLiveData<ApiResponseState<String>>()
     val addOrderLiveData: LiveData<ApiResponseState<String>>
@@ -56,7 +56,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     private lateinit var clients: List<Obieqti>
 
     val orderItemEditLiveData = MutableLiveData<TempBeerItemModel?>()
-    var editingOrderItemID = -1
+    private var editingOrderItemID = -1
 
     lateinit var availableRegions: List<WorkRegion>
     private val allMappedUsers = mutableListOf<MappedUser>()
@@ -109,7 +109,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             null
     }
 
-    fun addOrderItemsToList(itemsList: List<TempBeerItemModel>) {
+    private fun addOrderItemsToList(itemsList: List<TempBeerItemModel>) {
         itemsList.forEach {
             orderItemsList.add(it)
         }
@@ -142,7 +142,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
     }
 
-    fun editOrderItemFromList(item: TempBeerItemModel) {
+    private fun editOrderItemFromList(item: TempBeerItemModel) {
         editingOrderItemID = item.orderItemID
         orderItemEditLiveData.value = item
     }
@@ -249,7 +249,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     fun updateDistributorList(selectedRegionID: Int) {
         selectedDistributorRegionID = selectedRegionID
         usersList = allMappedUsers
-            .filter { it.regionID == selectedRegionID && it.userStatus == UserStatus.ACTIVE }
+            .filter { it.regionID == selectedRegionID && it.isActive }
             .map { it.toUser() }
             .sortedBy { it.username }
 
@@ -257,12 +257,18 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     fun getDistributorNamesList(): List<String> {
         return usersList
+            .filter { it.isActive }
             .map { "${it.username} (${it.name})" }
     }
 
     fun getDistributorIndex(distributorID: String): Int {
-        return usersList
+        val userIds = usersList
+            .filter { it.isActive }
             .map { it.id }
-            .indexOf(distributorID)
+
+        return if (userIds.indexOf(distributorID) >= 0)
+            userIds.indexOf(distributorID)
+        else
+            userIds.indexOf(Session.get().userID ?: return 0)
     }
 }

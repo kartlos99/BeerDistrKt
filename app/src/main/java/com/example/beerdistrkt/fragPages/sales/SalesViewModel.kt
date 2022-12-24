@@ -206,6 +206,11 @@ class SalesViewModel : BaseViewModel() {
         prepareData()
     }
 
+    fun getDistributorNamesList(): List<String> = usersList
+        .filter { it.isActive }
+        .map { "${it.username} (${it.name})" }
+
+
     companion object {
         const val TAG = "Sales_VM"
     }
