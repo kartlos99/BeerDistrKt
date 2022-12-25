@@ -20,6 +20,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
@@ -27,10 +28,6 @@ import com.example.beerdistrkt.utils.visibleIf
 import java.util.*
 
 class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickListener {
-
-    companion object {
-        fun newInstance() = StoreHouseFragment()
-    }
 
     private val binding by viewBinding(SawyobiFragmentBinding::bind)
 
@@ -120,6 +117,11 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 ColorStateList.valueOf(Color.RED)
     }
 
+    private fun onBeerItemEdit(tempBeerItem: TempBeerItemModel) = with(binding) {
+        storeHouseReceiveBeerSelector.fillBeerItemForm(tempBeerItem)
+        viewModel.editingItemID = tempBeerItem.orderItemID
+    }
+
     private fun initViewModel() {
         with(binding) {
             viewModel.setDayLiveData.observe(viewLifecycleOwner) {
@@ -154,10 +156,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 storeHouseReceiveBeerSelector.resetForm()
                 storeHouseSelectedBeerContainer.removeAllViews()
                 it.forEach { receivedItem ->
-                    val itemData = receivedItem.copy(onEditClick = { tempBeerItem ->
-                        storeHouseReceiveBeerSelector.fillBeerItemForm(tempBeerItem)
-                        viewModel.editingItemID = tempBeerItem.orderItemID
-                    })
+                    val itemData = receivedItem.copy(onEditClick = ::onBeerItemEdit)
                     storeHouseSelectedBeerContainer.addView(
                         TempBeerRowView(context = requireContext(), rowData = itemData)
                     )

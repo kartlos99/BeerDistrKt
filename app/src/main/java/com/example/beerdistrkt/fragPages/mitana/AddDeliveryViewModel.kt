@@ -33,8 +33,9 @@ class AddDeliveryViewModel(
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
     val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
-    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
-        ?: mutableListOf()
+    val beerList =
+        ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
+            ?: mutableListOf()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
@@ -81,20 +82,19 @@ class AddDeliveryViewModel(
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
-        beerListLiveData.value = beerList.map {
-            val price = pricesForClient.find { bp ->
-                bp.beerID == it.id
-            }?.fasi?.toDouble() ?: 0.0
-
-            BeerModelBase(
-                it.id,
-                it.dasaxeleba,
-                it.displayColor,
-                price.round(),
-                it.sortValue
-            )
-        }
+        beerListLiveData.value = beerList
+            .map { beerModel ->
+                val price = findBeerPrice(beerModel, pricesForClient)
+                beerModel.copy(fasi = price.round())
+            }
     }
+
+    private fun findBeerPrice(
+        beerModel: BeerModelBase,
+        pricesForClient: List<ObjToBeerPrice>
+    ): Double = pricesForClient.find { objToBeerPrice ->
+        objToBeerPrice.beerID == beerModel.id
+    }?.fasi?.toDouble() ?: 0.0
 
     fun setCan(pos: Int) {
         selectedCan = if (pos >= 0)
