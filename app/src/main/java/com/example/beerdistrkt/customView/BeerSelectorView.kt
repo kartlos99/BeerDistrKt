@@ -97,6 +97,7 @@ class BeerSelectorView @JvmOverloads constructor(
         }
     }
 
+    // mandatory
     fun initView(
         beerList: List<BeerModelBase>,
         barrelsList: List<CanModel>,
@@ -107,6 +108,7 @@ class BeerSelectorView @JvmOverloads constructor(
         this.onFormUpdate = onFormUpdate
         cansList = barrelsList
         initBeerRecycler()
+        checkForm()
     }
 
     private fun List<BeerModelBase>.getVisibleBeers(
@@ -132,7 +134,7 @@ class BeerSelectorView @JvmOverloads constructor(
         binding.beerSelectorCanCountControl.amount = 0
     }
 
-    fun checkForm() {
+    private fun checkForm() {
         onFormUpdate?.invoke()
     }
 
