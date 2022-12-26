@@ -43,6 +43,7 @@ class BeerSelectorView @JvmOverloads constructor(
     var onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 
     private var itemID = 0
+    var withPrices = false
 
     private val binding =
         ViewBeerSelectorBinding.bind(inflate(context, R.layout.view_beer_selector, this))
@@ -194,7 +195,11 @@ class BeerSelectorView @JvmOverloads constructor(
         override fun getItemCount() = visibleBeers.size
 
         override fun onBindViewHolder(holder: BeerItemViewHolder, position: Int) {
-            holder.itemBinding.tBeerNameItm.text = visibleBeers[position].dasaxeleba
+
+            holder.itemBinding.tBeerNameItm.text = if (withPrices)
+                "${visibleBeers[position].dasaxeleba}\n${visibleBeers[position].fasi} ₾"
+            else
+                visibleBeers[position].dasaxeleba
             holder.itemBinding.tBeerNameItm.backgroundTintList = ColorStateList
                 .valueOf(Color.parseColor(visibleBeers[position].displayColor))
         }
