@@ -31,7 +31,8 @@ data class SaleRowModel(
             beer = beer!!,
             canType = canType!!,
             count = count,
-            onRemoveClick = {_: TempBeerItemModel -> }
+            onRemoveClick = {_: TempBeerItemModel -> },
+            orderItemID = ID // TODO rename this field or made another model
         )
     }
 }

@@ -8,28 +8,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
-import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.utils.*
-import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
-import com.tbuonomo.viewpagerdotsindicator.OnPageChangeListenerHelper
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
@@ -66,10 +57,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         viewModel.onSaleTimeSelected(hourOfDay, minute)
     }
 
-    private var beerPos = 0
-    private val snapHelper = PagerSnapHelper()
-    private val beerAdapter = BeerAdapter()
-
     private lateinit var vBinding: AddDeliveryFragmentBinding
 
 
@@ -79,7 +66,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     ): View {
         vBinding = AddDeliveryFragmentBinding.inflate(inflater)
         vBinding.lifecycleOwner = this
-        initBeerRecycler()
         return vBinding.root
     }
 
@@ -94,7 +80,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryBarrelGr.visibleIf(false)
         }
         vBinding.addDeliveryhideOnEditGroup.visibleIf(viewModel.operation == null)
-        vBinding.hideBeerGroup.visibleIf(viewModel.operation != K_OUT)
+        vBinding.beerSelector.beerGroupVisibleIf(viewModel.operation != K_OUT)
 
         when (viewModel.operation) {
             MITANA -> {
@@ -113,14 +99,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
         }
 
-        vBinding.addDeliverysCanChip0.setOnClickListener(this)
-        vBinding.addDeliverysCanChip1.setOnClickListener(this)
-        vBinding.addDeliverysCanChip2.setOnClickListener(this)
-        vBinding.addDeliverysCanChip3.setOnClickListener(this)
         vBinding.addDeliveryDoneBtn.setOnClickListener(this)
         vBinding.addDeliveryDateBtn.setOnClickListener(this)
-        vBinding.btnBeerLeftImg.setOnClickListener(this)
-        vBinding.btnBeerRightImg.setOnClickListener(this)
         vBinding.addDeliveryAddSaleItemBtn.setOnClickListener(this)
         vBinding.addDeliveryMoneyExpander.setOnClickListener(this)
         vBinding.addDeliveryMoneyCashImg.setOnClickListener(this)
@@ -133,8 +113,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
         }
 
-        vBinding.addDeliveryCanCountControl.getEditTextView().simpleTextChangeListener {
-            checkForm()
+        vBinding.beerSelector.withPrices = true
+        vBinding.beerSelector.initView(
+            viewModel.beerList,
+            viewModel.cansList,
+            ::checkForm
+        )
+        vBinding.beerSelector.onDeleteClick = {
+            viewModel.removeSaleItemFromList(it)
         }
 
         vBinding.addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
@@ -146,9 +132,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
         initViewModel()
         checkForm()
-        vBinding.addDeliveryCansScroll.postDelayed(Runnable {
-            vBinding.addDeliveryCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
-        }, 100L)
         (activity as AppCompatActivity).supportActionBar?.title =
             resources.getString(R.string.delivery)
         showDebt()
@@ -166,10 +149,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner, Observer {
-            beerAdapter.setData(it)
+            vBinding.beerSelector.updateBeers(it)
         })
         viewModel.saleItemsLiveData.observe(viewLifecycleOwner, Observer {
-            resetForm()
+            vBinding.beerSelector.resetForm()
             vBinding.addDeliveryTempContainer.removeAllViews()
             it.forEach { saleItem ->
                 vBinding.addDeliveryTempContainer.addView(
@@ -197,24 +180,24 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 else -> {}
             }
         })
-        viewModel.saleItemEditLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.saleItemEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 fillSale(it)
                 viewModel.saleItemEditLiveData.value = null
             }
-        })
-        viewModel.kOutEditLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.kOutEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 fillBarrels(it)
                 viewModel.kOutEditLiveData.value = null
             }
-        })
-        viewModel.mOutEditLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.mOutEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 fillMoney(it)
                 viewModel.mOutEditLiveData.value = null
             }
-        })
+        }
         lifecycleScope.launch {
             viewModel.infoSharedFlow.collectLatest {
                 showToast(it)
@@ -256,41 +239,20 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun fillBarrels(barrelRowModel: BarrelRowModel) {
-        when (barrelRowModel.canTypeID) {
-            1 -> vBinding.addDeliverysCanChip3.isChecked = true
-            2 -> vBinding.addDeliverysCanChip2.isChecked = true
-            3 -> vBinding.addDeliverysCanChip1.isChecked = true
-            4 -> vBinding.addDeliverysCanChip0.isChecked = true
-        }
-        vBinding.addDeliveryCanCountControl.amount = barrelRowModel.count
 
+        vBinding.beerSelector.fillBarrels(barrelRowModel)
         vBinding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
     }
 
     private fun fillSale(saleData: SaleRowModel) {
         val data = saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)
-        beerPos = viewModel.beerList.indexOf(data.beer)
-        vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
-        vBinding.addDeliverysChipGr.clearCheck()
-        viewModel.selectedCan = data.canType
-        when (data.canType.id) {
-            1 -> vBinding.addDeliverysCanChip3.isChecked = true
-            2 -> vBinding.addDeliverysCanChip2.isChecked = true
-            3 -> vBinding.addDeliverysCanChip1.isChecked = true
-            4 -> vBinding.addDeliverysCanChip0.isChecked = true
-        }
-        vBinding.addDeliveryCanCountControl.amount = data.count
-
+        vBinding.beerSelector.fillBeerItemForm(data)
         vBinding.addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
         vBinding.addDeliveryComment.editText?.setText(saleData.comment ?: "")
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.addDeliverysCanChip0 -> viewModel.setCan(3)
-            R.id.addDeliverysCanChip1 -> viewModel.setCan(2)
-            R.id.addDeliverysCanChip2 -> viewModel.setCan(1)
-            R.id.addDeliverysCanChip3 -> viewModel.setCan(0)
             R.id.addDeliveryDoneBtn -> {
                 when (viewModel.operation) {
                     MITANA -> {
@@ -306,8 +268,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                         viewModel.barrelOutItems.clear()
                     }
                 }
-                if (formIsValid() && viewModel.saleItemsList.isEmpty() && viewModel.operation != K_OUT)
-                    viewModel.addSaleItemToList(getTempSaleItem())
+                if (vBinding.beerSelector.formIsValid() && viewModel.saleItemsList.isEmpty() && viewModel.operation != K_OUT)
+                    viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
                 collectEmptyBarrels()
                 viewModel.setMoney(
                     vBinding.addDeliveryMoneyEt.text.toString(),
@@ -326,19 +288,9 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 datePickerDialog.setCancelable(false)
                 datePickerDialog.show()
             }
-            R.id.btnBeerLeftImg -> {
-                beerPos =
-                    (snapHelper.getSnapPosition(vBinding.addDeliveryBeerRecycler) + viewModel.beerList.size - 1) % viewModel.beerList.size
-                vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
-            }
-            R.id.btnBeerRightImg -> {
-                beerPos =
-                    (snapHelper.getSnapPosition(vBinding.addDeliveryBeerRecycler) + 1) % viewModel.beerList.size
-                vBinding.addDeliveryBeerRecycler.smoothScrollToPosition(beerPos)
-            }
             R.id.addDeliveryAddSaleItemBtn -> {
-                if (formIsValid())
-                    viewModel.addSaleItemToList(getTempSaleItem())
+                if (vBinding.beerSelector.formIsValid())
+                    viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
                 else
                     showToast(R.string.fill_data)
             }
@@ -375,10 +327,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 }
             }
         }
-
-        if (vBinding.addDeliverysChipGr.checkedChipId == View.NO_ID)
-            viewModel.setCan(-1)
-        checkForm()
     }
 
     private fun collectEmptyBarrels() {
@@ -394,134 +342,21 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.addBarrelToList(4, vBinding.addDeliveryBarrelOutputCount4.amount)
         } else if (viewModel.operation == K_OUT) {
             viewModel.addBarrelToList(
-                viewModel.selectedCan?.id ?: 0,
-                vBinding.addDeliveryCanCountControl.amount
+                vBinding.beerSelector.selectedCan?.id ?: 0,
+                vBinding.beerSelector.getBarrelsCount()
             )
         }
-    }
-
-    private fun getTempSaleItem(): TempBeerItemModel {
-        return TempBeerItemModel(
-            viewModel.recordID,
-            viewModel.beerListLiveData.value?.get(beerPos)!!,
-            viewModel.selectedCan!!,
-            vBinding.addDeliveryCanCountControl.amount,
-            {
-                showToast("del")
-                viewModel.removeSaleItemFromList(it)
-            })
-    }
-
-    private fun formIsValid(): Boolean {
-        return vBinding.addDeliveryCanCountControl.amount > 0 && viewModel.selectedCan != null
-    }
-
-    private fun resetForm() {
-        vBinding.addDeliverysChipGr.clearCheck()
-        viewModel.selectedCan = null
-        vBinding.addDeliveryCanCountControl.amount = 0
     }
 
     private fun checkForm() {
-        vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (formIsValid())
+        vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (vBinding.beerSelector.formIsValid())
             ColorStateList.valueOf(Color.GREEN)
         else
             ColorStateList.valueOf(Color.RED)
-        vBinding.addDeliveryTotalPrice.text =
-            "ღირებულება: " + viewModel.getPrice().toString() + " ₾"
-    }
-
-    private fun initBeerRecycler() {
-        beerAdapter.setData(viewModel.beerList)
-        vBinding.addDeliveryBeerRecycler.apply {
-            layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = beerAdapter
-        }
-        snapHelper.attachToRecyclerView(vBinding.addDeliveryBeerRecycler)
-        vBinding.addDeliveryBeerListIndicator.pager =
-            getIndicatorPager(vBinding.addDeliveryBeerRecycler)
-    }
-
-    private fun onStopScroll(pos: Int) {
-        beerPos = pos
-    }
-
-    inner class BeerAdapter(private var bList: List<BeerModelBase> = mutableListOf()) :
-        RecyclerView.Adapter<BeerItemViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            BeerItemViewHolder(
-                BeerItemViewBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-
-        override fun getItemCount() = bList.size
-
-        override fun onBindViewHolder(holder: BeerItemViewHolder, position: Int) {
-            with(holder.binding) {
-                tBeerNameItm.text =
-                    "${bList[position].dasaxeleba}\n${bList[position].fasi} ₾"
-                tBeerNameItm.backgroundTintList = ColorStateList
-                    .valueOf(Color.parseColor(bList[position].displayColor))
-            }
-        }
-
-        fun setData(beerList: List<BeerModelBase>) {
-            bList = beerList
-            notifyDataSetChanged()
-        }
-    }
-
-    inner class BeerItemViewHolder(val binding: BeerItemViewBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
-
-    private fun getIndicatorPager(rv: RecyclerView): BaseDotsIndicator.Pager {
-        return object : BaseDotsIndicator.Pager {
-            var onPageChangeListener: SnapOnScrollListener? = null
-
-            override val isNotEmpty: Boolean
-                get() = viewModel.beerList.size > 0
-            override val currentItem: Int
-                get() = snapHelper.getSnapPosition(rv)
-            override val isEmpty: Boolean
-                get() = viewModel.beerList.size == 0
-            override val count: Int
-                get() = viewModel.beerList.size
-
-            override fun setCurrentItem(item: Int, smoothScroll: Boolean) {
-                rv.smoothScrollToPosition(item)
-            }
-
-            override fun removeOnPageChangeListener() {
-                onPageChangeListener?.let { rv.removeOnScrollListener(it) }
-            }
-
-            override fun addOnPageChangeListener(
-                onPageChangeListenerHelper: OnPageChangeListenerHelper
-            ) {
-                onPageChangeListener = SnapOnScrollListener(
-                    snapHelper,
-                    SnapOnScrollListener.Behavior.NOTIFY_ON_SCROLL_STATE_IDLE,
-                    object : OnSnapPositionChangeListener {
-                        override fun onSnapPositionChange(position: Int) {
-                            onPageChangeListenerHelper.onPageScrolled(position, 0f)
-                            onStopScroll(position)
-                        }
-                    }
-                )
-                rv.addOnScrollListener(onPageChangeListener!!)
-            }
-        }
+        vBinding.addDeliveryTotalPrice.text = getString(R.string.cost, viewModel.getPrice())
     }
 
     companion object {
-        fun newInstance() = AddDeliveryFragment()
-
         const val MITANA = "mitana"
         const val K_OUT = "kout"
         const val M_OUT = "mout"

@@ -71,7 +71,6 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrderDoneBtn.setOnClickListener(this)
         vBinding.addOrderOrderDate.setOnClickListener(this)
 
-        vBinding.beerSelector.withPrices = true
         vBinding.beerSelector.initView(
             viewModel.beerList,
             viewModel.cansList,

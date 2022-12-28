@@ -36,7 +36,6 @@ class ApeniRepo {
         ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
             successWithData = { customerData ->
                 ioScope.launch {
-                    database.deletePricesForCustomer(customerID)
                     database.insertBeerPrices(customerData.prices)
                 }
             },

@@ -40,7 +40,6 @@ class AddDeliveryViewModel(
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
-    var selectedCan: CanModel? = null
     var saleDateCalendar: Calendar = Calendar.getInstance()
     private val _saleDayLiveData = MutableLiveData<String>()
     val saleDayLiveData: LiveData<String>
@@ -95,13 +94,6 @@ class AddDeliveryViewModel(
     ): Double = pricesForClient.find { objToBeerPrice ->
         objToBeerPrice.beerID == beerModel.id
     }?.fasi?.toDouble() ?: 0.0
-
-    fun setCan(pos: Int) {
-        selectedCan = if (pos >= 0)
-            cansList[pos]
-        else
-            null
-    }
 
     fun onDoneClick(deliveryDataComment: String) {
         if (callIsBlocked) return
@@ -262,7 +254,6 @@ class AddDeliveryViewModel(
                 }
                 if (it.kout != null) {
                     kOutEditLiveData.value = it.kout
-                    selectedCan = cansList.find { b -> b.id == it.kout.canTypeID } ?: cansList[0]
 
                     val date = dateTimeFormat.parse(it.kout.outputDate)
                     saleDateCalendar.time = date ?: Date()
