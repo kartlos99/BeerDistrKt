@@ -47,6 +47,8 @@ class BeerSelectorView @JvmOverloads constructor(
     private var itemID = 0
     var withPrices = false
 
+    private var selectedBeer: BeerModelBase? = null
+
     private val binding =
         ViewBeerSelectorBinding.bind(inflate(context, R.layout.view_beer_selector, this))
 
@@ -116,8 +118,7 @@ class BeerSelectorView @JvmOverloads constructor(
         allBeers = beerList
         visibleBeers = beerList.getVisibleBeers(selectedBeer)
         initBeerRecycler()
-        beerPos = visibleBeers.map { it.id }.indexOf(selectedBeer?.id)
-        binding.beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
+        selectedBeer?.let { scrollToBeer(it.id) }
         checkForm()
     }
 
@@ -161,15 +162,18 @@ class BeerSelectorView @JvmOverloads constructor(
         )
     }
 
-    private var selectedBeer: BeerModelBase? = null
+    private fun scrollToBeer(beerID: Int) {
+        beerPos = visibleBeers.map { it.id }.indexOf(beerID)
+        if (beerPos >= 0)
+            binding.beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
+    }
 
     fun fillBeerItemForm(item: TempBeerItemModel) = with(binding) {
         selectedBeer = item.beer
         visibleBeers = allBeers.getVisibleBeers(item.beer)
         initBeerRecycler()
         itemID = item.orderItemID
-        beerPos = visibleBeers.map { it.id }.indexOf(item.beer.id)
-        beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
+        scrollToBeer(item.beer.id)
         beerSelectorChipGr.clearCheck()
         selectedCan = item.canType
         when (item.canType.id) {
