@@ -24,7 +24,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
         ?: mutableListOf()
-    private val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
+    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?.sortedBy { it.username }
@@ -134,6 +134,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
                 .sortedBy { it.canType.name }
                 .sortedBy { it.beer.sortValue }
         }
+        editingOrderItemID = 0
     }
 
     fun removeOrderItemFromList(item: TempBeerItemModel) {

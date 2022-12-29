@@ -230,5 +230,6 @@
     <string name="add_order_item">add order item</string>
     <string name="next">next</string>
     <string name="prev">prev</string>
+    <string name="cost">ღირებულება: %.2f ₾</string>
 
 </resources>

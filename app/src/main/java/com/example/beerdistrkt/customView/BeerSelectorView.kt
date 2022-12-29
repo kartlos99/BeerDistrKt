@@ -9,15 +9,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.databinding.ViewBeerSelectorBinding
+import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
 import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
@@ -33,9 +34,9 @@ class BeerSelectorView @JvmOverloads constructor(
 
     private var beerPos = 0
     private val snapHelper = PagerSnapHelper()
-    private val beerAdapter = BeerAdapter()
 
-    private lateinit var beerList: List<BeerModelBase>
+    private lateinit var allBeers: List<BeerModelBase>
+    private lateinit var visibleBeers: List<BeerModelBase>
     private lateinit var cansList: List<CanModel>
     var selectedCan: CanModel? = null
     var onFormUpdate: (() -> Unit)? = null
@@ -44,6 +45,7 @@ class BeerSelectorView @JvmOverloads constructor(
     var onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 
     private var itemID = 0
+    var withPrices = false
 
     private val binding =
         ViewBeerSelectorBinding.bind(inflate(context, R.layout.view_beer_selector, this))
@@ -79,11 +81,12 @@ class BeerSelectorView @JvmOverloads constructor(
 
             beerSelectorBtnLeftImg.setOnClickListener {
                 beerPos =
-                    (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + beerList.size - 1) % beerList.size
+                    (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + visibleBeers.size - 1) % visibleBeers.size
                 beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
             }
             beerSelectorBtnRightImg.setOnClickListener {
-                beerPos = (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + 1) % beerList.size
+                beerPos =
+                    (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + 1) % visibleBeers.size
                 beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
             }
             beerSelectorCanChip0.setOnClickListener(this@BeerSelectorView)
@@ -91,21 +94,37 @@ class BeerSelectorView @JvmOverloads constructor(
             beerSelectorCanChip2.setOnClickListener(this@BeerSelectorView)
             beerSelectorCanChip3.setOnClickListener(this@BeerSelectorView)
 
-            beerSelectorCansScroll.postDelayed(Runnable {
+            beerSelectorCansScroll.postDelayed({
                 beerSelectorCansScroll.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
             }, 100L)
         }
     }
 
+    // mandatory
     fun initView(
         beerList: List<BeerModelBase>,
         barrelsList: List<CanModel>,
         onFormUpdate: () -> Unit
     ) {
-        this.beerList = beerList
+        selectedBeer = null
         this.onFormUpdate = onFormUpdate
         cansList = barrelsList
+        updateBeers(beerList)
+    }
+
+    fun updateBeers(beerList: List<BeerModelBase>) {
+        allBeers = beerList
+        visibleBeers = beerList.getVisibleBeers(selectedBeer)
         initBeerRecycler()
+        beerPos = visibleBeers.map { it.id }.indexOf(selectedBeer?.id)
+        binding.beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
+        checkForm()
+    }
+
+    private fun List<BeerModelBase>.getVisibleBeers(
+        currentBeerItem: BeerModelBase? = null
+    ): List<BeerModelBase> = this.filter {
+        it.isActive || (currentBeerItem?.id == it.id)
     }
 
     private fun setCan(pos: Int) {
@@ -125,14 +144,14 @@ class BeerSelectorView @JvmOverloads constructor(
         binding.beerSelectorCanCountControl.amount = 0
     }
 
-    fun checkForm() {
+    private fun checkForm() {
         onFormUpdate?.invoke()
     }
 
     fun getTempBeerItem(): TempBeerItemModel {
         return TempBeerItemModel(
             itemID,
-            beerList[snapHelper.getSnapPosition(binding.beerSelectorBeerRecycler)],
+            visibleBeers[snapHelper.getSnapPosition(binding.beerSelectorBeerRecycler)],
             selectedCan!!,
             binding.beerSelectorCanCountControl.amount,
             {
@@ -142,36 +161,54 @@ class BeerSelectorView @JvmOverloads constructor(
         )
     }
 
-    fun fillBeerItemForm(item: TempBeerItemModel) {
-        with(binding) {
-            itemID = item.orderItemID
-            beerPos = beerList.indexOf(item.beer)
-            beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
-            beerSelectorChipGr.clearCheck()
-            selectedCan = item.canType
-            when (item.canType.id) {
-                1 -> beerSelectorCanChip3.isChecked = true
-                2 -> beerSelectorCanChip2.isChecked = true
-                3 -> beerSelectorCanChip1.isChecked = true
-                4 -> beerSelectorCanChip0.isChecked = true
-            }
+    private var selectedBeer: BeerModelBase? = null
 
-            beerSelectorCanCountControl.amount = item.count
+    fun fillBeerItemForm(item: TempBeerItemModel) = with(binding) {
+        selectedBeer = item.beer
+        visibleBeers = allBeers.getVisibleBeers(item.beer)
+        initBeerRecycler()
+        itemID = item.orderItemID
+        beerPos = visibleBeers.map { it.id }.indexOf(item.beer.id)
+        beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
+        beerSelectorChipGr.clearCheck()
+        selectedCan = item.canType
+        when (item.canType.id) {
+            1 -> beerSelectorCanChip3.isChecked = true
+            2 -> beerSelectorCanChip2.isChecked = true
+            3 -> beerSelectorCanChip1.isChecked = true
+            4 -> beerSelectorCanChip0.isChecked = true
         }
+        beerSelectorCanCountControl.amount = item.count
     }
 
-    private fun initBeerRecycler() {
-        with(binding) {
-            beerSelectorBeerRecycler.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            beerSelectorBeerRecycler.adapter = beerAdapter
-            snapHelper.attachToRecyclerView(beerSelectorBeerRecycler)
-            beerSelectorBeerListIndicator.pager = getIndicatorPager(beerSelectorBeerRecycler)
+    fun fillBarrels(barrelRowModel: BarrelRowModel) = with(binding) {
+        setCan(barrelRowModel.canTypeID - 1)
+        when (barrelRowModel.canTypeID) {
+            1 -> beerSelectorCanChip3.isChecked = true
+            2 -> beerSelectorCanChip2.isChecked = true
+            3 -> beerSelectorCanChip1.isChecked = true
+            4 -> beerSelectorCanChip0.isChecked = true
         }
+        beerSelectorCanCountControl.amount = barrelRowModel.count
+    }
+
+    fun getBarrelsCount() = binding.beerSelectorCanCountControl.amount
+
+    private fun initBeerRecycler() = with(binding) {
+        beerSelectorBeerRecycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        beerSelectorBeerRecycler.adapter = BeerAdapter()
+        snapHelper.attachToRecyclerView(beerSelectorBeerRecycler)
+        beerSelectorBeerListIndicator.pager = getIndicatorPager(beerSelectorBeerRecycler)
     }
 
     private fun onStopScroll(pos: Int) {
         beerPos = pos
+        selectedBeer = null
+    }
+
+    fun beerGroupVisibleIf(isVisible: Boolean) {
+        binding.beerGroup.isVisible = isVisible
     }
 
     inner class BeerAdapter : RecyclerView.Adapter<BeerItemViewHolder>() {
@@ -185,17 +222,21 @@ class BeerSelectorView @JvmOverloads constructor(
                 )
             )
 
-        override fun getItemCount() = beerList.size
+        override fun getItemCount() = visibleBeers.size
 
         override fun onBindViewHolder(holder: BeerItemViewHolder, position: Int) {
-            holder.binding.tBeerNameItm.text = beerList[position].dasaxeleba
-            holder.binding.tBeerNameItm.backgroundTintList = ColorStateList
-                .valueOf(Color.parseColor(beerList[position].displayColor))
+
+            holder.itemBinding.tBeerNameItm.text = if (withPrices)
+                "${visibleBeers[position].dasaxeleba}\n${visibleBeers[position].fasi} ₾"
+            else
+                visibleBeers[position].dasaxeleba
+            holder.itemBinding.tBeerNameItm.backgroundTintList = ColorStateList
+                .valueOf(Color.parseColor(visibleBeers[position].displayColor))
         }
     }
 
-    inner class BeerItemViewHolder(val binding: BeerItemViewBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    inner class BeerItemViewHolder(val itemBinding: BeerItemViewBinding) :
+        RecyclerView.ViewHolder(itemBinding.root)
 
 
     private fun getIndicatorPager(rv: RecyclerView): BaseDotsIndicator.Pager {
@@ -203,7 +244,7 @@ class BeerSelectorView @JvmOverloads constructor(
             var onPageChangeListener: SnapOnScrollListener? = null
 
             override val isNotEmpty: Boolean
-                get() = rv.adapter?.itemCount ?: 0 > 0
+                get() = (rv.adapter?.itemCount ?: 0) > 0
             override val currentItem: Int
                 get() = snapHelper.getSnapPosition(rv)
             override val isEmpty: Boolean
