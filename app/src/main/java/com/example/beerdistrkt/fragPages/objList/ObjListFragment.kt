@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.utils.ADD_ORDER
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.MITANA
@@ -40,25 +39,22 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         savedInstanceState: Bundle?
     ): View {
         vBinding = ObjListFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = this
-
-        vBinding.viewModel = viewModel
-
         return vBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val objListObserver = Observer<List<Obieqti>> {
-            initClientsList(it)
-        }
-        viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
-
-        viewModel.clients.observe(viewLifecycleOwner) {
-            clientListAdapter.submitList(it)
-        }
         setHasOptionsMenu(true)
+        initClientsRecycler()
+        setupObservers()
+    }
+
+    private fun setupObservers() {
+
+        viewModel.customersLiveData.observe(viewLifecycleOwner, Observer {
+            clientListAdapter.submitList(it)
+        })
     }
 
     private fun navigateTo(clientID: Int) {
@@ -83,27 +79,11 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     }
 
-//        registerForContextMenu(vBinding.clientsRecycler)
-
-//        objListObserver.onChanged(mutableListOf(Obieqti("rame saxeli")))
-//        viewModel.objList.observe(this, objListObserver)
-
-//        viewModel.isUpdating.observe(this, Observer {
-//            if(it){
-//                vBinding.progresBarObjList.visibility = View.VISIBLE
-//            }else{
-//                vBinding.progresBarObjList.visibility = View.GONE
-//            }
-//        })
-
-    private fun initClientsList(list: List<Obieqti>) {
-        vBinding.clientsRecycler.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        vBinding.clientsRecycler.setHasFixedSize(true)
-
-        clientListAdapter.submitList(list)
+    private fun initClientsRecycler() = with(vBinding.clientsRecycler) {
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        setHasFixedSize(true)
         clientListAdapter.onItemClick = ::navigateTo
-        vBinding.clientsRecycler.adapter = clientListAdapter
+        adapter = clientListAdapter
 
 /*
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(

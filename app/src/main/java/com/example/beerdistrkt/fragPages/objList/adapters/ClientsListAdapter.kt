@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ObjListRowBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.example.beerdistrkt.utils.Session
 
 class ClientsListAdapter :
-    ListAdapter<Obieqti, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
+    ListAdapter<Customer, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
 
     var onItemClick: (clientID: Int) -> Unit = {}
 
@@ -24,7 +24,7 @@ class ClientsListAdapter :
         holder.bind(getItem(position))
     }
 
-    fun getClientObject(position: Int): Obieqti {
+    fun getClientObject(position: Int): Customer {
         return getItem(position)
     }
 
@@ -42,7 +42,7 @@ class ClientsListAdapter :
             }
         }
 
-        fun bind(client: Obieqti) {
+        fun bind(client: Customer) {
             binding.clientNameTv.text = client.dasaxeleba
             itemView.tag = getItem(adapterPosition)
         }
@@ -52,7 +52,7 @@ class ClientsListAdapter :
             v: View?,
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
-            val title = (itemView.tag as Obieqti).dasaxeleba
+            val title = (itemView.tag as Customer).dasaxeleba
             menu?.setHeaderTitle(title)
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
@@ -63,12 +63,12 @@ class ClientsListAdapter :
         }
     }
 
-    class ClientListDiffUtilCallBack : DiffUtil.ItemCallback<Obieqti>() {
-        override fun areItemsTheSame(oldItem: Obieqti, newItem: Obieqti): Boolean {
+    class ClientListDiffUtilCallBack : DiffUtil.ItemCallback<Customer>() {
+        override fun areItemsTheSame(oldItem: Customer, newItem: Customer): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Obieqti, newItem: Obieqti): Boolean {
+        override fun areContentsTheSame(oldItem: Customer, newItem: Customer): Boolean {
             return oldItem == newItem
         }
     }

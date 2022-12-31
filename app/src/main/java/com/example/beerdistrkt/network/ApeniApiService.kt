@@ -205,6 +205,9 @@ interface ApeniApiService {
     @GET("client/getAllData.php")
     fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDataDTO>>
 
+    @GET("client/getIdleInfo.php")
+    fun getCustomersIdleInfo(): Call<DataResponse<List<CustomerIdlInfo>>>
+
     // storeHouse
     @GET("storeHouse/getBalance.php")
     fun getStoreHouseBalance(

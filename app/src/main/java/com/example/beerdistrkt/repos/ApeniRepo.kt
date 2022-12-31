@@ -1,10 +1,13 @@
 package com.example.beerdistrkt.repos
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.ObiectWithPrices
+import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
 import kotlinx.coroutines.CoroutineScope
@@ -44,5 +47,35 @@ class ApeniRepo {
         )
 
         return database.getCustomerWithPricesLiveData(customerID)
+    }
+
+    var customersIdleInfoLiveData: MutableLiveData<List<CustomerIdlInfo>> = MutableLiveData<List<CustomerIdlInfo>>()
+    var customers = listOf<Obieqti>()
+
+    fun getCustomers(): LiveData<List<Obieqti>> {
+        ApeniApiService.getInstance().getObieqts().sendRequest(
+            successWithData = {
+                ioScope.launch {
+                    database.clearObiectsTable()
+                    database.insertCustomers(it)
+                }
+            },
+            failure = {},
+            onConnectionFailure = {}
+        )
+        return database.getAllObieqts().also {
+            customers = it.value ?: listOf()
+        }
+    }
+
+    fun getCustomersIdleInfo(): LiveData<List<CustomerIdlInfo>> {
+        ApeniApiService.getInstance().getCustomersIdleInfo().sendRequest(
+            successWithData = {
+                customersIdleInfoLiveData.postValue(it)
+            },
+            failure = {},
+            onConnectionFailure = {}
+        )
+        return customersIdleInfoLiveData
     }
 }

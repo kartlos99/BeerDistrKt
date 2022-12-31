@@ -10,6 +10,9 @@ interface ApeniDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertObiecti(obieqti: Obieqti)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCustomers(customers: List<Obieqti>)
+
     @Query("DELETE FROM obieqts_table")
     fun clearObiectsTable()
 
