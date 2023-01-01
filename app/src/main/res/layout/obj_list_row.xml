@@ -1,8 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/clientNameTv"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/customerItemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/gr_size_6"
-    android:background="@drawable/bkg_underline"
-    android:textSize="24sp" />
+    android:background="@drawable/bkg_underline">
+
+    <TextView
+        android:id="@+id/clientNameTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/gr_size_6"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@id/infoIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="client name" />
+
+    <ImageView
+        android:id="@+id/infoIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_8"
+        android:contentDescription="@string/img_description"
+        android:src="@drawable/ic_outline_info_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/important_info_color" />
+
+    <TextView
+        android:id="@+id/tvPassedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="@string/x_days_ago"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

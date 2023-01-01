@@ -81,7 +81,6 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     private fun initClientsRecycler() = with(vBinding.clientsRecycler) {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        setHasFixedSize(true)
         clientListAdapter.onItemClick = ::navigateTo
         adapter = clientListAdapter
 

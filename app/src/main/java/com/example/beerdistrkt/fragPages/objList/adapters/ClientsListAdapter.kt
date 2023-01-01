@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.fragPages.objList.adapters
 
+import android.content.Context
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -42,8 +44,11 @@ class ClientsListAdapter :
             }
         }
 
-        fun bind(client: Customer) {
-            binding.clientNameTv.text = client.dasaxeleba
+        fun bind(client: Customer) = with(binding) {
+            clientNameTv.text = client.dasaxeleba
+            tvPassedTime.text = formatPassedTime(root.context, client.warnInfo?.passedDays ?: 0)
+            infoIcon.isVisible = client.warnInfo != null
+            tvPassedTime.isVisible = client.warnInfo != null
             itemView.tag = getItem(adapterPosition)
         }
 
@@ -61,6 +66,12 @@ class ClientsListAdapter :
             menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
                 ?.isEnabled = Session.get().hasPermission(Permission.DeleteClient)
         }
+    }
+
+    private fun formatPassedTime(context: Context, days: Int): String = when {
+        days < 31 -> context.resources.getString(R.string.x_days_ago, days)
+        days < 366 -> context.resources.getString(R.string.x_month_ago, days / 30)
+        else -> context.resources.getString(R.string.x_year_ago, days / 365)
     }
 
     class ClientListDiffUtilCallBack : DiffUtil.ItemCallback<Customer>() {
