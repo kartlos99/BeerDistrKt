@@ -33,6 +33,8 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     var clientPhone: String? = null
 
     private lateinit var searchView: SearchView
+    private lateinit var searchItem: MenuItem
+    private lateinit var filterIdleItem: MenuItem
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -125,7 +127,8 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.client_list_page_menu, menu)
 
-        val searchItem = menu.findItem(R.id.action_search)
+        filterIdleItem = menu.findItem(R.id.only_notable_items)
+        searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
 
         val pendingQuery = viewModel.searchQuery.value
@@ -133,12 +136,25 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             searchItem.expandActionView()
             searchView.setQuery(pendingQuery, false)
             viewModel.onNewQuery(pendingQuery)
+            filterIdleItem.isChecked = false
         }
 
         searchView.onTextChanged { query ->
             viewModel.searchQuery.value = query
             viewModel.onNewQuery(query)
+            filterIdleItem.isChecked = false
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onContextItemSelected(item)
+        if (item.itemId == R.id.only_notable_items) {
+            searchItem.collapseActionView()
+            item.isChecked = !item.isChecked
+            viewModel.filterNotableItems(item.isChecked)
+            return true
+        }
+        return false
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

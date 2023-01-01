@@ -73,6 +73,12 @@ class ObjListViewModel : BaseViewModel() {
         }
     }
 
+    fun filterNotableItems(filtering: Boolean) {
+        _customersLiveData.value =
+            if (filtering) customers.filter { it.warnInfo != null }
+            else customers
+    }
+
     companion object {
         const val TAG = "O_L_VM"
     }
