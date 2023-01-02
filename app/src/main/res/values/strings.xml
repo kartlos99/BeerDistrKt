@@ -235,5 +235,10 @@
     <string name="x_month_ago">%d თვის წინ</string>
     <string name="x_year_ago">%d წლის წინ</string>
     <string name="only_notable_items">მხოლოდ საყურადღებო</string>
+    <string name="settings">პარამეტრები</string>
+    <string name="with_brackets">%s ( %s )</string>
+    <string name="customer_idle_setting_title">რამდენი დღის უმოქმედობის შემდეგ გაწითლდეს ობიექტი</string>
+    <string name="new_value">ახალი მნიშვნელობა</string>
+
 
 </resources>

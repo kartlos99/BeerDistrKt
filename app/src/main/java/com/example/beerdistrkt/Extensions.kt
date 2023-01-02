@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -245,6 +246,13 @@ fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text
             callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
             dialog.dismiss()
         }.show()
+}
+
+fun Context.showSoftKeyboard(view: View) {
+    if (view.requestFocus()) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
 }
 
 fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
