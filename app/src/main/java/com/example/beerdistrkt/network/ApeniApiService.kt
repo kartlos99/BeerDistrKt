@@ -21,6 +21,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
+import com.example.beerdistrkt.fragPages.settings.model.SettingParam
 import com.example.beerdistrkt.fragPages.showHistory.MoneyHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
@@ -276,4 +277,10 @@ interface ApeniApiService {
     @POST("beer/delete.php")
     fun deleteBeer(@Body deleteBeerModel: DeleteBeerModel): Call<DataResponse<String>>
 
+    // Settings
+    @GET("settings/getSettingsValue.php")
+    fun getSettingsValue(): Call<DataResponse<List<SettingParam>>>
+
+    @POST("settings/updateSettingValue.php")
+    fun updateSettingsValue(@Body newValue: SettingParam): Call<DataResponse<String>>
 }

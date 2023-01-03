@@ -2,11 +2,14 @@ package com.example.beerdistrkt.fragPages.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SettingsFragmentBinding
 import com.example.beerdistrkt.fragPages.settings.SettingsViewModel.SettingCode.IDLE_WARNING
+import com.example.beerdistrkt.fragPages.settings.model.SettingParam
 import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.utils.ApiResponseState
 
 class SettingsFragment : BaseFragment<SettingsViewModel>() {
     override val viewModel by lazy {
@@ -29,10 +32,34 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 .show(childFragmentManager, EditValueDialog.TAG)
 
         }
+        binding.setupObservers()
     }
 
-    fun SettingsFragmentBinding.setupObservers() {
-//        viewModel.
+    private fun SettingsFragmentBinding.setupObservers() {
+        viewModel.getSettingsLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> proceedData(it.data)
+                is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
+                is ApiResponseState.ApiError -> showToast(it.errorText)
+                else -> {}
+            }
+        }
+        viewModel.updateValuesLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> {
+                    idleSettingsValue.text = it.data
+                }
+                is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
+                is ApiResponseState.ApiError -> showToast(it.errorText)
+                else -> {}
+            }
+        }
+    }
+
+    private fun SettingsFragmentBinding.proceedData(data: List<SettingParam>) {
+        idleSettingsValue.text = data.firstOrNull {
+            it.code == IDLE_WARNING.code
+        }?.valueInt.toString()
     }
 
 }
