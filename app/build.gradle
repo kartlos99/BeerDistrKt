@@ -16,8 +16,8 @@ android {
         applicationId "com.example.beerdistrkt"
         minSdk 23
         targetSdk 33
-        versionCode 15
-        versionName "3.3.4"
+        versionCode 16
+        versionName "3.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField ("String", "FIREBASE_PASS", '"' + fbPass + '"')
