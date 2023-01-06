@@ -22,6 +22,7 @@ fun View.show() {
     this.visibility = View.VISIBLE
 }
 
+@Deprecated("use native isVisible", ReplaceWith("isVisible"))
 fun View.visibleIf(boolean: Boolean) {
     if (boolean)
         this.show()

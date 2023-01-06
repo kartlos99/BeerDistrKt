@@ -365,7 +365,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="@string/sachuqari"
+                    android:text="@string/gift"
                     app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/addDeliveryDateBtn" />

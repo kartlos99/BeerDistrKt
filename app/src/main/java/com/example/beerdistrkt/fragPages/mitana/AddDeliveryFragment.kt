@@ -8,7 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.StringRes
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -75,29 +76,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         val args = AddDeliveryFragmentArgs.fromBundle(arguments ?: Bundle())
         viewModel.recordID = args.recordID
         viewModel.operation = args.operacia
-        if (viewModel.operation != null) {
-            viewModel.getRecordData()
-            vBinding.addDeliveryBarrelGr.visibleIf(false)
-        }
-        vBinding.addDeliveryhideOnEditGroup.visibleIf(viewModel.operation == null)
-        vBinding.beerSelector.beerGroupVisibleIf(viewModel.operation != K_OUT)
-
-        when (viewModel.operation) {
-            MITANA -> {
-                vBinding.addDeliveryMoneyGr.visibleIf(false)
-                vBinding.addDeliveryCheckReplace.visibility = View.GONE
-            }
-            M_OUT -> {
-                vBinding.addDeliveryMitanaGr.visibleIf(false)
-                vBinding.addDeliveryCheckGift.visibility = View.GONE
-                vBinding.addDeliveryCheckReplace.visibility = View.GONE
-            }
-            K_OUT -> {
-                vBinding.addDeliveryMoneyGr.visibleIf(false)
-                vBinding.addDeliveryCheckGift.visibility = View.GONE
-                vBinding.addDeliveryCheckReplace.visibility = View.GONE
-            }
-        }
 
         vBinding.addDeliveryDoneBtn.setOnClickListener(this)
         vBinding.addDeliveryDateBtn.setOnClickListener(this)
@@ -105,37 +83,71 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryMoneyExpander.setOnClickListener(this)
         vBinding.addDeliveryMoneyCashImg.setOnClickListener(this)
         vBinding.addDeliveryMoneyTransferImg.setOnClickListener(this)
+        vBinding.initView()
 
-        vBinding.addDeliveryMoneyEt.simpleTextChangeListener {
-            vBinding.addDeliveryMoneyCashImg.setTint(getColorForValidationIndicator(it))
+        initViewModel()
+        checkForm()
+        setPageTitle(resources.getString(R.string.delivery))
+        showDebt()
+    }
+
+    private fun AddDeliveryFragmentBinding.initView() {
+        if (viewModel.operation != null) {
+            viewModel.getRecordData()
+            addDeliveryBarrelGr.isVisible = false
         }
-        vBinding.addDeliveryMoneyTransferEt.simpleTextChangeListener {
-            vBinding.addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
+        addDeliveryhideOnEditGroup.isVisible = viewModel.operation == null
+        beerSelector.beerGroupVisibleIf(viewModel.operation != K_OUT)
+
+        when (viewModel.operation) {
+            MITANA -> {
+                addDeliveryMoneyGr.isVisible = false
+                addDeliveryCheckReplace.isVisible = false
+            }
+            M_OUT -> {
+                addDeliveryMitanaGr.isVisible = false
+                addDeliveryCheckGift.isVisible = false
+                addDeliveryCheckReplace.isVisible = false
+            }
+            K_OUT -> {
+                addDeliveryMoneyGr.isVisible = false
+                addDeliveryCheckGift.isVisible = false
+                addDeliveryCheckReplace.isVisible = false
+            }
         }
 
-        vBinding.beerSelector.withPrices = true
-        vBinding.beerSelector.initView(
+        addDeliveryMoneyEt.simpleTextChangeListener {
+            addDeliveryMoneyCashImg.setTint(getColorForValidationIndicator(it))
+        }
+        addDeliveryMoneyTransferEt.simpleTextChangeListener {
+            addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
+        }
+
+        beerSelector.withPrices = true
+        beerSelector.initView(
             viewModel.beerList,
             viewModel.cansList,
             ::checkForm
         )
-        vBinding.beerSelector.onDeleteClick = {
+        beerSelector.onDeleteClick = {
             viewModel.removeSaleItemFromList(it)
         }
 
-        vBinding.addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
+        addDeliveryCheckGift.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isGift = isChecked
+            setupAutoComment(isChecked, R.string.gift)
         }
-        vBinding.addDeliveryCheckReplace.setOnCheckedChangeListener { _, isChecked ->
+        addDeliveryCheckReplace.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isReplace = isChecked
+            setupAutoComment(isChecked, R.string.replace)
         }
-
-        initViewModel()
-        checkForm()
-        (activity as AppCompatActivity).supportActionBar?.title =
-            resources.getString(R.string.delivery)
-        showDebt()
     }
+
+    private fun setupAutoComment(isChecked: Boolean, @StringRes textRes: Int) =
+        with(vBinding.addDeliveryComment) {
+            if (text().isEmpty() && isChecked) setText(textRes)
+            if (text() == getString(textRes) && !isChecked) setText("")
+        }
 
     private fun getColorForValidationIndicator(value: CharSequence): Int {
         return if (value.isNotEmpty() && (value.toString().toDoubleOrNull() ?: .0) > .0)
@@ -145,9 +157,9 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun initViewModel() {
-        viewModel.clientLiveData.observe(viewLifecycleOwner) {
+        viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
-        }
+        })
         viewModel.beerListLiveData.observe(viewLifecycleOwner, Observer {
             vBinding.beerSelector.updateBeers(it)
         })
@@ -348,12 +360,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
     }
 
-    private fun checkForm() {
-        vBinding.addDeliveryAddSaleItemBtn.backgroundTintList = if (vBinding.beerSelector.formIsValid())
-            ColorStateList.valueOf(Color.GREEN)
-        else
-            ColorStateList.valueOf(Color.RED)
-        vBinding.addDeliveryTotalPrice.text = getString(R.string.cost, viewModel.getPrice())
+    private fun checkForm() = with(vBinding) {
+        addDeliveryAddSaleItemBtn.backgroundTintList =
+            if (beerSelector.formIsValid())
+                ColorStateList.valueOf(Color.GREEN)
+            else
+                ColorStateList.valueOf(Color.RED)
+        addDeliveryTotalPrice.text = getString(R.string.cost, viewModel.getPrice())
     }
 
     companion object {
