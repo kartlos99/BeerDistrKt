@@ -16,8 +16,8 @@ android {
         applicationId "com.example.beerdistrkt"
         minSdk 23
         targetSdk 33
-        versionCode 16
-        versionName "3.4.0"
+        versionCode 17
+        versionName "3.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField ("String", "FIREBASE_PASS", '"' + fbPass + '"')
@@ -103,8 +103,8 @@ dependencies {
     // Preferences DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    implementation "com.tbuonomo.andrui:viewpagerdotsindicator:${dotsIndicatorVer}"
-    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    implementation("com.tbuonomo:dotsindicator:4.3")
+    implementation 'com.github.chthai64:SwipeRevealLayout:1.4.0'
 
     implementation 'com.google.firebase:firebase-analytics:20.0.0'
     implementation 'com.google.firebase:firebase-auth:21.0.1'
