@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.objList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.example.beerdistrkt.models.ClientDeactivateModel
@@ -10,11 +11,12 @@ import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ObjListViewModel : BaseViewModel() {
 
-    var customers: List<Customer> = listOf()
+    private var customers: List<Customer> = listOf()
     private val _customersLiveData = MutableLiveData<List<Customer>>()
     val customersLiveData: LiveData<List<Customer>>
         get() = _customersLiveData
@@ -26,13 +28,13 @@ class ObjListViewModel : BaseViewModel() {
     private val repository = ApeniRepo()
 
     init {
-        repository.getCustomers().observeForever {
-            updateList(it, repository.customersIdleInfoLiveData.value ?: listOf())
+        viewModelScope.launch {
+            repository.allData.collectLatest {
+                updateList(it.first, it.second)
+            }
         }
-        repository.getCustomersIdleInfo().observeForever {
-            if (repository.customers.isNotEmpty() && it.isNotEmpty())
-                updateList(repository.customers, it)
-        }
+        repository.getCustomers()
+        repository.getCustomersIdleInfo()
     }
 
     private fun updateList(
