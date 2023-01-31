@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.sysClear
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
@@ -36,12 +37,19 @@ class SysClearFragment : BaseFragment<SysClearViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
         setFragmentResultListener(SYS_CLEAR_REQUEST_KEY, ::onResultReceived)
+        setupMenu(R.menu.sys_clear_menu, ::onMenuItemSelected)
+    }
 
-        binding.sysClearModeBtn.setOnClickListener {
-            findNavController().navigate(
-                SysClearFragmentDirections.actionSysClearFragmentToObjListFragment(SYS_CLEAR)
-            )
+    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.select_client -> {
+                findNavController().navigate(
+                    SysClearFragmentDirections.actionSysClearFragmentToObjListFragment(SYS_CLEAR)
+                )
+                return true
+            }
         }
+        return false
     }
 
     private fun onResultReceived(requestKey: String, bundle: Bundle) {
