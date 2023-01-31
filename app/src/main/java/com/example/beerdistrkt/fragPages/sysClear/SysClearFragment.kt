@@ -4,23 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.FragmentSalesHistoryBinding
+import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.SysClearFragmentBinding
 import com.example.beerdistrkt.fragPages.sysClear.adapter.SysClearAdapter
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
-import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.showAskingDialog
+import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.visibleIf
+import com.example.beerdistrkt.utils.SYS_CLEAR
 
-class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSelectedListener {
+class SysClearFragment : BaseFragment<SysClearViewModel>() {
 
     private val binding by viewBinding(SysClearFragmentBinding::bind)
 
@@ -38,22 +35,20 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        setFragmentResultListener(SYS_CLEAR_REQUEST_KEY, ::onResultReceived)
 
         binding.sysClearModeBtn.setOnClickListener {
-            onModeChange()
-        }
-        binding.sysClearSaveBtn.setOnClickListener {
-            viewModel.addClearingData()
+            findNavController().navigate(
+                SysClearFragmentDirections.actionSysClearFragmentToObjListFragment(SYS_CLEAR)
+            )
         }
     }
 
-    private fun onModeChange() {
-        viewModel.activeAdd = !viewModel.activeAdd
-        with(binding) {
-            sysClearSaveBtn.visibleIf(viewModel.activeAdd)
-            sysCleanSpinner.visibleIf(viewModel.activeAdd)
-            sysClearModeBtn.text = if (viewModel.activeAdd) "-" else "+"
-        }
+    private fun onResultReceived(requestKey: String, bundle: Bundle) {
+        if (requestKey == SYS_CLEAR_REQUEST_KEY)
+            viewModel.findClient(bundle.getInt(CLIENT_ID_KEY))?.let {
+                showConfirmDialog(it)
+            } ?: showToast(R.string.some_error)
     }
 
     private fun initViewModel() {
@@ -65,37 +60,34 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                 else -> {}
             }
         })
-        viewModel.clientListLiveData.observe(viewLifecycleOwner, Observer { clientsList ->
-            with(binding) {
-                sysClearModeBtn.isEnabled = true
-
-                val clientsAdapter = ArrayAdapter(
-                    requireContext(),
-                    R.layout.simple_dropdown_item,
-                    clientsList.map { it.dasaxeleba }
-                )
-                sysCleanSpinner.adapter = clientsAdapter
-                sysCleanSpinner.onItemSelectedListener = this@SysClearFragment
-            }
-        })
-        viewModel.addClearLiveData.observe(viewLifecycleOwner) {
+        viewModel.addClearFlow.collectLatest(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Loading -> {
                 }
                 is ApiResponseState.Success -> {
                     showToast(it.data)
-                    if (viewModel.activeAdd)
-                        onModeChange()
                 }
                 else -> {}
             }
         }
     }
 
+    private fun showConfirmDialog(client: Obieqti) =
+        requireContext().showAskingDialog(
+            getString(R.string.sys_clean),
+            getString(R.string.confirm_sys_clear_on, client.dasaxeleba),
+            R.string.yes,
+            R.string.no,
+            R.style.ThemeOverlay_MaterialComponents_Dialog
+        ) {
+            viewModel.addClearingData(client.id!!)
+        }
+
+
     private fun initRecycler(data: List<SysClearModel>) {
         binding.sysClearRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = SysClearAdapter(data)
-        adapter.onLongPress = { name, id ->
+        adapter.onLongPress = { _, id ->
             requireContext().showAskingDialog(
                 R.string.delete,
                 R.string.confirm_delete_text,
@@ -103,15 +95,14 @@ class SysClearFragment : BaseFragment<SysClearViewModel>(), AdapterView.OnItemSe
                 R.string.no,
                 R.style.ThemeOverlay_MaterialComponents_Dialog
             ) {
-                viewModel.addClearingData(id)
+                viewModel.addClearingData(id, id)
             }
         }
         binding.sysClearRecycler.adapter = adapter
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.selectClient(position)
+    companion object {
+        const val SYS_CLEAR_REQUEST_KEY = "SYS_CLEAR_REQUEST_KEY"
+        const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
     }
 }

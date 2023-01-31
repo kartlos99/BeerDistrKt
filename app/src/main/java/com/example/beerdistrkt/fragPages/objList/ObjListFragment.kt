@@ -9,16 +9,18 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.utils.ADD_ORDER
-import com.example.beerdistrkt.utils.AMONAWERI
-import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.onTextChanged
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
+import com.example.beerdistrkt.utils.*
 
 class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
@@ -76,7 +78,13 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 ObjListFragmentDirections
                     .actionObjListFragmentToAmonaweriFragment(clientID)
             )
-//                    else -> // show toast
+            SYS_CLEAR -> {
+                setFragmentResult(
+                    SYS_CLEAR_REQUEST_KEY,
+                    bundleOf(CLIENT_ID_KEY to clientID)
+                )
+                vBinding.root.findNavController().navigateUp()
+            }
         }
 
     }

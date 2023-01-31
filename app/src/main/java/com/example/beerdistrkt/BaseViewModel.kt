@@ -84,4 +84,8 @@ abstract class BaseViewModel : ViewModel() {
     val dateTimeFullFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     val dateFormatDash = SimpleDateFormat("yyyy-MM-dd")
     val dateFormat2Dots = SimpleDateFormat("yyyy:MM:dd")
+
+    companion object {
+        const val TAG = "TAG_VM"
+    }
 }

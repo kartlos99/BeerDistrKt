@@ -61,7 +61,11 @@
         android:id="@+id/sysClearFragment"
         android:name="com.example.beerdistrkt.fragPages.sysClear.SysClearFragment"
         android:label="@string/sys_clean"
-        tools:layout="@layout/sys_clear_fragment" />
+        tools:layout="@layout/sys_clear_fragment" >
+        <action
+            android:id="@+id/action_sysClearFragment_to_objListFragment"
+            app:destination="@id/objListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addObjectFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"

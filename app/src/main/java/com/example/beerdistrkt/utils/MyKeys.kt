@@ -4,6 +4,7 @@ const val MDEBAREOBA = "mdeb"
 const val MITANA = "mitana"
 const val AMONAWERI = "amonaweri"
 const val ADD_ORDER = "add_order"
+const val SYS_CLEAR = "sys_clear"
 
 const val TITLE_0 = "დავალიანება"
 const val TITLE_1 = "კასრი"

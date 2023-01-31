@@ -36,7 +36,7 @@ class SettingsViewModel : BaseViewModel() {
         _updateValuesLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().updateSettingsValue(
-                SettingParam(code.code, value.toInt())
+                SettingParam(code.code, if (value.isBlank()) 0 else value.toInt())
             ),
             successWithData = {
                 _updateValuesLiveData.value = ApiResponseState.Success(value)

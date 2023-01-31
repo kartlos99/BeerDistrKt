@@ -82,4 +82,8 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     fun setPageTitle(titleRes: Int) = setPageTitle(getString(titleRes))
 
     fun isAccessTokenValid() = Session.get().isAccessTokenValid()
+
+    companion object {
+        const val TAG = "TAG_FR"
+    }
 }

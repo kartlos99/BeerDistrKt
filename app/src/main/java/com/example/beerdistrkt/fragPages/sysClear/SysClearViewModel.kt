@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.sysClear
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
@@ -9,27 +10,34 @@ import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 
 class SysClearViewModel : BaseViewModel() {
 
-    var activeAdd = false
-
-    val clientListLiveData = database.getAllObieqts()
-    var selectedclientID = -1
+    private val clientListLiveData = database.getAllObieqts()
 
     private val _sysClearLiveData = MutableLiveData<ApiResponseState<List<SysClearModel>>>()
     val sysClearLiveData: LiveData<ApiResponseState<List<SysClearModel>>>
         get() = _sysClearLiveData
 
-    private val _addClearLiveData = MutableLiveData<ApiResponseState<String>>()
-    val addClearLiveData: LiveData<ApiResponseState<String>>
-        get() = _addClearLiveData
+    private val _addClearFlow = MutableSharedFlow<ApiResponseState<String>>()
+    val addClearFlow: SharedFlow<ApiResponseState<String>> = _addClearFlow
+
+    private val customers = mutableListOf<Obieqti>()
 
     init {
         getSysCleanList()
+        viewModelScope.launch {
+            clientListLiveData.observeForever {
+                customers.clear()
+                customers.addAll(it)
+            }
+        }
     }
 
-    fun getSysCleanList() {
+    private fun getSysCleanList() {
         _sysClearLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
             ApeniApiService.getInstance().getSysCleaning(),
@@ -42,22 +50,23 @@ class SysClearViewModel : BaseViewModel() {
         )
     }
 
-    fun selectClient(position: Int) {
-        selectedclientID = (clientListLiveData.value?.get(position) as Obieqti).id ?: -1
+    fun addClearingData(clientID: Int, deleteRecordID: Int = 0) {
+        viewModelScope.launch {
+            _addClearFlow.emit(ApiResponseState.Loading(true))
+            val requestData = AddClearingModel(deleteRecordID, clientID, Session.get().getUserID())
+            sendRequest(
+                ApeniApiService.getInstance().addDeleteClearing(requestData),
+                successWithData = {
+//                    Log.d(TAG, "addClearingData: req2")
+                    uiScope.launch { _addClearFlow.emit(ApiResponseState.Success(it)) }
+                    getSysCleanList()
+                },
+                finally = {
+                    uiScope.launch { _addClearFlow.emit(ApiResponseState.Loading(false)) }
+                }
+            )
+        }
     }
 
-    fun addClearingData(recordID: Int = 0) {
-        _addClearLiveData.value = ApiResponseState.Loading(true)
-        val requestData = AddClearingModel(recordID, selectedclientID, Session.get().getUserID())
-        sendRequest(
-            ApeniApiService.getInstance().addDeleteClearing(requestData),
-            successWithData = {
-                _addClearLiveData.value = ApiResponseState.Success(it)
-                getSysCleanList()
-            },
-            finally = {
-                _addClearLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
-    }
+    fun findClient(clientID: Int) = customers.firstOrNull { it.id == clientID }
 }
