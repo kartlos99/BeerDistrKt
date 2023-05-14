@@ -119,8 +119,7 @@
             app:destination="@id/amonaweriFragment"/>
         <action
             android:id="@+id/action_objListFragment_to_addDeliveryFragment"
-            app:destination="@id/addDeliveryFragment"
-            app:popUpTo="@+id/homeFragment" />
+            app:destination="@id/addDeliveryFragment" />
         <action
             android:id="@+id/action_objListFragment_to_addOrdersFragment"
             app:destination="@id/addOrdersFragment"
