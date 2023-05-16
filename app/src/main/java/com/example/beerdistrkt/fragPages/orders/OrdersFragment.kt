@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -36,6 +37,9 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
     private var switchToDelivery: SwitchCompat? = null
+
+    private lateinit var searchView: SearchView
+    private lateinit var searchItem: MenuItem
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -131,8 +135,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             }*/
             ordersAdapter.updateLastItem(checked)
         }
-        vBinding.orderRootConstraint.setBackgroundColor(
-            if (checked) resources.getColor(R.color.colorAccent_33) else Color.WHITE
+        vBinding.ordersRecycler.setBackgroundColor(
+            if (checked) resources.getColor(R.color.color_delivery_bkg) else resources.getColor(R.color.color_order_bkg)
         )
     }
 
@@ -253,6 +257,20 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
             deliveryItem.isVisible = isChecked
+        }
+
+        searchItem = menu.findItem(R.id.orderSearch)
+        searchView = searchItem.actionView as SearchView
+
+        val pendingQuery = viewModel.searchQuery.value
+        if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+            viewModel.filterOrders(pendingQuery)
+        }
+        searchView.onTextChanged { query ->
+            viewModel.searchQuery.value = query
+            viewModel.filterOrders(query)
         }
     }
 

@@ -11,6 +11,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#C6560A</color>
     <color name="colorAccent_33">#33C6560A</color>
+    <color name="color_order_bkg">#FF8A30</color>
+    <color name="color_delivery_bkg">#2F9BFA</color>
 
     <color name="colorPrimary20">#35008577</color>
 

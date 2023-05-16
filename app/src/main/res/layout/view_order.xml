@@ -22,7 +22,7 @@
 
             android:gravity="end"
             android:orientation="horizontal"
-            android:paddingVertical="@dimen/gr_size_4">
+            android:paddingVertical="@dimen/gr_size_8">
 
             <ImageButton
                 android:id="@+id/orderUnitChangeDistributorBtn"
@@ -71,12 +71,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gr_size_12"
-                android:layout_marginTop="@dimen/gr_size_4"
+                android:layout_marginTop="@dimen/gr_size_8"
                 android:layout_marginEnd="-8dp"
-                android:layout_marginBottom="@dimen/gr_size_4"
+                android:paddingTop="@dimen/gr_size_4"
+                android:layout_marginBottom="@dimen/gr_size_8"
                 android:background="@drawable/bkg_rounded_white_r8"
                 android:clickable="true"
-                android:elevation="2dp"
+                android:elevation="4dp"
                 android:focusable="true"
                 android:foreground="?selectableItemBackground"
                 android:paddingEnd="@dimen/gr_size_8"
@@ -100,10 +101,13 @@
                     android:id="@+id/orderUnitClientNameTv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gr_size_2"
+                    android:layout_marginTop="@dimen/gr_size_6"
                     android:layout_marginEnd="@dimen/gr_size_8"
                     android:paddingStart="@dimen/gr_size_12"
+                    android:textStyle="bold"
                     android:textSize="@dimen/sp18"
+                    tools:text="ობიექტი საბურთალოზე"
+                    android:fontFamily="@font/mtavruli_bold"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
                     app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -127,7 +131,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_history_24"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
-                    app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tint="@color/gray_6" />
 
                 <ImageView
@@ -138,7 +142,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_comment_white_24dp"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
-                    app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tint="@color/gray_6" />
 
                 <ImageView
@@ -149,7 +153,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/circle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/orderUnitCommentBkg"
@@ -174,6 +178,8 @@
                     android:layout_marginBottom="@dimen/gr_size_8"
                     android:paddingStart="@dimen/gr_size_12"
                     android:paddingBottom="@dimen/gr_size_4"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/view_order_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />

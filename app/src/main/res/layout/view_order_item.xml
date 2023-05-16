@@ -14,21 +14,23 @@
         android:ellipsize="end"
         android:lines="1"
         android:textSize="14sp"
-        tools:text="apeni"
         app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/orderItemNameUnderline"
         app:layout_constraintEnd_toStartOf="@+id/orderMiddleIcon"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ლაგერი" />
 
     <View
         android:id="@+id/orderItemNameUnderline"
         android:layout_width="0dp"
         android:layout_height="@dimen/gr_size_2"
         android:background="@color/gray_3"
-        app:layout_constraintEnd_toEndOf="@id/orderItemNameTv"
+        android:layout_marginTop="@dimen/gr_size_1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/orderItemNameTv"
-        app:layout_constraintTop_toBottomOf="@id/orderItemNameTv" />
+        app:layout_constraintTop_toBottomOf="@id/orderItemCan10" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/orderMiddleIcon"
@@ -44,21 +46,20 @@
         android:id="@+id/totalAmountLT"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:gravity="end"
-        android:textSize="14sp"
-        android:text="@string/lt"
         android:paddingBottom="@dimen/gr_size_2"
-        app:layout_constraintTop_toBottomOf="@id/orderItemNameUnderline"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/orderMiddleIcon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/orderMiddleIcon"/>
+        app:layout_constraintTop_toBottomOf="@id/orderItemNameUnderline"
+        tools:text="123 ლტ."
+        tools:visibility="visible" />
 
     <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
         android:id="@+id/orderItemCan10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan20"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,7 +67,6 @@
         android:id="@+id/orderItemCan20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan30"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,7 +74,6 @@
         android:id="@+id/orderItemCan30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toStartOf="@id/orderItemCan50"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -82,7 +81,6 @@
         android:id="@+id/orderItemCan50"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/orderItemNameTv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
