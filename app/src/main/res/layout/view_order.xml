@@ -73,13 +73,13 @@
                 android:layout_marginStart="@dimen/gr_size_12"
                 android:layout_marginTop="@dimen/gr_size_8"
                 android:layout_marginEnd="-8dp"
-                android:paddingTop="@dimen/gr_size_4"
                 android:layout_marginBottom="@dimen/gr_size_8"
                 android:background="@drawable/bkg_rounded_white_r8"
                 android:clickable="true"
                 android:elevation="4dp"
                 android:focusable="true"
                 android:foreground="?selectableItemBackground"
+                android:paddingTop="@dimen/gr_size_4"
                 android:paddingEnd="@dimen/gr_size_8"
                 tools:ignore="RtlSymmetry">
 
@@ -103,14 +103,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/gr_size_6"
                     android:layout_marginEnd="@dimen/gr_size_8"
-                    android:paddingStart="@dimen/gr_size_12"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/sp18"
-                    tools:text="ობიექტი საბურთალოზე"
                     android:fontFamily="@font/mtavruli_bold"
+                    android:paddingStart="@dimen/gr_size_12"
+                    android:textSize="@dimen/sp18"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
                     app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="ობიექტი საბურთალოზე" />
 
                 <ImageView
                     android:id="@+id/orderUnitDragImg"
@@ -156,13 +156,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <View
-                    android:id="@+id/orderUnitCommentBkg"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/gr_size_24"
-                    android:background="@drawable/bkg_order_comment"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/gr_size_1"
                     android:layout_marginStart="@dimen/gr_size_12"
@@ -178,19 +171,23 @@
                     android:layout_marginBottom="@dimen/gr_size_8"
                     android:paddingStart="@dimen/gr_size_12"
                     android:paddingBottom="@dimen/gr_size_4"
-                    tools:itemCount="4"
-                    tools:listitem="@layout/view_order_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/view_order_item" />
 
                 <TextView
                     android:id="@+id/orderComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/gr_size_4"
+                    android:paddingHorizontal="@dimen/gr_size_12"
+                    android:paddingVertical="@dimen/gr_size_4"
+                    android:textStyle="italic"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/orderItemList" />
+                    app:layout_constraintTop_toBottomOf="@id/orderItemList"
+                    tools:text="კომენტარი"
+                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
