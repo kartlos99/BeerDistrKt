@@ -2,13 +2,13 @@ package com.example.beerdistrkt.fragPages.orders
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,8 +19,14 @@ import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.UserPreferencesRepository
 import com.example.beerdistrkt.utils.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
@@ -247,6 +253,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         super.onCreate(savedInstanceState)
     }
 
+    @OptIn(FlowPreview::class)
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.order_option_menu, menu)
@@ -268,10 +275,13 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             searchView.setQuery(pendingQuery, false)
             viewModel.filterOrders(pendingQuery)
         }
-        searchView.onTextChanged { query ->
-            viewModel.searchQuery.value = query
-            viewModel.filterOrders(query)
-        }
+        searchView.changesAsFlow()
+            .debounce(300)
+            .onEach { query ->
+                viewModel.searchQuery.value = query.orEmpty()
+                viewModel.filterOrders(query.orEmpty())
+            }
+            .launchIn(lifecycleScope)
     }
 
     override fun onStop() {
