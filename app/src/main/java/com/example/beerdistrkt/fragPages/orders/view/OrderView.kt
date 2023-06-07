@@ -78,10 +78,9 @@ class OrderView @JvmOverloads constructor(
     private fun fillData(order: Order) {
         resetForm()
         with(binding) {
-            orderUnitClientNameTv.text = order.client.dasaxeleba
+            orderUnitClientNameTv.text = order.client.dasaxeleba.uppercase()
             orderUnitHistoryImg.visibleIf(order.isEdited > 0)
             orderUnitCommentImg.visibleIf(!order.comment.isNullOrEmpty())
-            orderUnitCommentBkg.visibleIf(!order.comment.isNullOrEmpty())
             orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
             if (order.needCleaning == 1) {
                 orderStatusTv.text = resources.getString(R.string.need_cleaning, order.passDays)

@@ -194,7 +194,8 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         }
     }
 
-    private fun drawBeerPrices(beerList: List<BeerModelBase>) {
+    private fun drawBeerPrices(_beerList: List<BeerModelBase>) {
+        val beerList = _beerList.filter { it.isActive }
         binding.addEditClientPricesContainer.removeAllViews()
         for (i in beerList.indices) {
             val priceItemView = LinearLayout(context).apply {

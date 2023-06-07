@@ -9,17 +9,18 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.utils.ADD_ORDER
-import com.example.beerdistrkt.utils.AMONAWERI
-import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.onTextChanged
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
+import com.example.beerdistrkt.utils.*
 
 class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
@@ -34,31 +35,30 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     var clientPhone: String? = null
 
     private lateinit var searchView: SearchView
+    private lateinit var searchItem: MenuItem
+    private lateinit var filterIdleItem: MenuItem
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         vBinding = ObjListFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = this
-
-        vBinding.viewModel = viewModel
-
         return vBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val objListObserver = Observer<List<Obieqti>> {
-            initClientsList(it)
-        }
-        viewModel.clientsList.observe(viewLifecycleOwner, objListObserver)
-
-        viewModel.clients.observe(viewLifecycleOwner) {
-            clientListAdapter.submitList(it)
-        }
         setHasOptionsMenu(true)
+        initClientsRecycler()
+        setupObservers()
+    }
+
+    private fun setupObservers() {
+
+        viewModel.customersLiveData.observe(viewLifecycleOwner, Observer {
+            clientListAdapter.submitList(it)
+        })
     }
 
     private fun navigateTo(clientID: Int) {
@@ -78,32 +78,21 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 ObjListFragmentDirections
                     .actionObjListFragmentToAmonaweriFragment(clientID)
             )
-//                    else -> // show toast
+            SYS_CLEAR -> {
+                setFragmentResult(
+                    SYS_CLEAR_REQUEST_KEY,
+                    bundleOf(CLIENT_ID_KEY to clientID)
+                )
+                vBinding.root.findNavController().navigateUp()
+            }
         }
 
     }
 
-//        registerForContextMenu(vBinding.clientsRecycler)
-
-//        objListObserver.onChanged(mutableListOf(Obieqti("rame saxeli")))
-//        viewModel.objList.observe(this, objListObserver)
-
-//        viewModel.isUpdating.observe(this, Observer {
-//            if(it){
-//                vBinding.progresBarObjList.visibility = View.VISIBLE
-//            }else{
-//                vBinding.progresBarObjList.visibility = View.GONE
-//            }
-//        })
-
-    private fun initClientsList(list: List<Obieqti>) {
-        vBinding.clientsRecycler.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        vBinding.clientsRecycler.setHasFixedSize(true)
-
-        clientListAdapter.submitList(list)
+    private fun initClientsRecycler() = with(vBinding.clientsRecycler) {
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         clientListAdapter.onItemClick = ::navigateTo
-        vBinding.clientsRecycler.adapter = clientListAdapter
+        adapter = clientListAdapter
 
 /*
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
@@ -146,7 +135,8 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.client_list_page_menu, menu)
 
-        val searchItem = menu.findItem(R.id.action_search)
+        filterIdleItem = menu.findItem(R.id.only_notable_items)
+        searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
 
         val pendingQuery = viewModel.searchQuery.value
@@ -154,12 +144,25 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
             searchItem.expandActionView()
             searchView.setQuery(pendingQuery, false)
             viewModel.onNewQuery(pendingQuery)
+            filterIdleItem.isChecked = false
         }
 
         searchView.onTextChanged { query ->
             viewModel.searchQuery.value = query
             viewModel.onNewQuery(query)
+            filterIdleItem.isChecked = false
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onContextItemSelected(item)
+        if (item.itemId == R.id.only_notable_items) {
+            searchItem.collapseActionView()
+            item.isChecked = !item.isChecked
+            viewModel.filterNotableItems(item.isChecked)
+            return true
+        }
+        return false
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

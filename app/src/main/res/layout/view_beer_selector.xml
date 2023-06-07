@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/beerSelectorMainConstraint"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -20,6 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/gr_size_16"
+        tools:itemCount="1"
+        tools:listitem="@layout/beer_item_view"
         app:layout_constraintTop_toBottomOf="@id/beerSelectorBeerKindTv" />
 
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
@@ -41,6 +44,7 @@
         android:layout_height="@dimen/gr_size_48"
         android:layout_margin="@dimen/gr_size_8"
         android:scaleType="fitXY"
+        android:contentDescription="@string/img_description"
         android:src="@drawable/ic_arrow_left_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -54,11 +58,19 @@
         android:layout_margin="@dimen/gr_size_8"
         android:rotation="180"
         android:scaleType="fitXY"
+        android:contentDescription="@string/img_description"
         android:src="@drawable/ic_arrow_left_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/beerSelectorBeerRecycler"
         app:tint="@color/arrow_color_tr" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/beerGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="beerSelectorBeerKindTv, beerSelectorBeerRecycler,
+beerSelectorBeerListIndicator, beerSelectorBtnLeftImg, beerSelectorBtnRightImg" />
 
     <TextView
         android:id="@+id/beerSelectorCanTypeTv"

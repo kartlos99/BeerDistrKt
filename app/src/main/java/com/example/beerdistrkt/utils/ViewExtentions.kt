@@ -4,7 +4,14 @@ import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CheckResult
 import androidx.appcompat.widget.SearchView
+import com.google.android.gms.common.internal.Preconditions.checkMainThread
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.onStart
 
 fun ViewGroup.inflate(layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
@@ -22,6 +29,7 @@ fun View.show() {
     this.visibility = View.VISIBLE
 }
 
+@Deprecated("use native isVisible", ReplaceWith("isVisible"))
 fun View.visibleIf(boolean: Boolean) {
     if (boolean)
         this.show()
@@ -64,3 +72,27 @@ inline fun SearchView.onTextChanged(crossinline listener: (String) -> Unit) {
         }
     })
 }
+
+@ExperimentalCoroutinesApi
+@CheckResult
+fun SearchView.changesAsFlow(): Flow<CharSequence?> {
+    return callbackFlow {
+        checkMainThread("")
+
+        val qListener = object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                trySend(newText.orEmpty())
+                return true
+            }
+        }
+        this@changesAsFlow.setOnQueryTextListener(qListener)
+
+        awaitClose { }
+    }.onStart { emit("") }
+}
+
+fun CharSequence?.orEmpty(): String = this?.toString() ?: ""

@@ -2,12 +2,13 @@ package com.example.beerdistrkt.fragPages.orders
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,8 +19,14 @@ import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.UserPreferencesRepository
 import com.example.beerdistrkt.utils.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
@@ -36,6 +43,9 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     private lateinit var ordersAdapter: ParentOrderAdapter
     private var orderListSize = 0
     private var switchToDelivery: SwitchCompat? = null
+
+    private lateinit var searchView: SearchView
+    private lateinit var searchItem: MenuItem
 
     private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
@@ -131,8 +141,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             }*/
             ordersAdapter.updateLastItem(checked)
         }
-        vBinding.orderRootConstraint.setBackgroundColor(
-            if (checked) resources.getColor(R.color.colorAccent_33) else Color.WHITE
+        vBinding.ordersRecycler.setBackgroundColor(
+            if (checked) resources.getColor(R.color.color_delivery_bkg) else resources.getColor(R.color.color_order_bkg)
         )
     }
 
@@ -243,6 +253,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         super.onCreate(savedInstanceState)
     }
 
+    @OptIn(FlowPreview::class)
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.order_option_menu, menu)
@@ -254,6 +265,23 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             onModeChange(isChecked)
             deliveryItem.isVisible = isChecked
         }
+
+        searchItem = menu.findItem(R.id.orderSearch)
+        searchView = searchItem.actionView as SearchView
+
+        val pendingQuery = viewModel.searchQuery.value
+        if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+            viewModel.filterOrders(pendingQuery)
+        }
+        searchView.changesAsFlow()
+            .debounce(300)
+            .onEach { query ->
+                viewModel.searchQuery.value = query.orEmpty()
+                viewModel.filterOrders(query.orEmpty())
+            }
+            .launchIn(lifecycleScope)
     }
 
     override fun onStop() {

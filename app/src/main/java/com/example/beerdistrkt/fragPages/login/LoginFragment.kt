@@ -57,6 +57,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 viewLoginProgress.visibleIf(true)
             }
             tvBuildInfo.text = getBuildInfo()
+            if (BuildConfig.DEBUG) {
+                viewLoginUserField.setText("kartlos")
+                viewLoginPasswordField.setText("0000")
+            }
         }
 
         if (Session.get().isUserLogged())

@@ -1,10 +1,7 @@
 package com.example.beerdistrkt.fragPages.orders
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
@@ -24,6 +21,10 @@ import kotlin.math.sign
 class OrdersViewModel(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : BaseViewModel() {
+
+    private val state = SavedStateHandle()
+
+    val searchQuery = state.getLiveData("searchQuery", "")
 
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
@@ -49,6 +50,7 @@ class OrdersViewModel(
     val onItemClickLiveData = MutableLiveData<Order?>(null)
     val onShowHistoryLiveData = SingleMutableLiveDataEvent<String>()
     private val allMappedUsers = mutableListOf<MappedUser>()
+    private val allOrders = mutableListOf<Order>()
     private lateinit var clientRegionMap: Map<Int, List<Int>>
 
     var deliveryMode = false
@@ -98,8 +100,8 @@ class OrdersViewModel(
                 }.mapValues {
                     it.value.first().availableRegions
                 }
-                listOfGroupedOrders.clear()
-                listOfGroupedOrders.addAll(groupOrderByDistributor(ordersDto.map { orderDTO ->
+                allOrders.clear()
+                allOrders.addAll(ordersDto.map { orderDTO ->
                     orderDTO.toPm(
                         clients,
                         beers,
@@ -119,10 +121,8 @@ class OrdersViewModel(
                             onShowHistoryLiveData.eventValue = orderID
                         }
                     )
-                }))
-                listOfGroupedOrders.sortBy { gr -> gr.distributorID }
-
-                ordersLiveData.value = ApiResponseState.Success(listOfGroupedOrders)
+                })
+                proceedOrders()
             },
             failure = {
                 Log.d("getOrder", "failed: ${it.message}")
@@ -132,6 +132,16 @@ class OrdersViewModel(
                 ordersLiveData.value = ApiResponseState.Loading(false)
             }
         )
+    }
+
+    private fun proceedOrders() {
+        listOfGroupedOrders.clear()
+        listOfGroupedOrders.addAll(groupOrderByDistributor(allOrders.filter {
+            it.client.dasaxeleba.contains(searchQuery.value ?: "")
+        }))
+        listOfGroupedOrders.sortBy { gr -> gr.distributorID }
+
+        ordersLiveData.value = ApiResponseState.Success(listOfGroupedOrders)
     }
 
     private fun groupOrderByDistributor(orders: List<Order>): MutableList<OrderGroupModel> {
@@ -171,15 +181,10 @@ class OrdersViewModel(
         sendRequest(
             ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID, userID)),
             success = {
-                listOfGroupedOrders.forEachIndexed { index1, orderGroupModel ->
-                    val index = orderGroupModel.ordersList.indexOf(order)
-                    if (index != -1) {
-                        orderGroupModel.ordersList[index] =
-                            orderGroupModel.ordersList[index].copy(orderStatus = OrderStatus.DELETED)
-                        orderDeleteLiveData.value = ApiResponseState.Success(Pair(index1, index))
-                        return@sendRequest
-                    }
-                }
+                allOrders.firstOrNull {
+                    it.ID == order.ID
+                }?.orderStatus = OrderStatus.DELETED
+                proceedOrders()
             }
         )
     }
@@ -249,6 +254,10 @@ class OrdersViewModel(
                 }.joinToString(SEPARATOR)
             )
         }
+    }
+
+    fun filterOrders(query: String) {
+        proceedOrders()
     }
 
     companion object {

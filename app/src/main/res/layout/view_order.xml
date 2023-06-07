@@ -22,7 +22,7 @@
 
             android:gravity="end"
             android:orientation="horizontal"
-            android:paddingVertical="@dimen/gr_size_4">
+            android:paddingVertical="@dimen/gr_size_8">
 
             <ImageButton
                 android:id="@+id/orderUnitChangeDistributorBtn"
@@ -71,14 +71,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gr_size_12"
-                android:layout_marginTop="@dimen/gr_size_4"
+                android:layout_marginTop="@dimen/gr_size_8"
                 android:layout_marginEnd="-8dp"
-                android:layout_marginBottom="@dimen/gr_size_4"
+                android:layout_marginBottom="@dimen/gr_size_8"
                 android:background="@drawable/bkg_rounded_white_r8"
                 android:clickable="true"
-                android:elevation="2dp"
+                android:elevation="4dp"
                 android:focusable="true"
                 android:foreground="?selectableItemBackground"
+                android:paddingTop="@dimen/gr_size_4"
                 android:paddingEnd="@dimen/gr_size_8"
                 tools:ignore="RtlSymmetry">
 
@@ -100,13 +101,16 @@
                     android:id="@+id/orderUnitClientNameTv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gr_size_2"
+                    android:layout_marginTop="@dimen/gr_size_6"
                     android:layout_marginEnd="@dimen/gr_size_8"
+                    android:fontFamily="@font/mtavruli_bold"
                     android:paddingStart="@dimen/gr_size_12"
                     android:textSize="@dimen/sp18"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
                     app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="ობიექტი საბურთალოზე" />
 
                 <ImageView
                     android:id="@+id/orderUnitDragImg"
@@ -127,7 +131,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_history_24"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
-                    app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tint="@color/gray_6" />
 
                 <ImageView
@@ -138,7 +142,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_comment_white_24dp"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
-                    app:layout_constraintTop_toTopOf="@id/orderUnitClientNameTv"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tint="@color/gray_6" />
 
                 <ImageView
@@ -149,14 +153,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/circle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg" />
-
-                <View
-                    android:id="@+id/orderUnitCommentBkg"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/gr_size_24"
-                    android:background="@drawable/bkg_order_comment"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:layout_width="match_parent"
@@ -176,15 +173,21 @@
                     android:paddingBottom="@dimen/gr_size_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/view_order_item" />
 
                 <TextView
                     android:id="@+id/orderComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/gr_size_4"
+                    android:paddingHorizontal="@dimen/gr_size_12"
+                    android:paddingVertical="@dimen/gr_size_4"
+                    android:textStyle="italic"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/orderItemList" />
+                    app:layout_constraintTop_toBottomOf="@id/orderItemList"
+                    tools:text="კომენტარი"
+                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

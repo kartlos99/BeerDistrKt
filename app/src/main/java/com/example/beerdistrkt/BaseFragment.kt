@@ -1,10 +1,15 @@
 package com.example.beerdistrkt
 
 import android.os.Bundle
-import android.view.View
+import android.view.*
 import android.widget.Toast
+import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.fragPages.login.LoginFragment
@@ -24,6 +29,20 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     fun showToast(strRes: Int) {
         showToast(getString(strRes))
+    }
+
+    @LayoutRes
+    open var frLayout: Int? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return if (frLayout != null)
+            inflater.inflate(frLayout!!, container, false)
+        else
+            super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,4 +84,21 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     fun setPageTitle(titleRes: Int) = setPageTitle(getString(titleRes))
 
     fun isAccessTokenValid() = Session.get().isAccessTokenValid()
+
+    fun setupMenu(@MenuRes menuRes: Int, onItemClick: (menuItem: MenuItem) -> Boolean) {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(menuRes, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return onItemClick.invoke(menuItem)
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    companion object {
+        const val TAG = "TAG_FR"
+    }
 }

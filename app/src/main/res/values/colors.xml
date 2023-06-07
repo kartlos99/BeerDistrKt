@@ -11,6 +11,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#C6560A</color>
     <color name="colorAccent_33">#33C6560A</color>
+    <color name="color_order_bkg">#FF8A30</color>
+    <color name="color_delivery_bkg">#2F9BFA</color>
 
     <color name="colorPrimary20">#35008577</color>
 
@@ -32,6 +34,7 @@
     <color name="gray_3">#CFCFCF</color>
     <color name="gray_light">#F5F5F5</color>
     <color name="gray_6">#979797</color>
+    <color name="gray_transparent_20">#20979797</color>
     <color name="beer_bkg">#E8FCFC</color>
     <color name="beer_stroke_bkg">#CFEAEA</color>
     <color name="arrow_color_tr">#6054</color>

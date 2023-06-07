@@ -33,13 +33,13 @@ class AddDeliveryViewModel(
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
     val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
-    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
-        ?: mutableListOf()
+    val beerList =
+        ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
+            ?: mutableListOf()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
-    var selectedCan: CanModel? = null
     var saleDateCalendar: Calendar = Calendar.getInstance()
     private val _saleDayLiveData = MutableLiveData<String>()
     val saleDayLiveData: LiveData<String>
@@ -81,27 +81,19 @@ class AddDeliveryViewModel(
     }
 
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
-        beerListLiveData.value = beerList.map {
-            val price = pricesForClient.find { bp ->
-                bp.beerID == it.id
-            }?.fasi?.toDouble() ?: 0.0
-
-            BeerModelBase(
-                it.id,
-                it.dasaxeleba,
-                it.displayColor,
-                price.round(),
-                it.sortValue
-            )
-        }
+        beerListLiveData.value = beerList
+            .map { beerModel ->
+                val price = findBeerPrice(beerModel, pricesForClient)
+                beerModel.copy(fasi = price.round())
+            }
     }
 
-    fun setCan(pos: Int) {
-        selectedCan = if (pos >= 0)
-            cansList[pos]
-        else
-            null
-    }
+    private fun findBeerPrice(
+        beerModel: BeerModelBase,
+        pricesForClient: List<ObjToBeerPrice>
+    ): Double = pricesForClient.find { objToBeerPrice ->
+        objToBeerPrice.beerID == beerModel.id
+    }?.fasi?.toDouble() ?: 0.0
 
     fun onDoneClick(deliveryDataComment: String) {
         if (callIsBlocked) return
@@ -262,7 +254,6 @@ class AddDeliveryViewModel(
                 }
                 if (it.kout != null) {
                     kOutEditLiveData.value = it.kout
-                    selectedCan = cansList.find { b -> b.id == it.kout.canTypeID } ?: cansList[0]
 
                     val date = dateTimeFormat.parse(it.kout.outputDate)
                     saleDateCalendar.time = date ?: Date()

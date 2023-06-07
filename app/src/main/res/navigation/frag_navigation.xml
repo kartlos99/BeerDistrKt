@@ -61,7 +61,11 @@
         android:id="@+id/sysClearFragment"
         android:name="com.example.beerdistrkt.fragPages.sysClear.SysClearFragment"
         android:label="@string/sys_clean"
-        tools:layout="@layout/sys_clear_fragment" />
+        tools:layout="@layout/sys_clear_fragment" >
+        <action
+            android:id="@+id/action_sysClearFragment_to_objListFragment"
+            app:destination="@id/objListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addObjectFragment"
         android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
@@ -115,8 +119,7 @@
             app:destination="@id/amonaweriFragment"/>
         <action
             android:id="@+id/action_objListFragment_to_addDeliveryFragment"
-            app:destination="@id/addDeliveryFragment"
-            app:popUpTo="@+id/homeFragment" />
+            app:destination="@id/addDeliveryFragment" />
         <action
             android:id="@+id/action_objListFragment_to_addOrdersFragment"
             app:destination="@id/addOrdersFragment"
@@ -211,4 +214,9 @@
             android:name="recordID"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.beerdistrkt.fragPages.settings.SettingsFragment"
+        android:label="settings_fragment"
+        tools:layout="@layout/settings_fragment" />
 </navigation>

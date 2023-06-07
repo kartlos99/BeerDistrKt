@@ -20,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
+import com.example.beerdistrkt.databinding.NavHeaderBinding
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
@@ -112,18 +113,20 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
     }
 
     private fun updateNavigationView() {
-        val userNameTv =
-            vBinding.navView.getHeaderView(0).findViewById<TextView>(R.id.navHeaderUsername)
-        val nameTv = vBinding.navView.getHeaderView(0).findViewById<TextView>(R.id.navHeaderName)
-        userNameTv.text = "${Session.get().userName}  ( ${Session.get().userType.name} )"
-        nameTv.text = Session.get().displayName
+        NavHeaderBinding.bind(vBinding.navView.getHeaderView(0)).apply {
+            navHeaderName.text = Session.get().displayName
+            navHeaderUsername.text = getString(
+                R.string.with_brackets, Session.get().userName, Session.get().userType.name
+            )
+        }
 
         with(vBinding.navView.menu) {
             getItem(0).isEnabled = Session.get().hasPermission(Permission.AddEditClient)
             getItem(1).isEnabled = Session.get().hasPermission(Permission.AddEditUser)
             getItem(2).isEnabled = Session.get().userType == UserType.ADMIN
             getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
-            getItem(7).title = BuildConfig.VERSION_NAME
+            findItem(R.id.settingsFragment).isEnabled = Session.get().userType == UserType.ADMIN
+            findItem(R.id.mInfo).title = BuildConfig.VERSION_NAME
         }
     }
 

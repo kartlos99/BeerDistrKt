@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
@@ -15,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -24,11 +26,8 @@ import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
@@ -38,6 +37,12 @@ import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,6 +50,7 @@ import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 //<Response : Any, ApiResponse : DataResponse<Response>>
 fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
@@ -162,12 +168,29 @@ fun Context.showAskingDialog(
     negativeText: Int,
     theme: Int? = null,
     onClick: () -> Unit?
+) =
+    showAskingDialog(
+        title?.let { getString(it) } ?: "",
+        getString(text),
+        positiveText,
+        negativeText,
+        theme,
+        onClick
+    )
+
+fun Context.showAskingDialog(
+    title: String,
+    text: String,
+    positiveText: Int,
+    negativeText: Int,
+    theme: Int? = null,
+    onClick: () -> Unit?
 ) {
     val builder = if (theme == null)
         AlertDialog.Builder(this)
     else
         AlertDialog.Builder(this, theme)
-    if (title != null)
+    if (title.isNotEmpty())
         builder.setTitle(title)
     builder
         .setMessage(text)
@@ -245,6 +268,13 @@ fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text
             callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
             dialog.dismiss()
         }.show()
+}
+
+fun Context.showSoftKeyboard(view: View) {
+    if (view.requestFocus()) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
 }
 
 fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
@@ -337,7 +367,7 @@ fun <T : Any> LiveData<T>.observe(viewLifecycleOwner: LifecycleOwner, function: 
 }
 
 infix fun Number.waitFor(block: (() -> Unit)) {
-    Handler().postDelayed({
+    Handler(Looper.getMainLooper()).postDelayed({
         block()
     }, this.toLong())
 }
@@ -373,3 +403,50 @@ fun TextInputLayout.setText(text: CharSequence) =
 
 fun TextInputLayout.setText(resID: Int) =
     this.editText?.setText(resID)
+
+
+fun <T> SharedFlow<T>.collectLatest(
+    lifecycleOwner: LifecycleOwner,
+    lifecycleState: Lifecycle.State = Lifecycle.State.RESUMED,
+    observeOn: CoroutineContext = Dispatchers.Default,
+    collectOn: CoroutineContext = Dispatchers.Main,
+    action: suspend (value: T) -> Unit
+) {
+    lifecycleOwner.apply {
+        lifecycleScope.launch(observeOn) {
+            repeatOnLifecycle(lifecycleState) {
+                this@collectLatest.collectLatest {
+                    if (observeOn != collectOn)
+                        withContext(collectOn) {
+                            action(it)
+                        }
+                    else
+                        action(it)
+                }
+            }
+        }
+    }
+}
+
+fun <T> StateFlow<T>.collectLatest(
+    lifecycleOwner: LifecycleOwner,
+    lifecycleState: Lifecycle.State = Lifecycle.State.RESUMED,
+    observeOn: CoroutineContext = Dispatchers.Default,
+    collectOn: CoroutineContext = Dispatchers.Main,
+    action: suspend (value: T) -> Unit
+) {
+    lifecycleOwner.apply {
+        lifecycleScope.launch(observeOn) {
+            repeatOnLifecycle(lifecycleState) {
+                this@collectLatest.collectLatest {
+                    if (observeOn != collectOn)
+                        withContext(collectOn) {
+                            action(it)
+                        }
+                    else
+                        action(it)
+                }
+            }
+        }
+    }
+}

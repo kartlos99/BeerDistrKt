@@ -16,12 +16,12 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
 import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.BeerStatus
 import com.example.beerdistrkt.utils.ApiResponseState
 
 
 class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
 
-    private var beerListAdapter: BeerListAdapter? = null
     private var beerID = 0
     private var beerColor: Int = Color.rgb(128, 128, 128)
 
@@ -39,7 +39,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        beerListAdapter = BeerListAdapter(
+        val beerListAdapter = BeerListAdapter(
             viewModel.beerList,
             ::onEditClick,
             ::onDeleteClick
@@ -75,6 +75,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                             Color.blue(beerColor)
                         ),
                         binding.eBeerPr.editText?.text.toString().toDouble(),
+                        BeerStatus.ACTIVE,
                         "_"
                     )
 

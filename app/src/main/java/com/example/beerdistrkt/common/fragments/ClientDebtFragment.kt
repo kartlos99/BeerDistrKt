@@ -9,52 +9,65 @@ import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import by.kirich1409.viewbindingdelegate.viewBinding
+import androidx.core.view.isVisible
+import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.FragmentClientDebtBinding
-import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.sendRequest
+import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.models.DebtResponse
+import com.example.beerdistrkt.utils.ApiResponseState
 
-class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
+class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
 
+    override val viewModel: ClientDebtViewModel by lazy {
+        getViewModel { ClientDebtViewModel() }
+    }
     var clientID: Int? = null
-    private val binding by viewBinding(FragmentClientDebtBinding::bind)
+
+    lateinit var binding: FragmentClientDebtBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentClientDebtBinding.inflate(inflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         clientID = arguments?.getInt(CLIENT_ID_KEY)
-    }
-
-    override fun onResume() {
-        super.onResume()
         clientID?.let {
-            getDebt(it)
+            viewModel.getDebt(it)
+        }
+        viewModel.clientDebtLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> onDebtDataReceived(it.data)
+                is ApiResponseState.Error -> showError()
+                is ApiResponseState.Loading -> binding.progressIndicator.isVisible = it.showLoading
+                else -> {}
+            }
         }
     }
 
-    private fun getDebt(clientID: Int) {
-        ApeniApiService.getInstance().getDebt(clientID).sendRequest(
-            successWithData = {
-                binding.fragDebtAmount.text = boldDataSpan(getString(R.string.amount_is, it.getMoneyDebt()))
-                val ssb = SpannableStringBuilder()
-                it.barrels.forEach { emptyBarrel ->
-                    if (ssb.isNotEmpty()) ssb.append("\n")
-                    ssb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
-                }
-                binding.fragDebtBarrels.text = boldDataSpan(ssb.toString())
-            },
-            failure = {
-                showError()
-            },
-            finally = {
-                if (!it)
-                    showError()
-            },
-            onConnectionFailure = {}
-        )
+    private fun onDebtDataReceived(data: DebtResponse?) {
+        if (data == null) {
+            showError()
+            return
+        }
+        binding.fragDebtAmount.text =
+            boldDataSpan(getString(R.string.amount_is, data.getMoneyDebt()))
+        val ssb = SpannableStringBuilder()
+        data.barrels.forEach { emptyBarrel ->
+            if (ssb.isNotEmpty()) ssb.append("\n")
+            ssb.append("${emptyBarrel.canTypeName}: ${emptyBarrel.balance}")
+        }
+        binding.fragDebtBarrels.text = boldDataSpan(ssb.toString())
     }
 
 
@@ -62,7 +75,8 @@ class ClientDebtFragment : Fragment(R.layout.fragment_client_debt) {
         val spText = SpannableString(text)
         var currPos = text.indexOf(":") + 2
         while (currPos > 2) {
-            val closeIndex = if (text.indexOf("\n", currPos) > 0) text.indexOf("\n", currPos) else text.length
+            val closeIndex =
+                if (text.indexOf("\n", currPos) > 0) text.indexOf("\n", currPos) else text.length
             spText.setSpan(
                 ForegroundColorSpan(Color.parseColor("#f95588")),
                 currPos,

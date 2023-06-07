@@ -3,6 +3,7 @@ package com.example.beerdistrkt.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.beerdistrkt.models.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ApeniDatabaseDao {
@@ -10,11 +11,17 @@ interface ApeniDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertObiecti(obieqti: Obieqti)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCustomers(customers: List<Obieqti>)
+
     @Query("DELETE FROM obieqts_table")
     fun clearObiectsTable()
 
     @Query("Select * from obieqts_table order by dasaxeleba")
     fun getAllObieqts(): LiveData<List<Obieqti>>
+
+    @Query("Select * from obieqts_table order by dasaxeleba")
+    fun getCustomers(): Flow<List<Obieqti>>
 
     @Transaction
     @Query("SELECT * FROM obieqts_table WHERE id = :customerID")

@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.squareup.moshi.Json
-import java.util.*
 
 @Entity(tableName = "beer_table")
 data class BeerModelBase(
@@ -14,8 +13,24 @@ data class BeerModelBase(
     @Json(name = "color")
     var displayColor: String? = null,
     var fasi: Double? = null,
+    @Json(name = "active")
+    val status: BeerStatus = BeerStatus.ACTIVE,
     var sortValue: String = ""
-)
+) {
+    val isActive: Boolean
+        get() = status == BeerStatus.ACTIVE
+}
+
+enum class BeerStatus(val value: String) {
+    @Json(name = "0")
+    DELETED("0"),
+
+    @Json(name = "1")
+    ACTIVE("1"),
+
+    @Json(name = "2")
+    INACTIVE("2"),
+}
 
 data class PeerObjPrice(var obj_id: Int) {
     var fasebi = ArrayList<Float>()

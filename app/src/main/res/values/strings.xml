@@ -73,7 +73,7 @@
 
     <string name="back">უკან</string>
     <string name="forward">წინ</string>
-    <string name="sachuqari">საჩუქარი</string>
+    <string name="gift">საჩუქარი</string>
     <string name="replace">შეცვლა</string>
     <string name="store_house">საწყობი</string>
     <string name="savse">სავსე კასრები</string>
@@ -230,5 +230,15 @@
     <string name="add_order_item">add order item</string>
     <string name="next">next</string>
     <string name="prev">prev</string>
+    <string name="cost">ღირებულება: %.2f ₾</string>
+    <string name="x_days_ago">%d დღის წინ</string>
+    <string name="x_month_ago">%d თვის წინ</string>
+    <string name="x_year_ago">%d წლის წინ</string>
+    <string name="only_notable_items">მხოლოდ საყურადღებო</string>
+    <string name="settings">პარამეტრები</string>
+    <string name="with_brackets">%s ( %s )</string>
+    <string name="customer_idle_setting_title">რამდენი დღის უმოქმედობის შემდეგ გაწითლდეს ობიექტი</string>
+    <string name="new_value">ახალი მნიშვნელობა</string>
+    <string name="confirm_sys_clear_on">დავაფიქსირო სისტემის გაწმენდა ობიექტზე - %s ? </string>
 
 </resources>

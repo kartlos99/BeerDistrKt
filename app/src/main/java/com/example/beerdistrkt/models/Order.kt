@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 data class Order(
     val ID: Int,
     val orderDate: String,
-    val orderStatus: OrderStatus,
+    var orderStatus: OrderStatus,
     val distributorID: Int,
     val clientID: Int,
     val client: Obieqti,

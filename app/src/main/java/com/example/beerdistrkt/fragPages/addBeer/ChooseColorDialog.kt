@@ -43,7 +43,7 @@ class ChooseColorDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val inflater =
-            activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewDlg: View = inflater.inflate(R.layout.choose_color, null)
 
         imgColor = viewDlg.findViewById(R.id.img_show_color)

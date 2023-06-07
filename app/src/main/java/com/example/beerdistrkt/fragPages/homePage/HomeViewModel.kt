@@ -202,9 +202,7 @@ class HomeViewModel : BaseViewModel() {
                 if (it.isNotEmpty()) {
                     ioScope.launch {
                         delay(100)
-                        it.forEach { obieqti ->
-                            insertObiect(obieqti)
-                        }
+                        database.insertCustomers(it)
                     }
                 }
             }
@@ -232,10 +230,6 @@ class HomeViewModel : BaseViewModel() {
     private fun insertBeerToDB(beerModel: BeerModelBase) {
         Log.d(TAG, beerModel.toString())
         database.insertBeer(beerModel)
-    }
-
-    private fun insertObiect(obieqti: Obieqti) {
-        database.insertObiecti(obieqti)
     }
 
     private suspend fun insertBeetPrice(bPrice: ObjToBeerPrice) {

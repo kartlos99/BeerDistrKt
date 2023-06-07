@@ -1,17 +1,19 @@
 package com.example.beerdistrkt.fragPages.objList.adapters
 
+import android.content.Context
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ObjListRowBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.example.beerdistrkt.utils.Session
 
 class ClientsListAdapter :
-    ListAdapter<Obieqti, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
+    ListAdapter<Customer, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
 
     var onItemClick: (clientID: Int) -> Unit = {}
 
@@ -24,7 +26,7 @@ class ClientsListAdapter :
         holder.bind(getItem(position))
     }
 
-    fun getClientObject(position: Int): Obieqti {
+    fun getClientObject(position: Int): Customer {
         return getItem(position)
     }
 
@@ -42,8 +44,11 @@ class ClientsListAdapter :
             }
         }
 
-        fun bind(client: Obieqti) {
-            binding.clientNameTv.text = client.dasaxeleba
+        fun bind(client: Customer) = with(binding) {
+            clientNameTv.text = client.dasaxeleba
+            tvPassedTime.text = formatPassedTime(root.context, client.warnInfo?.passedDays ?: 0)
+            infoIcon.isVisible = client.warnInfo != null
+            tvPassedTime.isVisible = client.warnInfo != null
             itemView.tag = getItem(adapterPosition)
         }
 
@@ -52,7 +57,7 @@ class ClientsListAdapter :
             v: View?,
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
-            val title = (itemView.tag as Obieqti).dasaxeleba
+            val title = (itemView.tag as Customer).dasaxeleba
             menu?.setHeaderTitle(title)
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
@@ -63,12 +68,18 @@ class ClientsListAdapter :
         }
     }
 
-    class ClientListDiffUtilCallBack : DiffUtil.ItemCallback<Obieqti>() {
-        override fun areItemsTheSame(oldItem: Obieqti, newItem: Obieqti): Boolean {
+    private fun formatPassedTime(context: Context, days: Int): String = when {
+        days < 31 -> context.resources.getString(R.string.x_days_ago, days)
+        days < 366 -> context.resources.getString(R.string.x_month_ago, days / 30)
+        else -> context.resources.getString(R.string.x_year_ago, days / 365)
+    }
+
+    class ClientListDiffUtilCallBack : DiffUtil.ItemCallback<Customer>() {
+        override fun areItemsTheSame(oldItem: Customer, newItem: Customer): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Obieqti, newItem: Obieqti): Boolean {
+        override fun areContentsTheSame(oldItem: Customer, newItem: Customer): Boolean {
             return oldItem == newItem
         }
     }

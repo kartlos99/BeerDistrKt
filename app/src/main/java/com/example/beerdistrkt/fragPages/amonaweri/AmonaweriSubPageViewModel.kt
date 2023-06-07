@@ -87,7 +87,7 @@ class AmonaweriSubPageViewModel : BaseViewModel() {
         )
     }
 
-    fun changeDataStructure(grouped: Boolean?) {
+    fun changeDataStructure(grouped: Boolean) {
         isGroupedLiveData.value = grouped
         proceedData(amonaweriDataList)
     }

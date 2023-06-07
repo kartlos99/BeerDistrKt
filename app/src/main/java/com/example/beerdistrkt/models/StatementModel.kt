@@ -5,6 +5,7 @@ import androidx.room.*
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
 import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.squareup.moshi.Json
 import java.text.SimpleDateFormat
 import java.util.*
@@ -88,6 +89,17 @@ data class Obieqti(
     override fun toString(): String {
         return dasaxeleba
     }
+
+    fun toCustomer() = Customer(
+        id,
+        dasaxeleba,
+        adress,
+        tel,
+        comment,
+        sk,
+        sakpiri,
+        chek
+    )
 
     companion object {
         val emptyModel = Obieqti(

@@ -1,43 +1,54 @@
 package com.example.beerdistrkt.fragPages.objList
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.example.beerdistrkt.models.ClientDeactivateModel
+import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.CLIENTS_LIST_ID
+import com.example.beerdistrkt.repos.ApeniRepo
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ObjListViewModel : BaseViewModel() {
 
-    val clientsList = database.getAllObieqts()
-    val clients = MutableLiveData<List<Obieqti>>()
+    private var customers: List<Customer> = listOf()
+    private val _customersLiveData = MutableLiveData<List<Customer>>()
+    val customersLiveData: LiveData<List<Customer>>
+        get() = _customersLiveData
 
     private val state = SavedStateHandle()
 
     val searchQuery = state.getLiveData("searchQuery", "")
 
+    private val repository = ApeniRepo()
+
     init {
-        Log.d(TAG, "init_Obj_List")
-        clientsList.observeForever {
-            ObjectCache.getInstance().putList(Obieqti::class, CLIENTS_LIST_ID, it)
+        viewModelScope.launch {
+            repository.allData.collectLatest {
+                updateList(it.first, it.second)
+            }
         }
+        repository.getCustomers()
+        repository.getCustomersIdleInfo()
     }
 
-    fun delOneObj() {
-        // just test
-//        CoroutineScope(Dispatchers.IO).launch {
-//            database.insertObiecti(Obieqti("NEW_TEST_OBJ_KT"))
-//        }
-        ioScope.launch {
-            val objectWithPrices = database.getCustomerWithPrices(27)
-            Log.d("--------------", objectWithPrices.toString())
+    private fun updateList(
+        customerObjects: List<Obieqti>,
+        idles: List<CustomerIdlInfo>
+    ) {
+        customers = customerObjects.map { obj ->
+            obj.toCustomer().apply {
+                warnInfo = idles.firstOrNull { idleInfo ->
+                    obj.id == idleInfo.clientID
+                }
+            }
         }
-//        _objList.value?.removeAt(2)
-//        _objList.value = _objList.value
+        _customersLiveData.value = customers
     }
 
     override fun onCleared() {
@@ -59,9 +70,15 @@ class ObjListViewModel : BaseViewModel() {
     }
 
     fun onNewQuery(query: String) {
-        clients.value = clientsList.value?.filter {
+        _customersLiveData.value = customers.filter {
             it.dasaxeleba.contains(query)
-        } ?: listOf()
+        }
+    }
+
+    fun filterNotableItems(filtering: Boolean) {
+        _customersLiveData.value =
+            if (filtering) customers.filter { it.warnInfo != null }
+            else customers
     }
 
     companion object {

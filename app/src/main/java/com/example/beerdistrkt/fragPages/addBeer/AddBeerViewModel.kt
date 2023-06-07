@@ -10,7 +10,9 @@ import com.example.beerdistrkt.utils.ApiResponseState
 
 class AddBeerViewModel : BaseViewModel() {
 
-    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, ObjectCache.BEER_LIST_ID)
+    val beerList = ObjectCache.getInstance()
+        .getList(BeerModelBase::class, ObjectCache.BEER_LIST_ID)
+        ?.filter { it.isActive }
         ?: mutableListOf()
 
     private val _addBeerLiveData = MutableLiveData<ApiResponseState<String>>()
