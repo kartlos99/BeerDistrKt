@@ -17,3 +17,4 @@ app/google-services.json
 localdata.gradle
 local.properties
 sh.exe.stackdump
+.idea/kotlinc.xml
