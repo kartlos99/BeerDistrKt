@@ -1,13 +1,14 @@
 package com.example.beerdistrkt
 
 import android.Manifest
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
@@ -83,7 +84,9 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         }
 
         NotificationService.myNotificationInterface = this
-        startService(Intent(this, NotificationService::class.java))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isServiceRunning()) {
+            startForegroundService(Intent(this, NotificationService::class.java))
+        }
 
         vBinding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -219,6 +222,15 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         val activeFragment = hostFragment?.childFragmentManager?.fragments?.get(0)
         if (activeFragment is HomeFragment)
             activeFragment.getComments()
+    }
+
+    private fun isServiceRunning(): Boolean {
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
+            if (NotificationService::class.java.name.equals(service.service.className))
+                return true
+        }
+        return false
     }
 
     override fun onStart() {

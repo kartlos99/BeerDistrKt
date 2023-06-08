@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.service
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
@@ -26,16 +27,22 @@ class NotificationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForeground(1234, permanentNotification())
         return START_STICKY
     }
+
+    private fun permanentNotification(): Notification = NotificationCompat.Builder(
+        this,
+        getString(R.string.service_channel_id),
+    )
+        .setSmallIcon(R.drawable.logo)
+        .setContentText("service for notifications")
+        .build()
 
     override fun onCreate() {
         super.onCreate()
 
-        Log.d("msg", "onCreate Servic")
-//        myNotificationInterface?.getComments()
-
-        val messageRef = FirebaseDatabase.getInstance().getReference( BuildConfig.FLAVOR )
+        val messageRef = FirebaseDatabase.getInstance().getReference(BuildConfig.FLAVOR)
         messageRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {}
 
@@ -69,7 +76,6 @@ class NotificationService : Service() {
             }
 
         })
-
     }
 
     fun displayNotification(text: String) {
@@ -77,12 +83,13 @@ class NotificationService : Service() {
 
         val intent = Intent(this, MainActivity::class.java)
 //        intent.putExtra("ID", msg.notificationID)
-        val pendingIntent =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                PendingIntent.getActivity(this, 123, intent, PendingIntent.FLAG_IMMUTABLE)
-            } else {
-                PendingIntent.getActivity(this, 123, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-            }
+
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            PendingIntent.FLAG_IMMUTABLE
+        else
+            PendingIntent.FLAG_CANCEL_CURRENT
+
+        val pendingIntent = PendingIntent.getActivity(this, 123, intent, flag)
 
         val notification = NotificationCompat.Builder(
             this,
@@ -107,7 +114,7 @@ class NotificationService : Service() {
 //    private var nInstance: NotificationInterface? = null
 
     companion object {
-        const val TAG = "notif_Service"
+        const val TAG = "notification_Service"
 
         var myNotificationInterface: NotificationInterface? = null
     }
