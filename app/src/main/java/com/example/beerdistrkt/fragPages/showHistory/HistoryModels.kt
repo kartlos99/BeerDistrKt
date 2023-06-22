@@ -91,7 +91,7 @@ data class SaleHistoryDTO(
         beerList: List<BeerModelBase>
     ): SaleHistory? {
         val client = clients.find {
-            it.id ?: 0 == clientID
+            it.id == clientID
         } ?: Obieqti.emptyModel
         val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
         val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
@@ -146,7 +146,7 @@ data class MoneyHistoryDTO(
         usersList: List<User>
     ): MoneyHistory {
         val client = clients.find {
-            it.id ?: 0 == clientID
+            it.id == clientID
         } ?: Obieqti.emptyModel
         val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
         val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER

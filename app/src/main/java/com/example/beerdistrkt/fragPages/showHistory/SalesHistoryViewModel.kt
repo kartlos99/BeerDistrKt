@@ -2,20 +2,21 @@ package com.example.beerdistrkt.fragPages.showHistory
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.CLIENTS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class SalesHistoryViewModel : BaseViewModel() {
     private val userLiveData = database.getUsers()
     private val beerLiveData = database.getBeerList()
 
-    var clients: List<Obieqti> = ObjectCache.getInstance().getList(Obieqti::class, CLIENTS_LIST_ID) ?: listOf()
+    var clients: List<Obieqti> = listOf()
     private lateinit var usersList: List<User>
     private lateinit var beerList: List<BeerModelBase>
 
@@ -30,6 +31,11 @@ class SalesHistoryViewModel : BaseViewModel() {
     init {
         beerLiveData.observeForever { beerList = it }
         userLiveData.observeForever { usersList = it }
+        viewModelScope.launch {
+            database.getCustomers().collectLatest {
+                clients = it
+            }
+        }
     }
 
     fun getData(saleID: Int) {
