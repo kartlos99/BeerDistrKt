@@ -4,19 +4,17 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderItemAdapter
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.showToast
-import com.example.beerdistrkt.utils.visibleIf
 
 class OrderView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -24,9 +22,9 @@ class OrderView @JvmOverloads constructor(
 
     private var binding: ViewOrderBinding
 
-    var commentIsVisible = false
+    private var commentIsVisible = false
         set(value) {
-            binding.orderComment.visibleIf(value)
+            binding.orderComment.isVisible = value
             field = value
         }
 
@@ -53,19 +51,15 @@ class OrderView @JvmOverloads constructor(
         }
     }
 
-    private fun resetForm() {
-
-        with(binding) {
-            layoutParams =
-                LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            orderComment.visibleIf(false)
-            orderStatusTv.text = ""
-            orderUnitRootSwipe.close(false)
-            orderMainConstraint.backgroundTintList = null
-        }
+    private fun resetForm() = with(binding) {
+        layoutParams = LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        orderComment.isVisible = false
+        orderStatusTv.text = ""
+        orderUnitRootSwipe.close(false)
+        orderMainConstraint.backgroundTintList = null
     }
 
     fun lockSwipe(lock: Boolean) {
@@ -79,9 +73,9 @@ class OrderView @JvmOverloads constructor(
         resetForm()
         with(binding) {
             orderUnitClientNameTv.text = order.client.dasaxeleba.uppercase()
-            orderUnitHistoryImg.visibleIf(order.isEdited > 0)
-            orderUnitCommentImg.visibleIf(!order.comment.isNullOrEmpty())
-            orderUnitCheckImg.visibleIf(order.items.any { it.check == 1 })
+            orderUnitHistoryImg.isVisible = order.isEdited > 0
+            orderUnitCommentImg.isVisible = !order.comment.isNullOrEmpty()
+            orderUnitCheckImg.isVisible = order.items.any { it.check == 1 }
             if (order.needCleaning == 1) {
                 orderStatusTv.text = resources.getString(R.string.need_cleaning, order.passDays)
                 orderStatusTv.setTextColor(Color.parseColor("#FFA6A6"))
@@ -91,9 +85,13 @@ class OrderView @JvmOverloads constructor(
                     orderStatusTv.text = resources.getString(order.orderStatus.textRes)
                     orderStatusTv.setTextColor(Color.WHITE)
                 }
-                orderMainConstraint.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.red_01))
+                if (order.orderStatus == OrderStatus.DELETED)
+                    orderStatusTv.setTextColor(Color.RED)
+                else
+                    orderMainConstraint.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.red_01))
             }
+            bkgForDeleted.isVisible = order.orderStatus == OrderStatus.DELETED
 
             val itemList = order.items.groupBy {
                 it.beerID
@@ -124,6 +122,7 @@ class OrderView @JvmOverloads constructor(
             R.id.orderUnitHistoryImg -> order?.onHistoryClick?.invoke()
             R.id.orderUnitCommentImg -> if (!order?.comment.isNullOrEmpty())
                 commentIsVisible = !commentIsVisible
+
             R.id.orderUnitChangeDistributorBtn -> order?.onChangeDistributorClick?.invoke()
             R.id.orderUnitEditBtn -> order?.onEditClick?.invoke()
             R.id.orderUnitDeleteBtn ->
@@ -133,6 +132,7 @@ class OrderView @JvmOverloads constructor(
                     context.showToast(R.string.deleted)
                     binding.orderUnitRootSwipe.close(true)
                 }
+
             R.id.orderMainConstraint,
             R.id.orderItemList -> order?.onItemClick?.invoke()
         }

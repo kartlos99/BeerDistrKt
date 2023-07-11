@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
     <com.chauthai.swipereveallayout.SwipeRevealLayout
         android:id="@+id/orderUnitRootSwipe"
         android:layout_width="match_parent"
@@ -79,9 +78,18 @@
                 android:elevation="4dp"
                 android:focusable="true"
                 android:foreground="?selectableItemBackground"
-                android:paddingTop="@dimen/gr_size_4"
                 android:paddingEnd="@dimen/gr_size_8"
                 tools:ignore="RtlSymmetry">
+
+                <View
+                    android:id="@+id/bkgForDeleted"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/red_gradient"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/orderStatusTv"
@@ -101,7 +109,7 @@
                     android:id="@+id/orderUnitClientNameTv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gr_size_6"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="@dimen/gr_size_8"
                     android:fontFamily="@font/mtavruli_bold"
                     android:paddingStart="@dimen/gr_size_12"
@@ -131,7 +139,7 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_history_24"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg"
                     app:tint="@color/gray_6" />
 
                 <ImageView
@@ -142,13 +150,14 @@
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_comment_white_24dp"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/orderUnitCheckImg"
                     app:tint="@color/gray_6" />
 
                 <ImageView
                     android:id="@+id/orderUnitCheckImg"
                     android:layout_width="@dimen/gr_size_32"
                     android:layout_height="@dimen/gr_size_32"
+                    android:layout_marginTop="@dimen/gr_size_4"
                     android:contentDescription="@string/img_description"
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/circle"
