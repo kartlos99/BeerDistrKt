@@ -1,30 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bkg_underline"
-    android:padding="@dimen/gr_size_4">
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/bkgStroke"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/gr_size_8"
+        android:background="@drawable/comments_rect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/commentDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/gr_size_24"
+        android:background="#fff"
+        android:paddingHorizontal="@dimen/gr_size_4"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2023/07/12" />
 
     <TextView
         android:id="@+id/commentClientName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/gr_size_16"
         android:layout_marginEnd="8dp"
         android:textColor="@color/colorForText_2"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/commentImg"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/commentDate"
+        tools:text="Client Name" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/commentImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:contentDescription="@string/img_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_order_list"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/commentBarrier"
@@ -37,15 +64,23 @@
         android:id="@+id/commentText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_16"
         android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/commentBarrier" />
+        android:layout_marginBottom="@dimen/gr_size_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentBarrier"
+        tools:text="აქ წამოვა შეკვეთის, მიტანის და სხვა კომენტარები" />
 
     <TextView
         android:id="@+id/commentAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_16"
+        android:layout_marginTop="@dimen/gr_size_12"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="author"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

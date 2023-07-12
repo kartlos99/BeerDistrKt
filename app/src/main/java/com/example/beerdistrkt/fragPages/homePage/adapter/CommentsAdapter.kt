@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.CommentViewBinding
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.utils.changeDatePattern
 import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.show
 
@@ -18,6 +19,7 @@ class CommentsAdapter(
 
         fun bind(item: CommentModel) {
             with(binding) {
+                commentDate.text = item.commentDate.changeDatePattern()
                 commentClientName.text = item.dasaxeleba
                 commentText.text = item.comment
                 if (item.op == 'E') {
