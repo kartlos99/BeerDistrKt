@@ -62,29 +62,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
-        <ImageView
-            android:id="@+id/homeAddComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/main_btn_hor_margin"
-            android:padding="@dimen/gr_size_4"
-            android:src="@drawable/ic_add_24dp"
-            app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/homeCommentsRecycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/gr_size_8"
             android:layout_marginBottom="@dimen/gr_size_48"
-            android:background="@drawable/comments_rect"
-            android:padding="4dp"
+            android:fadingEdge="vertical"
+            android:paddingTop="@dimen/gr_size_4"
+            android:requiresFadingEdge="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle" />
+            app:layout_constraintTop_toBottomOf="@id/homeCommentsTitle"
+            tools:itemCount="3"
+            tools:listitem="@layout/comment_view" />
+
+        <ImageView
+            android:id="@+id/homeAddComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/img_description"
+            android:padding="@dimen/gr_size_6"
+            android:src="@drawable/ic_add_24dp"
+            app:layout_constraintBottom_toBottomOf="@id/homeCommentsTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/homeCommentsTitle" />
 
         <ProgressBar
             android:id="@+id/homeMainProgressBar"

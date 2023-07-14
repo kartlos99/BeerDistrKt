@@ -89,4 +89,8 @@
         <item name="android:spinnerMode">dialog</item>
     </style>
 
+    <style name="CommentsRecyclerStyle">
+        <item name="android:fadingEdge">vertical</item>
+    </style>
+
 </resources>
