@@ -21,10 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
-    companion object {
-        const val emptyBarrelTitle = "ცარიელი"
-    }
-
     private val binding by viewBinding(HomeFragmentBinding::bind)
 
     override val viewModel: HomeViewModel by lazy {
@@ -253,5 +249,9 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
             .beginTransaction()
             .replace(R.id.storeHouseInfoContainer, fragment)
             .commit()
+    }
+
+    companion object {
+        const val emptyBarrelTitle = "ცარიელი"
     }
 }
