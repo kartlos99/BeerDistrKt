@@ -90,22 +90,30 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     viewModel.getStoreBalance()
             }
         }
-        viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer {
-            initCommentsRecycler(it)
+        viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer { comments ->
+            initCommentsRecycler(comments)
+            updateCommentsState(comments.isEmpty().not())
             setPageTitle(Session.get().region?.name)
         })
         viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Loading -> {
                 }
+
                 is ApiResponseState.Success -> {
                     notifyNewComment(it.data)
                     showToast(R.string.data_saved)
                     viewModel.stopAddCommentObserving()
                 }
+
                 else -> {}
             }
         })
+    }
+
+    private fun updateCommentsState(hasComments: Boolean) = with(binding) {
+        homeCommentsRecycler.isVisible = hasComments
+        noCommentsTv.isVisible = !hasComments
     }
 
     private fun initCommentsRecycler(data: List<CommentModel>) {
@@ -123,14 +131,17 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 else
                     view.findNavController().navigate(R.id.action_homeFragment_to_ordersFragment)
             }
+
             R.id.btnSaleResult -> {
                 view.findNavController()
                     .navigate(HomeFragmentDirections.actionHomeFragmentToSalesFragment())
             }
+
             R.id.btnSalesByClient -> {
                 view.findNavController()
                     .navigate(HomeFragmentDirections.actionHomeFragmentToObjListFragment(AMONAWERI))
             }
+
             R.id.homeAddComment -> {
                 context?.showTextInputDialog(
                     R.string.add_comment,

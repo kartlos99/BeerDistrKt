@@ -242,5 +242,6 @@
     <string name="confirm_sys_clear_on">დავაფიქსირო სისტემის გაწმენდა ობიექტზე - %s ? </string>
 
     <string name="foreground_service_name" translatable="false">Indicate running service</string>
+    <string name="no_comments">კომენტარები არაა</string>
 
 </resources>
