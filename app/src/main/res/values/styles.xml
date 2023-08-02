@@ -93,4 +93,14 @@
         <item name="android:fadingEdge">vertical</item>
     </style>
 
+    <style name="NoCommentsStyle">
+        <item name="android:background">@drawable/no_comments</item>
+        <item name="android:textSize">@dimen/sp36</item>
+        <item name="android:padding">@dimen/gr_size_12</item>
+        <item name="android:gravity">center</item>
+        <item name="android:alpha">0.6</item>
+        <item name="android:text">@string/no_comments</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
 </resources>
