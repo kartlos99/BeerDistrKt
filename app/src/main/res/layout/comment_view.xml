@@ -30,12 +30,13 @@
 
     <TextView
         android:id="@+id/commentClientName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/gr_size_16"
         android:layout_marginEnd="8dp"
         android:textColor="@color/colorForText_2"
         android:textStyle="bold"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/commentImg"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
