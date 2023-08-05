@@ -62,7 +62,8 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
     authFailure: (() -> Unit)? = null,
     responseFailure: (code: Int, error: String) -> Unit = { _: Int, _: String -> },
     onConnectionFailure: (Throwable) -> Unit,
-    finally: ((success: Boolean) -> Unit)? = null
+    finally: ((success: Boolean) -> Unit)? = null,
+    notifyChanges: ((logID: String) -> Unit)? = null
 ) {
     enqueue(object : Callback<T> {
         override fun onFailure(call: Call<T>, t: Throwable) {
@@ -84,8 +85,12 @@ fun <F : Any, T : DataResponse<F>> Call<T>.sendRequest(
                     if (successWithData != null) {
                         if (body.data == null)
                             responseFailure(DataResponse.ErrorCodeDataIsNull, "Data expected")
-                        else
+                        else {
                             successWithData(body.data)
+                            body.logRecordId?.let {
+                                if (it >= 0) notifyChanges?.invoke(it.toString())
+                            }
+                        }
                     }
                 } else {
                     if (body?.errorCode == 401 && authFailure != null)
@@ -316,6 +321,12 @@ fun Fragment.notifyNewComment(text: String) {
     refToFB.setValue(fullText)
     SharedPreferenceDataSource.initialize(this.requireContext())
     SharedPreferenceDataSource.getInstance().saveLastMsgDate(fullText)
+}
+
+fun notifyOldDataChange(logID: String) {
+    val refToFB = FirebaseDatabase.getInstance().getReference(BuildConfig.FLAVOR + "_tracker")
+    refToFB.setValue(logID)
+    SharedPreferenceDataSource.getInstance().saveLastLogID(logID)
 }
 
 fun Context.showToast(text: String) {
