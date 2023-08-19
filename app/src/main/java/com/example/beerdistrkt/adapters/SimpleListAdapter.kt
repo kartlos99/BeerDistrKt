@@ -7,10 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.utils.inflate
 
 @Suppress("UNCHECKED_CAST")
-class SimpleListAdapter<T>(var data: List<T>?, private val viewCreator: (() -> View)? = null,
-                           @LayoutRes private val layoutId: Int? = null,
-                           private val onBind: (item: T, view: View) -> Unit,
-                           private val onClick: ((item: T) -> Unit)? = null) : RecyclerView.Adapter<SimpleListAdapter.ViewHolder>() {
+class SimpleListAdapter<T>(
+    var data: List<T>?,
+    private val viewCreator: (() -> View)? = null,
+    @LayoutRes private val layoutId: Int? = null,
+    private val onBind: (item: T, view: View) -> Unit,
+    private val onClick: ((item: T) -> Unit)? = null
+) :
+    RecyclerView.Adapter<SimpleListAdapter.ViewHolder>() {
 
     private val onItemClickListener = View.OnClickListener {
         val item = it?.tag as T ?: return@OnClickListener
