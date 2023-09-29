@@ -1,21 +1,18 @@
 package com.example.beerdistrkt.fragPages.reporting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.FragmentDetailedChangeHinstoryBinding
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
 
 class DetailedChangeHistoryFragment : BaseFragment<DetailedChangeHistoryViewModel>() {
+
     override val viewModel: DetailedChangeHistoryViewModel by viewModels()
 
-    val binding by viewBinding(
-        FragmentDetailedChangeHinstoryBinding::bind
-    )
+    val binding by viewBinding(FragmentDetailedChangeHinstoryBinding::bind)
 
     override var frLayout: Int? = R.layout.fragment_detailed_change_hinstory
 

@@ -3,8 +3,6 @@ package com.example.beerdistrkt.fragPages.reporting
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.BaseAdapter
-import android.widget.SimpleAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,12 +11,15 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SimpleListAdapter
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.ChangesMainListItemLayoutBinding
 import com.example.beerdistrkt.databinding.FragmentChangesListBinding
-import com.example.beerdistrkt.databinding.ViewMoneyHistoryItemBinding
 import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.RECORD_ID_KEY
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
-import com.example.beerdistrkt.utils.visibleIf
+import com.example.beerdistrkt.fragPages.reporting.adapter.SimplePaginatedScrollListener
+import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
 
@@ -34,9 +35,8 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
     }
 
     fun FragmentChangesListBinding.initView() {
-        changesListRv.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        changesListRv.adapter = SimpleListAdapter(
+        val layoutManager = LinearLayoutManager(requireContext())
+        val changesAdapter = SimpleListAdapter(
             listOf("one", "second"),
             null,
             R.layout.changes_main_list_item_layout,
@@ -48,6 +48,25 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
                 openDetails(it)
             }
         )
+        val scrollListener = SimplePaginatedScrollListener(layoutManager).apply {
+            getNext = ::getNextPage
+        }
+        changesListRv.apply {
+            this.layoutManager = layoutManager
+            adapter = changesAdapter
+            addOnScrollListener(scrollListener)
+        }
+        setupObservers()
+    }
+
+    private fun setupObservers() {
+        viewModel.changesFlow.collectLatest(viewLifecycleOwner) { chList ->
+            Log.d(TAG, "setupObservers: $chList")
+        }
+    }
+
+    private fun getNextPage() {
+        Log.d(TAG, "getNextPage: TODO")
     }
 
     private fun openDetails(id: String) {
