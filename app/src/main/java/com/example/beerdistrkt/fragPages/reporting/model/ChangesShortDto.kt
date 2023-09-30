@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.reporting.model
 
+import com.example.beerdistrkt.utils.DiffItem
 import com.squareup.moshi.Json
 
 data class ChangesShortDto(
@@ -11,7 +12,10 @@ data class ChangesShortDto(
     val modifyUserID: Int,
     val modifyUsername: String,
     val shortInfo: Map<String, String>,
-)
+): DiffItem {
+    override val key: Int
+        get() = id
+}
 
 
 enum class DbTableName {

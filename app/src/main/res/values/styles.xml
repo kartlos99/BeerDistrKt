@@ -103,4 +103,23 @@
         <item name="android:visibility">gone</item>
     </style>
 
+    <style name="BaseListItem">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ListItem.Label" parent="BaseListItem">
+        <item name="android:ellipsize">none</item>
+    </style>
+
+    <style name="ListItem.Text" parent="BaseListItem">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">end</item>
+    </style>
+
+    <style name="DefaultListItem.MultilineText" parent="ListItem.Text">
+        <item name="android:maxLines">2</item>
+    </style>
+
 </resources>

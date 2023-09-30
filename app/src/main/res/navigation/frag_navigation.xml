@@ -223,7 +223,7 @@
         android:id="@+id/changesListFragment"
         android:name="com.example.beerdistrkt.fragPages.reporting.ChangesListFragment"
         tools:layout="@layout/fragment_changes_list"
-        android:label="ChangesListFragment">
+        android:label="@string/page_title_report_changes">
         <action
             android:id="@+id/action_changesListFragment_to_detailedChangeHistoryFragment"
             app:destination="@id/detailedChangeHistoryFragment" />
