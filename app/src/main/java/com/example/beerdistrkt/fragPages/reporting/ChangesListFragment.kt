@@ -12,10 +12,12 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentChangesListBinding
+import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.DB_TABLE_KEY
 import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.RECORD_ID_KEY
 import com.example.beerdistrkt.fragPages.reporting.adapter.ChangesMainListAdapter
 import com.example.beerdistrkt.fragPages.reporting.adapter.SimplePaginatedScrollListener
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
+import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 
 class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
 
@@ -35,7 +37,7 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
     }
 
     private fun onItemClicked(item: ChangesShortDto) {
-        openDetails(item.id.toString())
+        openDetails(item.editedRecordID.toString(), item.tableName)
     }
 
     fun FragmentChangesListBinding.initView() {
@@ -62,14 +64,15 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
         Log.d(TAG, "getNextPage: TODO")
     }
 
-    private fun openDetails(id: String) {
+    private fun openDetails(id: String, tableName: DbTableName) {
         if (isLandscape) {
             val fragment =
                 binding.detailsFragmentContainer?.getFragment<DetailedChangeHistoryFragment>()
-            fragment?.setItem(id)
+            fragment?.setItem(id, tableName.name)
         } else {
             val args = Bundle().apply {
                 putString(RECORD_ID_KEY, id)
+                putString(DB_TABLE_KEY, tableName.name)
             }
             findNavController().navigate(
                 R.id.action_changesListFragment_to_detailedChangeHistoryFragment,

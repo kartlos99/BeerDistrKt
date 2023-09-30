@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.fragPages.reporting.repo
 
+import com.example.beerdistrkt.fragPages.reporting.model.BaseTableRecord
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
+import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +15,7 @@ class ChangesRepository {
     private val ioScope = CoroutineScope(Dispatchers.IO)
 
     val changesListFlow = MutableStateFlow<List<ChangesShortDto>>(listOf())
+    val historyFlow = MutableStateFlow<List<BaseTableRecord>>(listOf())
 
     fun getChangesList() {
 
@@ -29,5 +32,22 @@ class ChangesRepository {
         )
     }
 
-    private val demoList = listOf("kasri", "meore", "didi")
+    fun getChangeHistory(recordID: String, table: DbTableName) {
+
+        val mapper = HistoryItemMapper()
+
+        ApeniApiService.getInstance().getRecordHistory(recordID, table.tableName).sendRequest(
+            successWithData = { list ->
+                historyFlow.tryEmit(list.mapNotNull {
+                    mapper.map(it, table)
+                })
+            },
+            failure = {
+                historyFlow.tryEmit(listOf())
+            },
+            onConnectionFailure = {
+                historyFlow.tryEmit(listOf())
+            }
+        )
+    }
 }

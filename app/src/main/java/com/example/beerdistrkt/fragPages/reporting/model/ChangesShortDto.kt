@@ -18,10 +18,10 @@ data class ChangesShortDto(
 }
 
 
-enum class DbTableName {
+enum class DbTableName(val tableName: String) {
     @Json(name = "barrel_output")
-    BarrelOutput,
+    BarrelOutput("barrel_output"),
 
     @Json(name = "customer")
-    Customer
+    Customer("customer")
 }
