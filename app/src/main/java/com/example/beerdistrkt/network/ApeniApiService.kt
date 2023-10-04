@@ -15,7 +15,6 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
-import com.example.beerdistrkt.fragPages.reporting.model.BaseTableRecord
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
@@ -294,5 +293,5 @@ interface ApeniApiService {
     fun getRecordHistory(
         @Query("recordID") recordID: String,
         @Query("table") table: String,
-    ): Call<DataResponse<List<String>>>
+    ): Call<DataResponse<List<Map<String, String>>>>
 }

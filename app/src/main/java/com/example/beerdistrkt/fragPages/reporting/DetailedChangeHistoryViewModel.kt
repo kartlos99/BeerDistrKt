@@ -5,7 +5,7 @@ import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.fragPages.reporting.repo.ChangesRepository
 import kotlinx.coroutines.flow.asStateFlow
 
-class DetailedChangeHistoryViewModel: BaseViewModel() {
+class DetailedChangeHistoryViewModel : BaseViewModel() {
 
     private val changesRepository = ChangesRepository()
 
