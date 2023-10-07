@@ -16,10 +16,10 @@ class HistoryItemMapper {
         tableName: DbTableName
     ): List<HistoryUnitModel> {
         val result: MutableList<HistoryUnitModel> =
-            mutableListOf(HistoryUnitModel("", "", HistoryCellType.Empty))
+            mutableListOf(HistoryUnitModel.EMPTY)
 
         tableName.headerItems.forEach { title ->
-            result.add(HistoryUnitModel(title, title, HistoryCellType.Header))
+            result.add(HistoryUnitModel(title, HistoryCellType.Header))
         }
         result.addAll(transformList(data, tableName))
         return result
@@ -50,20 +50,18 @@ class HistoryItemMapper {
 
         val result = mutableListOf(
             HistoryUnitModel(
-                record["hid"] ?: "",
-                "${record["modifyDate"]}\n${record["modifyUserID"]}",
+                "${record[TABLE_COLUMN_MODIFY_DATE]}\n${record[TABLE_COLUMN_MODIFY_USER_ID]}",
                 HistoryCellType.Header
             ),
         )
         tableName.visibleKeys.forEach {
             val previousItem = if (prev == null) null else prev[it] ?: ""
-            result.add(makeHistUnit(record["hid"] ?: "", record[it] ?: "", previousItem, isLast))
+            result.add(makeHistUnit(record[it] ?: "", previousItem, isLast))
         }
         return result
     }
 
     private fun makeHistUnit(
-        id: String,
         current: String,
         prev: String?,
         isLast: Boolean = false
@@ -75,6 +73,11 @@ class HistoryItemMapper {
             isLast -> HistoryCellType.Regular
             else -> HistoryCellType.Empty
         }
-        return HistoryUnitModel(id, value, type)
+        return HistoryUnitModel(value, type)
+    }
+
+    companion object {
+        const val TABLE_COLUMN_MODIFY_USER_ID = "modifyUserID"
+        const val TABLE_COLUMN_MODIFY_DATE = "modifyDate"
     }
 }

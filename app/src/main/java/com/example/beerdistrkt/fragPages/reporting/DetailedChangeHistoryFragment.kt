@@ -46,7 +46,7 @@ class DetailedChangeHistoryFragment : BaseFragment<DetailedChangeHistoryViewMode
                 is ApiResponseState.Loading -> {
                     binding.indeterminateProgressBar.isVisible = historyResult.showLoading
                     if (historyResult.showLoading)
-                        adapter.submitList(listOf(HistoryUnitModel("l", "loading...", HistoryCellType.Empty)))
+                        adapter.submitList(listOf(HistoryUnitModel(getString(R.string.loading), HistoryCellType.Empty)))
                 }
                 is ApiResponseState.Success -> adapter.submitList(historyResult.data)
                 is ApiResponseState.ApiError -> showToast(historyResult.errorText)
