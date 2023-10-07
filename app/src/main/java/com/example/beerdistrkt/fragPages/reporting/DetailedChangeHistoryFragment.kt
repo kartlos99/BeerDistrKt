@@ -2,15 +2,18 @@ package com.example.beerdistrkt.fragPages.reporting
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentDetailedChangeHinstoryBinding
 import com.example.beerdistrkt.fragPages.reporting.adapter.ChangesHistoryAdapter
 import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
+import com.example.beerdistrkt.fragPages.reporting.model.HistoryCellType
+import com.example.beerdistrkt.fragPages.reporting.model.HistoryUnitModel
+import com.example.beerdistrkt.utils.ApiResponseState
 
 class DetailedChangeHistoryFragment : BaseFragment<DetailedChangeHistoryViewModel>() {
 
@@ -38,8 +41,17 @@ class DetailedChangeHistoryFragment : BaseFragment<DetailedChangeHistoryViewMode
         detailedChangesRv.layoutManager = layoutManager
         detailedChangesRv.adapter = adapter
 
-        viewModel.historyFlow.collectLatest(viewLifecycleOwner) { history ->
-            adapter.submitList(history)
+        viewModel.historyLiveData.observe(viewLifecycleOwner) { historyResult ->
+            when (historyResult){
+                is ApiResponseState.Loading -> {
+                    binding.indeterminateProgressBar.isVisible = historyResult.showLoading
+                    if (historyResult.showLoading)
+                        adapter.submitList(listOf(HistoryUnitModel("l", "loading...", HistoryCellType.Empty)))
+                }
+                is ApiResponseState.Success -> adapter.submitList(historyResult.data)
+                is ApiResponseState.ApiError -> showToast(historyResult.errorText)
+                else -> {}
+            }
         }
     }
 

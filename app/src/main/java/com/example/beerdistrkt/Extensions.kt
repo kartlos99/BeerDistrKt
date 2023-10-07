@@ -362,12 +362,6 @@ fun ImageView.setTint(@ColorRes resId: Int) {
     setColorFilter(getColor(resId))
 }
 
-fun <T : Any> LiveData<T>.observe(viewLifecycleOwner: LifecycleOwner, function: (T) -> Unit) {
-    observe(viewLifecycleOwner, Observer {
-        function(it)
-    })
-}
-
 infix fun Number.waitFor(block: (() -> Unit)) {
     Handler(Looper.getMainLooper()).postDelayed({
         block()

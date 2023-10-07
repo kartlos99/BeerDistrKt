@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentChangesListBinding
 import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.DB_TABLE_KEY
 import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.RECORD_ID_KEY
@@ -18,6 +17,7 @@ import com.example.beerdistrkt.fragPages.reporting.adapter.ChangesMainListAdapte
 import com.example.beerdistrkt.fragPages.reporting.adapter.SimplePaginatedScrollListener
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
+import com.example.beerdistrkt.utils.ApiResponseState
 
 class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
 
@@ -54,9 +54,13 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
     }
 
     private fun setupObservers() {
-        viewModel.changesFlow.collectLatest(viewLifecycleOwner) { chList ->
-            Log.d(TAG, "setupObservers: $chList")
-            changesAdapter.submitList(chList)
+        viewModel.changesLiveData.observe(viewLifecycleOwner) { changesResult ->
+            when (changesResult) {
+                is ApiResponseState.Loading -> binding.indeterminateProgressBar.isVisible = changesResult.showLoading
+                is ApiResponseState.Success -> changesAdapter.submitList(changesResult.data)
+                is ApiResponseState.ApiError -> showToast(changesResult.errorText)
+                else -> {}
+            }
         }
     }
 

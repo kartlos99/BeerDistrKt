@@ -3,17 +3,24 @@ package com.example.beerdistrkt.fragPages.reporting.repo
 import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryCellType
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryUnitModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class HistoryItemMapper {
 
-    fun map(data: List<Map<String, String>>, tableName: DbTableName): List<HistoryUnitModel> {
+    private val workScope = CoroutineScope(Dispatchers.Default)
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+
+    fun map(
+        data: List<Map<String, String>>,
+        tableName: DbTableName
+    ): List<HistoryUnitModel> {
         val result: MutableList<HistoryUnitModel> =
             mutableListOf(HistoryUnitModel("", "", HistoryCellType.Empty))
 
         tableName.headerItems.forEach { title ->
             result.add(HistoryUnitModel(title, title, HistoryCellType.Header))
         }
-
         result.addAll(transformList(data, tableName))
         return result
     }
@@ -43,7 +50,7 @@ class HistoryItemMapper {
 
         val result = mutableListOf(
             HistoryUnitModel(
-                record.get("hid") ?: "",
+                record["hid"] ?: "",
                 "${record["modifyDate"]}\n${record["modifyUserID"]}",
                 HistoryCellType.Header
             ),
