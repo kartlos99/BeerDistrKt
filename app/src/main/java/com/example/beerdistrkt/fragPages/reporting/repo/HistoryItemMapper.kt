@@ -66,14 +66,13 @@ class HistoryItemMapper {
         prev: String?,
         isLast: Boolean = false
     ): HistoryUnitModel {
-        val value = current.takeIf { prev == null || current != prev } ?: ""
         val type = when {
             prev == null -> HistoryCellType.Regular
             current != prev -> HistoryCellType.Changed
             isLast -> HistoryCellType.Regular
             else -> HistoryCellType.Empty
         }
-        return HistoryUnitModel(value, type)
+        return HistoryUnitModel(current, type)
     }
 
     companion object {

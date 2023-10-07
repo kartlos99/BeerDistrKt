@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:layout_marginStart="@dimen/gr_size_4"
     android:layout_marginTop="@dimen/gr_size_4"
-    android:background="#3aaa"
+    android:background="@color/history_cell_regular"
     android:padding="4dp">
 
     <TextView
