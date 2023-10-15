@@ -57,7 +57,7 @@ class DetailedChangeHistoryFragment : BaseFragment<DetailedChangeHistoryViewMode
 
     fun setItem(id: String, tableStr: String) {
         val table = DbTableName.valueOf(tableStr)
-        setupRecycler(table.columnCount)
+        setupRecycler(table.visibleKeys.size)
         viewModel.getHistory(id, table)
     }
 

@@ -20,14 +20,14 @@ data class ChangesShortDto(
 
 enum class DbTableName(
     val tableName: String,
-    val columnCount: Int,
+    val displayName: String,
     val headerItems: List<String>,
     val visibleKeys: List<String>
 ) {
     @Json(name = "barrel_output")
     BarrelOutput(
         tableName = "barrel_output",
-        columnCount = 6,
+        displayName = "კასრის დაბრუნება",
         headerItems = listOf(
             "ობიექტი",
             "დაბრუნების თარიღი",
@@ -49,7 +49,7 @@ enum class DbTableName(
     @Json(name = "customer")
     Customer(
         tableName = "customer",
-        columnCount = 7,
+        displayName = "ობიექტი/მაღაზია",
         headerItems = listOf(
             "დასახელება",
             "მისამართი",
@@ -59,6 +59,6 @@ enum class DbTableName(
             "მონიშვნა",
             "კომენტარი"
         ),
-        visibleKeys = listOf("dasaxeleba", "adress", "tel", "sk", "sakpiri", "chek", "comment")
+        visibleKeys = listOf("dasaxeleba", "adress", "tel", "sk", "sakpiri", "isChecked", "comment")
     )
 }

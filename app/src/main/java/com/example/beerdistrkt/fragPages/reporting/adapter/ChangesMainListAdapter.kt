@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SimpleListAdapter
 import com.example.beerdistrkt.customView.LabeledListItemView
 import com.example.beerdistrkt.databinding.ChangesMainListItemLayoutBinding
@@ -37,8 +38,12 @@ class ChangesMainListViewHolder(
 
     fun bind(item: ChangesShortDto, onItemClick: (item: ChangesShortDto) -> Unit = {}) =
         with(binding) {
-            changeItemName.text = item.tableName.name
-            changeAuthor.text = "${item.modifyUsername} | ${item.modifyDate}"
+            changeItemName.text = item.tableName.displayName
+            changeAuthor.text = binding.root.context.getString(
+                R.string.two_separated,
+                item.modifyUsername,
+                item.modifyDate
+            )
 
             val subItems = item.shortInfo.entries.toList()
 

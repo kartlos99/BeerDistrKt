@@ -247,5 +247,6 @@
 
     <string name="page_title_report_changes">ცვლილებები</string>
     <string name="loading">იტვირთება...</string>
+    <string name="two_separated">%1$s | %2$s</string>
 
 </resources>
