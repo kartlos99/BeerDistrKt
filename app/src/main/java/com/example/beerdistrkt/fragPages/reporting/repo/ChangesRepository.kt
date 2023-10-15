@@ -46,8 +46,8 @@ class ChangesRepository {
         val mapper = HistoryItemMapper()
         historyLiveData.value = ApiResponseState.Loading(true)
         ApeniApiService.getInstance().getRecordHistory(recordID, table.tableName).sendRequest(
-            successWithData = { list ->
-                historyLiveData.value = ApiResponseState.Success(mapper.map(list, table))
+            successWithData = { historyDto ->
+                historyLiveData.value = ApiResponseState.Success(mapper.map(historyDto, table))
             },
             onConnectionFailure = {
                 historyLiveData.value = (ApiResponseState.ApiError(it.hashCode(), it.message ?: ""))

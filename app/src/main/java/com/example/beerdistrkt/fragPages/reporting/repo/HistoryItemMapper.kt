@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.reporting.repo
 
 import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryCellType
+import com.example.beerdistrkt.fragPages.reporting.model.HistoryDto
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryUnitModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +13,7 @@ class HistoryItemMapper {
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
     fun map(
-        data: List<Map<String, String>>,
+        data: HistoryDto,
         tableName: DbTableName
     ): List<HistoryUnitModel> {
         val result: MutableList<HistoryUnitModel> =
@@ -21,8 +22,24 @@ class HistoryItemMapper {
         tableName.headerItems.forEach { title ->
             result.add(HistoryUnitModel(title, HistoryCellType.Header))
         }
-        result.addAll(transformList(data, tableName))
+        result.addAll(transformList(mapDtoData(data), tableName))
         return result
+    }
+
+    private fun mapDtoData(dataDto: HistoryDto) = dataDto.history.map {
+        val resultMap = mutableMapOf<String, String>()
+        it.entries.forEach { entry ->
+            val value = when (entry.key) {
+                COLUMN_CUSTOMER_ID -> dataDto.customers?.get(entry.value) ?: ""
+                TABLE_COLUMN_MODIFY_USER_ID,
+                COLUMN_DISTRIBUTOR_ID -> dataDto.users?.get(entry.value) ?: ""
+
+                COLUMN_BARREL_ID -> dataDto.barrels?.get(entry.value) ?: ""
+                else -> entry.value
+            }
+            resultMap[entry.key] = value
+        }
+        resultMap.toMap()
     }
 
     private fun transformList(
@@ -78,5 +95,8 @@ class HistoryItemMapper {
     companion object {
         const val TABLE_COLUMN_MODIFY_USER_ID = "modifyUserID"
         const val TABLE_COLUMN_MODIFY_DATE = "modifyDate"
+        const val COLUMN_CUSTOMER_ID = "clientID"
+        const val COLUMN_DISTRIBUTOR_ID = "distributorID"
+        const val COLUMN_BARREL_ID = "canTypeID"
     }
 }
