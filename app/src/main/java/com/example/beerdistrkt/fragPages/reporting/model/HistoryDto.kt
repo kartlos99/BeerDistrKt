@@ -5,4 +5,5 @@ data class HistoryDto(
     val users: Map<String, String>? = null,
     val customers: Map<String, String>? = null,
     val barrels: Map<String, String>? = null,
+    val beers: Map<String, String>? = null,
 )

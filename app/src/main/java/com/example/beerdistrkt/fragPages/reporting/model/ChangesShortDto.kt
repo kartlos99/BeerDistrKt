@@ -75,5 +75,33 @@ enum class DbTableName(
             "კომენტარი"
         ),
         visibleKeys = listOf("tarigi", "clientID", "distributorID", "tanxa", "paymentType", "comment")
+    ),
+
+    @Json(name = "sales")
+    Sale(
+        tableName = "sales",
+        displayName = "რეალიზაცია",
+        headerItems = listOf(
+            "თარიღი",
+            "ობიექტი",
+            "დისტრიბუტორი",
+            "ლუდი",
+            "მონიშვნა",
+            "ერთ.ფასი",
+            "კასრი",
+            "რაოდენობა",
+            "კომენტარი"
+        ),
+        visibleKeys = listOf(
+            "saleDate",
+            "clientID",
+            "distributorID",
+            "beerID",
+            "isChecked",
+            "unitPrice",
+            "canTypeID",
+            "count",
+            "comment"
+        )
     )
 }

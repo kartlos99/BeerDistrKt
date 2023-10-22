@@ -232,7 +232,7 @@
         android:id="@+id/detailedChangeHistoryFragment"
         android:name="com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment"
         tools:layout="@layout/fragment_detailed_change_hinstory"
-        android:label="DetailedChangeHistoryFragment">
+        android:label="@string/page_title_detailed_history">
         <argument
             android:name="recordID"
             app:argType="string"

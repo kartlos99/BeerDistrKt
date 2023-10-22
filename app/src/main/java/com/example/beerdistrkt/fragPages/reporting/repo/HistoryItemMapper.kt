@@ -35,6 +35,7 @@ class HistoryItemMapper {
                 COLUMN_DISTRIBUTOR_ID -> dataDto.users?.get(entry.value) ?: ""
 
                 COLUMN_BARREL_ID -> dataDto.barrels?.get(entry.value) ?: ""
+                COLUMN_BEER_ID -> dataDto.beers?.get(entry.value) ?: ""
                 else -> entry.value
             }
             resultMap[entry.key] = value
@@ -98,5 +99,6 @@ class HistoryItemMapper {
         const val COLUMN_CUSTOMER_ID = "clientID"
         const val COLUMN_DISTRIBUTOR_ID = "distributorID"
         const val COLUMN_BARREL_ID = "canTypeID"
+        const val COLUMN_BEER_ID = "beerID"
     }
 }
