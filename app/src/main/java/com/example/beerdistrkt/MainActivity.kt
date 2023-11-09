@@ -12,13 +12,13 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
-import androidx.databinding.DataBindingUtil
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.databinding.NavHeaderBinding
@@ -41,7 +41,7 @@ val Context.dataStore by preferencesDataStore(name = PREF_NAME)
 class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
 
-    private lateinit var vBinding: ActivityMainBinding
+    private val vBinding by viewBinding(ActivityMainBinding::bind)
     lateinit var appBarConfiguration: AppBarConfiguration
 
     val viewModel by lazy {
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         ApeniDataBase.initialize(this)
         ApeniApiService.initialize(this)
         SharedPreferenceDataSource.initialize(this)
-        vBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
         Session.get().restoreLastRegion(SharedPreferenceDataSource.getInstance().getRegion())
         Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())

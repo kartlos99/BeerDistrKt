@@ -4,12 +4,13 @@ apply from: 'localdata.gradle'
 buildscript {
     ext {
         kotlin_version = '1.4.10'
-        version_navigation = '2.5.2'
+        version_navigation = '2.5.3'
         version_retrofit = '2.9.0'
         version_moshi = '1.9.3'
         room_version = '2.4.3'
         version_coroutine = '1.6.4'
         dotsIndicatorVer = '4.1.2'
+        lifecycle_version = '2.5.1'
     }
     repositories {
         google()
