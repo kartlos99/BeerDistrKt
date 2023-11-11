@@ -14,7 +14,6 @@ import com.example.beerdistrkt.databinding.ViewMoneyHistoryItemBinding
 import com.example.beerdistrkt.databinding.ViewSalesHistoryItemBinding
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.observe
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.visibleIf
 

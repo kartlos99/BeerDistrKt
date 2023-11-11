@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/gr_size_8"
+    android:background="#fff"
+    android:elevation="@dimen/gr_size_4"
+    android:padding="@dimen/gr_size_8">
+
+    <TextView
+        android:id="@+id/changeItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="table" />
+
+    <TextView
+        android:id="@+id/changeAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="@dimen/gr_size_4"
+        android:ellipsize="end"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/changeItemName"
+        tools:text="author/date" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shortInfoRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/changeAuthor"
+        tools:itemCount="3"
+        tools:listitem="@layout/view_label_text_listitem" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

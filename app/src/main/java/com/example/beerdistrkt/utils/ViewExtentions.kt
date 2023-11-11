@@ -4,7 +4,9 @@ import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.CheckResult
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.common.internal.Preconditions.checkMainThread
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -96,3 +98,21 @@ fun SearchView.changesAsFlow(): Flow<CharSequence?> {
 }
 
 fun CharSequence?.orEmpty(): String = this?.toString() ?: ""
+
+fun TextView.setVisibleWithText(text: String?) {
+    if (text.isNullOrEmpty()) {
+        visibility = View.GONE
+    } else {
+        visibility = View.VISIBLE
+        this.text = text
+    }
+}
+
+fun TextView.setVisibleWithText(@StringRes textResId: Int?) {
+    if (textResId != null) {
+        visibility = View.VISIBLE
+        this.setText(textResId)
+    } else {
+        visibility = View.GONE
+    }
+}
