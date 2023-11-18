@@ -74,11 +74,11 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     private fun automatedLogout() {
-        (activity as MainActivity).logOut()
+        (requireActivity() as MainActivity).logOut()
     }
 
     fun setPageTitle(title: String?) {
-        (activity as AppCompatActivity).supportActionBar?.title = title
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = title
     }
 
     fun setPageTitle(titleRes: Int) = setPageTitle(getString(titleRes))

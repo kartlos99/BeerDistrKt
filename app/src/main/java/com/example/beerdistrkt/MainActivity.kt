@@ -12,6 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.drawerlayout.widget.DrawerLayout
@@ -47,6 +50,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
     val viewModel by lazy {
         getViewModel { MainActViewModel() }
     }
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +113,19 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 //        intent.extras?.keySet()?.forEach {
 //            Log.d("extr", "$it - ${intent?.extras?.get(it!!)}")
 //        }
+        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    fun setFullScreen() {
+        vBinding.toolBar.isVisible = false
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
+
+    fun exitFullScreen() {
+        vBinding.toolBar.isVisible = true
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
     }
 
     private fun updateNavigationView() {

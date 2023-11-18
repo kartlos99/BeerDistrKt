@@ -249,5 +249,6 @@
     <string name="page_title_detailed_history">დეტალური ისტორია</string>
     <string name="loading">იტვირთება…</string>
     <string name="two_separated">%1$s | %2$s</string>
+    <string name="full_screen_toggle">full screen toggle</string>
 
 </resources>

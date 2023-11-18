@@ -18,15 +18,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="300dp" />
+        app:layout_constraintGuide_percent=".45" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/detailsFragmentContainer"
-        android:name="com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/detailsDivider" />
+
+    <ImageView
+        android:id="@+id/toggleChangesList"
+        android:layout_width="@dimen/gr_size_36"
+        android:layout_height="@dimen/gr_size_36"
+        android:layout_marginTop="@dimen/gr_size_36"
+        android:alpha="0.7"
+        android:contentDescription="@string/full_screen_toggle"
+        android:elevation="@dimen/gr_size_2"
+        android:src="@drawable/ic_arrow_left_24dp"
+        app:layout_constraintStart_toStartOf="@id/detailsDivider"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#644" />
 
     <ProgressBar
         android:id="@+id/indeterminateProgressBar"
