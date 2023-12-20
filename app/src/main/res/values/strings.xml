@@ -96,6 +96,7 @@
     <string name="patern_date2">yyyy:MM:dd</string>
     <string name="davalianeba">დავალიანება</string>
     <string name="kasri">კასრი</string>
+    <string name="bottle">ბოთლი</string>
     <string name="finances">ფინანსები</string>
     <string name="pay">გადახდა</string>
     <string name="price">ღირებულება:</string>
