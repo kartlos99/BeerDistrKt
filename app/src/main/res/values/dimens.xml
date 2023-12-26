@@ -26,6 +26,7 @@
     <dimen name="gr_size_48">48dp</dimen>
     <dimen name="gr_size_56">56dp</dimen>
     <dimen name="gr_size_64">64dp</dimen>
+    <dimen name="gr_size_72">72dp</dimen>
     <dimen name="gr_size_96">96dp</dimen>
     <dimen name="gr_size_128">128dp</dimen>
 

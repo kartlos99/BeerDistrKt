@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -140,6 +141,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         addDeliveryCheckReplace.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isReplace = isChecked
             setupAutoComment(isChecked, R.string.replace)
+        }
+        realisationTypeSelector.check(R.id.realizationByBarrel)
+        realisationTypeSelector.addOnButtonCheckedListener { group, checkedId, isChecked ->
+
+            Log.d(TAG, "initView: checkedId, isChecked = $checkedId, $isChecked")
         }
     }
 

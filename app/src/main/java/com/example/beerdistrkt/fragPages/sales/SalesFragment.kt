@@ -35,7 +35,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     private lateinit var expenseBottomSheet: BottomSheetBehavior<*>
 
-    var dateSetListener = OnDateSetListener { _, year, month, day ->
+    private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDataSelected(year, month, day)
     }
 

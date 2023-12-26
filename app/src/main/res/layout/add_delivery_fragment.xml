@@ -52,11 +52,37 @@
                     app:constraint_referenced_ids="beerSelector,
                     addDeliveryTempContainer" />
 
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/realisationTypeSelector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/realizationByBarrel"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kasri" />
+
+                    <Button
+                        android:id="@+id/realizationByBottle"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bottle" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
                 <com.example.beerdistrkt.customView.BeerSelectorView
                     android:id="@+id/beerSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addDeliveryhideOnEditGroup"

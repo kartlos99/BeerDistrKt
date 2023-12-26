@@ -251,4 +251,6 @@
     <string name="loading">იტვირთება…</string>
     <string name="two_separated">%1$s | %2$s</string>
 
+    <string name="count">რაოდენობა</string>
+
 </resources>
