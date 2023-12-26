@@ -188,7 +188,7 @@ class BottleSelectorView @JvmOverloads constructor(
                 "${bottle.name}\n${bottle.price} ₾"
             else
                 bottle.name
-            holder.itemBinding.bottleSizeTv.text = resources.getString(R.string.lt, bottle.volume)
+            holder.itemBinding.bottleSizeTv.text = "${bottle.volume} lt."
             bottle.imageLink?.let {
                 // load images
             }

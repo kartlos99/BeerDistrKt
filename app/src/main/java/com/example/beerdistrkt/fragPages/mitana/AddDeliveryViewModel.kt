@@ -13,12 +13,14 @@ import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,6 +40,9 @@ class AddDeliveryViewModel(
             ?: mutableListOf()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
+        ?: listOf()
+
+    val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
         ?: listOf()
 
     var saleDateCalendar: Calendar = Calendar.getInstance()

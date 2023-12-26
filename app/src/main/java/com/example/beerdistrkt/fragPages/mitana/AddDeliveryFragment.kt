@@ -124,6 +124,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
         }
 
+        bottleSelector.initView(
+            viewModel.bottleList,
+            ::checkForm
+        )
+
         beerSelector.withPrices = true
         beerSelector.initView(
             viewModel.beerList,

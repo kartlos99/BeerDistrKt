@@ -7,8 +7,11 @@ import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.DefaultBottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
+import com.example.beerdistrkt.storage.ObjectCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,6 +93,25 @@ class ApeniRepo {
             },
             failure = {},
             onConnectionFailure = {}
+        )
+    }
+
+    fun getBaseData() {
+        ApeniApiService.getInstance().getBaseData().sendRequest(
+            successWithData = {
+                val bottleMapper = DefaultBottleDtoMapper(it.beers)
+                val bottles = it.bottles.map { dto ->
+                    bottleMapper.map(dto)
+                }
+                ObjectCache.getInstance()
+                    .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
+            },
+            failure = {
+
+            },
+            onConnectionFailure = {
+
+            }
         )
     }
 }

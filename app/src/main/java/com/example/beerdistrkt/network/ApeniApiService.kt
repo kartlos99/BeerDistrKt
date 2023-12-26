@@ -30,6 +30,7 @@ import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.network.model.BaseDataResponse
 import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -136,8 +137,11 @@ interface ApeniApiService {
         @Query("clientID") clientID: Int
     ): Call<DataResponse<StatementResponse>>
 
+    @Deprecated("use combined getBaseData endpoint")
     @GET("get_ludi_list.php")
     fun getBeerList(): Call<DataResponse<List<BeerModelBase>>>
+    @GET("general/baseData.php")
+    fun getBaseData(): Call<DataResponse<BaseDataResponse>>
 
     @GET("get_kasri_list.php")
     fun getCanList(): Call<DataResponse<List<CanModel>>>
