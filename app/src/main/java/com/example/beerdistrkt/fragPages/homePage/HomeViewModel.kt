@@ -11,6 +11,8 @@ import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.DefaultBottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
@@ -158,18 +160,24 @@ class HomeViewModel : BaseViewModel() {
 
     private fun getBeerList() {
         sendRequest(
-            ApeniApiService.getInstance().getBeerList(),
+            ApeniApiService.getInstance().getBaseData(),
             successWithData = {
                 saveVersion()
                 Log.d(TAG, "getBeerList_respOK")
-                if (it.isNotEmpty()) {
+                if (it.beers.isNotEmpty()) {
                     ioScope.launch {
                         database.clearBeerTable()
-                        it.forEach { beer ->
+                        it.beers.forEach { beer ->
                             insertBeerToDB(beer)
                         }
                     }
                 }
+                val bottleMapper = DefaultBottleDtoMapper(it.beers)
+                val bottles = it.bottles.map { dto ->
+                    bottleMapper.map(dto)
+                }
+                ObjectCache.getInstance()
+                    .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
             }
         )
     }

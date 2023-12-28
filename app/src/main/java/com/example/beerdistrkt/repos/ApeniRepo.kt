@@ -3,7 +3,6 @@ package com.example.beerdistrkt.repos
 import androidx.lifecycle.LiveData
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.models.Obieqti
@@ -32,22 +31,6 @@ class ApeniRepo {
         idleFlow
     ) { customers, idleInfo ->
         Pair(customers, idleInfo)
-    }
-
-    fun getBeerList(): LiveData<List<BeerModelBase>> {
-        ApeniApiService.getInstance().getBeerList().sendRequest(
-            successWithData = {
-                if (it.isNotEmpty()) {
-                    ioScope.launch {
-                        database.clearBeerTable()
-                        database.insertBeers(it)
-                    }
-                }
-            },
-            failure = {},
-            onConnectionFailure = {}
-        )
-        return database.getBeerList()
     }
 
     fun getCustomerData(customerID: Int): LiveData<ObiectWithPrices?> {

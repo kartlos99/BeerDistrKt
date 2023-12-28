@@ -137,9 +137,6 @@ interface ApeniApiService {
         @Query("clientID") clientID: Int
     ): Call<DataResponse<StatementResponse>>
 
-    @Deprecated("use combined getBaseData endpoint")
-    @GET("get_ludi_list.php")
-    fun getBeerList(): Call<DataResponse<List<BeerModelBase>>>
     @GET("general/baseData.php")
     fun getBaseData(): Call<DataResponse<BaseDataResponse>>
 
