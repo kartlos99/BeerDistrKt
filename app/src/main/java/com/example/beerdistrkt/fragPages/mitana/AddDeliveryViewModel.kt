@@ -12,7 +12,11 @@ import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
 import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
-import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.ObiectWithPrices
+import com.example.beerdistrkt.models.ObjToBeerPrice
+import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
@@ -24,8 +28,10 @@ import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class AddDeliveryViewModel(
     private val clientID: Int,
@@ -71,16 +77,16 @@ class AddDeliveryViewModel(
 
     val infoSharedFlow = MutableSharedFlow<String>()
 
+    val realisationState = MutableStateFlow(RealisationType.BARREL)
+
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
         repository.getCustomerData(clientID).observeForever { customerData ->
-            if (customerData == null) {
-                viewModelScope.launch {
-                    infoSharedFlow.emit("ობიექტი არ იძებნება")
-                }
-            } else {
-                clientLiveData.value = customerData
-                attachPrices(customerData.prices)
+            customerData?.let {
+                clientLiveData.value = it
+                attachPrices(it.prices)
+            } ?: viewModelScope.launch {
+                infoSharedFlow.emit("ობიექტი არ იძებნება")
             }
         }
     }
@@ -288,7 +294,20 @@ class AddDeliveryViewModel(
         return price.round()
     }
 
-    companion object {
-        const val TAG = "AddDelivery-----"
+    fun switchToBarrel() {
+        realisationState.value = RealisationType.BARREL
     }
+
+    fun switchToBottle() {
+        realisationState.value = RealisationType.BOTTLE
+    }
+
+    companion object {
+        const val TAG = "TAG AddDelivery-----"
+    }
+}
+
+enum class RealisationType {
+    BARREL,
+    BOTTLE
 }
