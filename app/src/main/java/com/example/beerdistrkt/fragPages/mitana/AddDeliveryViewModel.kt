@@ -14,10 +14,11 @@ import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
-import com.example.beerdistrkt.models.ObiectWithPrices
+import com.example.beerdistrkt.models.CustomerDataDTO
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.ClientBottlePrice
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
@@ -29,6 +30,8 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -38,7 +41,7 @@ class AddDeliveryViewModel(
     private val orderID: Int = 0
 ) : BaseViewModel() {
 
-    val clientLiveData = MutableLiveData<ObiectWithPrices>()
+    val clientLiveData = MutableLiveData<CustomerDataDTO>()
 
     val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
     val beerList =
@@ -48,6 +51,7 @@ class AddDeliveryViewModel(
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
+    val bottleListLiveData = MutableLiveData<List<BaseBottleModel>>()
     val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
         ?: listOf()
 
@@ -81,21 +85,43 @@ class AddDeliveryViewModel(
 
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
-        repository.getCustomerData(clientID).observeForever { customerData ->
-            customerData?.let {
-                clientLiveData.value = it
-                attachPrices(it.prices)
-            } ?: viewModelScope.launch {
-                infoSharedFlow.emit("ობიექტი არ იძებნება")
-            }
+        viewModelScope.launch {
+            repository.getCustomerDataFlow(clientID)
+                .onEach {
+                    Log.d(TAG, "flowFun: $it")
+                    it?.let { customer ->
+                        clientLiveData.value = customer
+                        attachPrices(customer.prices)
+                        attachBottlePrices(customer.bottlePrices)
+                    } ?: infoSharedFlow.emit("ობიექტი არ იძებნება")
+                }
+                .collect()
         }
     }
 
+    /**
+     * if beer price not defined for customer, takes 0 as price
+     */
     private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
         beerListLiveData.value = beerList
             .map { beerModel ->
                 val price = findBeerPrice(beerModel, pricesForClient)
                 beerModel.copy(fasi = price.round())
+            }
+    }
+
+    /**
+    * if bottle price not defined for customer, takes default price
+    */
+    private fun attachBottlePrices(pricesForClient: List<ClientBottlePrice>) {
+        bottleListLiveData.value = bottleList
+            .map { bottleItem ->
+                pricesForClient.firstOrNull {
+                    it.bottleID == bottleItem.id
+                }?.let {
+                    bottleItem.copy(price = it.price)
+                }
+                    ?: bottleItem
             }
     }
 

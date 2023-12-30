@@ -185,10 +185,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
-            vBinding.addDeliveryClientInfo.text = it.obieqti.dasaxeleba
+            vBinding.addDeliveryClientInfo.text = it.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner) {
             vBinding.beerSelector.updateBeers(it)
+        }
+        viewModel.bottleListLiveData.observe(viewLifecycleOwner) {
+            vBinding.bottleSelector.updateBottles(it)
         }
         viewModel.saleItemsLiveData.observe(viewLifecycleOwner) {
             vBinding.beerSelector.resetForm()
@@ -306,6 +309,10 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.beerSelector.fillBeerItemForm(data)
         vBinding.addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
         vBinding.addDeliveryComment.editText?.setText(saleData.comment ?: "")
+    }
+
+    private fun fillBottleSale() {
+
     }
 
     override fun onClick(v: View?) {

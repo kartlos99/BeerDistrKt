@@ -1,5 +1,7 @@
 package com.example.beerdistrkt.models
 
+import com.example.beerdistrkt.models.bottle.ClientBottlePrice
+
 data class CustomerDataDTO(
     var dasaxeleba: String,
     var adress: String? = null,
@@ -9,5 +11,6 @@ data class CustomerDataDTO(
     var sakpiri: String? = null,
     var chek: String? = null,
     var id: Int? = null,
-    var prices: List<ObjToBeerPrice>
+    var prices: List<ObjToBeerPrice>,
+    var bottlePrices: List<ClientBottlePrice>,
 )

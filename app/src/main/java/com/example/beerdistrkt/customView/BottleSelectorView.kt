@@ -155,7 +155,7 @@ class BottleSelectorView @JvmOverloads constructor(
     private fun initBeerRecycler() = with(binding) {
         bottleRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        bottleRecycler.adapter = BeerAdapter()
+        bottleRecycler.adapter = BottleAdapter()
         snapHelper.attachToRecyclerView(bottleRecycler)
         bottleSelectorIndicator.pager = getIndicatorPager(bottleRecycler)
     }
@@ -169,7 +169,7 @@ class BottleSelectorView @JvmOverloads constructor(
         binding.bottleGroup.isVisible = isVisible
     }
 
-    inner class BeerAdapter : RecyclerView.Adapter<BottleItemViewHolder>() {
+    inner class BottleAdapter : RecyclerView.Adapter<BottleItemViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             BottleItemViewHolder(
@@ -192,6 +192,7 @@ class BottleSelectorView @JvmOverloads constructor(
             bottle.imageLink?.let {
                 // load images
             }
+            holder.itemBinding.bottlePriceTv.text = "${bottle.price}₾"
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.beerdistrkt.repos
 import androidx.lifecycle.LiveData
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
+import com.example.beerdistrkt.models.CustomerDataDTO
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.models.Obieqti
@@ -31,6 +32,29 @@ class ApeniRepo {
         idleFlow
     ) { customers, idleInfo ->
         Pair(customers, idleInfo)
+    }
+
+    private val clientDataFlow: MutableStateFlow<CustomerDataDTO?> = MutableStateFlow(null)
+
+    fun getCustomerDataFlow(customerID: Int): MutableStateFlow<CustomerDataDTO?> {
+
+        ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
+            successWithData = { customerData ->
+                ioScope.launch {
+                    database.insertBeerPrices(customerData.prices)
+                }
+                CoroutineScope(Dispatchers.Main).launch {
+                    clientDataFlow.emit(customerData)
+                }
+            },
+            failure = {
+                CoroutineScope(Dispatchers.Main).launch {
+                    clientDataFlow.emit(null)
+                }
+            },
+            onConnectionFailure = {}
+        )
+        return clientDataFlow
     }
 
     fun getCustomerData(customerID: Int): LiveData<ObiectWithPrices?> {
