@@ -1,17 +1,17 @@
-package com.example.beerdistrkt.fragPages.mitana
+package com.example.beerdistrkt.fragPages.realisation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
-import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
-import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
-import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
-import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
-import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
+import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
+import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.CustomerWithPrices
@@ -330,9 +330,4 @@ class AddDeliveryViewModel(
     companion object {
         const val TAG = "TAG AddDelivery-----"
     }
-}
-
-enum class RealisationType {
-    BARREL,
-    BOTTLE
 }

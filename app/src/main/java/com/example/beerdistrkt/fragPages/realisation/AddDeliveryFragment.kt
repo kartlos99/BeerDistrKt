@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.mitana
+package com.example.beerdistrkt.fragPages.realisation
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -18,10 +18,10 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
-import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
-import com.example.beerdistrkt.fragPages.mitana.models.MoneyRowModel
-import com.example.beerdistrkt.fragPages.mitana.models.SaleRowModel
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
+import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.notifyNewComment
 import com.example.beerdistrkt.setText

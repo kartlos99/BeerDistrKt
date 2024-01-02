@@ -1,6 +1,6 @@
-package com.example.beerdistrkt.fragPages.mitana.models
+package com.example.beerdistrkt.fragPages.realisation.models
 
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel

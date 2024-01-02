@@ -2,9 +2,9 @@ package com.example.beerdistrkt.models
 
 import android.annotation.SuppressLint
 import androidx.room.*
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.K_OUT
+import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.MITANA
+import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
 import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.squareup.moshi.Json
 import java.text.SimpleDateFormat

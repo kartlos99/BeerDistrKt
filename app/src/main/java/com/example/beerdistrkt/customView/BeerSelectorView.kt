@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.databinding.ViewBeerSelectorBinding
-import com.example.beerdistrkt.fragPages.mitana.models.BarrelRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel

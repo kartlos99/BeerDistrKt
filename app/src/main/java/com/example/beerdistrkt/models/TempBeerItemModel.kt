@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
-import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 
 data class TempBeerItemModel(
     val ID: Int = 0,
