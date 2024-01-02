@@ -61,6 +61,7 @@
     <color name="linked_text_color">#0E4BE4</color>
     <color name="transparent">#00ffffff</color>
     <color name="beer_price_bkg">#aaccdd</color>
+    <color name="bottle_price_bkg">#E3E3F0</color>
     <color name="history_cell_regular">#EEEEEE</color>
     <color name="history_cell_header">#CCCCCC</color>
     <color name="history_cell_changed">#FDF5BD</color>

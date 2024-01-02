@@ -14,7 +14,7 @@ import com.example.beerdistrkt.fragPages.sales.models.PaymentType
 import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
-import com.example.beerdistrkt.models.CustomerDataDTO
+import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
@@ -41,7 +41,7 @@ class AddDeliveryViewModel(
     private val orderID: Int = 0
 ) : BaseViewModel() {
 
-    val clientLiveData = MutableLiveData<CustomerDataDTO>()
+    val clientLiveData = MutableLiveData<CustomerWithPrices>()
 
     val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
     val beerList =
@@ -88,10 +88,9 @@ class AddDeliveryViewModel(
         viewModelScope.launch {
             repository.getCustomerDataFlow(clientID)
                 .onEach {
-                    Log.d(TAG, "flowFun: $it")
                     it?.let { customer ->
                         clientLiveData.value = customer
-                        attachPrices(customer.prices)
+                        attachPrices(customer.beerPrices)
                         attachBottlePrices(customer.bottlePrices)
                     } ?: infoSharedFlow.emit("ობიექტი არ იძებნება")
                 }
@@ -111,8 +110,8 @@ class AddDeliveryViewModel(
     }
 
     /**
-    * if bottle price not defined for customer, takes default price
-    */
+     * if bottle price not defined for customer, takes default price
+     */
     private fun attachBottlePrices(pricesForClient: List<ClientBottlePrice>) {
         bottleListLiveData.value = bottleList
             .map { bottleItem ->

@@ -191,11 +191,11 @@ interface ApeniApiService {
     @GET("client/getDebtByID.php")
     fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
 
-    @POST("client/add.php")
-    fun addClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
+    @POST("client/addWithPrices.php")
+    fun addClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
 
-    @POST("client/update.php")
-    fun updateClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
+    @POST("client/updateWithPrices.php")
+    fun updateClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
 
     @POST("client/deactivate.php")
     fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>

@@ -3,8 +3,10 @@ package com.example.beerdistrkt.repos
 import androidx.lifecycle.LiveData
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
+import com.example.beerdistrkt.fragPages.objList.model.Customer
 import com.example.beerdistrkt.models.CustomerDataDTO
 import com.example.beerdistrkt.models.CustomerIdlInfo
+import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
@@ -34,9 +36,30 @@ class ApeniRepo {
         Pair(customers, idleInfo)
     }
 
-    private val clientDataFlow: MutableStateFlow<CustomerDataDTO?> = MutableStateFlow(null)
+    private val clientDataFlow: MutableStateFlow<CustomerWithPrices?> = MutableStateFlow(null)
 
-    fun getCustomerDataFlow(customerID: Int): MutableStateFlow<CustomerDataDTO?> {
+    private fun mapCustomerDtoToPm(customerDto: CustomerDataDTO): CustomerWithPrices =
+        with(customerDto) {
+
+            val customer = Customer(
+                id,
+                dasaxeleba,
+                adress,
+                tel,
+                comment,
+                sk,
+                sakpiri,
+                chek
+            )
+
+            return CustomerWithPrices(
+                customer = customer,
+                beerPrices = prices,
+                bottlePrices = bottlePrices
+            )
+        }
+
+    fun getCustomerDataFlow(customerID: Int): MutableStateFlow<CustomerWithPrices?> {
 
         ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
             successWithData = { customerData ->
@@ -44,7 +67,7 @@ class ApeniRepo {
                     database.insertBeerPrices(customerData.prices)
                 }
                 CoroutineScope(Dispatchers.Main).launch {
-                    clientDataFlow.emit(customerData)
+                    clientDataFlow.emit(mapCustomerDtoToPm(customerData))
                 }
             },
             failure = {

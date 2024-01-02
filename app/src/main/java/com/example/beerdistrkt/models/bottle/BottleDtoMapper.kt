@@ -13,7 +13,7 @@ class DefaultBottleDtoMapper(
 ) : BottleDtoMapper {
 
     override fun map(dto: BaseBottleModelDto): BaseBottleModel = with(dto) {
-        BuildConfig.SERVER_URL
+
         return BaseBottleModel(
             id = id,
             name = name,

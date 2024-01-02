@@ -185,7 +185,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
-            vBinding.addDeliveryClientInfo.text = it.dasaxeleba
+            vBinding.addDeliveryClientInfo.text = it.customer.dasaxeleba
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner) {
             vBinding.beerSelector.updateBeers(it)

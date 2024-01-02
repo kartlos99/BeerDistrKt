@@ -30,7 +30,8 @@
     <string name="username">მომხმარებელი</string>
     <string name="password">პაროლი</string>
     <string name="login">შესვლა</string>
-    <string name="ludis_fasebi">ლუდის ფასები კონკრეტული ობიექტისთვის</string>
+    <string name="beer_prices_title">ლუდის ფასები კონკრეტული ობიექტისთვის</string>
+    <string name="bottle_prices_title">ბოთლის ფასები</string>
     <string name="call">call</string>
     <string name="m_edit">რედაქტირება</string>
     <string name="sak_piri">საკონტაქტო პირი</string>
