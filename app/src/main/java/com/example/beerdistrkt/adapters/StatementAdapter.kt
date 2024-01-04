@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.AmonaweriListRowBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.models.StatementModel
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.*

@@ -15,7 +15,7 @@ import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.adapters.StatementAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
-import com.example.beerdistrkt.models.StatementModel
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID

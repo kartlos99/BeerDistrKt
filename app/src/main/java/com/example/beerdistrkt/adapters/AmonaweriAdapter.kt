@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.models.StatementModel
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
-import com.example.beerdistrkt.utils.MyUtil
 import java.text.DecimalFormat
 import kotlin.collections.ArrayList
 
