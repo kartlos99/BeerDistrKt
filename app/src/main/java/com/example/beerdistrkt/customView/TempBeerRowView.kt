@@ -5,10 +5,10 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewTempBeerRowBinding
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.utils.visibleIf
 
 class TempBeerRowView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
@@ -24,9 +24,9 @@ class TempBeerRowView @JvmOverloads constructor(
             fillData(rowData)
     }
 
-    fun fillData(data: TempBeerItemModel) {
+    private fun fillData(data: TempBeerItemModel) {
         with(binding) {
-            tempBeerEditBtn.visibleIf(data.onEditClick != null)
+            tempBeerEditBtn.isVisible = data.onEditClick != null
             tempBeerInfo.text =
                 String.format("%s : %s x %s", data.beer.dasaxeleba, data.canType.name, data.count)
             tempBeerColor.setBackgroundColor(Color.parseColor(data.beer.displayColor ?: "#fff"))

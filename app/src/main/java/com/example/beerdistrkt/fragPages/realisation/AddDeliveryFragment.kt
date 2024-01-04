@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,10 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
+import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
@@ -34,7 +36,6 @@ import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.waitFor
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickListener {
@@ -136,10 +137,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             addDeliveryMoneyTransferImg.setTint(getColorForValidationIndicator(it))
         }
 
+        bottleSelector.withPrices = true
         bottleSelector.initView(
             viewModel.bottleList,
             ::checkForm
         )
+        bottleSelector.onDeleteClick = {
+            viewModel.removeBottleSaleItemFromList(it)
+        }
 
         beerSelector.withPrices = true
         beerSelector.initView(
@@ -160,12 +165,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             setupAutoComment(isChecked, R.string.replace)
         }
         realisationTypeSelector.check(R.id.realizationByBarrel)
-        realisationTypeSelector.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        realisationTypeSelector.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
                 when (checkedId) {
                     R.id.realizationByBarrel -> viewModel.switchToBarrel()
                     R.id.realizationByBottle -> viewModel.switchToBottle()
                 }
+                checkForm()
             }
         }
     }
@@ -193,23 +199,23 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         viewModel.bottleListLiveData.observe(viewLifecycleOwner) {
             vBinding.bottleSelector.updateBottles(it)
         }
-        viewModel.saleItemsLiveData.observe(viewLifecycleOwner) {
+        viewModel.tempRealisationLiveData.observe(viewLifecycleOwner) {
             vBinding.beerSelector.resetForm()
+            vBinding.bottleSelector.resetForm()
             vBinding.addDeliveryTempContainer.removeAllViews()
-            it.forEach { saleItem ->
+            it.byBarrels.forEach { saleItem ->
                 vBinding.addDeliveryTempContainer.addView(
                     TempBeerRowView(context = requireContext(), rowData = saleItem)
+                )
+            }
+            it.byBottles.forEach { bottleSaleItem ->
+                vBinding.addDeliveryTempContainer.addView(
+                    TempBottleRowView(context = requireContext(), rowData = bottleSaleItem)
                 )
             }
         }
         viewModel.saleDayLiveData.observe(viewLifecycleOwner) {
             vBinding.addDeliveryDateBtn.text = it
-        }
-        viewModel.saleItemDuplicateLiveData.observe(viewLifecycleOwner) {
-            if (it) {
-                showToast(R.string.already_in_list)
-                viewModel.saleItemDuplicateLiveData.value = false
-            }
         }
         viewModel.addSaleLiveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -241,21 +247,25 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.mOutEditLiveData.value = null
             }
         }
-        lifecycleScope.launch {
-            viewModel.infoSharedFlow.collectLatest {
-                showToast(it)
+        lifecycleScope.launchWhenStarted {
+            viewModel.eventsFlow.collectLatest {
+                when (it) {
+                    Event.CustomerNotFount -> showToast(R.string.object_not_found)
+                    Event.DuplicateBarrelItem -> showToast(R.string.already_in_list)
+                    Event.DuplicateBottleItem -> showToast(R.string.bottle_already_in_list)
+                    Event.NoPriceException -> showToast(R.string.no_price_exception)
+                }
             }
         }
         lifecycleScope.launchWhenStarted {
-            viewModel.realisationState.collectLatest {
-                Log.d(TAG, "initViewModel: $it")
+            viewModel.realisationStateFlow.collectLatest {
                 when (it) {
-                    RealisationType.BARREL -> {
+                    BARREL -> {
                         vBinding.beerSelector.isVisible = true
                         vBinding.bottleSelector.isVisible = false
                     }
 
-                    RealisationType.BOTTLE -> {
+                    BOTTLE -> {
                         vBinding.beerSelector.isVisible = false
                         vBinding.bottleSelector.isVisible = true
                     }
@@ -326,16 +336,17 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
                     K_OUT -> {
                         viewModel.moneyOut.clear()
-                        viewModel.saleItemsList.clear()
+                        viewModel.clearSaleItems()
                     }
 
                     M_OUT -> {
-                        viewModel.saleItemsList.clear()
+                        viewModel.clearSaleItems()
                         viewModel.barrelOutItems.clear()
                     }
                 }
-                if (vBinding.beerSelector.formIsValid() && viewModel.saleItemsList.isEmpty() && viewModel.operation != K_OUT)
-                    viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
+                if (viewModel.hasAnySaleItem().not() && viewModel.operation != K_OUT)
+                    tryCollectSaleItem()
+
                 collectEmptyBarrels()
                 viewModel.setMoney(
                     vBinding.addDeliveryMoneyEt.text.toString(),
@@ -357,10 +368,16 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
 
             R.id.addDeliveryAddSaleItemBtn -> {
-                if (vBinding.beerSelector.formIsValid())
-                    viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
-                else
-                    showToast(R.string.fill_data)
+                when {
+                    viewModel.realisationType == BARREL && vBinding.beerSelector.formIsValid() ->
+                        viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
+
+                    viewModel.realisationType == BOTTLE && vBinding.bottleSelector.isFormValid() ->
+                        viewModel.addBottleSaleItem(vBinding.bottleSelector.getTempBottleItem())
+
+                    else ->
+                        showToast(R.string.fill_data)
+                }
             }
 
             R.id.addDeliveryMoneyExpander -> {
@@ -400,6 +417,16 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
     }
 
+    private fun tryCollectSaleItem() {
+        when (viewModel.realisationType) {
+            BARREL -> if (vBinding.beerSelector.formIsValid())
+                viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
+
+            BOTTLE -> if (vBinding.bottleSelector.isFormValid())
+                viewModel.addBottleSaleItem(vBinding.bottleSelector.getTempBottleItem())
+        }
+    }
+
     private fun collectEmptyBarrels() {
         viewModel.barrelOutItems.clear()
         if (viewModel.operation == null) {
@@ -421,10 +448,15 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     private fun checkForm() = with(vBinding) {
         addDeliveryAddSaleItemBtn.backgroundTintList =
-            if (beerSelector.formIsValid())
+            if (
+                viewModel.realisationType == BARREL && beerSelector.formIsValid()
+                ||
+                viewModel.realisationType == BOTTLE && bottleSelector.isFormValid()
+            )
                 ColorStateList.valueOf(Color.GREEN)
             else
                 ColorStateList.valueOf(Color.RED)
+
         addDeliveryTotalPrice.text = getString(R.string.cost, viewModel.getPrice())
     }
 

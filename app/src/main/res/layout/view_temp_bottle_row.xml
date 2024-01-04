@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tempBeerRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/gr_size_4">
 
     <ImageView
-        android:id="@+id/tempBeerColor"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:contentDescription="@string/beerColor"
+        android:id="@+id/bottleImg"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="@string/img_description"
+        android:src="@drawable/beer_bottle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tempBeerInfo"
+        android:id="@+id/tempBottleInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:ellipsize="middle"
+        android:lines="1"
+        android:maxLines="1"
         android:textSize="@dimen/textSize_3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tempBeerEditBtn"
-        app:layout_constraintStart_toEndOf="@id/tempBeerColor"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/editBtn"
+        app:layout_constraintStart_toEndOf="@id/bottleImg"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="გაუფილტრავი 0,67 იანი x 75" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/tempBeerEditBtn"
+        android:id="@+id/editBtn"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
@@ -41,11 +47,11 @@
         android:tint="@color/blue_edit"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tempBeerRemoveBtn"
+        app:layout_constraintEnd_toStartOf="@id/removeBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/tempBeerRemoveBtn"
+        android:id="@+id/removeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"

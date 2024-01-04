@@ -184,15 +184,13 @@ class BottleSelectorView @JvmOverloads constructor(
 
         override fun onBindViewHolder(holder: BottleItemViewHolder, position: Int) {
             val bottle = visibleBottles[position]
-            holder.itemBinding.bottleTitleTv.text = if (withPrices)
-                "${bottle.name}\n${bottle.price} ₾"
-            else
-                bottle.name
+            holder.itemBinding.bottleTitleTv.text = bottle.name
             holder.itemBinding.bottleSizeTv.text = "${bottle.volume} lt."
             bottle.imageLink?.let {
                 // load images
             }
             holder.itemBinding.bottlePriceTv.text = "${bottle.price}₾"
+            holder.itemBinding.bottlePriceTv.isVisible = withPrices
         }
     }
 

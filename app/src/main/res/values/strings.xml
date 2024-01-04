@@ -115,6 +115,7 @@
     <string name="feel_empty_fields">შეავსეთ ცარიელი ველები!</string>
     <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
     <string name="already_in_list">ეს ლუდის სახეობა ამ კასრთან უკვე დამატებულია სიაში!</string>
+    <string name="bottle_already_in_list">ეს ბოთლი უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
     <string name="xarjebi"><u>ხარჯები</u>:</string>
     <string name="expense_title">ხარჯები</string>
@@ -253,5 +254,7 @@
     <string name="two_separated">%1$s | %2$s</string>
 
     <string name="count">რაოდენობა</string>
+    <string name="no_price_exception">რომელიღაც ლუდს ფასი არ ააქვს გაწერილი!</string>
+    <string name="object_not_found">ობიექტი არ იძებნება</string>
 
 </resources>

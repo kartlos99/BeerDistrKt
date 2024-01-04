@@ -6,10 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.*
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 import com.example.beerdistrkt.models.BeerModelBase
@@ -19,6 +21,7 @@ import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.ClientBottlePrice
+import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
@@ -64,8 +67,9 @@ class AddDeliveryViewModel(
     val addSaleLiveData: LiveData<ApiResponseState<String>>
         get() = _addSaleLiveData
 
-    val saleItemsList = mutableListOf<TempBeerItemModel>()
-    val saleItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
+    private val saleItemsList = mutableListOf<TempBeerItemModel>()
+    private val bottleSaleItemsList = mutableListOf<TempBottleItemModel>()
+    val tempRealisationLiveData = MutableLiveData<TempRealisationModel>()
 
     val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
     var moneyOut: MutableList<SaleRequestModel.MoneyOutItem> = mutableListOf()
@@ -75,13 +79,16 @@ class AddDeliveryViewModel(
     var operation: String? = null
     var recordID = 0
 
-    val saleItemDuplicateLiveData = MutableLiveData(false)
-
     private val repository = ApeniRepo()
 
-    val infoSharedFlow = MutableSharedFlow<String>()
+    val eventsFlow = MutableSharedFlow<Event>()
 
-    val realisationState = MutableStateFlow(RealisationType.BARREL)
+    val realisationStateFlow = MutableStateFlow(BARREL)
+
+    val realisationType: RealisationType
+        get() {
+            return realisationStateFlow.value
+        }
 
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
@@ -92,7 +99,7 @@ class AddDeliveryViewModel(
                         clientLiveData.value = customer
                         attachPrices(customer.beerPrices)
                         attachBottlePrices(customer.bottlePrices)
-                    } ?: infoSharedFlow.emit("ობიექტი არ იძებნება")
+                    } ?: eventsFlow.emit(Event.CustomerNotFount)
                 }
                 .collect()
         }
@@ -137,10 +144,12 @@ class AddDeliveryViewModel(
 
         val hasZeroPrice = saleItemsList.any {
             (it.beer.fasi ?: .0) < 0.01
+        } || bottleSaleItemsList.any {
+            it.bottle.price < 0.01
         }
         if (hasZeroPrice && !isGift) {
             viewModelScope.launch {
-                infoSharedFlow.emit("რომელიღაც ლუდს ფასი არ ააქვს გაწერილი!")
+                eventsFlow.emit(Event.NoPriceException)
             }
             return
         }
@@ -151,12 +160,17 @@ class AddDeliveryViewModel(
             deliveryDataComment,
             Session.get().getUserID(),
             isReplace = if (isReplace) "1" else "0",
+            operationDate = dateTimeFormat.format(saleDateCalendar.time),
+            orderID = orderID,
             sales = saleItemsList.map {
                 it.toRequestSaleItem(
                     dateTimeFormat.format(saleDateCalendar.time),
                     orderID,
                     isGift || isReplace
                 )
+            },
+            bottleSales = bottleSaleItemsList.map {
+                it.toRequestSaleItem(isGift || isReplace)
             },
             barrels = getEmptyBarrelsList(),
             money = moneyOut
@@ -212,21 +226,53 @@ class AddDeliveryViewModel(
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
     }
 
+    private fun updateTempSaleList() {
+        tempRealisationLiveData.value = TempRealisationModel(
+            saleItemsList,
+            bottleSaleItemsList
+        )
+    }
+
     fun removeSaleItemFromList(saleItem: TempBeerItemModel) {
         saleItemsList.remove(saleItem)
-        saleItemsLiveData.value = saleItemsList
+        updateTempSaleList()
+    }
+
+    fun removeBottleSaleItemFromList(saleItem: TempBottleItemModel) {
+        bottleSaleItemsList.remove(saleItem)
+        updateTempSaleList()
     }
 
     fun addSaleItemToList(saleItem: TempBeerItemModel) {
-        if (saleItemsList.any {
-                it.beer.id == saleItem.beer.id && it.canType.id == saleItem.canType.id
-            })
-            saleItemDuplicateLiveData.value = true
+        if (isAlreadyInList(saleItem))
+            viewModelScope.launch {
+                eventsFlow.emit(Event.DuplicateBarrelItem)
+            }
         else {
             saleItemsList.add(saleItem)
-            saleItemsLiveData.value = saleItemsList
+            updateTempSaleList()
         }
     }
+
+    fun addBottleSaleItem(bottleItemModel: TempBottleItemModel) {
+        if (isAlreadyInList(bottleItemModel)) {
+            viewModelScope.launch {
+                eventsFlow.emit(Event.DuplicateBottleItem)
+            }
+        } else {
+            bottleSaleItemsList.add(bottleItemModel)
+            updateTempSaleList()
+        }
+    }
+
+    private fun isAlreadyInList(saleItem: TempBeerItemModel): Boolean = saleItemsList.any {
+        it.beer.id == saleItem.beer.id && it.canType.id == saleItem.canType.id
+    }
+
+    private fun isAlreadyInList(bottleItemModel: TempBottleItemModel): Boolean =
+        bottleSaleItemsList.any {
+            it.bottle.id == bottleItemModel.bottle.id
+        }
 
     fun addBarrelToList(barrelType: Int, count: Int) {
         barrelOutItems.add(
@@ -311,20 +357,28 @@ class AddDeliveryViewModel(
         )
     }
 
-    fun getPrice(): Double {
-        var price = 0.0
-        saleItemsList.forEach {
-            price += it.canType.volume * it.count * (it.beer.fasi ?: 0.0)
-        }
-        return price.round()
-    }
+    fun getPrice(): Double =
+        bottleSaleItemsList.sumOf {
+            it.bottle.price * it.count
+        }.plus(
+            saleItemsList.sumOf {
+                it.canType.volume * it.count * (it.beer.fasi ?: 0.0)
+            }
+        ).round()
 
     fun switchToBarrel() {
-        realisationState.value = RealisationType.BARREL
+        realisationStateFlow.value = BARREL
     }
 
     fun switchToBottle() {
-        realisationState.value = RealisationType.BOTTLE
+        realisationStateFlow.value = BOTTLE
+    }
+
+    fun hasAnySaleItem(): Boolean = saleItemsList.isNotEmpty() || bottleSaleItemsList.isNotEmpty()
+
+    fun clearSaleItems() {
+        saleItemsList.clear()
+        bottleSaleItemsList.clear()
     }
 
     companion object {
