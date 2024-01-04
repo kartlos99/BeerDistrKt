@@ -126,7 +126,7 @@ interface ApeniApiService {
     @GET("get_fasebi.php")
     fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
-    @GET("statement/getFinancial.php")
+    @GET("statement/getCombinedFinancial.php")
     fun getFinancialStatement(
         @Query("offset") offset: Int,
         @Query("clientID") clientID: Int

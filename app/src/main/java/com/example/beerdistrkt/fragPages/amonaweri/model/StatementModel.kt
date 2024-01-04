@@ -21,6 +21,7 @@ data class StatementModel(
     @Json(name = "bal")
     var balance: Float = 0f,
 
+    var recordType: StatementRecordType = StatementRecordType.NONE,
     var id: Int = 0
 ) {
     @SuppressLint("SimpleDateFormat")

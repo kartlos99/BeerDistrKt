@@ -1,25 +1,26 @@
 package com.example.beerdistrkt.fragPages.amonaweri
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
-import com.example.beerdistrkt.adapters.CtxMenuItem
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.amonaweri.model.CtxMenuItem
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
-import com.example.beerdistrkt.adapters.StatementAdapter
+import com.example.beerdistrkt.fragPages.amonaweri.adapter.StatementAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
 import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
+import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID
-import com.example.beerdistrkt.utils.visibleIf
 
 class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
@@ -34,7 +35,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
     companion object {
         fun newInstance() = AmonaweriSubPageFrag()
-        val TAG = "AmonaweriSubPageFrag"
+        const val TAG = "AmonaweriSubPageFrag"
     }
 
     override val viewModel: AmonaweriSubPageViewModel by lazy {
@@ -83,22 +84,24 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         viewModel.isGroupedLiveData.observe(viewLifecycleOwner) { grouped: Boolean ->
             statementListAdapter.isGrouped = grouped
         }
-        viewModel.amonaweriLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.amonaweriLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Loading -> vBinding.statementProgressBar.visibleIf(it.showLoading)
+                is ApiResponseState.Loading ->
+                    vBinding.statementProgressBar.isVisible = it.showLoading
+
                 is ApiResponseState.Success -> {
                     statementListAdapter.addItems(it.data)
-                    Log.d("sufrObsSize", "${it.data.size}")
                 }
+
                 else -> {}
             }
-        })
-        viewModel.needUpdateLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.needUpdateLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 updateAnotherPage?.invoke()
                 viewModel.needUpdateLiveData.value = null
             }
-        })
+        }
     }
 
     fun chengeAmonaweriAppearance(grouped: Boolean) {
@@ -112,19 +115,23 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                 action?.invoke(statementItem.getType(pagePos), statementItem.id)
                 true
             } else false
+
             CtxMenuItem.EditBarrel.itemID -> if (pagePos == 1) {
                 val statementItem = statementListAdapter.getItem(item.groupId)
                 action?.invoke(statementItem.getType(pagePos), statementItem.id)
                 true
             } else false
+
             CtxMenuItem.Delete.itemID -> if (pagePos == 0) {
                 confirmDeleteStatement(statementListAdapter.getItem(item.groupId))
                 true
             } else false
+
             CtxMenuItem.DeleteBarrel.itemID -> if (pagePos == 1) {
                 confirmDeleteStatement(statementListAdapter.getItem(item.groupId))
                 true
             } else false
+
             CtxMenuItem.History.itemID -> {
                 val statementItem = statementListAdapter.getItem(item.groupId)
                 if (statementItem.pay != 0F)
@@ -133,6 +140,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                     onShowHistory?.invoke(statementItem.id, SalesHistoryFragment.delivery)
                 return true
             }
+
             else -> return super.onContextItemSelected(item)
         }
     }
