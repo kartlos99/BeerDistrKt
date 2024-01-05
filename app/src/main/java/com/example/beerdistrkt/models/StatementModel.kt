@@ -1,49 +1,7 @@
 package com.example.beerdistrkt.models
 
-import android.annotation.SuppressLint
 import androidx.room.*
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.K_OUT
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.MITANA
-import com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment.Companion.M_OUT
 import com.example.beerdistrkt.fragPages.objList.model.Customer
-import com.squareup.moshi.Json
-import java.text.SimpleDateFormat
-import java.util.*
-
-data class StatementResponse(
-    val totalCount: Int,
-    val list: List<StatementModel>
-)
-
-data class StatementModel(
-    @Json(name = "dt")
-    var tarigi: String = "",
-    var comment: String? = "",
-
-    var k_in: Int = 0,
-    var k_out: Int = 0,
-
-    @Json(name = "pr")
-    var price: Float = 0f,
-    var pay: Float = 0f,
-
-    @Json(name = "bal")
-    var balance: Float = 0f,
-
-    var id: Int = 0
-) {
-    @SuppressLint("SimpleDateFormat")
-    fun getItemDate(pattern: String): Date? {
-        return SimpleDateFormat(pattern).parse(tarigi)
-    }
-
-    fun getType(location: Int): String = when {
-        location == 0 && pay != 0F -> M_OUT
-        location == 1 && k_out != 0 -> K_OUT
-        else -> MITANA
-    }
-
-}
 
 @Entity(tableName = "obieqts_table")
 data class Obieqti(

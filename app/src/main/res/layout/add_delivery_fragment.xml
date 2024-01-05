@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragPages.mitana.AddDeliveryFragment">
+    tools:context=".fragPages.realisation.AddDeliveryFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -52,11 +52,44 @@
                     app:constraint_referenced_ids="beerSelector,
                     addDeliveryTempContainer" />
 
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/realisationTypeSelector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/realizationByBarrel"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kasri" />
+
+                    <Button
+                        android:id="@+id/realizationByBottle"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bottle" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
                 <com.example.beerdistrkt.customView.BeerSelectorView
                     android:id="@+id/beerSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector" />
+
+                <com.example.beerdistrkt.customView.BottleSelectorView
+                    android:id="@+id/bottleSelector"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/beerSelector"/>
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addDeliveryhideOnEditGroup"
@@ -74,7 +107,7 @@
                     android:src="@drawable/ic_playlist_add_24dp"
                     app:fabSize="mini"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/beerSelector" />
+                    app:layout_constraintTop_toBottomOf="@+id/bottleSelector" />
 
                 <TextView
                     android:id="@+id/addDeliveryTotalPrice"
@@ -85,7 +118,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"
                     app:layout_constraintStart_toStartOf="@id/beerSelector"
-                    app:layout_constraintTop_toBottomOf="@id/beerSelector" />
+                    app:layout_constraintTop_toTopOf="@id/addDeliveryAddSaleItemBtn" />
 
                 <LinearLayout
                     android:id="@+id/addDeliveryTempContainer"

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.sales.adapter
+package com.example.beerdistrkt.fragPages.realisationtotal.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

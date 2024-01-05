@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.adapters
+package com.example.beerdistrkt.fragPages.amonaweri.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -6,12 +6,13 @@ import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.AmonaweriListRowBinding
+import com.example.beerdistrkt.fragPages.amonaweri.model.CtxMenuItem
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.models.StatementModel
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.*
@@ -107,6 +108,7 @@ class StatementAdapter(
                         tAmonListBalance.text =
                             df.format(item.balance).setFrictionSize(frSize, frictionColor)
                     }
+
                     K_PAGE -> {
                         tAmonListIn.text =
                             if (item.k_in == 0) DASH else item.k_in.toString()
@@ -117,6 +119,11 @@ class StatementAdapter(
                     }
                 }
 
+                item.recordType.icon?.let {
+                    recordTypeIndicator.setImageResource(it)
+                }
+                recordTypeIndicator.isVisible = item.recordType.icon != null
+
                 tAmonListIn.setTextColor(textColor)
                 tAmonListOut.setTextColor(textColor)
                 tAmonListBalance.setTextColor(textColor)
@@ -126,8 +133,8 @@ class StatementAdapter(
 
                 root.setOnClickListener {
                     if (!item.comment.isNullOrBlank())
-                        tAmonaweriRowComment
-                            .visibleIf(tAmonaweriRowComment.visibility != View.VISIBLE)
+                        tAmonaweriRowComment.isVisible =
+                            tAmonaweriRowComment.visibility != View.VISIBLE
                 }
             }
         }
@@ -160,7 +167,7 @@ class StatementAdapter(
                         (dateFormat.format(selectedItemDate) == dateFormat.format(Date())
                                 && Session.get().hasPermission(Permission.EditSale))
                     ) {
-                        if (location == 0) {
+                        if (location == M_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.finance_menu_title))
                             menu?.add(
                                 adapterPosition,
@@ -181,7 +188,7 @@ class StatementAdapter(
                                 CtxMenuItem.Delete.title
                             )
                         }
-                        if (location == 1) {
+                        if (location == K_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.barrel_menu_title))
                             menu?.add(
                                 adapterPosition,
@@ -202,12 +209,4 @@ class StatementAdapter(
                 }
         }
     }
-}
-
-enum class CtxMenuItem(@StringRes val title: Int, val itemID: Int) {
-    Edit(R.string.m_edit, 201),
-    EditBarrel(R.string.m_edit, 211),
-    History(R.string.history, 202),
-    Delete(R.string.delete, 203),
-    DeleteBarrel(R.string.delete, 213)
 }

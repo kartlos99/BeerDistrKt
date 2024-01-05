@@ -135,7 +135,7 @@
     </fragment>
     <fragment
         android:id="@+id/salesFragment"
-        android:name="com.example.beerdistrkt.fragPages.sales.SalesFragment"
+        android:name="com.example.beerdistrkt.fragPages.realisationtotal.SalesFragment"
         android:label="@string/daily_sales"
         tools:layout="@layout/sales_fragment" />
     <fragment
@@ -166,7 +166,7 @@
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
-        android:name="com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment"
+        android:name="com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment"
         android:label="add_delivery_fragment"
         tools:layout="@layout/add_delivery_fragment">
         <argument

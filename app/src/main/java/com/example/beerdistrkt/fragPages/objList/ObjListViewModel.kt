@@ -35,6 +35,7 @@ class ObjListViewModel : BaseViewModel() {
         }
         repository.getCustomers()
         repository.getCustomersIdleInfo()
+        repository.getBaseData()
     }
 
     private fun updateList(

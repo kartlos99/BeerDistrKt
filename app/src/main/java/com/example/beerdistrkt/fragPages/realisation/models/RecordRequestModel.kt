@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.mitana.models
+package com.example.beerdistrkt.fragPages.realisation.models
 
 data class RecordRequestModel(
     val table: String,

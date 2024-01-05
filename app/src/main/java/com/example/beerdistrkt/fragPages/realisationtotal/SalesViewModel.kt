@@ -1,12 +1,12 @@
-package com.example.beerdistrkt.fragPages.sales
+package com.example.beerdistrkt.fragPages.realisationtotal
 
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
+import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequestModel
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache

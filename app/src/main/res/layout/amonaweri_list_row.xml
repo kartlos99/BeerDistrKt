@@ -1,56 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/t_amon_list_tarigi"
-            android:layout_weight="5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/t_amon_list_tarigi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/gr_size_2"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintEnd_toStartOf="@id/t_amon_list_in"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2024-01-04 sd" />
 
-        <TextView
-            android:id="@+id/t_amon_list_in"
-            android:textAlignment="textEnd"
-            android:paddingEnd="6dp"
-            android:paddingStart="2dp"
-            android:background="@color/color_orderCol"
-            android:layout_weight="5"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/t_amon_list_in"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_orderCol"
+        android:paddingStart="2dp"
+        android:paddingTop="@dimen/gr_size_2"
+        android:paddingEnd="4dp"
+        android:textAlignment="textEnd"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintBottom_toBottomOf="@id/t_amon_list_tarigi"
+        app:layout_constraintEnd_toStartOf="@id/t_amon_list_out"
+        app:layout_constraintStart_toEndOf="@id/t_amon_list_tarigi"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="123.23" />
 
-        <TextView
-            android:id="@+id/t_amon_list_out"
-            android:textAlignment="textEnd"
-            android:paddingEnd="6dp"
-            android:paddingStart="2dp"
-            android:layout_weight="5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/t_amon_list_out"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingStart="2dp"
+        android:paddingTop="@dimen/gr_size_2"
+        android:paddingEnd="4dp"
+        android:textAlignment="textEnd"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintBottom_toBottomOf="@id/t_amon_list_tarigi"
+        app:layout_constraintEnd_toStartOf="@id/t_amon_list_balance"
+        app:layout_constraintStart_toEndOf="@id/t_amon_list_in"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="123.23" />
 
-        <TextView
-            android:id="@+id/t_amon_list_balance"
-            android:textAlignment="textEnd"
-            android:paddingEnd="4dp"
-            android:paddingStart="2dp"
-            android:background="@color/color_orderCol"
-            android:layout_weight="5"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/t_amon_list_balance"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_orderCol"
+        android:paddingStart="2dp"
+        android:paddingTop="@dimen/gr_size_2"
+        android:paddingEnd="4dp"
+        android:textAlignment="textEnd"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintBottom_toBottomOf="@id/t_amon_list_tarigi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/t_amon_list_out"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="123.23" />
 
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/recordTypeIndicator"
+        android:layout_width="@dimen/gr_size_24"
+        android:layout_height="22dp"
+        android:alpha="0.2"
+        android:contentDescription="@string/img_description"
+        android:importantForAccessibility="no"
+        android:padding="@dimen/gr_size_2"
+        android:src="@drawable/barrel_24"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/t_amon_list_in"
+        app:layout_constraintTop_toTopOf="@id/t_amon_list_in"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/t_amonaweri_row_comment"
-        android:visibility="gone"
-        android:background="@drawable/bkg_underline"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/bkg_underline"
+        android:padding="@dimen/gr_size_4"
+        android:textSize="@dimen/sp15"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/t_amon_list_tarigi"
+        tools:text="comment"
+        tools:visibility="gone" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
