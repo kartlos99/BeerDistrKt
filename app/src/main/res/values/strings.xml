@@ -256,5 +256,6 @@
     <string name="count">რაოდენობა</string>
     <string name="no_price_exception">რომელიღაც ლუდს ფასი არ ააქვს გაწერილი!</string>
     <string name="object_not_found">ობიექტი არ იძებნება</string>
+    <string name="bottle_identification_error">ვერ მოხერხდა ბოთლის სახეობის იდენტიფიკაცია! სცადეთ განმეორებით</string>
 
 </resources>

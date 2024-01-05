@@ -16,6 +16,7 @@ data class TempBottleItemModel(
     ): SaleRequestModel.BottleSaleItem {
 
         return SaleRequestModel.BottleSaleItem(
+            id = id,
             bottleID = bottle.id,
             price = if (isGift) .0 else bottle.price,
             count = count

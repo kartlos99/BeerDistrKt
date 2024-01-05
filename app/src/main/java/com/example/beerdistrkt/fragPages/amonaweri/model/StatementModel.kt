@@ -32,6 +32,7 @@ data class StatementModel(
     fun getType(location: Int): String = when {
         location == 0 && pay != 0F -> AddDeliveryFragment.M_OUT
         location == 1 && k_out != 0 -> AddDeliveryFragment.K_OUT
+        recordType == StatementRecordType.SALE_BOTTLE -> AddDeliveryFragment.MITANA_BOTTLE
         else -> AddDeliveryFragment.MITANA
     }
 

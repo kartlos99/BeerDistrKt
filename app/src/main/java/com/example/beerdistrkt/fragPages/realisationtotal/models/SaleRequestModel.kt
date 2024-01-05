@@ -20,6 +20,7 @@ data class SaleRequestModel(
 ) {
 
     data class BottleSaleItem(
+        val id: Int = 0,
         val bottleID: Int,
         val price: Double,
         val count: Int

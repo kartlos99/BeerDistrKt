@@ -22,6 +22,7 @@ import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.getViewModel
@@ -107,6 +108,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         if (viewModel.operation != null) {
             viewModel.getRecordData()
             addDeliveryBarrelGr.isVisible = false
+            realisationTypeSelector.isVisible = false
         }
         addDeliveryhideOnEditGroup.isVisible = viewModel.operation == null
         beerSelector.beerGroupVisibleIf(viewModel.operation != K_OUT)
@@ -115,6 +117,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             MITANA -> {
                 addDeliveryMoneyGr.isVisible = false
                 addDeliveryCheckReplace.isVisible = false
+                viewModel.switchToBarrel()
+            }
+
+            MITANA_BOTTLE -> {
+                addDeliveryMoneyGr.isVisible = false
+                addDeliveryCheckReplace.isVisible = false
+                viewModel.switchToBottle()
             }
 
             M_OUT -> {
@@ -235,6 +244,12 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.saleItemEditLiveData.value = null
             }
         }
+        viewModel.saleBottleItemEditLiveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                fillBottleSale(it)
+                viewModel.saleBottleItemEditLiveData.value = null
+            }
+        }
         viewModel.kOutEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 fillBarrels(it)
@@ -321,14 +336,19 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryComment.editText?.setText(saleData.comment ?: "")
     }
 
-    private fun fillBottleSale() {
-
+    private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) {
+        saleBottleRowModel.toTempBottleItemModel(viewModel.bottleList)?.let {data ->
+            vBinding.bottleSelector.fillBottleItemForm(data)
+            vBinding.addDeliveryCheckGift.isChecked = saleBottleRowModel.price == 0.0
+            vBinding.addDeliveryComment.editText?.setText(saleBottleRowModel.comment ?: "")
+        } ?: showToast(getString(R.string.bottle_identification_error))
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.addDeliveryDoneBtn -> {
                 when (viewModel.operation) {
+                    MITANA_BOTTLE,
                     MITANA -> {
                         viewModel.barrelOutItems.clear()
                         viewModel.moneyOut.clear()
@@ -462,6 +482,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     companion object {
         const val MITANA = "mitana"
+        const val MITANA_BOTTLE = "mitana_bottle"
         const val K_OUT = "kout"
         const val M_OUT = "mout"
     }

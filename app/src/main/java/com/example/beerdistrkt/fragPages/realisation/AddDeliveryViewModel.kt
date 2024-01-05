@@ -10,6 +10,7 @@ import com.example.beerdistrkt.fragPages.realisation.RealisationType.*
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
+import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
@@ -317,6 +318,7 @@ class AddDeliveryViewModel(
     }
 
     val saleItemEditLiveData = MutableLiveData<SaleRowModel?>()
+    val saleBottleItemEditLiveData = MutableLiveData<SaleBottleRowModel?>()
     val kOutEditLiveData = MutableLiveData<BarrelRowModel?>()
     val mOutEditLiveData = MutableLiveData<MoneyRowModel?>()
 
@@ -326,28 +328,32 @@ class AddDeliveryViewModel(
                 RecordRequestModel(operation ?: "", recordID)
             ),
             successWithData = {
+                var date: Date? = null
+
                 if (it.mitana != null) {
                     saleItemEditLiveData.value = it.mitana
 
                     isGift = it.mitana.unitPrice == 0.0
-                    val date = dateTimeFormat.parse(it.mitana.saleDate)
-                    saleDateCalendar.time = date ?: Date()
-                    _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+                    date = dateTimeFormat.parse(it.mitana.saleDate)
+                }
+                if (it.mitanaBottle != null) {
+                    saleBottleItemEditLiveData.value = it.mitanaBottle
+
+                    isGift = it.mitanaBottle.price == 0.0
+                    date = dateTimeFormat.parse(it.mitanaBottle.saleDate)
                 }
                 if (it.kout != null) {
                     kOutEditLiveData.value = it.kout
 
-                    val date = dateTimeFormat.parse(it.kout.outputDate)
-                    saleDateCalendar.time = date ?: Date()
-                    _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+                    date = dateTimeFormat.parse(it.kout.outputDate)
                 }
                 if (it.mout != null) {
                     mOutEditLiveData.value = it.mout
 
-                    val date = dateTimeFormat.parse(it.mout.takeMoneyDate)
-                    saleDateCalendar.time = date ?: Date()
-                    _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
+                    date = dateTimeFormat.parse(it.mout.takeMoneyDate)
                 }
+                saleDateCalendar.time = date ?: Date()
+                _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
 
                 Log.d("respRECORD", it.toString())
             },
