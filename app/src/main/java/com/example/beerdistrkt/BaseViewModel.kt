@@ -76,7 +76,8 @@ abstract class BaseViewModel : ViewModel() {
             failure = failure,
             authFailure = authFailure,
             responseFailure = responseFailure,
-            finally = finally
+            finally = finally,
+            notifyChanges = ::notifyOldDataChange
         )
     }
 

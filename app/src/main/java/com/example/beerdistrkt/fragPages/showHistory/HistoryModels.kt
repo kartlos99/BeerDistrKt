@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.fragPages.showHistory
 
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.OrderStatus

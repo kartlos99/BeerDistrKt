@@ -4,21 +4,22 @@ import android.content.Context
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.addBeer.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementResponse
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
-import com.example.beerdistrkt.fragPages.mitana.models.RecordRequestModel
-import com.example.beerdistrkt.fragPages.mitana.models.RecordResponseDTO
+import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
+import com.example.beerdistrkt.fragPages.realisation.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryDto
-import com.example.beerdistrkt.fragPages.sales.models.AddXarjiRequestModel
-import com.example.beerdistrkt.fragPages.sales.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequestModel
+import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -30,6 +31,7 @@ import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.network.model.BaseDataResponse
 import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -124,7 +126,7 @@ interface ApeniApiService {
     @GET("get_fasebi.php")
     fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
-    @GET("statement/getFinancial.php")
+    @GET("statement/getCombinedFinancial.php")
     fun getFinancialStatement(
         @Query("offset") offset: Int,
         @Query("clientID") clientID: Int
@@ -136,8 +138,8 @@ interface ApeniApiService {
         @Query("clientID") clientID: Int
     ): Call<DataResponse<StatementResponse>>
 
-    @GET("get_ludi_list.php")
-    fun getBeerList(): Call<DataResponse<List<BeerModelBase>>>
+    @GET("general/baseData.php")
+    fun getBaseData(): Call<DataResponse<BaseDataResponse>>
 
     @GET("get_kasri_list.php")
     fun getCanList(): Call<DataResponse<List<CanModel>>>
@@ -190,11 +192,11 @@ interface ApeniApiService {
     @GET("client/getDebtByID.php")
     fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
 
-    @POST("client/add.php")
-    fun addClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
+    @POST("client/addWithPrices.php")
+    fun addClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
 
-    @POST("client/update.php")
-    fun updateClient(@Body obieqti: ObiectWithPrices): Call<DataResponse<String>>
+    @POST("client/updateWithPrices.php")
+    fun updateClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
 
     @POST("client/deactivate.php")
     fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>

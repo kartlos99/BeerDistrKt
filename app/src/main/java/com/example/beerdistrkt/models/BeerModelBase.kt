@@ -2,7 +2,7 @@ package com.example.beerdistrkt.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.squareup.moshi.Json
 
 @Entity(tableName = "beer_table")

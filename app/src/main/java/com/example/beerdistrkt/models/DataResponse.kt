@@ -4,7 +4,8 @@ data class DataResponse<T: Any>(
     val success: Boolean,
     val errorText: String?,
     val errorCode: Int?,
-    val data: T?
+    val data: T?,
+    val logRecordId: Int? = null
 ) {
 
     companion object {

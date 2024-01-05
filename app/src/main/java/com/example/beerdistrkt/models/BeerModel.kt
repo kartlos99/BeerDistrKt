@@ -1,10 +1,5 @@
 package com.example.beerdistrkt.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.example.beerdistrkt.fragPages.sales.models.PaymentType
-import com.squareup.moshi.Json
-import java.util.*
 /*
 
 @Entity(tableName = "beer_table")

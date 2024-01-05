@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.sales.models
+package com.example.beerdistrkt.fragPages.realisationtotal.models
 
 import androidx.annotation.DrawableRes
 import com.example.beerdistrkt.R
@@ -10,11 +10,21 @@ data class SaleRequestModel(
     val comment: String?,
     val modifyUserID: Int,
     val isReplace: String = "0",
+    val operationDate: String,
+    val orderID: Int? = null,
 
     val sales: List<SaleItem>? = null,
+    val bottleSales: List<BottleSaleItem>? = null,
     val barrels: List<BarrelOutItem>? = null,
     val money: List<MoneyOutItem>? = null
 ) {
+
+    data class BottleSaleItem(
+        val id: Int = 0,
+        val bottleID: Int,
+        val price: Double,
+        val count: Int
+    )
 
     data class SaleItem(
         val ID: Int = 0,

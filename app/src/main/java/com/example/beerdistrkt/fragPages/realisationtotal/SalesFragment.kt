@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.sales
+package com.example.beerdistrkt.fragPages.realisationtotal
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
@@ -14,7 +14,7 @@ import com.example.beerdistrkt.*
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.sales.adapter.BarrelsIOAdapter
+import com.example.beerdistrkt.fragPages.realisationtotal.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -35,7 +35,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     private lateinit var expenseBottomSheet: BottomSheetBehavior<*>
 
-    var dateSetListener = OnDateSetListener { _, year, month, day ->
+    private var dateSetListener = OnDateSetListener { _, year, month, day ->
         viewModel.onDataSelected(year, month, day)
     }
 

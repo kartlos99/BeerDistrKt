@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.sales.models
+package com.example.beerdistrkt.fragPages.realisationtotal.models
 
 data class AddXarjiRequestModel(
     val distributorID: String,

@@ -2,16 +2,12 @@ package com.example.beerdistrkt.fragPages.addBeer
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.util.Log
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.adapters.CtxMenuItem
 import com.example.beerdistrkt.databinding.BeerRowBinding
 import com.example.beerdistrkt.models.BeerModelBase
 

@@ -47,6 +47,7 @@ class ObjectCache {
 
         const val CLIENTS_LIST_ID = "CLIENTS_LIST_ID"
         const val BEER_LIST_ID = "BEER_LIST_ID"
+        const val BOTTLE_LIST_ID = "BOTTLE_LIST_ID"
         const val BARREL_LIST_ID = "BARREL_LIST_ID"
         const val USERS_LIST_ID = "USERS_LIST_ID"
     }

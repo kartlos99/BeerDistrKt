@@ -3,7 +3,7 @@ package com.example.beerdistrkt.fragPages.amonaweri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.StatementModel
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState

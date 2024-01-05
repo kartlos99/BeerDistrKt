@@ -5,11 +5,14 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentChangesListBinding
 import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.DB_TABLE_KEY
 import com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment.Companion.RECORD_ID_KEY
@@ -18,6 +21,8 @@ import com.example.beerdistrkt.fragPages.reporting.adapter.SimplePaginatedScroll
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.utils.ApiResponseState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
 
@@ -51,15 +56,48 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
             addOnScrollListener(scrollListener)
         }
         setupObservers()
+        toggleChangesList?.setOnClickListener {
+            viewModel.toggleChangesList()
+        }
+        if (isLandscape) {
+            childFragmentManager.beginTransaction()
+                .replace(R.id.detailsFragmentContainer, DetailedChangeHistoryFragment())
+                .commit()
+        }
     }
 
     private fun setupObservers() {
         viewModel.changesLiveData.observe(viewLifecycleOwner) { changesResult ->
             when (changesResult) {
-                is ApiResponseState.Loading -> binding.indeterminateProgressBar.isVisible = changesResult.showLoading
+                is ApiResponseState.Loading -> binding.indeterminateProgressBar.isVisible =
+                    changesResult.showLoading
+
                 is ApiResponseState.Success -> changesAdapter.submitList(changesResult.data)
                 is ApiResponseState.ApiError -> showToast(changesResult.errorText)
                 else -> {}
+            }
+        }
+        viewModel.changesListVisibilityState.collectLatest(viewLifecycleOwner) {
+            handleChangesListVisibility(it)
+        }
+        lifecycleScope.launch {
+            delay(1800)
+            val mActivity = (requireActivity() as MainActivity)
+            if (mActivity.isDestroyed.not() && mActivity.isFinishing.not() && isResumed)
+                if (isLandscape.not()) {
+                    mActivity.exitFullScreen()
+                }
+        }
+    }
+
+    private fun handleChangesListVisibility(show: Boolean) = lifecycleScope.launch {
+        if (isLandscape) {
+            if (show) {
+                binding.detailsDivider?.setGuidelinePercent(0.4f)
+                binding.toggleChangesList?.setImageResource(R.drawable.ic_arrow_left_24dp)
+            } else {
+                binding.detailsDivider?.setGuidelinePercent(0.0f)
+                binding.toggleChangesList?.setImageResource(R.drawable.ic_arrow_right_24dp)
             }
         }
     }
@@ -68,10 +106,16 @@ class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
         Log.d(TAG, "getNextPage: TODO")
     }
 
+    private fun getDetailsFragment(): DetailedChangeHistoryFragment? {
+        return if (binding.detailsFragmentContainer != null)
+            childFragmentManager.findFragmentById(R.id.detailsFragmentContainer) as? DetailedChangeHistoryFragment
+        else
+            null
+    }
+
     private fun openDetails(id: String, tableName: DbTableName) {
         if (isLandscape) {
-            val fragment =
-                binding.detailsFragmentContainer?.getFragment<DetailedChangeHistoryFragment>()
+            val fragment = getDetailsFragment()
             fragment?.setItem(id, tableName.name)
         } else {
             val args = Bundle().apply {

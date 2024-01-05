@@ -30,7 +30,8 @@
     <string name="username">მომხმარებელი</string>
     <string name="password">პაროლი</string>
     <string name="login">შესვლა</string>
-    <string name="ludis_fasebi">ლუდის ფასები კონკრეტული ობიექტისთვის</string>
+    <string name="beer_prices_title">ლუდის ფასები კონკრეტული ობიექტისთვის</string>
+    <string name="bottle_prices_title">ბოთლის ფასები</string>
     <string name="call">call</string>
     <string name="m_edit">რედაქტირება</string>
     <string name="sak_piri">საკონტაქტო პირი</string>
@@ -96,6 +97,7 @@
     <string name="patern_date2">yyyy:MM:dd</string>
     <string name="davalianeba">დავალიანება</string>
     <string name="kasri">კასრი</string>
+    <string name="bottle">ბოთლი</string>
     <string name="finances">ფინანსები</string>
     <string name="pay">გადახდა</string>
     <string name="price">ღირებულება:</string>
@@ -113,6 +115,7 @@
     <string name="feel_empty_fields">შეავსეთ ცარიელი ველები!</string>
     <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
     <string name="already_in_list">ეს ლუდის სახეობა ამ კასრთან უკვე დამატებულია სიაში!</string>
+    <string name="bottle_already_in_list">ეს ბოთლი უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
     <string name="xarjebi"><u>ხარჯები</u>:</string>
     <string name="expense_title">ხარჯები</string>
@@ -249,5 +252,11 @@
     <string name="page_title_detailed_history">დეტალური ისტორია</string>
     <string name="loading">იტვირთება…</string>
     <string name="two_separated">%1$s | %2$s</string>
+    <string name="full_screen_toggle">full screen toggle</string>
+
+    <string name="count">რაოდენობა</string>
+    <string name="no_price_exception">რომელიღაც ლუდს ფასი არ ააქვს გაწერილი!</string>
+    <string name="object_not_found">ობიექტი არ იძებნება</string>
+    <string name="bottle_identification_error">ვერ მოხერხდა ბოთლის სახეობის იდენტიფიკაცია! სცადეთ განმეორებით</string>
 
 </resources>

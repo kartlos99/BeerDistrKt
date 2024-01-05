@@ -12,13 +12,18 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
-import androidx.databinding.DataBindingUtil
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.databinding.NavHeaderBinding
@@ -31,7 +36,6 @@ import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.navigation.NavigationView
 
 
@@ -41,34 +45,30 @@ val Context.dataStore by preferencesDataStore(name = PREF_NAME)
 class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
 
-    private lateinit var vBinding: ActivityMainBinding
-    lateinit var appBarConfiguration: AppBarConfiguration
+    private val vBinding by viewBinding(ActivityMainBinding::bind)
 
     val viewModel by lazy {
         getViewModel { MainActViewModel() }
     }
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ApeniDataBase.initialize(this)
         ApeniApiService.initialize(this)
         SharedPreferenceDataSource.initialize(this)
-        vBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
         Session.get().restoreLastRegion(SharedPreferenceDataSource.getInstance().getRegion())
         Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())
 
-        val toolBar = vBinding.toolBar
-        toolBar.title = getString(R.string.home_def_title)
-        setSupportActionBar(toolBar)
+        vBinding.toolBar.title = getString(R.string.home_def_title)
+        setSupportActionBar(vBinding.toolBar)
 
         val navController = this.findNavController(R.id.mainNavHostFragment)
-        navController.setGraph(R.navigation.frag_navigation)
-        appBarConfiguration = AppBarConfiguration.Builder(R.id.homeFragment)
-            .setDrawerLayout(vBinding.drawerLayout)
-            .build()
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
-        NavigationUI.setupWithNavController(vBinding.navView, navController)
+
+        setupActionBarWithNavController(navController, vBinding.drawerLayout)
+        vBinding.navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { controller, destination, _ ->
             if (destination.id == R.id.homeFragment) {
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(vBinding.drawerLayout.windowToken, 0)
 
-            vBinding.toolBar.visibleIf(destination.id != R.id.loginFragment)
+            vBinding.toolBar.isVisible = destination.id != R.id.loginFragment
         }
 
         NotificationService.myNotificationInterface = this
@@ -113,6 +113,19 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 //        intent.extras?.keySet()?.forEach {
 //            Log.d("extr", "$it - ${intent?.extras?.get(it!!)}")
 //        }
+        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    fun setFullScreen() {
+        vBinding.toolBar.isVisible = false
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
+
+    fun exitFullScreen() {
+        vBinding.toolBar.isVisible = true
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
     }
 
     private fun updateNavigationView() {
@@ -136,8 +149,9 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
     fun logOut() {
         Session.get().clearSession()
         Session.get().loggedIn = false
-        finish()
-        startActivity(Intent(this, MainActivity::class.java))
+        val navController = this.findNavController(R.id.mainNavHostFragment)
+        navController.navigate(R.id.action_global_loginFragment)
+        navController.clearBackStack(R.id.loginFragment)
     }
 
     private fun changePass() {
@@ -188,7 +202,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.mainNavHostFragment)
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
+        return NavigationUI.navigateUp(navController, vBinding.drawerLayout)
     }
 
     override fun onRequestPermissionsResult(

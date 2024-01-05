@@ -57,6 +57,14 @@ class SharedPreferenceDataSource(appContext: Context) {
         return sharedPreference.getString(MSG_DATE, "") ?: ""
     }
 
+    fun saveLastLogID(text: String) {
+        sharedPreference.edit().putString(KEY_LOG_ID, text).apply()
+    }
+
+    fun getLastLogID(): String {
+        return sharedPreference.getString(KEY_LOG_ID, "") ?: ""
+    }
+
     fun clearSession() {
         sharedPreference.edit().putString(KEY_SESSION, "").apply()
     }
@@ -100,6 +108,7 @@ class SharedPreferenceDataSource(appContext: Context) {
         const val USERNAME = "username"
         const val PASS = "pass"
         const val MSG_DATE = "msg_date"
+        const val KEY_LOG_ID = "KEY_LOG_ID"
         const val KEY_SESSION = "keySession3"
         const val KEY_REGION = "keyRegion"
         const val KEY_VERSION = "vKey"

@@ -37,4 +37,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/fullScreenToggle"
+        android:layout_width="@dimen/gr_size_36"
+        android:layout_height="@dimen/gr_size_36"
+        android:alpha="0.3"
+        android:contentDescription="@string/full_screen_toggle"
+        android:src="@drawable/fullscreen_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

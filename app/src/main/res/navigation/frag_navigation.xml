@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frag_navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -23,6 +23,8 @@
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
         <action
@@ -133,7 +135,7 @@
     </fragment>
     <fragment
         android:id="@+id/salesFragment"
-        android:name="com.example.beerdistrkt.fragPages.sales.SalesFragment"
+        android:name="com.example.beerdistrkt.fragPages.realisationtotal.SalesFragment"
         android:label="@string/daily_sales"
         tools:layout="@layout/sales_fragment" />
     <fragment
@@ -144,7 +146,7 @@
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/loginFragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -164,7 +166,7 @@
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
-        android:name="com.example.beerdistrkt.fragPages.mitana.AddDeliveryFragment"
+        android:name="com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment"
         android:label="add_delivery_fragment"
         tools:layout="@layout/add_delivery_fragment">
         <argument
@@ -238,4 +240,8 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:enterAnim="@anim/shake" />
 </navigation>

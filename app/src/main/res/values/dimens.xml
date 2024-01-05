@@ -26,12 +26,14 @@
     <dimen name="gr_size_48">48dp</dimen>
     <dimen name="gr_size_56">56dp</dimen>
     <dimen name="gr_size_64">64dp</dimen>
+    <dimen name="gr_size_72">72dp</dimen>
     <dimen name="gr_size_96">96dp</dimen>
     <dimen name="gr_size_128">128dp</dimen>
 
     <dimen name="sp12">12sp</dimen>
     <dimen name="sp13">13sp</dimen>
     <dimen name="sp14">14sp</dimen>
+    <dimen name="sp15">15sp</dimen>
     <dimen name="sp16">16sp</dimen>
     <dimen name="sp18">18sp</dimen>
     <dimen name="sp24">24sp</dimen>

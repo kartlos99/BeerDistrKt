@@ -3,12 +3,17 @@ package com.example.beerdistrkt.repos
 import androidx.lifecycle.LiveData
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.objList.model.Customer
+import com.example.beerdistrkt.models.CustomerDataDTO
 import com.example.beerdistrkt.models.CustomerIdlInfo
+import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.DefaultBottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.sendRequest
+import com.example.beerdistrkt.storage.ObjectCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,20 +36,48 @@ class ApeniRepo {
         Pair(customers, idleInfo)
     }
 
-    fun getBeerList(): LiveData<List<BeerModelBase>> {
-        ApeniApiService.getInstance().getBeerList().sendRequest(
-            successWithData = {
-                if (it.isNotEmpty()) {
-                    ioScope.launch {
-                        database.clearBeerTable()
-                        database.insertBeers(it)
-                    }
+    private val clientDataFlow: MutableStateFlow<CustomerWithPrices?> = MutableStateFlow(null)
+
+    private fun mapCustomerDtoToPm(customerDto: CustomerDataDTO): CustomerWithPrices =
+        with(customerDto) {
+
+            val customer = Customer(
+                id,
+                dasaxeleba,
+                adress,
+                tel,
+                comment,
+                sk,
+                sakpiri,
+                chek
+            )
+
+            return CustomerWithPrices(
+                customer = customer,
+                beerPrices = prices,
+                bottlePrices = bottlePrices
+            )
+        }
+
+    fun getCustomerDataFlow(customerID: Int): MutableStateFlow<CustomerWithPrices?> {
+
+        ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
+            successWithData = { customerData ->
+                ioScope.launch {
+                    database.insertBeerPrices(customerData.prices)
+                }
+                CoroutineScope(Dispatchers.Main).launch {
+                    clientDataFlow.emit(mapCustomerDtoToPm(customerData))
                 }
             },
-            failure = {},
+            failure = {
+                CoroutineScope(Dispatchers.Main).launch {
+                    clientDataFlow.emit(null)
+                }
+            },
             onConnectionFailure = {}
         )
-        return database.getBeerList()
+        return clientDataFlow
     }
 
     fun getCustomerData(customerID: Int): LiveData<ObiectWithPrices?> {
@@ -90,6 +123,25 @@ class ApeniRepo {
             },
             failure = {},
             onConnectionFailure = {}
+        )
+    }
+
+    fun getBaseData() {
+        ApeniApiService.getInstance().getBaseData().sendRequest(
+            successWithData = {
+                val bottleMapper = DefaultBottleDtoMapper(it.beers)
+                val bottles = it.bottles.map { dto ->
+                    bottleMapper.map(dto)
+                }
+                ObjectCache.getInstance()
+                    .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
+            },
+            failure = {
+
+            },
+            onConnectionFailure = {
+
+            }
         )
     }
 }
