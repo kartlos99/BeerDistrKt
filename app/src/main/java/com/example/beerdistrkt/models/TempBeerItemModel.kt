@@ -13,7 +13,7 @@ data class TempBeerItemModel(
     val onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 ) {
 
-    fun toRequestOrderItem(orderCheck: Boolean, userID: String): OrderRequestModel.Item {
+    fun toRequestOrderItem(orderCheck: Boolean): OrderRequestModel.Item {
         return OrderRequestModel.Item(
             ID = orderItemID,
             orderID = ID,
@@ -21,7 +21,6 @@ data class TempBeerItemModel(
             canTypeID = canType.id,
             count = count,
             check = orderCheck,
-            modifyUserID = userID
         )
     }
 

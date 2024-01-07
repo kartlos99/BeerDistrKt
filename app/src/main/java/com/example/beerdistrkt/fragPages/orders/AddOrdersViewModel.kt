@@ -3,19 +3,37 @@ package com.example.beerdistrkt.fragPages.orders
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
-import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.fragPages.realisation.RealisationType
+import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
+import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.DebtResponse
+import com.example.beerdistrkt.models.MappedUser
+import com.example.beerdistrkt.models.ObiectWithPrices
+import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.models.TempBeerItemModel
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : BaseViewModel() {
 
@@ -24,28 +42,28 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
         ?: mutableListOf()
+    val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
+        ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?.sortedBy { it.username }
         ?: mutableListOf()
 
-    var selectedCan: CanModel? = null
     lateinit var selectedDistributor: User
     private var selectedDistributorRegionID: Int = 0
     var selectedStatus = OrderStatus.ACTIVE
     val orderStatusList = listOf(OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
-    val orderItemsList = mutableListOf<TempBeerItemModel>()
-    val orderItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
+    private val orderItemsList = mutableListOf<TempBeerItemModel>()
+    private val bottleOrderItemsList = mutableListOf<TempBottleItemModel>()
+    val tempOrderLiveData = MutableLiveData<TempRealisationModel>()
 
     var orderDateCalendar: Calendar = Calendar.getInstance()
 
     private val _orderDayLiveData = MutableLiveData<String>()
     val orderDayLiveData: LiveData<String>
         get() = _orderDayLiveData
-
-    val orderItemDuplicateLiveData = MutableLiveData(false)
 
     private val _addOrderLiveData = MutableLiveData<ApiResponseState<String>>()
     val addOrderLiveData: LiveData<ApiResponseState<String>>
@@ -60,6 +78,15 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
 
     lateinit var availableRegions: List<WorkRegion>
     private val allMappedUsers = mutableListOf<MappedUser>()
+
+    val eventsFlow = MutableSharedFlow<Event>()
+
+    val realisationStateFlow = MutableStateFlow(RealisationType.BARREL)
+
+    val realisationType: RealisationType
+        get() {
+            return realisationStateFlow.value
+        }
 
     init {
         Log.d("addOrderVM", clientID.toString())
@@ -102,20 +129,11 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         }
     }
 
-    fun setCan(pos: Int) {
-        selectedCan = if (pos >= 0)
-            cansList[pos]
-        else
-            null
-    }
-
     private fun addOrderItemsToList(itemsList: List<TempBeerItemModel>) {
         itemsList.forEach {
             orderItemsList.add(it)
         }
-        orderItemsLiveData.value = orderItemsList
-            .sortedBy { it.canType.name }
-            .sortedBy { it.beer.sortValue }
+        updateTempOrderItemList()
     }
 
     fun addOrderItemToList(item: TempBeerItemModel) {
@@ -127,20 +145,53 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         if (orderItemsList.any {
                 it.beer.id == item.beer.id && it.canType.id == item.canType.id
             })
-            orderItemDuplicateLiveData.value = true
+            viewModelScope.launch {
+                eventsFlow.emit(Event.DuplicateBarrelItem)
+            }
         else {
             orderItemsList.add(item)
-            orderItemsLiveData.value = orderItemsList
-                .sortedBy { it.canType.name }
-                .sortedBy { it.beer.sortValue }
+            updateTempOrderItemList()
         }
         editingOrderItemID = 0
     }
 
+    fun addBottleOrderItem(item: TempBottleItemModel) {
+        if (editingOrderItemID > 0)
+            bottleOrderItemsList.removeAll {
+                it.orderItemID == editingOrderItemID
+            }
+
+        if (bottleOrderItemsList.any {
+                it.bottle.id == item.bottle.id
+            })
+            viewModelScope.launch {
+                eventsFlow.emit(Event.DuplicateBottleItem)
+            }
+//        orderItemDuplicateLiveData.value = true
+        else {
+            bottleOrderItemsList.add(item)
+            updateTempOrderItemList()
+        }
+        editingOrderItemID = 0
+    }
+
+    private fun updateTempOrderItemList() {
+        tempOrderLiveData.value = TempRealisationModel(
+            orderItemsList
+                .sortedBy { it.canType.name }
+                .sortedBy { it.beer.sortValue },
+            bottleOrderItemsList
+        )
+    }
+
     fun removeOrderItemFromList(item: TempBeerItemModel) {
         orderItemsList.remove(item)
-        orderItemsLiveData.value =
-            orderItemsList.sortedBy { it.canType.name }.sortedBy { it.beer.sortValue }
+        updateTempOrderItemList()
+    }
+
+    fun removeOrderItemFromList(item: TempBottleItemModel) {
+        bottleOrderItemsList.remove(item)
+        updateTempOrderItemList()
     }
 
     private fun editOrderItemFromList(item: TempBeerItemModel) {
@@ -161,7 +212,10 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             selectedDistributorRegionID,
             comment,
             Session.get().userID ?: "0",
-            orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0") }
+            orderItemsList.map { it.toRequestOrderItem(isChecked) },
+            bottleOrderItemsList.map {
+                it.toRequestOrderItem(isChecked)
+            }
         )
 
         _addOrderLiveData.value = ApiResponseState.Loading(true)
@@ -188,7 +242,10 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             selectedDistributorRegionID,
             comment,
             Session.get().userID ?: "0",
-            orderItemsList.map { it.toRequestOrderItem(isChecked, Session.get().userID ?: "0") }
+            orderItemsList.map { it.toRequestOrderItem(isChecked) },
+            bottleOrderItemsList.map {
+                it.toRequestOrderItem(isChecked)
+            }
         )
         Log.d("updateOrder1", orderRequestModel.toString())
         _addOrderLiveData.value = ApiResponseState.Loading(true)
@@ -272,4 +329,14 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         else
             userIds.indexOf(Session.get().userID ?: return 0)
     }
+
+    fun switchToBarrel() {
+        realisationStateFlow.value = RealisationType.BARREL
+    }
+
+    fun switchToBottle() {
+        realisationStateFlow.value = RealisationType.BOTTLE
+    }
+
+    fun hasNoOrderItems(): Boolean = orderItemsList.isEmpty() && bottleOrderItemsList.isEmpty()
 }

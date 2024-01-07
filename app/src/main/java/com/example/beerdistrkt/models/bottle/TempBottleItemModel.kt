@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.models.bottle
 
+import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 
 data class TempBottleItemModel(
@@ -10,6 +11,16 @@ data class TempBottleItemModel(
     val orderItemID: Int = 0,
     val onEditClick: ((bottleItem: TempBottleItemModel) -> Unit)? = null
 ) {
+
+    fun toRequestOrderItem(orderCheck: Boolean): OrderRequestModel.BottleItem {
+        return OrderRequestModel.BottleItem(
+            ID = orderItemID,
+            orderID = id,
+            bottleID = bottle.id,
+            count = count,
+            check = orderCheck,
+        )
+    }
 
     fun toRequestSaleItem(
         isGift: Boolean = false

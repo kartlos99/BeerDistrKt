@@ -55,11 +55,44 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true">
 
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/realisationTypeSelector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <Button
+                        android:id="@+id/realizationByBarrel"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kasri" />
+
+                    <Button
+                        android:id="@+id/realizationByBottle"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bottle" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
                 <com.example.beerdistrkt.customView.BeerSelectorView
                     android:id="@+id/beerSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector"/>
+
+                <com.example.beerdistrkt.customView.BottleSelectorView
+                    android:id="@+id/bottleSelector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/beerSelector"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/addOrderAddItemBtn"
@@ -72,7 +105,7 @@
                     app:backgroundTintMode="src_over"
                     app:fabSize="mini"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/beerSelector" />
+                    app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
 
                 <CheckBox
                     android:id="@+id/addOrderCheckBox"
@@ -80,8 +113,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:checked="true"
-                    app:layout_constraintStart_toStartOf="@+id/beerSelector"
-                    app:layout_constraintTop_toBottomOf="@id/beerSelector" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
 
                 <LinearLayout
                     android:id="@+id/addOrderItemsContainer"
