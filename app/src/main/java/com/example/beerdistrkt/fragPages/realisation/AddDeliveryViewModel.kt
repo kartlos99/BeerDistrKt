@@ -34,6 +34,7 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -84,7 +85,10 @@ class AddDeliveryViewModel(
 
     val eventsFlow = MutableSharedFlow<Event>()
 
-    val realisationStateFlow = MutableStateFlow(BARREL)
+    private val _editOperationState = MutableStateFlow<Any>(0)
+    val editOperationState = _editOperationState.asStateFlow()
+
+    val realisationStateFlow = MutableStateFlow(NONE)
 
     val realisationType: RealisationType
         get() {
@@ -100,6 +104,10 @@ class AddDeliveryViewModel(
                         clientLiveData.value = customer
                         attachPrices(customer.beerPrices)
                         attachBottlePrices(customer.bottlePrices)
+                        if (operation != null)
+                            getRecordData()
+                        else
+                            realisationStateFlow.value = BARREL
                     } ?: eventsFlow.emit(Event.CustomerNotFount)
                 }
                 .collect()
@@ -317,40 +325,37 @@ class AddDeliveryViewModel(
         }
     }
 
-    val saleItemEditLiveData = MutableLiveData<SaleRowModel?>()
-    val saleBottleItemEditLiveData = MutableLiveData<SaleBottleRowModel?>()
-    val kOutEditLiveData = MutableLiveData<BarrelRowModel?>()
-    val mOutEditLiveData = MutableLiveData<MoneyRowModel?>()
-
-    fun getRecordData() {
+    private fun getRecordData() {
         sendRequest(
             ApeniApiService.getInstance().getRecord(
                 RecordRequestModel(operation ?: "", recordID)
             ),
             successWithData = {
                 var date: Date? = null
+                viewModelScope.launch {
+                    when {
+                        it.mitana != null -> {
+                            _editOperationState.emit(it.mitana)
+                            isGift = it.mitana.unitPrice == 0.0
+                            date = dateTimeFormat.parse(it.mitana.saleDate)
+                        }
 
-                if (it.mitana != null) {
-                    saleItemEditLiveData.value = it.mitana
+                        it.mitanaBottle != null -> {
+                            _editOperationState.emit(it.mitanaBottle)
+                            isGift = it.mitanaBottle.price == 0.0
+                            date = dateTimeFormat.parse(it.mitanaBottle.saleDate)
+                        }
 
-                    isGift = it.mitana.unitPrice == 0.0
-                    date = dateTimeFormat.parse(it.mitana.saleDate)
-                }
-                if (it.mitanaBottle != null) {
-                    saleBottleItemEditLiveData.value = it.mitanaBottle
+                        it.kout != null -> {
+                            _editOperationState.emit(it.kout)
+                            date = dateTimeFormat.parse(it.kout.outputDate)
+                        }
 
-                    isGift = it.mitanaBottle.price == 0.0
-                    date = dateTimeFormat.parse(it.mitanaBottle.saleDate)
-                }
-                if (it.kout != null) {
-                    kOutEditLiveData.value = it.kout
-
-                    date = dateTimeFormat.parse(it.kout.outputDate)
-                }
-                if (it.mout != null) {
-                    mOutEditLiveData.value = it.mout
-
-                    date = dateTimeFormat.parse(it.mout.takeMoneyDate)
+                        it.mout != null -> {
+                            _editOperationState.emit(it.mout)
+                            date = dateTimeFormat.parse(it.mout.takeMoneyDate)
+                        }
+                    }
                 }
                 saleDateCalendar.time = date ?: Date()
                 _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)

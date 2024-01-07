@@ -45,22 +45,15 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true">
 
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/addDeliveryMitanaGr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="beerSelector,
-                    addDeliveryTempContainer" />
-
                 <com.google.android.material.button.MaterialButtonToggleGroup
                     android:id="@+id/realisationTypeSelector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleSelection="true"
-                    app:selectionRequired="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
                     <Button
                         android:id="@+id/realizationByBarrel"
@@ -82,21 +75,24 @@
                     android:id="@+id/beerSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector" />
 
                 <com.example.beerdistrkt.customView.BottleSelectorView
                     android:id="@+id/bottleSelector"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/beerSelector"/>
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/beerSelector" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addDeliveryhideOnEditGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="addDeliveryAddSaleItemBtn,
-                        addDeliveryBarrelOutputCard, addDeliveryBarrelOutput" />
+                    app:constraint_referenced_ids="
+                        addDeliveryAddSaleItemBtn,
+                        addDeliveryBarrelOutputCard,
+                        addDeliveryBarrelOutput" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/addDeliveryAddSaleItemBtn"
@@ -137,7 +133,8 @@
                     android:id="@+id/addDeliveryBarrelGr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="addDeliveryBarrelOutput,
+                    app:constraint_referenced_ids="
+                    addDeliveryBarrelOutput,
                     addDeliveryBarrelOutputCard" />
 
                 <TextView
@@ -254,7 +251,8 @@
                     android:id="@+id/addDeliveryMoneyGr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="addDeliveryMoneyOutput,
+                    app:constraint_referenced_ids="
+                    addDeliveryMoneyOutput,
                     addDeliveryMoneyOutputCard" />
 
                 <TextView

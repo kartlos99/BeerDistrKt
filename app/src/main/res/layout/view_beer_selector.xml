@@ -69,8 +69,12 @@
         android:id="@+id/beerGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="beerSelectorBeerKindTv, beerSelectorBeerRecycler,
-beerSelectorBeerListIndicator, beerSelectorBtnLeftImg, beerSelectorBtnRightImg" />
+        app:constraint_referenced_ids="
+        beerSelectorBeerKindTv,
+        beerSelectorBeerRecycler,
+        beerSelectorBeerListIndicator,
+        beerSelectorBtnLeftImg,
+        beerSelectorBtnRightImg" />
 
     <TextView
         android:id="@+id/beerSelectorCanTypeTv"

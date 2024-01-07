@@ -20,6 +20,7 @@ import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.AddDeliveryFragmentBinding
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
@@ -79,7 +80,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         savedInstanceState: Bundle?
     ): View {
         vBinding = AddDeliveryFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = this
+        vBinding.lifecycleOwner = viewLifecycleOwner
         return vBinding.root
     }
 
@@ -106,7 +107,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     private fun AddDeliveryFragmentBinding.initView() {
         if (viewModel.operation != null) {
-            viewModel.getRecordData()
             addDeliveryBarrelGr.isVisible = false
             realisationTypeSelector.isVisible = false
         }
@@ -127,12 +127,13 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
 
             M_OUT -> {
-                addDeliveryMitanaGr.isVisible = false
+                beerSelector.isVisible = false
                 addDeliveryCheckGift.isVisible = false
                 addDeliveryCheckReplace.isVisible = false
             }
 
             K_OUT -> {
+                beerSelector.isVisible = true
                 addDeliveryMoneyGr.isVisible = false
                 addDeliveryCheckGift.isVisible = false
                 addDeliveryCheckReplace.isVisible = false
@@ -238,30 +239,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 else -> {}
             }
         }
-        viewModel.saleItemEditLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                fillSale(it)
-                viewModel.saleItemEditLiveData.value = null
-            }
-        }
-        viewModel.saleBottleItemEditLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                fillBottleSale(it)
-                viewModel.saleBottleItemEditLiveData.value = null
-            }
-        }
-        viewModel.kOutEditLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                fillBarrels(it)
-                viewModel.kOutEditLiveData.value = null
-            }
-        }
-        viewModel.mOutEditLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                fillMoney(it)
-                viewModel.mOutEditLiveData.value = null
-            }
-        }
         lifecycleScope.launchWhenStarted {
             viewModel.eventsFlow.collectLatest {
                 when (it) {
@@ -284,6 +261,18 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                         vBinding.beerSelector.isVisible = false
                         vBinding.bottleSelector.isVisible = true
                     }
+
+                    NONE -> {}
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.editOperationState.collectLatest {
+                when (it) {
+                    is SaleRowModel -> fillSale(it)
+                    is SaleBottleRowModel -> fillBottleSale(it)
+                    is BarrelRowModel -> fillBarrels(it)
+                    is MoneyRowModel -> fillMoney(it)
                 }
             }
         }
@@ -337,7 +326,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) {
-        saleBottleRowModel.toTempBottleItemModel(viewModel.bottleList)?.let {data ->
+        vBinding.beerSelector.goAway()
+        saleBottleRowModel.toTempBottleItemModel(viewModel.bottleList)?.let { data ->
             vBinding.bottleSelector.fillBottleItemForm(data)
             vBinding.addDeliveryCheckGift.isChecked = saleBottleRowModel.price == 0.0
             vBinding.addDeliveryComment.editText?.setText(saleBottleRowModel.comment ?: "")
@@ -444,6 +434,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
             BOTTLE -> if (vBinding.bottleSelector.isFormValid())
                 viewModel.addBottleSaleItem(vBinding.bottleSelector.getTempBottleItem())
+
+            else -> showToast(R.string.fill_data)
         }
     }
 
