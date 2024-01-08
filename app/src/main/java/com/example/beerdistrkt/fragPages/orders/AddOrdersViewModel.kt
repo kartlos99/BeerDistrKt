@@ -74,6 +74,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     private lateinit var clients: List<Obieqti>
 
     val orderItemEditLiveData = MutableLiveData<TempBeerItemModel?>()
+    val bottleOrderItemEditLiveData = MutableLiveData<TempBottleItemModel?>()
     private var editingOrderItemID = -1
 
     lateinit var availableRegions: List<WorkRegion>
@@ -129,9 +130,23 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         }
     }
 
-    private fun addOrderItemsToList(itemsList: List<TempBeerItemModel>) {
-        itemsList.forEach {
-            orderItemsList.add(it)
+    private fun addOrderItemsToList(order: Order) {
+        order.items.forEach {
+            orderItemsList.add(
+                it.toTempBeerItemModel(
+                    cansList,
+                    onRemove = ::removeOrderItemFromList,
+                    onEdit = ::editOrderItemFromList
+                )
+            )
+        }
+        order.bottleItems.forEach {
+            bottleOrderItemsList.add(
+                it.toTempBottleItemModel(
+                    onRemove = ::removeOrderItemFromList,
+                    onEdit = ::editOrderItemFromList
+                )
+            )
         }
         updateTempOrderItemList()
     }
@@ -167,7 +182,6 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
             viewModelScope.launch {
                 eventsFlow.emit(Event.DuplicateBottleItem)
             }
-//        orderItemDuplicateLiveData.value = true
         else {
             bottleOrderItemsList.add(item)
             updateTempOrderItemList()
@@ -181,6 +195,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
                 .sortedBy { it.canType.name }
                 .sortedBy { it.beer.sortValue },
             bottleOrderItemsList
+                .sortedBy { it.bottle.sortValue }
         )
     }
 
@@ -197,6 +212,11 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     private fun editOrderItemFromList(item: TempBeerItemModel) {
         editingOrderItemID = item.orderItemID
         orderItemEditLiveData.value = item
+    }
+
+    private fun editOrderItemFromList(item: TempBottleItemModel) {
+        editingOrderItemID = item.orderItemID
+        bottleOrderItemEditLiveData.value = item
     }
 
     fun addOrder(comment: String, isChecked: Boolean) {
@@ -275,16 +295,10 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
                     Log.d("editingOrder", it.toString())
                     if (it.isNotEmpty()) {
 
-                        val order = it[0].toPm(clients, beerList, {}, {})
+                        val order = it[0].toPm(clients, beerList, bottleList, {}, {})
 
                         getOrderLiveData.value = order
-                        addOrderItemsToList(order.items.map { itm ->
-                            itm.toTempBeerItemModel(
-                                cansList,
-                                onRemove = ::removeOrderItemFromList,
-                                onEdit = ::editOrderItemFromList
-                            )
-                        })
+                        addOrderItemsToList(order)
                         val date = dateFormatDash.parse(order.orderDate)
                         orderDateCalendar.time = date ?: Date()
                         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)

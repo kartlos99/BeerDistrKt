@@ -8,7 +8,9 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.UserPreferencesRepository
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -25,6 +27,12 @@ class OrdersViewModel(
     private val state = SavedStateHandle()
 
     val searchQuery = state.getLiveData("searchQuery", "")
+
+    private val bottleList = ObjectCache.getInstance().getList(
+        BaseBottleModel::class,
+        ObjectCache.BOTTLE_LIST_ID
+    )
+        ?: mutableListOf()
 
     private val clientsLiveData = database.getAllObieqts()
     private val beersLiveData = database.getBeerList()
@@ -105,6 +113,7 @@ class OrdersViewModel(
                     orderDTO.toPm(
                         clients,
                         beers,
+                        bottleList,
                         onDeleteClick = { order ->
                             askForOrderDeleteLiveData.value = order
                         },

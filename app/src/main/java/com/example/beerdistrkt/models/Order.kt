@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.squareup.moshi.Json
 
 data class Order(
@@ -18,7 +20,9 @@ data class Order(
     val needCleaning: Int,
     val passDays: Int,
     val items: List<Item>,
+    val bottleItems: List<BottleItem>,
     val sales: List<Sales>,
+    val bottleSales: List<BottleSaleItem>,
     private val _onDeleteClick: (Order) -> Unit,
     private val _onEditClick: (Order) -> Unit,
     private val _onChangeDistributorClick: ((Order) -> Unit)? = null,
@@ -79,6 +83,34 @@ data class Order(
         val check: Int,
         val canTypeID: Int,
         val count: Int
+    )
+
+    data class BottleItem(
+        val id: Int,
+        val orderID: Int,
+        val bottle: BaseBottleModel,
+        val count: Int,
+    ) {
+        fun toTempBottleItemModel(
+            onRemove: (bottleItem: TempBottleItemModel) -> Unit,
+            onEdit: (bottleItem: TempBottleItemModel) -> Unit,
+        ): TempBottleItemModel {
+            
+            return TempBottleItemModel(
+                id = orderID,
+                bottle = bottle,
+                count = count,
+                orderItemID = id,
+                onRemoveClick = onRemove,
+                onEditClick = onEdit,
+            )
+        }
+    }
+
+    data class BottleSaleItem(
+        val orderID: Int,
+        val bottle: BaseBottleModel,
+        val count: Int,
     )
 
     fun isChecked() = items.any { it.check == 1 }

@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.models
 
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.squareup.moshi.Json
 
 data class OrderDTO(
@@ -16,7 +17,9 @@ data class OrderDTO(
     val needCleaning: Int,
     val passDays: Int,
     val items: List<Item>,
+    val bottleItems: List<BottleItem>,
     val sales: List<Sales>,
+    val bottleSales: List<BottleSaleItem>,
     val availableRegions: List<Int>
 ) {
     data class Item(
@@ -67,9 +70,44 @@ data class OrderDTO(
         }
     }
 
+    data class BottleItem(
+        val id: Int,
+        val orderID: Int,
+        val bottleID: Int,
+        val count: Int,
+    ) {
+        fun toPm(bottles: List<BaseBottleModel>): Order.BottleItem {
+            val bottle = bottles.firstOrNull { it.id == bottleID }
+                ?: throw NoSuchElementException("OrderDTO: can't match bottle for order item!")
+            return Order.BottleItem(
+                id,
+                orderID,
+                bottle,
+                count
+            )
+        }
+    }
+
+    data class BottleSaleItem(
+        val orderID: Int,
+        val bottleID: Int,
+        val count: Int,
+    ) {
+        fun toPm(bottles: List<BaseBottleModel>): Order.BottleSaleItem {
+            val bottle = bottles.firstOrNull { it.id == bottleID }
+                ?: throw NoSuchElementException("OrderDTO: can't match bottle for sale item!")
+            return Order.BottleSaleItem(
+                orderID,
+                bottle,
+                count
+            )
+        }
+    }
+
     fun toPm(
         clients: List<Obieqti>,
         beerList: List<BeerModelBase>,
+        bottles: List<BaseBottleModel>,
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,
         onChangeDistributorClick: ((Order) -> Unit)? = null,
@@ -104,15 +142,21 @@ data class OrderDTO(
             items.map {
                 it.toPm(beerList)
             },
+            bottleItems.map {
+                it.toPm(bottles)
+            },
             sales.map {
                 it.toPm(beerList)
+            },
+            bottleSales.map {
+                it.toPm(bottles)
             },
             onDeleteClick,
             onEditClick,
             onChangeDistributorClick,
             onItemClick,
             onHistoryClick
-            )
+        )
 
     }
 }

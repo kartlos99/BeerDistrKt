@@ -203,8 +203,17 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         viewModel.orderItemEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 vBinding.beerSelector.fillBeerItemForm(it)
-
+                vBinding.realisationTypeSelector.check(R.id.realizationByBarrel)
+                viewModel.switchToBarrel()
                 viewModel.orderItemEditLiveData.value = null
+            }
+        }
+         viewModel.bottleOrderItemEditLiveData.observe(viewLifecycleOwner) {
+            if (it != null) {
+                vBinding.bottleSelector.fillBottleItemForm(it)
+                vBinding.realisationTypeSelector.check(R.id.realizationByBottle)
+                viewModel.switchToBottle()
+                viewModel.bottleOrderItemEditLiveData.value = null
             }
         }
         viewModel.getDebtLiveData.observe(viewLifecycleOwner) {
