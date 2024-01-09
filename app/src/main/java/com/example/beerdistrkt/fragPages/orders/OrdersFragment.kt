@@ -147,7 +147,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     }
 
     private fun initViewModel() {
-        viewModel.ordersLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.ordersLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     orderListSize = it.data.size
@@ -167,10 +167,10 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                 is ApiResponseState.ApiError -> showToast(it.errorText)
                 else -> showToast(R.string.something_is_wrong)
             }
-        })
-        viewModel.orderDayLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.orderDayLiveData.observe(viewLifecycleOwner) {
             vBinding.setDateBtn.text = it
-        })
+        }
         viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (Session.get().hasPermission(Permission.EditOrder)) {

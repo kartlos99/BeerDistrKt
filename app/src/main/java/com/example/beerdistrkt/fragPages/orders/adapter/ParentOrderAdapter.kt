@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,11 +16,11 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderGroupBinding
 import com.example.beerdistrkt.databinding.ViewOrderGroupBottomItemBinding
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
+import com.example.beerdistrkt.getSummedBottleOrders
 import com.example.beerdistrkt.getSummedRemainingOrder
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.Order
-import com.example.beerdistrkt.utils.visibleIf
-import java.util.*
+import java.util.Collections
 
 
 class ParentOrderAdapter(
@@ -42,6 +43,7 @@ class ParentOrderAdapter(
             BOTTOM_ITEM -> ParentItemHolder.ParentBottomSumViewHolder(
                 ViewOrderGroupBottomItemBinding.inflate(inflater, parent, false)
             )
+
             else -> ParentItemHolder.ParentViewHolder(
                 ViewOrderGroupBinding.inflate(
                     inflater,
@@ -88,7 +90,10 @@ class ParentOrderAdapter(
                     viewOrderGroupSumRecycler.layoutManager =
                         LinearLayoutManager(viewOrderGroupSumRecycler.context)
                     viewOrderGroupSumRecycler.adapter =
-                        OrderItemAdapter(groupedItemsList.toSortedMap())
+                        OrderItemAdapter(
+                            orderItems = groupedItemsList.toSortedMap(),
+                            bottleOrderItems = grItem.ordersList.getSummedBottleOrders()
+                        )
 
                     viewOrderGroupTitle.setOnClickListener {
                         grItem.isExpanded = !grItem.isExpanded
@@ -235,36 +240,35 @@ class ParentOrderAdapter(
 
     private fun bindBottomItem(holder: ParentItemHolder.ParentBottomSumViewHolder) {
         with(holder.binding) {
-            addDeliveryBtn.setOnClickListener(onMitanaClick)
 
             val allOrders = mutableListOf<Order>()
             orderGroups.forEach {
                 allOrders.addAll(it.ordersList)
             }
             val remainingOrderSum = allOrders.getSummedRemainingOrder()
-            var litraji = 0
-//        val barrelMap = barrelsList.groupBy { it.id }
-            remainingOrderSum.forEach {
-                litraji += it.count * (barrelMap[it.canTypeID]?.get(0)?.volume ?: 0)
+            val totalOrderAmountByBarrel = remainingOrderSum.sumOf {
+                it.count * (barrelMap[it.canTypeID]?.get(0)?.volume ?: 0)
             }
             val itemList = remainingOrderSum.groupBy {
                 it.beerID
             }.toMutableMap()
 
-            totalOrderTitle.text = "შეკვეთების ჯამი\nსაერთო ლიტრაჟი: $litraji"
+            totalOrderTitle.text = "შეკვეთების ჯამი\nსაერთო ლიტრაჟი: $totalOrderAmountByBarrel"
 
             totalSummedOrderRecycler.layoutManager =
                 LinearLayoutManager(totalSummedOrderRecycler.context)
-            totalSummedOrderRecycler.adapter =
-                OrderItemAdapter(itemList.toSortedMap())
+            totalSummedOrderRecycler.adapter = OrderItemAdapter(
+                orderItems = itemList.toSortedMap(),
+                bottleOrderItems = allOrders.getSummedBottleOrders()
+            )
 
-            totalSummedOrderRecycler.visibleIf(!deliveryMode)
-            totalOrderTitle.visibleIf(!deliveryMode)
+            totalSummedOrderRecycler.isVisible = !deliveryMode
+            totalOrderTitle.isVisible = !deliveryMode
         }
     }
 
     private fun setGrItemState(binding: ViewOrderGroupBinding, isExpanded: Boolean) {
-        binding.viewOrderGroupRecycler.visibleIf(isExpanded)
+        binding.viewOrderGroupRecycler.isVisible = isExpanded
         binding.viewOrderGroupCollapseImg.rotation = if (isExpanded) 180f else 0f
     }
 

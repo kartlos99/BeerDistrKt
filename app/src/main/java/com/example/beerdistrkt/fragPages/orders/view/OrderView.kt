@@ -105,7 +105,12 @@ class OrderView @JvmOverloads constructor(
             }
 
             orderItemList.layoutManager = LinearLayoutManager(context)
-            orderItemList.adapter = OrderItemAdapter(itemList.toSortedMap(), salesList)
+            orderItemList.adapter = OrderItemAdapter(
+                itemList.toSortedMap(),
+                salesList,
+                order.bottleItems,
+                order.bottleSales
+            )
 
             orderComment.text = order.comment ?: ""
 

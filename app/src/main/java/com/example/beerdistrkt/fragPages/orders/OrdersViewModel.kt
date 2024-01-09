@@ -145,9 +145,13 @@ class OrdersViewModel(
 
     private fun proceedOrders() {
         listOfGroupedOrders.clear()
-        listOfGroupedOrders.addAll(groupOrderByDistributor(allOrders.filter {
-            it.client.dasaxeleba.contains(searchQuery.value ?: "")
-        }))
+        listOfGroupedOrders.addAll(
+            groupOrderByDistributor(
+                allOrders.filter {
+                    it.client.dasaxeleba.contains(searchQuery.value ?: "")
+                }
+            )
+        )
         listOfGroupedOrders.sortBy { gr -> gr.distributorID }
 
         ordersLiveData.value = ApiResponseState.Success(listOfGroupedOrders)

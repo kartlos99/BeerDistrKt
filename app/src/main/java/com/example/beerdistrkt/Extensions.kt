@@ -284,6 +284,27 @@ fun Context.showSoftKeyboard(view: View) {
     }
 }
 
+fun MutableList<Order>.getSummedBottleOrders(): List<Order.BottleItem> {
+    return this.asSequence()
+        .filter {
+            it.orderStatus == OrderStatus.ACTIVE
+        }
+        .map {
+            it.bottleItems
+        }
+        .flatten()
+        .groupBy {
+            it.bottle.id
+        }.map { entry ->
+            Order.BottleItem(
+                entry.key,
+                0,
+                entry.value[0].bottle,
+                entry.value.sumOf { it.count }
+            )
+        }
+        .toList()
+}
 fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
     val sumOrderItems = mutableListOf<Order.Item>()
     val resultList = mutableListOf<Order.Item>()
