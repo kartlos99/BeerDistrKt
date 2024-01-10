@@ -3,7 +3,10 @@ package com.example.beerdistrkt.fragPages.sawyobi
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.realisation.RealisationType
+import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -11,12 +14,20 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
+import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
-import java.util.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
+import java.util.UUID
 
 class StoreHouseViewModel : BaseViewModel() {
 
@@ -52,15 +63,24 @@ class StoreHouseViewModel : BaseViewModel() {
 
     val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
         ?: mutableListOf()
+    val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
+        ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
-    val receivedItemsList = mutableListOf<TempBeerItemModel>()
+    private val receivedItemsList = mutableListOf<TempBeerItemModel>()
+    private val receivedBottleItemsList = mutableListOf<TempBottleItemModel>()
+    val tempInputItemsLiveData = MutableLiveData<TempRealisationModel>()
     private val barrelOutItems = mutableListOf<StoreInsertRequestModel.BarrelOutItem>()
     val emptyBarrelsEditingLiveData = MutableLiveData<List<StoreInsertRequestModel.BarrelOutItem>>()
 
-    val receivedItemsLiveData = MutableLiveData<List<TempBeerItemModel>>()
-    val receivedItemDuplicateLiveData = MutableLiveData<Boolean>(false)
+    val realisationStateFlow = MutableStateFlow(RealisationType.BARREL)
+
+    val realisationType: RealisationType
+        get() {
+            return realisationStateFlow.value
+        }
+    val eventsFlow = MutableSharedFlow<Event>()
 
     init {
         getStoreBalance()
@@ -104,7 +124,7 @@ class StoreHouseViewModel : BaseViewModel() {
 
         val fGr = fList.groupBy { it.barrelID }
         fGr.keys.forEach {
-            val sumOfSale = fGr[it]?.sumBy { fItem -> fItem.saleCount } ?: 0
+            val sumOfSale = fGr[it]?.sumOf { fItem -> fItem.saleCount } ?: 0
             val sumOfReceived = empty.find { e -> e.barrelID == it }?.inputEmptyToStore ?: 0
             barrelsAtClient[it] = sumOfSale - sumOfReceived
         }
@@ -113,7 +133,7 @@ class StoreHouseViewModel : BaseViewModel() {
         _emptyBarrelsListLiveData.value = result
     }
 
-    fun formFullList(fList: List<StoreHouseResponse.FullBarrelModel>) {
+    private fun formFullList(fList: List<StoreHouseResponse.FullBarrelModel>) {
         val result = mutableListOf<SimpleBeerRowModel>()
         val a = fList.groupBy { it.beerID }
         a.values.forEach {
@@ -149,13 +169,16 @@ class StoreHouseViewModel : BaseViewModel() {
 
         val storeInsertRequestModel = StoreInsertRequestModel(
             comment,
-            if (groupID.isEmpty()) UUID.randomUUID().toString() else groupID ,
+            if (groupID.isEmpty()) UUID.randomUUID().toString() else groupID,
             if (isChecked) 1 else 0,
             operationTime = dateTimeFormat.format(selectedDate.time),
             inputBeer = receivedItemsList.map {
                 StoreInsertRequestModel.ReceiveItem(
                     0, it.beer.id, it.canType.id, it.count
                 )
+            },
+            inputBottle = receivedBottleItemsList.map {
+                StoreInsertRequestModel.ReceiveBottleItem(0, it.bottle.id, it.count)
             },
             outputBarrels = barrelOutItems
         )
@@ -170,11 +193,7 @@ class StoreHouseViewModel : BaseViewModel() {
             successWithData = {
                 Log.d("insToStore", it)
                 _doneLiveData.value = ApiResponseState.Success(it)
-
-                barrelOutItems.clear()
-                receivedItemsList.clear()
-                receivedItemsLiveData.value = receivedItemsList
-
+                clearEnteredData()
                 getStoreBalance()
             },
             finally = {
@@ -188,20 +207,43 @@ class StoreHouseViewModel : BaseViewModel() {
     }
 
     fun addBeerReceiveItemToList(beerItem: TempBeerItemModel) {
-        if (editingItemID > 0)
+
+        val item = beerItem.withID()
+
+        if (editingItemID >= 0)
             receivedItemsList.removeAll { it.orderItemID == editingItemID }
 
         if (receivedItemsList.any {
-                it.beer.id == beerItem.beer.id && it.canType.id == beerItem.canType.id
-            })
-            receivedItemDuplicateLiveData.value = true
-        else {
-            receivedItemsList.add(beerItem)
-            receivedItemsLiveData.value = receivedItemsList
-                .sortedBy { it.canType.sortValue }
-                .sortedBy { it.beer.sortValue }
+                it.beer.id == item.beer.id && it.canType.id == item.canType.id
+            }
+        ) {
+            viewModelScope.launch {
+                eventsFlow.emit(Event.DuplicateBarrelItem)
+            }
+        } else {
+            receivedItemsList.add(item)
+            updateTempInputItemList()
         }
-        editingItemID = 0
+        editingItemID = -1
+    }
+
+    fun addBottleReceiveItemToList(bottleItem: TempBottleItemModel) {
+        val item = bottleItem.withID()
+        if (editingItemID >= 0)
+            receivedBottleItemsList.removeAll { it.orderItemID == editingItemID }
+
+        if (receivedBottleItemsList.any {
+                it.bottle.id == item.bottle.id
+            }
+        ) {
+            viewModelScope.launch {
+                eventsFlow.emit(Event.DuplicateBottleItem)
+            }
+        } else {
+            receivedBottleItemsList.add(item)
+            updateTempInputItemList()
+        }
+        editingItemID = -1
     }
 
     private fun addBarrelToList(barrelType: Int, count: Int) {
@@ -216,15 +258,29 @@ class StoreHouseViewModel : BaseViewModel() {
 
     fun removeReceiveItemFromList(item: TempBeerItemModel) {
         receivedItemsList.removeAll { it.beer == item.beer && it.canType == item.canType }
-        receivedItemsLiveData.value = receivedItemsList
-            .sortedBy { it.canType.sortValue }
-            .sortedBy { it.beer.sortValue }
+        updateTempInputItemList()
+    }
+
+    fun removeReceiveItemFromList(item: TempBottleItemModel) {
+        receivedBottleItemsList.removeAll { it.bottle.id == item.bottle.id }
+        updateTempInputItemList()
+    }
+
+    private fun updateTempInputItemList() {
+        tempInputItemsLiveData.value = TempRealisationModel(
+            receivedItemsList
+                .sortedBy { it.canType.name }
+                .sortedBy { it.beer.sortValue },
+            receivedBottleItemsList
+                .sortedBy { it.bottle.sortValue }
+        )
     }
 
     fun clearEnteredData() {
         barrelOutItems.clear()
         receivedItemsList.clear()
-        receivedItemsLiveData.value = receivedItemsList
+        receivedBottleItemsList.clear()
+        updateTempInputItemList()
     }
 
     fun getEditingData(groupID: String) {
@@ -265,10 +321,35 @@ class StoreHouseViewModel : BaseViewModel() {
                         onRemove = { tbm ->
                             Log.d("itmDel", tbm.toString())
                             receivedItemsList.removeAll { it.ID == tbm.ID }
-                            receivedItemsLiveData.value = receivedItemsList
+                            updateTempInputItemList()
                         },
                         onEdit = {})
                 )
             }
     }
+
+    fun switchToBarrel() {
+        realisationStateFlow.value = RealisationType.BARREL
+    }
+
+    fun switchToBottle() {
+        realisationStateFlow.value = RealisationType.BOTTLE
+    }
+}
+
+
+private fun TempBeerItemModel.withID(): TempBeerItemModel {
+    val id = (System.currentTimeMillis() % 2000000000).toInt()
+    return if (this.ID == 0)
+        this.copy(ID = id, orderItemID = id)
+    else
+        this
+}
+
+private fun TempBottleItemModel.withID(): TempBottleItemModel {
+    val id = (System.currentTimeMillis() % 2000000000).toInt()
+    return if (this.id == 0)
+        this.copy(id = id, orderItemID = id)
+    else
+        this
 }

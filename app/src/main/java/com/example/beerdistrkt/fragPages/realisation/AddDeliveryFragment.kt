@@ -377,18 +377,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 datePickerDialog.show()
             }
 
-            R.id.addDeliveryAddSaleItemBtn -> {
-                when {
-                    viewModel.realisationType == BARREL && vBinding.beerSelector.formIsValid() ->
-                        viewModel.addSaleItemToList(vBinding.beerSelector.getTempBeerItem())
-
-                    viewModel.realisationType == BOTTLE && vBinding.bottleSelector.isFormValid() ->
-                        viewModel.addBottleSaleItem(vBinding.bottleSelector.getTempBottleItem())
-
-                    else ->
-                        showToast(R.string.fill_data)
-                }
-            }
+            R.id.addDeliveryAddSaleItemBtn -> tryCollectSaleItem()
 
             R.id.addDeliveryMoneyExpander -> {
                 vBinding.addDeliveryMoneyTransferEt.show()

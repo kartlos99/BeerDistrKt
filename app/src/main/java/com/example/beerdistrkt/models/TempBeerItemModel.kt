@@ -13,6 +13,10 @@ data class TempBeerItemModel(
     val onEditClick: ((beerItem: TempBeerItemModel) -> Unit)? = null
 ) {
 
+    fun identity() {
+
+    }
+
     fun toRequestOrderItem(orderCheck: Boolean): OrderRequestModel.Item {
         return OrderRequestModel.Item(
             ID = orderItemID,

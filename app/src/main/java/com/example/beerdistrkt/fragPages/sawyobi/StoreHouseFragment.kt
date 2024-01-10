@@ -5,8 +5,15 @@ import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,18 +21,23 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.TempBeerRowView
+import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.SawyobiFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.realisation.RealisationType
+import com.example.beerdistrkt.fragPages.sawyobi.Event.DuplicateBarrelItem
+import com.example.beerdistrkt.fragPages.sawyobi.Event.DuplicateBottleItem
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.TempBeerItemModel
+import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
-import com.example.beerdistrkt.utils.visibleIf
-import java.util.*
+import kotlinx.coroutines.flow.collectLatest
+import java.util.Calendar
 
 class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickListener {
 
@@ -52,7 +64,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         viewModel.onSaleTimeSelected(hourOfDay, minute)
     }
 
-    var pageTitleRes = R.string.store_house
+    private var pageTitleRes = R.string.store_house
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,9 +86,19 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             storeHouseDoneBtn.setOnClickListener(this@StoreHouseFragment)
 
             storeHouseDoneBtn.isEnabled = Session.get().hasPermission(Permission.AddEditStoreHouse)
-            storeHouseAddBeerItemBtn.visibleIf(
+            storeHouseAddBeerItemBtn.isVisible =
                 Session.get().hasPermission(Permission.AddEditStoreHouse)
-            )
+
+            realisationTypeSelector.check(R.id.realizationByBarrel)
+            realisationTypeSelector.addOnButtonCheckedListener { _, checkedId, isChecked ->
+                if (isChecked) {
+                    when (checkedId) {
+                        R.id.realizationByBarrel -> viewModel.switchToBarrel()
+                        R.id.realizationByBottle -> viewModel.switchToBottle()
+                    }
+                    onFormUpdate()
+                }
+            }
         }
     }
 
@@ -98,103 +120,150 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
         clearEmptyBarrels()
         (activity as AppCompatActivity).supportActionBar?.title = resources.getString(pageTitleRes)
-        binding.storeHouseReceiveBeerSelector.onDeleteClick = {
+        binding.beerSelector.onDeleteClick = {
             showToast("del")
             viewModel.removeReceiveItemFromList(it)
         }
-        binding.storeHouseReceiveBeerSelector.initView(
+        binding.beerSelector.initView(
             viewModel.beerList,
             viewModel.cansList,
             ::onFormUpdate
         )
+        binding.bottleSelector.onDeleteClick = {
+            showToast("del")
+            viewModel.removeReceiveItemFromList(it)
+        }
+        binding.bottleSelector.initView(
+            viewModel.bottleList,
+            ::onFormUpdate
+        )
     }
 
-    private fun onFormUpdate() {
-        binding.storeHouseAddBeerItemBtn.backgroundTintList =
-            if (binding.storeHouseReceiveBeerSelector.formIsValid())
-                ColorStateList.valueOf(Color.GREEN)
-            else
-                ColorStateList.valueOf(Color.RED)
+    private fun onFormUpdate() = with(binding) {
+        storeHouseAddBeerItemBtn.backgroundTintList = if (
+            viewModel.realisationType == RealisationType.BARREL && beerSelector.formIsValid()
+            ||
+            viewModel.realisationType == RealisationType.BOTTLE && bottleSelector.isFormValid()
+        )
+            ColorStateList.valueOf(Color.GREEN)
+        else
+            ColorStateList.valueOf(Color.RED)
     }
 
     private fun onBeerItemEdit(tempBeerItem: TempBeerItemModel) = with(binding) {
-        storeHouseReceiveBeerSelector.fillBeerItemForm(tempBeerItem)
+        realisationTypeSelector.check(R.id.realizationByBarrel)
+        viewModel.switchToBarrel()
+        beerSelector.fillBeerItemForm(tempBeerItem)
         viewModel.editingItemID = tempBeerItem.orderItemID
     }
 
-    private fun initViewModel() {
-        with(binding) {
-            viewModel.setDayLiveData.observe(viewLifecycleOwner) {
-                storeHouseSetDateBtn.text = it
-            }
-            viewModel.fullBarrelsListLiveData.observe(viewLifecycleOwner) {
-                initFullRecycler(it)
-            }
-            viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner) {
-                if (it.size > 1) {
-                    storeHouseEmptyBarrelsAtHouse.setData(
-                        SimpleBeerRowModel(
-                            it[0].title,
-                            it[0].values
-                        )
-                    )
-                    storeHouseEmptyBarrelsAtClients.setData(
-                        SimpleBeerRowModel(
-                            it[1].title,
-                            it[1].values
-                        )
-                    )
-                }
-            }
-            viewModel.receivedItemDuplicateLiveData.observe(viewLifecycleOwner) {
-                if (it) {
-                    showToast(R.string.already_in_list)
-                    viewModel.receivedItemDuplicateLiveData.value = false
-                }
-            }
-            viewModel.receivedItemsLiveData.observe(viewLifecycleOwner) {
-                storeHouseReceiveBeerSelector.resetForm()
-                storeHouseSelectedBeerContainer.removeAllViews()
-                it.forEach { receivedItem ->
-                    val itemData = receivedItem.copy(onEditClick = ::onBeerItemEdit)
-                    storeHouseSelectedBeerContainer.addView(
-                        TempBeerRowView(context = requireContext(), rowData = itemData)
-                    )
-                }
-            }
-            viewModel.doneLiveData.observe(viewLifecycleOwner) {
+    private fun onBottleItemEdit(tempBottleItem: TempBottleItemModel) = with(binding) {
+        realisationTypeSelector.check(R.id.realizationByBottle)
+        viewModel.switchToBottle()
+        bottleSelector.fillBottleItemForm(tempBottleItem)
+        viewModel.editingItemID = tempBottleItem.orderItemID
+    }
+
+    private fun initViewModel() = with(binding) {
+        lifecycleScope.launchWhenStarted {
+            viewModel.realisationStateFlow.collectLatest {
                 when (it) {
-                    is ApiResponseState.Loading -> storeHouseProgress.visibleIf(it.showLoading)
-                    is ApiResponseState.Success -> {
-                        showToast(it.data)
-                        resetPage()
-                        viewModel.sleepDoneLiveData()
-                        if (viewModel.editMode) {
-                            StoreHouseListFragment.editingGroupID = ""
-                            findNavController()
-                                .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
-                        }
+                    RealisationType.BARREL -> {
+                        beerSelector.isVisible = true
+                        bottleSelector.isVisible = false
                     }
-                    else -> {}
+
+                    RealisationType.BOTTLE -> {
+                        beerSelector.isVisible = false
+                        bottleSelector.isVisible = true
+                    }
+
+                    RealisationType.NONE -> {}
                 }
             }
-            viewModel.editDataReceiveLiveData.observe(viewLifecycleOwner) {
+        }
+        viewModel.setDayLiveData.observe(viewLifecycleOwner) {
+            storeHouseSetDateBtn.text = it
+        }
+        viewModel.fullBarrelsListLiveData.observe(viewLifecycleOwner) {
+            initFullRecycler(it)
+        }
+        viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner) {
+            if (it.size > 1) {
+                storeHouseEmptyBarrelsAtHouse.setData(
+                    SimpleBeerRowModel(
+                        it[0].title,
+                        it[0].values
+                    )
+                )
+                storeHouseEmptyBarrelsAtClients.setData(
+                    SimpleBeerRowModel(
+                        it[1].title,
+                        it[1].values
+                    )
+                )
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.eventsFlow.collectLatest {
                 when (it) {
-                    is ApiResponseState.Loading -> storeHouseProgress.visibleIf(it.showLoading)
-                    is ApiResponseState.Success -> {
-                        storeHouseComment.editText?.setText(it.data.comment)
-                    }
-                    else -> {}
+                    DuplicateBarrelItem -> showToast(R.string.already_in_list)
+                    DuplicateBottleItem -> showToast(R.string.bottle_already_in_list)
                 }
             }
-            viewModel.emptyBarrelsEditingLiveData.observe(viewLifecycleOwner) {
-                setEmptyBarrels(it)
+        }
+        viewModel.tempInputItemsLiveData.observe(viewLifecycleOwner) {
+            beerSelector.resetForm()
+            bottleSelector.resetForm()
+            storeHouseSelectedBeerContainer.removeAllViews()
+            it.byBarrels.forEach { receivedItem ->
+                val itemData = receivedItem.copy(onEditClick = ::onBeerItemEdit)
+                storeHouseSelectedBeerContainer.addView(
+                    TempBeerRowView(context = requireContext(), rowData = itemData)
+                )
             }
+            it.byBottles.forEach { receivedItem ->
+                val itemData = receivedItem.copy(onEditClick = ::onBottleItemEdit)
+                storeHouseSelectedBeerContainer.addView(
+                    TempBottleRowView(context = requireContext(), rowData = itemData)
+                )
+            }
+        }
+        viewModel.doneLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Loading -> storeHouseProgress.isVisible = it.showLoading
+                is ApiResponseState.Success -> {
+                    showToast(it.data)
+                    resetPage()
+                    viewModel.sleepDoneLiveData()
+                    if (viewModel.editMode) {
+                        StoreHouseListFragment.editingGroupID = ""
+                        findNavController()
+                            .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
+                    }
+                }
+
+                else -> {}
+            }
+        }
+        viewModel.editDataReceiveLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Loading -> storeHouseProgress.isVisible = it.showLoading
+                is ApiResponseState.Success -> {
+                    storeHouseComment.editText?.setText(it.data.comment)
+                }
+
+                else -> {}
+            }
+        }
+        viewModel.emptyBarrelsEditingLiveData.observe(viewLifecycleOwner) {
+            setEmptyBarrels(it)
         }
     }
 
     private fun resetPage() {
-        binding.storeHouseReceiveBeerSelector.resetForm()
+        binding.beerSelector.resetForm()
         clearEmptyBarrels()
         binding.storeHouseComment.editText?.setText("")
     }
@@ -221,7 +290,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         when (v?.id) {
             R.id.storeHouseCheckBox -> with(binding) {
                 viewModel.isChecked = storeHouseCheckBox.isChecked
-                storeHouseEmptyBarrelManageBox.visibleIf(!storeHouseCheckBox.isChecked)
+                storeHouseEmptyBarrelManageBox.isVisible = !storeHouseCheckBox.isChecked
                 storeHouseMainScroll.setBackgroundColor(
                     resources.getColor(
                         if (storeHouseCheckBox.isChecked)
@@ -230,6 +299,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                     )
                 )
             }
+
             R.id.storeHouseSetDateBtn -> {
                 val datePickerDialog = DatePickerDialog(
                     requireContext(),
@@ -241,15 +311,14 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
                 datePickerDialog.setCancelable(false)
                 datePickerDialog.show()
             }
-            R.id.storeHouseAddBeerItemBtn -> with(binding) {
+
+            R.id.storeHouseAddBeerItemBtn -> {
                 if (Session.get().hasPermission(Permission.AddEditStoreHouse)) {
-                    if (storeHouseReceiveBeerSelector.formIsValid())
-                        viewModel.addBeerReceiveItemToList(storeHouseReceiveBeerSelector.getTempBeerItem())
-                    else
-                        showToast(R.string.fill_data)
+                    tryCollectInputItem()
                 } else
                     showToast(R.string.no_permission_common)
             }
+
             R.id.storeHouseDoneBtn -> {
                 if (Session.get().hasPermission(Permission.AddEditStoreHouse))
                     viewModel.onDoneClick(
@@ -262,6 +331,16 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             }
 
         }
+    }
+
+    private fun tryCollectInputItem() = when {
+        viewModel.realisationType == RealisationType.BARREL && binding.beerSelector.formIsValid() ->
+            viewModel.addBeerReceiveItemToList(binding.beerSelector.getTempBeerItem())
+
+        viewModel.realisationType == RealisationType.BOTTLE && binding.bottleSelector.isFormValid() ->
+            viewModel.addBottleReceiveItemToList(binding.bottleSelector.getTempBottleItem())
+
+        else -> showToast(R.string.fill_data)
     }
 
     private fun collectEmptyBarrels(): List<Int> {

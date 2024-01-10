@@ -153,7 +153,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     private fun checkForm() = with(vBinding) {
-        vBinding.addOrderAddItemBtn.backgroundTintList = if (
+        addOrderAddItemBtn.backgroundTintList = if (
             viewModel.realisationType == BARREL && beerSelector.formIsValid()
             ||
             viewModel.realisationType == BOTTLE && bottleSelector.isFormValid()
