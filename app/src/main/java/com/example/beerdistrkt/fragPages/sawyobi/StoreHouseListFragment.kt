@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -12,7 +11,7 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SawyobiListFragmentBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.StoreHouseListAdapter
-import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
 
@@ -42,7 +41,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
     }
 
     fun initViewModel() {
-        viewModel.ioDoneLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.ioDoneLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Loading -> {}
                 is ApiResponseState.Success -> {
@@ -50,13 +49,13 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
                 }
                 else -> {}
             }
-        })
+        }
     }
 
-    private fun initIoList(dataList: List<IoModel>) {
+    private fun initIoList(dataList: StoreHouseListResponse) {
         binding.sHLRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = StoreHouseListAdapter(
-            dataList.groupBy { it.groupID },
+            dataList.barrels.groupBy { it.groupID },
             viewModel.beerMap
         ).apply {
             onLongClick = {

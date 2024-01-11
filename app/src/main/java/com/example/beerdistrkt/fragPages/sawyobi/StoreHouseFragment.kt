@@ -108,6 +108,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
     private fun switchToEditMode() {
         pageTitleRes = R.string.m_edit
         binding.storeHouseFullBarrelsRecycler.goAway()
+        binding.storeHouseBottlesRecycler.goAway()
         binding.storeHouseEmptyBarrelDataContainer.goAway()
         viewModel.clearEnteredData()
     }

@@ -10,18 +10,18 @@ import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
-import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
-import com.example.beerdistrkt.fragPages.realisation.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
-import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
-import com.example.beerdistrkt.fragPages.reporting.model.HistoryDto
+import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
+import com.example.beerdistrkt.fragPages.realisation.models.RecordResponseDTO
 import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
+import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
+import com.example.beerdistrkt.fragPages.reporting.model.HistoryDto
 import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
-import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.fragPages.settings.model.SettingParam
@@ -223,8 +223,8 @@ interface ApeniApiService {
     @POST("storeHouse/add.php")
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>
 
-    @GET("storeHouse/getioList.php")
-    fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<List<IoModel>>>
+    @GET("storeHouse/getIoList.php")
+    fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<StoreHouseListResponse>>
 
     @GET("storeHouse/getGlobalBalance.php")
     fun getGlobalBalance(@Query("date") date: String): Call<DataResponse<List<GlobalStorageModel>>>

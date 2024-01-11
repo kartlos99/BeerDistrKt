@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.BottleIoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
@@ -311,10 +312,11 @@ class StoreHouseViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseIoList(groupID),
             successWithData = {
-                processIoData(it)
-                if (it.isNotEmpty()) {
-                    _editDataReceiveLiveData.value = ApiResponseState.Success(it[0])
-                    val date = dateTimeFormat.parse(it[0].ioDate)
+                processIoData(it.barrels)
+                processBottleIoData(it.bottles)
+                if (it.barrels.isNotEmpty()) {
+                    _editDataReceiveLiveData.value = ApiResponseState.Success(it.barrels[0])
+                    val date = dateTimeFormat.parse(it.barrels[0].ioDate)
                     selectedDate.time = date ?: Date()
                     _setDayLiveData.value = dateTimeFormat.format(selectedDate.time)
                 }
@@ -323,6 +325,21 @@ class StoreHouseViewModel : BaseViewModel() {
                 _editDataReceiveLiveData.value = ApiResponseState.Loading(false)
             }
         )
+    }
+
+    private fun processBottleIoData(data: List<BottleIoModel>) {
+        receivedBottleItemsList.clear()
+        data.forEach {
+            receivedBottleItemsList.add(it.toTempBottleItemModel(
+                bottleList,
+                { tempBottleModel ->
+                    receivedBottleItemsList.removeAll { it.id == tempBottleModel.id }
+                    updateTempInputItemList()
+                },
+                {}
+            ))
+        }
+        updateTempInputItemList()
     }
 
     private fun processIoData(data: List<IoModel>) {

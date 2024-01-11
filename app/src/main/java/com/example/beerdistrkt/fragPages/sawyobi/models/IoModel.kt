@@ -14,8 +14,6 @@ data class IoModel(
     val count: Int,
     val chek: Int,
     val comment: String?,
-    val modifyDate: String,
-    val modifyUserID: Int
 ) {
     fun toTempBeerItemModel(
         barrels: List<CanModel>,
