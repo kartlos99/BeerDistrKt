@@ -20,15 +20,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.adapters.SimpleListAdapter
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.SawyobiFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.orders.view.OrderBottleItemView
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.sawyobi.Event.DuplicateBarrelItem
 import com.example.beerdistrkt.fragPages.sawyobi.Event.DuplicateBottleItem
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.TempBeerItemModel
@@ -187,6 +190,9 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         }
         viewModel.fullBarrelsListLiveData.observe(viewLifecycleOwner) {
             initFullRecycler(it)
+        }
+        viewModel.bottlesLiveData.observe(viewLifecycleOwner) {
+            initBottlesRecycler(it)
         }
         viewModel.emptyBarrelsListLiveData.observe(viewLifecycleOwner) {
             if (it.size > 1) {
@@ -380,4 +386,20 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         binding.storeHouseFullBarrelsRecycler.layoutManager = LinearLayoutManager(context)
         binding.storeHouseFullBarrelsRecycler.adapter = SimpleBeerRowAdapter(data)
     }
+
+    private fun initBottlesRecycler(data: List<SimpleBottleRowModel>) =
+        with(binding.storeHouseBottlesRecycler) {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = SimpleListAdapter(
+                data,
+                {
+                    return@SimpleListAdapter OrderBottleItemView(requireContext(), null)
+                },
+                onBind = { item, view ->
+                    (view as OrderBottleItemView).apply {
+                        fillData(item)
+                    }
+                }
+            )
+        }
 }

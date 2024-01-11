@@ -2,7 +2,8 @@ package com.example.beerdistrkt.fragPages.sawyobi.models
 
 data class StoreHouseResponse(
     val empty: List<EmptyBarrelModel>?,
-    val full: List<FullBarrelModel>
+    val full: List<FullBarrelModel>,
+    val bottles: List<BottleModel> = listOf(),
 ) {
     data class EmptyBarrelModel(
         val barrelID: Int,
@@ -13,6 +14,12 @@ data class StoreHouseResponse(
     data class FullBarrelModel(
         val beerID: Int,
         val barrelID: Int,
+        val inputToStore: Int,
+        val saleCount: Int
+    )
+
+    data class BottleModel(
+        val bottleID: Int,
         val inputToStore: Int,
         val saleCount: Int
     )

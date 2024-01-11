@@ -43,6 +43,19 @@
             app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsTitle"
             tools:itemCount="3" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/storeHouseBottlesRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gr_size_4"
+            android:layout_marginTop="@dimen/gr_size_8"
+            android:background="@drawable/bkg_rounded_white_r8"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_4"
+            app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsRecycler"
+            tools:listitem="@layout/view_order_bottle_item"
+            tools:itemCount="3" />
+
         <TextView
             android:id="@+id/storeHouseReceiveTitle"
             android:layout_width="wrap_content"
@@ -52,7 +65,7 @@
             android:textSize="@dimen/textSize_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/storeHouseFullBarrelsRecycler"
+            app:layout_constraintTop_toBottomOf="@id/storeHouseBottlesRecycler"
             tools:layout_editor_absoluteX="119dp" />
 
         <LinearLayout

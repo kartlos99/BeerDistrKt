@@ -9,6 +9,7 @@ import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.BeerModelBase
@@ -44,6 +45,10 @@ class StoreHouseViewModel : BaseViewModel() {
     private val _setDayLiveData = MutableLiveData<String>()
     val setDayLiveData: LiveData<String>
         get() = _setDayLiveData
+
+    private val _bottlesLiveData = MutableLiveData<List<SimpleBottleRowModel>>()
+    val bottlesLiveData: LiveData<List<SimpleBottleRowModel>>
+        get() = _bottlesLiveData
 
     private val _fullBarrelsListLiveData = MutableLiveData<List<SimpleBeerRowModel>>()
     val fullBarrelsListLiveData: LiveData<List<SimpleBeerRowModel>>
@@ -100,6 +105,7 @@ class StoreHouseViewModel : BaseViewModel() {
             successWithData = {
                 Log.d("store", it.empty.toString())
                 formFullList(it.full)
+                proceedBottleBalance(it.bottles)
                 if (it.empty != null)
                     formEmptyList(it.empty, it.full)
             },
@@ -141,10 +147,26 @@ class StoreHouseViewModel : BaseViewModel() {
             it.forEach { fbm ->
                 valueOfDiff[fbm.barrelID] = fbm.inputToStore - fbm.saleCount
             }
-            val title = beerList.first { b -> b.id == it[0].beerID }.dasaxeleba ?: "_"
+            val title = beerList.firstOrNull { b ->
+                b.id == it[0].beerID
+            }?.dasaxeleba ?: "_"
             result.add(SimpleBeerRowModel(title, valueOfDiff))
         }
         _fullBarrelsListLiveData.value = result
+    }
+
+    private fun proceedBottleBalance(bottles: List<StoreHouseResponse.BottleModel>) {
+        _bottlesLiveData.value = bottles.mapNotNull { bottleModel ->
+            bottleList.firstOrNull {
+                it.id == bottleModel.bottleID
+            }?.let { bottle ->
+                SimpleBottleRowModel(
+                    bottle.name,
+                    bottleModel.inputToStore - bottleModel.saleCount,
+                    bottle.imageLink
+                )
+            }
+        }
     }
 
     fun onDateSelected(year: Int, month: Int, day: Int) {
@@ -169,7 +191,7 @@ class StoreHouseViewModel : BaseViewModel() {
 
         val storeInsertRequestModel = StoreInsertRequestModel(
             comment,
-            if (groupID.isEmpty()) UUID.randomUUID().toString() else groupID,
+            groupID.ifEmpty { UUID.randomUUID().toString() },
             if (isChecked) 1 else 0,
             operationTime = dateTimeFormat.format(selectedDate.time),
             inputBeer = receivedItemsList.map {

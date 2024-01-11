@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderBottleItemBinding
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.models.Order
 
 class OrderBottleItemView @JvmOverloads constructor(
@@ -29,4 +30,8 @@ class OrderBottleItemView @JvmOverloads constructor(
         bottleCount.setCountAndProgress(bottleItem.count, bottleSaleItem?.count ?: 0)
     }
 
+    fun fillData(bottleItem: SimpleBottleRowModel) = with(binding) {
+        bottleName.text = bottleItem.name
+        bottleCount.setCountAndProgress(bottleItem.amount)
+    }
 }
