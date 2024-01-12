@@ -15,6 +15,8 @@ data class IoModel(
     val chek: Int,
     val comment: String?,
 ) {
+    var beer: BeerModelBase? =null
+
     fun toTempBeerItemModel(
         barrels: List<CanModel>,
         beerList: List<BeerModelBase>,

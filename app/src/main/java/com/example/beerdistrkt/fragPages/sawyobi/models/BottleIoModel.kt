@@ -14,6 +14,8 @@ data class BottleIoModel(
     val chek: Int,
     val comment: String?,
 ) {
+    var bottle: BaseBottleModel? = null
+
     fun toTempBottleItemModel(
         bottles: List<BaseBottleModel>,
         onRemove: (beerItem: TempBottleItemModel) -> Unit,

@@ -11,7 +11,7 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SawyobiListFragmentBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.StoreHouseListAdapter
-import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
+import com.example.beerdistrkt.fragPages.sawyobi.models.CombinedIoModel
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
 
@@ -52,12 +52,9 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
         }
     }
 
-    private fun initIoList(dataList: StoreHouseListResponse) {
+    private fun initIoList(dataList: List<CombinedIoModel>) {
         binding.sHLRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = StoreHouseListAdapter(
-            dataList.barrels.groupBy { it.groupID },
-            viewModel.beerMap
-        ).apply {
+        val adapter = StoreHouseListAdapter(dataList).apply {
             onLongClick = {
                 editingGroupID = it
                 findNavController().navigateUp()

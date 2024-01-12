@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SawyobiListItemViewBinding
+import com.example.beerdistrkt.fragPages.sawyobi.models.CombinedIoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 
 class StoreHouseListAdapter(
-    private val dataMap: Map<String, List<IoModel>>,
-    private val beerMap: Map<Int, BeerModelBase>
+    private val data: List<CombinedIoModel>,
 ) : RecyclerView.Adapter<StoreHouseListAdapter.ViewHolder>() {
 
     var onLongClick: ((date: String) -> Unit)? = null
@@ -26,22 +26,30 @@ class StoreHouseListAdapter(
         )
     }
 
-    override fun getItemCount(): Int = dataMap.size
+    override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = with(holder.binding) {
-        shlActionDateTv.text = dataMap.values.toList()[position][0].ioDate
+        val item = data[position]
+        shlActionDateTv.text = item.date
         root.setOnLongClickListener {
-            onLongClick?.invoke(dataMap.values.toList()[position][0].groupID)
+            onLongClick?.invoke(item.groupID)
             return@setOnLongClickListener true
         }
-        shlComment.isVisible = !dataMap.values.toList()[position][0].comment.isNullOrEmpty()
-        shlComment.text = dataMap.values.toList()[position][0].comment
+        shlComment.isVisible = item.comment.isNullOrEmpty().not()
+        shlComment.text = item.comment
 
-        val itemData = ioModelToSimpleBeerRow(dataMap.values.toList()[position])
+        val itemData = ioModelToSimpleBeerRow(data[position].barrels)
+        val bottleItems = data[position].bottles?.map {
+            SimpleBottleRowModel(
+                it.bottle?.name ?: "- უცნობი -",
+                it.count,
+                it.bottle?.imageLink
+            )
+        } ?: listOf()
 
-        shlSubRecycler.layoutManager = LinearLayoutManager(shlSubRecycler.context)
-        val adapter = SimpleBeerRowAdapter(itemData)
+        val adapter = SimpleBeerRowAdapter(itemData, bottleItems)
         adapter.onClick = View.OnClickListener {}
+        shlSubRecycler.layoutManager = LinearLayoutManager(shlSubRecycler.context)
         shlSubRecycler.adapter = adapter
     }
 
@@ -49,11 +57,13 @@ class StoreHouseListAdapter(
         RecyclerView.ViewHolder(binding.root)
 
 
-    private fun ioModelToSimpleBeerRow(itemData: List<IoModel>): List<SimpleBeerRowModel> {
+    private fun ioModelToSimpleBeerRow(itemData: List<IoModel>?): List<SimpleBeerRowModel> {
+        if (itemData == null) return listOf()
         val result = mutableListOf<SimpleBeerRowModel>()
-        val a = itemData.groupBy { it.beerID }
-
-        a.values.forEach { singleBeerList ->
+        itemData
+            .groupBy { it.beerID }
+            .values
+            .forEach { singleBeerList ->
 
             val splitedByBarrelMap = singleBeerList.groupBy { it.barrelID }
 
@@ -61,7 +71,7 @@ class StoreHouseListAdapter(
                 it.value.sumOf { ioModel -> ioModel.count }
             }
 
-            val title = beerMap[singleBeerList[0].beerID]?.dasaxeleba ?: "- ცარიელი -"
+            val title = singleBeerList[0].beer?.dasaxeleba ?: "- ცარიელი -"
             val icon =
                 if (singleBeerList[0].beerID == 0) R.drawable.ic_barrel_output_24 else R.drawable.ic_beer_input_24
             val iconColor =
@@ -73,7 +83,7 @@ class StoreHouseListAdapter(
                     countByBarrelMap,
                     icon,
                     iconColor,
-                    beerMap[singleBeerList[0].beerID]?.displayColor
+                    singleBeerList[0].beer?.displayColor
                 )
             )
         }

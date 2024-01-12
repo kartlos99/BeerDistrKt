@@ -69,7 +69,7 @@ class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
                     barrelCount > 0
                 } || beerRowModel.title == HomeFragment.emptyBarrelTitle
             },
-            true
+            isHomePage = true
         )
         adapter.onClick = View.OnClickListener {
             if (Session.get().region?.hasOwnStorage() == true)

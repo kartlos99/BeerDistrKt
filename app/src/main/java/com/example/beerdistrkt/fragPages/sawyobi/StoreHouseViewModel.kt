@@ -312,11 +312,11 @@ class StoreHouseViewModel : BaseViewModel() {
         sendRequest(
             ApeniApiService.getInstance().getStoreHouseIoList(groupID),
             successWithData = {
-                processIoData(it.barrels)
-                processBottleIoData(it.bottles)
-                if (it.barrels.isNotEmpty()) {
-                    _editDataReceiveLiveData.value = ApiResponseState.Success(it.barrels[0])
-                    val date = dateTimeFormat.parse(it.barrels[0].ioDate)
+                processIoData(it.barrelsIo)
+                processBottleIoData(it.bottlesIo)
+                if (it.barrelsIo.isNotEmpty()) {
+                    _editDataReceiveLiveData.value = ApiResponseState.Success(it.barrelsIo[0])
+                    val date = dateTimeFormat.parse(it.barrelsIo[0].ioDate)
                     selectedDate.time = date ?: Date()
                     _setDayLiveData.value = dateTimeFormat.format(selectedDate.time)
                 }
