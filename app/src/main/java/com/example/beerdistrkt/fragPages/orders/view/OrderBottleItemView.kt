@@ -32,6 +32,6 @@ class OrderBottleItemView @JvmOverloads constructor(
 
     fun fillData(bottleItem: SimpleBottleRowModel) = with(binding) {
         bottleName.text = bottleItem.name
-        bottleCount.setCountAndProgress(bottleItem.amount)
+        bottleCount.setCount(bottleItem.amount)
     }
 }
