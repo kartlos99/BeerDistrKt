@@ -29,6 +29,9 @@ data class Order(
     private val _onItemClick: ((Order) -> Unit)? = null,
     private val _onHistoryClick: ((String) -> Unit)? = null
 ) {
+    val hasAnyItemToShow: Boolean
+        get() = items.isNotEmpty() || sales.isNotEmpty()
+                || bottleItems.isNotEmpty() || bottleSales.isNotEmpty()
 
     val onDeleteClick = {
         _onDeleteClick(this)

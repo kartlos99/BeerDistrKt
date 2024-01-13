@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="ლაგერი 0.5 იანი" />
 
-    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressWideView
         android:id="@+id/bottleCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

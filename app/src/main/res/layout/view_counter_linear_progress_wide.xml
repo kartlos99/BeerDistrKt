@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="76dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/countTv"
+        style="@style/OrderCansAppearance"
+        android:textColor="@color/gray_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/viewProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="@dimen/gr_size_4"
+        android:background="@color/gray_light"
+        android:max="100"
+        android:progress="0"
+        android:progressTint="@color/completed_green"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/countTv" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
