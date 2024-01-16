@@ -283,7 +283,7 @@ interface ApeniApiService {
     fun deleteBeer(@Body deleteBeerModel: DeleteBeerModel): Call<DataResponse<String>>
 
     // Bottle
-    @POST("bottle/save")
+    @POST("bottle/save.php")
     fun saveBottle(@Body bottle: BaseBottleModelDto): Call<DataResponse<List<BaseBottleModelDto>>>
 
     // Settings

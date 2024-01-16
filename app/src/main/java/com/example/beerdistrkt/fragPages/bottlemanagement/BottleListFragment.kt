@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -14,7 +13,6 @@ import com.example.beerdistrkt.adapters.SimpleListAdapter
 import com.example.beerdistrkt.databinding.BottleRowBinding
 import com.example.beerdistrkt.databinding.FragmentBottleListBinding
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import kotlinx.coroutines.flow.collectLatest
 
 class BottleListFragment : BaseFragment<BottleListViewModel>() {
 
@@ -27,17 +25,9 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
+        initRecycler(viewModel.bottleList)
         binding.addBottle.setOnClickListener {
             openDetails(0)
-        }
-    }
-
-    private fun observeViewModel() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.bottleListFlow.collectLatest {
-                initRecycler(it)
-            }
         }
     }
 
@@ -58,7 +48,7 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
             onBind = { item, view ->
                 BottleRowBinding.bind(view).apply {
                     bottleTitleTv.text = item.name
-                    bottleSizeTv.text = getString(R.string.lt, item.volume)
+                    bottleSizeTv.text = getString(R.string.lt_f, item.volume)
 //                        bottleImage.setImageDrawable()
                     dotsImg.setOnClickListener {
                         openDetails(item.id)
