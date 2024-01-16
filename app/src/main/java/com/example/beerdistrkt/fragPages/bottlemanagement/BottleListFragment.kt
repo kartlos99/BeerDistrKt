@@ -1,0 +1,70 @@
+package com.example.beerdistrkt.fragPages.bottlemanagement
+
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
+import com.example.beerdistrkt.adapters.SimpleListAdapter
+import com.example.beerdistrkt.databinding.BottleRowBinding
+import com.example.beerdistrkt.databinding.FragmentBottleListBinding
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import kotlinx.coroutines.flow.collectLatest
+
+class BottleListFragment : BaseFragment<BottleListViewModel>() {
+
+    override val viewModel: BottleListViewModel by viewModels()
+
+    private val binding by viewBinding(FragmentBottleListBinding::bind)
+
+    override var frLayout: Int? = R.layout.fragment_bottle_list
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        observeViewModel()
+        binding.addBottle.setOnClickListener {
+            openDetails(0)
+        }
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.bottleListFlow.collectLatest {
+                initRecycler(it)
+            }
+        }
+    }
+
+    private fun openDetails(bottleID: Int) {
+        Log.d(TAG, "openDetails: $bottleID")
+        findNavController().navigate(
+            BottleListFragmentDirections.actionBottleListFragmentToBottleDetailFragment(
+                bottleID
+            )
+        )
+    }
+
+    private fun initRecycler(bottles: List<BaseBottleModel>) = with(binding.bottlesRv) {
+        layoutManager = LinearLayoutManager(requireContext())
+        adapter = SimpleListAdapter(
+            data = bottles,
+            layoutId = R.layout.bottle_row,
+            onBind = { item, view ->
+                BottleRowBinding.bind(view).apply {
+                    bottleTitleTv.text = item.name
+                    bottleSizeTv.text = getString(R.string.lt, item.volume)
+//                        bottleImage.setImageDrawable()
+                    dotsImg.setOnClickListener {
+                        openDetails(item.id)
+                    }
+                }
+            }
+        )
+    }
+}

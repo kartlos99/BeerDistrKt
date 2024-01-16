@@ -31,6 +31,7 @@ import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
 import com.example.beerdistrkt.network.model.BaseDataResponse
 import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
@@ -280,6 +281,10 @@ interface ApeniApiService {
 
     @POST("beer/delete.php")
     fun deleteBeer(@Body deleteBeerModel: DeleteBeerModel): Call<DataResponse<String>>
+
+    // Bottle
+    @POST("bottle/save")
+    fun saveBottle(@Body bottle: BaseBottleModelDto): Call<DataResponse<List<BaseBottleModelDto>>>
 
     // Settings
     @GET("settings/getSettingsValue.php")

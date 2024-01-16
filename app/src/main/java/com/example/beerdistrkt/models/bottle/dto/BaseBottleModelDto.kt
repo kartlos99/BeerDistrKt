@@ -14,4 +14,22 @@ data class BaseBottleModelDto(
     val sortValue: String,
     @Json(name = "image")
     val imageFileName: String?
-)
+) {
+    constructor(
+        name: String,
+        volume: Double,
+        beerID: Int,
+        price: Double,
+        status: BottleStatus
+    ) : this(
+        0,
+        name,
+        volume,
+        volume,
+        beerID,
+        price,
+        status,
+        "",
+        null
+    )
+}

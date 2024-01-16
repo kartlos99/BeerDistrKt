@@ -19,6 +19,11 @@
             android:title="@string/add_beer" />
 
         <item
+            android:id="@+id/bottleListFragment"
+            android:icon="@drawable/beer_bottle"
+            android:title="@string/bottles" />
+
+        <item
             android:id="@+id/sawyobiFragment"
             android:icon="@drawable/ic_storage_24"
             android:title="@string/store_house"/>

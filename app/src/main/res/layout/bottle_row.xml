@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/gr_size_8"
+    android:background="#eee"
+    android:elevation="@dimen/gr_size_8">
+
+    <ImageView
+        android:id="@+id/bottleImage"
+        android:layout_width="@dimen/gr_size_72"
+        android:layout_height="@dimen/gr_size_72"
+        android:contentDescription="@string/bottle"
+        android:padding="@dimen/gr_size_4"
+        android:src="@drawable/beer_bottle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bottleTitleTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/gr_size_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/sp24"
+        app:layout_constraintEnd_toStartOf="@id/dotsImg"
+        app:layout_constraintStart_toEndOf="@id/bottleImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ლაგერი" />
+
+    <TextView
+        android:id="@+id/bottleSizeTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/gr_size_8"
+        android:layout_marginTop="@dimen/gr_size_4"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp24"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/dotsImg"
+        app:layout_constraintStart_toEndOf="@id/bottleImage"
+        app:layout_constraintTop_toBottomOf="@id/bottleTitleTv"
+        tools:text="0.5" />
+
+    <ImageView
+        android:id="@+id/dotsImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_4"
+        android:padding="@dimen/gr_size_8"
+        android:src="@drawable/ic_more_vert"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

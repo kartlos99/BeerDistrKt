@@ -244,4 +244,23 @@
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"
         app:enterAnim="@anim/shake" />
+    <fragment
+        android:id="@+id/bottleListFragment"
+        android:name="com.example.beerdistrkt.fragPages.bottlemanagement.BottleListFragment"
+        android:label="@string/bottles"
+        tools:layout="@layout/fragment_bottle_list" >
+        <action
+            android:id="@+id/action_bottleListFragment_to_bottleDetailFragment"
+            app:destination="@id/bottleDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bottleDetailFragment"
+        android:name="com.example.beerdistrkt.fragPages.bottlemanagement.BottleDetailFragment"
+        android:label="@string/add_bottle"
+        tools:layout="@layout/fragment_bottle_detail" >
+        <argument
+            android:name="bottleID"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

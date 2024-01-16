@@ -98,6 +98,7 @@
     <string name="davalianeba">დავალიანება</string>
     <string name="kasri">კასრი</string>
     <string name="bottle">ბოთლი</string>
+    <string name="bottles">ბოთლები</string>
     <string name="finances">ფინანსები</string>
     <string name="pay">გადახდა</string>
     <string name="price">ღირებულება:</string>
@@ -258,5 +259,16 @@
     <string name="no_price_exception">რომელიღაც ლუდს ფასი არ ააქვს გაწერილი!</string>
     <string name="object_not_found">ობიექტი არ იძებნება</string>
     <string name="bottle_identification_error">ვერ მოხერხდა ბოთლის სახეობის იდენტიფიკაცია! სცადეთ განმეორებით</string>
+    <string name="volume">მოცულობა</string>
+    <string name="add_bottle">ბოთლის დამატება</string>
+    <string name="bottle_status_title_active">აქტიური</string>
+    <string name="bottle_status_title_not_active">არა აქტიური</string>
+    <string name="bottle_status_title_deleted">წაშლილი</string>
+    <string name="bottle_status_title_deleted_by_user">გაუქმებული</string>
+    <string name="incorrect_bottle_name">არასწორი ბოთლის სახელი</string>
+    <string name="incorrect_volume">არასწორი მოცულობა</string>
+    <string name="incorrect_beer">აირჩიე ლუდი</string>
+    <string name="incorrect_price">არასწორი ფასი</string>
+    <string name="incorrect_status">აირჩიე სტატუსი</string>
 
 </resources>
