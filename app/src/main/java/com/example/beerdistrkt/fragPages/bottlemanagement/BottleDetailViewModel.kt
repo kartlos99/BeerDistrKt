@@ -52,6 +52,7 @@ class BottleDetailViewModel(
         }
         saveBottle(
             BaseBottleModelDto(
+                bottleID,
                 isNameValid(name) ?: return,
                 isVolumeValid(volume) ?: return,
                 isBeerValid(beerName) ?: return,

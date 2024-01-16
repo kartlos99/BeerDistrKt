@@ -16,13 +16,14 @@ data class BaseBottleModelDto(
     val imageFileName: String?
 ) {
     constructor(
+        bottleID: Int,
         name: String,
         volume: Double,
         beerID: Int,
         price: Double,
         status: BottleStatus
     ) : this(
-        0,
+        bottleID,
         name,
         volume,
         volume,
