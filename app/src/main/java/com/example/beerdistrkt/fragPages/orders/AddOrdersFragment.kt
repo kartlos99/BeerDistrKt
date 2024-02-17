@@ -208,7 +208,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 viewModel.orderItemEditLiveData.value = null
             }
         }
-         viewModel.bottleOrderItemEditLiveData.observe(viewLifecycleOwner) {
+        viewModel.bottleOrderItemEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 vBinding.bottleSelector.fillBottleItemForm(it)
                 vBinding.realisationTypeSelector.check(R.id.realizationByBottle)
@@ -261,23 +261,21 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             .commit()
     }
 
-    private fun fillOrderForm(order: Order) {
-        with(vBinding) {
-            addOrderClientInfo.text = order.client.dasaxeleba
-            addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
-            addOrderWarning.isVisible = order.needCleaning == 1
-            addOrderCheckBox.isChecked = order.isChecked()
-            addOrderComment.setText(order.comment)
-            addOrderOrderDate.text = order.orderDate
-            addOrderDistributorSpinner.setSelection(
-                viewModel.getDistributorIndex(order.distributorID.toString())
-            )
-            addOrderStatusSpinner.setSelection(
-                viewModel.orderStatusList.indexOf(order.orderStatus)
-            )
-            addOrderStatusGroup.isVisible = viewModel.editingOrderID > 0
-            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_order)
-        }
+    private fun fillOrderForm(order: Order) = with(vBinding) {
+        addOrderClientInfo.text = order.client.dasaxeleba
+        addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
+        addOrderWarning.isVisible = order.needCleaning == 1
+        addOrderCheckBox.isChecked = order.isChecked()
+        addOrderComment.setText(order.comment)
+        addOrderOrderDate.text = order.orderDate
+        addOrderDistributorSpinner.setSelection(
+            viewModel.getDistributorIndex(order.distributorID.toString())
+        )
+        addOrderStatusSpinner.setSelection(
+            viewModel.orderStatusList.indexOf(order.orderStatus)
+        )
+        addOrderStatusGroup.isVisible = viewModel.editingOrderID > 0
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_order)
     }
 
     override fun onClick(v: View?) {
