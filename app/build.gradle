@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-parcelize'
 //    id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
@@ -54,11 +55,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
     buildFeatures {
         dataBinding true
@@ -120,6 +121,10 @@ dependencies {
 
     // viewBinding
     implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.2'
+
+    def paging_version = "3.2.1"
+
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     // testing
     testImplementation 'io.mockk:mockk:1.12.2'
