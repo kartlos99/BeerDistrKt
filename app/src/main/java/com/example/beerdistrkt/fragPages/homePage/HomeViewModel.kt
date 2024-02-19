@@ -94,12 +94,12 @@ class HomeViewModel : BaseViewModel() {
             ApeniApiService.getInstance().getTableVersions(),
             successWithData = {
                 if (localVersionState != null) {
-/**
- * till better solution, I always need to receive beer & bottles list
-*/
+                    /**
+                     * till better solution, I always need to receive beer & bottles list
+                     */
 //                    if (it.beer > localVersionState!!.beer) {
-                        getBeerList()
-                        numberOfUpdatingTables++
+                    getBeerList()
+                    numberOfUpdatingTables++
 //                    }
                     if (it.client > localVersionState!!.client) {
                         getObjects()

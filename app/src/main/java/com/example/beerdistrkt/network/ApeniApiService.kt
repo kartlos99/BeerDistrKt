@@ -20,6 +20,7 @@ import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequest
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryDto
+import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -226,6 +227,12 @@ interface ApeniApiService {
 
     @GET("storeHouse/getIoList.php")
     fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<StoreHouseListResponse>>
+
+    @GET("storeHouse/getIoListPaged.php")
+    fun getStoreHouseIoPagedList(
+        @Query("pageIndex") pageIndex: Int,
+//        @Query("groupID") groupID: String = ""
+    ): Call<DataResponse<List<StorehouseIoDto>>>
 
     @GET("storeHouse/getGlobalBalance.php")
     fun getGlobalBalance(@Query("date") date: String): Call<DataResponse<List<GlobalStorageModel>>>
