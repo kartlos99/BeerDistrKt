@@ -51,9 +51,21 @@ import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 class AuthInterceptor : Interceptor {
+
+    private fun getHeadersMap(): Map<String, String> {
+        val session = Session.get()
+        return if (session.isUserLogged())
+            mapOf(
+                "Authorization" to "Bearer ${session.accessToken}",
+                "Client" to "Android",
+                "Region" to session.getRegionID()
+            )
+        else mapOf("Client" to "Android")
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val newRequest = chain.request().newBuilder()
-        ApeniApiService.getHeadersMap().entries.forEach {
+        getHeadersMap().entries.forEach {
             newRequest.addHeader(it.key, it.value)
         }
         return chain.proceed(newRequest.build())
@@ -69,17 +81,6 @@ interface ApeniApiService {
         private const val BASE_URL = BuildConfig.SERVER_URL
 //        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
 //        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
-
-        fun getHeadersMap(): Map<String, String> {
-            val session = Session.get()
-            return if (session.isUserLogged())
-                mapOf(
-                    "Authorization" to "Bearer ${session.accessToken}",
-                    "Client" to "Android",
-                    "Region" to session.getRegionID()
-                )
-            else mapOf("Client" to "Android")
-        }
 
         fun initialize(context: Context) {
             if (instance == null) {

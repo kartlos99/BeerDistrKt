@@ -43,6 +43,8 @@ android {
 //            buildConfigField "String", "SERVER_URL", '"https://test.apeni.ge/mr/mobile/"'
             buildConfigField "String", "SERVER_URL", '"http://93.177.139.80:9696/mr/mobile/"'
 //            buildConfigField "String", "SERVER_URL", '"http://192.168.1.107/mr/mobile/"'
+//            buildConfigField "String", "MOBILE_API_URL", '"https://test.apeni.ge/mr/mobileApi/"'
+            buildConfigField "String", "MOBILE_API_URL", '"http://93.177.139.80:9696/mr/mobileApi/"'
         }
         production {
             dimension "version"
@@ -51,6 +53,7 @@ android {
             resValue "string", "notif_channel_id", "notification_channel_id"
             resValue "string", "service_channel_id", "service_channel_id"
             buildConfigField "String", "SERVER_URL", '"https://apeni.ge/mr/mobile/"'
+            buildConfigField "String", "MOBILE_API_URL", '"https://apeni.ge/mr/mobileApi/"'
         }
     }
 

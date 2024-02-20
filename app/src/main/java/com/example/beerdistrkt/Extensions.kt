@@ -478,3 +478,8 @@ fun <T> StateFlow<T>.collectLatest(
         }
     }
 }
+
+fun String?.ifNullOrEmpty(alternative: String): String = if (isNullOrBlank())
+    alternative
+else
+    this
