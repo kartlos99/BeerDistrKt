@@ -4,16 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SawyobiListFragmentBinding
-import com.example.beerdistrkt.fragPages.sawyobi.adapters.StoreHouseListAdapter
-import com.example.beerdistrkt.fragPages.sawyobi.models.CombinedIoModel
+import com.example.beerdistrkt.fragPages.sawyobi.adapters.StorehousePagedAdapter
 import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.utils.ApiResponseState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
@@ -37,30 +43,47 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
+
+        setupPagedAdapter()
     }
 
-    fun initViewModel() {
-        viewModel.ioDoneLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Loading -> {}
-                is ApiResponseState.Success -> {
-                    initIoList(it.data)
+    private fun SawyobiListFragmentBinding.bindAdapter(
+        adapter: StorehousePagedAdapter
+    ) {
+        sHLRecycler.adapter = adapter
+        sHLRecycler.layoutManager = LinearLayoutManager(sHLRecycler.context)
+        val decoration = DividerItemDecoration(sHLRecycler.context, DividerItemDecoration.VERTICAL)
+        sHLRecycler.addItemDecoration(decoration)
+    }
+
+    private fun setupPagedAdapter() {
+
+        val adapter = StorehousePagedAdapter()
+        binding.bindAdapter(adapter)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collect {
+                    val appendState = it.source.append
+                    binding.progressIndicator.isVisible = it.source.append is LoadState.Loading
+                    if (appendState is LoadState.Error)
+                        showToast(appendState.error.message)
                 }
-                else -> {}
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.items.collectLatest {
+                    adapter.submitData(it)
+                }
             }
         }
     }
 
-    private fun initIoList(dataList: List<CombinedIoModel>) {
-        binding.sHLRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = StoreHouseListAdapter(dataList).apply {
-            onLongClick = {
-                editingGroupID = it
-                findNavController().navigateUp()
-            }
-        }
-        binding.sHLRecycler.adapter = adapter
+    private fun onItemLongClick(groupID: String) {
+        editingGroupID = groupID
+        findNavController().navigateUp()
     }
 
     override fun onStart() {
