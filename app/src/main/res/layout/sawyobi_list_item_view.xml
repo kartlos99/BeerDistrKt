@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bkg_underline"
+    android:background="#e5e5e5"
+    android:elevation="2dp"
+    android:layout_marginVertical="@dimen/gr_size_4"
     android:padding="@dimen/gr_size_4">
 
     <TextView

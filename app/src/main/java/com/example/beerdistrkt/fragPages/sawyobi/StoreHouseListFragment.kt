@@ -52,8 +52,8 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
     ) {
         sHLRecycler.adapter = adapter
         sHLRecycler.layoutManager = LinearLayoutManager(sHLRecycler.context)
-        val decoration = DividerItemDecoration(sHLRecycler.context, DividerItemDecoration.VERTICAL)
-        sHLRecycler.addItemDecoration(decoration)
+//        val decoration = DividerItemDecoration(sHLRecycler.context, DividerItemDecoration.VERTICAL)
+//        sHLRecycler.addItemDecoration(decoration)
     }
 
     private fun setupPagedAdapter() {

@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.sawyobi.domain
 
+import android.util.Log
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
@@ -14,20 +15,61 @@ data class StorehouseIO(
     val barrelInput: List<BarrelInput>? = null,
     val barrelOutput: List<BarrelOutput>? = null,
     val bottleInput: List<BottleInput>? = null,
-): DiffItem {
+) : DiffItem {
 
     override val key: String
         get() = groupID
 
     companion object {
 
-        fun fromDto(dto: StorehouseIoDto): StorehouseIO {
+        fun fromDto(
+            dto: StorehouseIoDto,
+            beerList: List<BeerModelBase>,
+            bottleList: List<BaseBottleModel>
+        ): StorehouseIO {
+
             return StorehouseIO(
                 dto.groupID,
                 dto.ioDate,
                 dto.distributorID,
                 dto.check,
                 dto.comment,
+                barrelInput = dto.barrelInput?.mapNotNull { inputDto ->
+                    try {
+                        BarrelInput(
+                            id = inputDto.id,
+                            beer = beerList.firstOrNull { beer -> beer.id == inputDto.beerID }
+                                ?: throw NoSuchElementException("there is no beer for ID = ${inputDto.beerID}"),
+                            barrelID = inputDto.barrelID,
+                            count = inputDto.count
+                        )
+                    } catch (e: NoSuchElementException) {
+//                        TODO notify user about missed item
+                                Log.e("KD_", "mapping error: ${e.message}", e)
+                        null
+                    }
+                },
+                barrelOutput = dto.barrelOutput?.map { outputDto ->
+                    BarrelOutput(
+                        id = outputDto.id,
+                        barrelID = outputDto.barrelID,
+                        count = outputDto.count
+                    )
+                },
+                bottleInput = dto.bottleInput?.mapNotNull { bottleDto ->
+                    try {
+                        BottleInput(
+                            id = bottleDto.id,
+                            bottle = bottleList.firstOrNull { bottle -> bottle.id == bottleDto.bottleID }
+                                ?: throw NoSuchElementException("there is no bottle for ID = ${bottleDto.bottleID}"),
+                            count = bottleDto.count
+                        )
+                    } catch (e: NoSuchElementException) {
+//                        TODO notify user about missed item
+                        Log.e("KD_", "mapping error: ${e.message}", e)
+                        null
+                    }
+                },
             )
         }
     }

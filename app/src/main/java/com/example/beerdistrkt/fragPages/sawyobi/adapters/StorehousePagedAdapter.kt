@@ -3,15 +3,18 @@ package com.example.beerdistrkt.fragPages.sawyobi.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.databinding.SawyobiListItemViewBinding
-import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseIO
+import com.example.beerdistrkt.fragPages.sawyobi.models.StorehouseIoPm
 import com.example.beerdistrkt.utils.DefaultDiffItemCallback
 
-class StorehousePagedAdapter: PagingDataAdapter<StorehouseIO, StorehouseIoViewHolder>(DefaultDiffItemCallback()) {
+class StorehousePagedAdapter: PagingDataAdapter<StorehouseIoPm, StorehouseIoViewHolder>(DefaultDiffItemCallback()) {
+
+    private val viewPool = RecyclerView.RecycledViewPool()
 
     override fun onBindViewHolder(holder: StorehouseIoViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it)
+            holder.bind(it, viewPool)
         }
     }
 
