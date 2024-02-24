@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
@@ -45,6 +44,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         setupPagedAdapter()
+        observeViewModel()
     }
 
     private fun SawyobiListFragmentBinding.bindAdapter(
@@ -76,6 +76,17 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.items.collectLatest {
                     adapter.submitData(it)
+                }
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launchWhenStarted {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.eventSharedFlow.collectLatest {
+                    if (it.isNotBlank())
+                        onItemLongClick(it)
                 }
             }
         }

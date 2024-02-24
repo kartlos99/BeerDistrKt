@@ -14,6 +14,8 @@ data class StorehouseIoPm(
     val bottleItems: List<SimpleBottleRowModel>? = null
 ) : DiffItem {
 
+    var onClick: ((groupID: String) -> Unit)? = null
+
     val ioCount: Int
         get() = (barrelItems?.size ?: 0) + (bottleItems?.size ?: 0)
 
@@ -22,7 +24,10 @@ data class StorehouseIoPm(
 
     companion object {
 
-        fun fromDomainIo(ioItem: StorehouseIO): StorehouseIoPm {
+        fun fromDomainIo(
+            ioItem: StorehouseIO,
+            onClick: (groupID: String) -> Unit
+        ): StorehouseIoPm {
 
             val barrelItemsIo = mutableListOf<SimpleBeerRowModel>()
 
@@ -86,7 +91,9 @@ data class StorehouseIoPm(
                         it.bottle.imageLink
                     )
                 }
-            )
+            ).also {
+                it.onClick = onClick
+            }
         }
     }
 }

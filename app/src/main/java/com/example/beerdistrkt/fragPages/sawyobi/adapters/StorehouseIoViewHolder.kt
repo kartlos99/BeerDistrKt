@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.fragPages.sawyobi.adapters
 
-import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +15,14 @@ class StorehouseIoViewHolder(
         shlComment.isVisible = item.comment.isNullOrBlank().not()
         shlActionDateTv.text = item.ioDate
 
+        shIoEdit.setOnClickListener {
+            item.onClick?.invoke(item.groupID)
+        }
+
         val adapter = SimpleBeerRowAdapter(
             item.barrelItems ?: listOf(),
             item.bottleItems ?: listOf()
         )
-        adapter.onClick = View.OnClickListener {}
         val lm = LinearLayoutManager(shlSubRecycler.context, LinearLayoutManager.VERTICAL, false)
         lm.initialPrefetchItemCount = item.ioCount
         shlSubRecycler.setHasFixedSize(true)

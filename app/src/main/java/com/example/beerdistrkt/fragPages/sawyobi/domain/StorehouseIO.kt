@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.utils.DiffItem
 
 data class StorehouseIO(
     val groupID: String,
@@ -15,10 +14,7 @@ data class StorehouseIO(
     val barrelInput: List<BarrelInput>? = null,
     val barrelOutput: List<BarrelOutput>? = null,
     val bottleInput: List<BottleInput>? = null,
-) : DiffItem {
-
-    override val key: String
-        get() = groupID
+) {
 
     companion object {
 
@@ -45,7 +41,7 @@ data class StorehouseIO(
                         )
                     } catch (e: NoSuchElementException) {
 //                        TODO notify user about missed item
-                                Log.e("KD_", "mapping error: ${e.message}", e)
+                        Log.e("KD_", "mapping error: ${e.message}", e)
                         null
                     }
                 },

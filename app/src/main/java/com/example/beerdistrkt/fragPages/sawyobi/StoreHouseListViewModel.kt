@@ -12,7 +12,9 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.StorehouseIoPm
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.storage.ObjectCache
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 private const val ITEMS_PER_PAGE = 20
 
@@ -23,6 +25,8 @@ class StoreHouseListViewModel : BaseViewModel() {
     private val bottleList = ObjectCache.getInstance()
         .getList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID) ?: mutableListOf()
 
+    val eventSharedFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
     val items = Pager(
         config = PagingConfig(pageSize = ITEMS_PER_PAGE, enablePlaceholders = false),
         pagingSourceFactory = { StorehouseRepository().getPagingSource() }
@@ -32,7 +36,8 @@ class StoreHouseListViewModel : BaseViewModel() {
             pagingData.map { ioDto ->
 
                 StorehouseIoPm.fromDomainIo(
-                    StorehouseIO.fromDto(ioDto, beerList, bottleList)
+                    StorehouseIO.fromDto(ioDto, beerList, bottleList),
+                    ::onItemClick
                 )
 
             }
@@ -40,4 +45,9 @@ class StoreHouseListViewModel : BaseViewModel() {
         }
         .cachedIn(viewModelScope)
 
+    fun onItemClick(groupID: String) {
+        viewModelScope.launch {
+            eventSharedFlow.emit(groupID)
+        }
+    }
 }
