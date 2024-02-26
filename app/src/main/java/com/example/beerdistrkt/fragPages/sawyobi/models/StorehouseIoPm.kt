@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.sawyobi.models
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseIO
 import com.example.beerdistrkt.utils.DiffItem
+import com.example.beerdistrkt.utils.changeDatePattern
 
 data class StorehouseIoPm(
     val groupID: String,
@@ -79,7 +80,7 @@ data class StorehouseIoPm(
 
             return StorehouseIoPm(
                 ioItem.groupID,
-                ioItem.ioDate,
+                ioItem.ioDate.changeDatePattern(),
                 ioItem.distributorID,
                 ioItem.check,
                 ioItem.comment,
