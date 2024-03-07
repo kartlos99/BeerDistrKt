@@ -8,6 +8,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+ext {
+    dagger_version = '2.44.2'
+}
+
 android {
     def fbPass = rootProject.ext.fireBase.pass
 
@@ -21,7 +25,7 @@ android {
         versionName "3.6.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField ("String", "FIREBASE_PASS", '"' + fbPass + '"')
+        buildConfigField("String", "FIREBASE_PASS", '"' + fbPass + '"')
     }
 
     buildTypes {
@@ -128,6 +132,10 @@ dependencies {
     def paging_version = "3.2.1"
 
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    // dagger
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:dagger:$dagger_version"
 
     // testing
     testImplementation 'io.mockk:mockk:1.12.2'
