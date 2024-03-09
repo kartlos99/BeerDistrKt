@@ -322,7 +322,7 @@ fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
             it.beerID
         }.values.forEach { orderItemList ->
             orderItemList.groupBy { it.canTypeID }.values.forEach { singleList ->
-                val summedCount = singleList.sumBy { it.count }
+                val summedCount = singleList.sumOf { it.count }
                 resultList.add(
                     singleList[0].copy(count = summedCount)
                 )
