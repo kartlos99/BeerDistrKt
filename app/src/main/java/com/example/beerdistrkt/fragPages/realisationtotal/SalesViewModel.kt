@@ -7,15 +7,21 @@ import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.BarrelIO
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.DeleteRequest
+import com.example.beerdistrkt.models.MoneyInfo
+import com.example.beerdistrkt.models.SaleInfo
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Calendar
+import java.util.Date
 
 class SalesViewModel : BaseViewModel() {
 
@@ -25,7 +31,7 @@ class SalesViewModel : BaseViewModel() {
 
     private val barrelsList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
-    val usersList = mutableListOf<User>()
+    val visibleDistributors = mutableListOf<User>()
 
     private val _deleteExpenseLiveData = MutableLiveData<ApiResponseState<String>>()
     val deleteExpenseLiveData: LiveData<ApiResponseState<String>>
@@ -39,9 +45,9 @@ class SalesViewModel : BaseViewModel() {
     val selectedDayLiveData: LiveData<String>
         get() = _selectedDayLiveData
 
-    private val _realizationDayLiveData = MutableLiveData<RealizationDay>()
-    val realizationDayLiveData: LiveData<RealizationDay>
-        get() = _realizationDayLiveData
+//    private val _realizationDayLiveData = MutableLiveData<RealizationDay>()
+//    val realizationDayLiveData: LiveData<RealizationDay>
+//        get() = _realizationDayLiveData
 
     private val _salesLiveData = MutableLiveData<List<SaleInfo>>()
     val salesLiveData: LiveData<List<SaleInfo>>
@@ -91,10 +97,11 @@ class SalesViewModel : BaseViewModel() {
     }
 
     fun formUsersList() {
-        usersList.clear()
-        usersList.add(User.getBaseUser())
-        usersList.addAll(
+        visibleDistributors.clear()
+        visibleDistributors.add(User.getBaseUser())
+        visibleDistributors.addAll(
             ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
+                ?.filter { it.isActive }
                 ?.sortedBy { it.username }
                 ?: listOf()
         )
@@ -110,9 +117,8 @@ class SalesViewModel : BaseViewModel() {
                 expenses.addAll(it.xarji)
                 _expenseLiveData.value = expenses
 
-                priceSum = sales.sumByDouble { obj -> obj.price }
+                priceSum = sales.sumOf { obj -> obj.price }
 
-                Log.d(TAG, it.toString())
                 takeMoney.clear()
                 takeMoney.addAll(it.takenMoney)
 
@@ -121,7 +127,7 @@ class SalesViewModel : BaseViewModel() {
                     bIO.barrelName = barrelsList.find { can -> can.id == bIO.canTypeID }?.name
                 }
                 _barrelsLiveData.value = barrelIOList
-                _realizationDayLiveData.value = it
+//                _realizationDayLiveData.value = it
                 _salesLiveData.value = it.sale
             },
             finally = {
@@ -206,8 +212,7 @@ class SalesViewModel : BaseViewModel() {
         prepareData()
     }
 
-    fun getDistributorNamesList(): List<String> = usersList
-        .filter { it.isActive }
+    fun getDistributorNamesList(): List<String> = visibleDistributors
         .map { "${it.username} (${it.name})" }
 
 

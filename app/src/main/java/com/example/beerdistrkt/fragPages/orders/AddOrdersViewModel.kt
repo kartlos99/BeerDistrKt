@@ -16,7 +16,9 @@ import com.example.beerdistrkt.models.MappedUser
 import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.Order
-import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.models.OrderStatus.ACTIVE
+import com.example.beerdistrkt.models.OrderStatus.CANCELED
+import com.example.beerdistrkt.models.OrderStatus.COMPLETED
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
@@ -46,14 +48,19 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
-    var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
+    private var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?.sortedBy { it.username }
         ?: mutableListOf()
 
+    val visibleDistributors
+        get() = usersList.filter {
+            it.isActive
+        }
+
     lateinit var selectedDistributor: User
     private var selectedDistributorRegionID: Int = 0
-    var selectedStatus = OrderStatus.ACTIVE
-    val orderStatusList = listOf(OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED)
+    var selectedStatus = ACTIVE
+    val orderStatusList = listOf(ACTIVE, COMPLETED, CANCELED)
 
     private val orderItemsList = mutableListOf<TempBeerItemModel>()
     private val bottleOrderItemsList = mutableListOf<TempBottleItemModel>()
@@ -226,7 +233,7 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
         val orderRequestModel = OrderRequestModel(
             0,
             dateFormatDash.format(orderDateCalendar.time),
-            OrderStatus.ACTIVE.data,
+            ACTIVE.data,
             selectedDistributor.getIntID(),
             clientID,
             selectedDistributorRegionID,
@@ -328,14 +335,12 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     }
 
     fun getDistributorNamesList(): List<String> {
-        return usersList
-            .filter { it.isActive }
+        return visibleDistributors
             .map { "${it.username} (${it.name})" }
     }
 
     fun getDistributorIndex(distributorID: String): Int {
-        val userIds = usersList
-            .filter { it.isActive }
+        val userIds = visibleDistributors
             .map { it.id }
 
         return if (userIds.indexOf(distributorID) >= 0)
