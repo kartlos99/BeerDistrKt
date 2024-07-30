@@ -14,7 +14,7 @@ data class BeerModelBase(
     var displayColor: String? = null,
     var fasi: Double? = null,
     @Json(name = "active")
-    val status: BeerStatus = BeerStatus.ACTIVE,
+    var status: BeerStatus = BeerStatus.ACTIVE,
     var sortValue: String = ""
 ) {
     val isActive: Boolean
