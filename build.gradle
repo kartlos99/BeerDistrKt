@@ -1,5 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from: 'localdata.gradle'
 
 buildscript {
     ext {
@@ -11,6 +10,7 @@ buildscript {
         version_coroutine = '1.6.4'
         dotsIndicatorVer = '4.1.2'
         lifecycle_version = '2.5.1'
+        hilt_version = '2.51'
     }
     repositories {
         google()
@@ -25,6 +25,12 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+
+plugins {
+    id 'com.google.dagger.hilt.android' version "$hilt_version" apply false
+}
+
+apply from: 'localdata.gradle'
 
 task clean(type: Delete) {
     delete rootProject.buildDir

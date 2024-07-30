@@ -6,10 +6,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
-}
-
-ext {
-    dagger_version = '2.44.2'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -133,11 +130,15 @@ dependencies {
 
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
-    // dagger
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.google.dagger:dagger:$dagger_version"
+    // hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // testing
     testImplementation 'io.mockk:mockk:1.12.2'
     androidTestImplementation 'io.mockk:mockk-android:1.12.2'
+}
+
+kapt {
+    correctErrorTypes true
 }
