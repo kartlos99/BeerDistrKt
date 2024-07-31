@@ -1,14 +1,17 @@
 package com.example.beerdistrkt.service
 
+import android.Manifest
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.beerdistrkt.BuildConfig
@@ -104,7 +107,11 @@ class NotificationService : Service() {
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(1, notification)
+        if (checkSelfPermission(PERMISSION_RM) == PackageManager.PERMISSION_GRANTED) {
+            notificationManager.notify(1, notification)
+        } else {
+//            TODO("REQUEST PERMISSION")
+        }
     }
 
     interface NotificationInterface {
@@ -115,6 +122,8 @@ class NotificationService : Service() {
 
     companion object {
         const val TAG = "notification_Service"
+        @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+        const val PERMISSION_RM = Manifest.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING
 
         var myNotificationInterface: NotificationInterface? = null
     }
