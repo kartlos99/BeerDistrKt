@@ -1,107 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragPages.addBeer.AddBeerFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/t_addedit_beer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/sxva_ludis_damateba"
+        android:textSize="@dimen/textSize_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="51dp" />
 
-        <TextView
-            android:id="@+id/t_addedit_beer"
-            android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/e_beer_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_12"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_beer_uaryofa"
+        tools:layout_editor_absoluteX="0dp">
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/sxva_ludis_damateba"
-            android:textSize="@dimen/textSize_4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="51dp" />
+            android:autofillHints="@string/dasaxeleba"
+            android:hint="@string/dasaxeleba"
+            android:inputType="text"
+            tools:ignore="UnusedAttribute" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/e_beer_name"
-            android:layout_width="0dp"
+    <Button
+        android:id="@+id/btn_beer_uaryofa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_12"
+        android:text="@string/uaryofa"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_beer_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_12"
+        android:text="@string/pliusi"
+        app:layout_constraintBottom_toBottomOf="@id/e_beer_pr"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/e_beer_pr" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/e_beer_pr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_12"
+        app:layout_constraintEnd_toStartOf="@id/btn_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/e_beer_name"
+        tools:layout_editor_absoluteX="0dp">
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/gr_size_12"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_beer_uaryofa"
-            tools:layout_editor_absoluteX="0dp">
+            android:hint="@string/saorient_fasi"
+            android:inputType="numberDecimal"
+            tools:ignore="Autofill" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="@string/dasaxeleba"
-                android:hint="@string/dasaxeleba"
-                android:inputType="text"
-                tools:ignore="UnusedAttribute" />
-        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_beer_uaryofa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/uaryofa"
-            android:layout_marginEnd="@dimen/gr_size_12"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btn_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_12"
 
-        <Button
-            android:id="@+id/btn_beer_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/gr_size_12"
-            android:text="@string/pliusi"
-            app:layout_constraintBottom_toBottomOf="@id/e_beer_pr"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/e_beer_pr" />
+        android:background="@drawable/ic_order_circle"
+        android:contentDescription="@string/beerColor"
+        app:layout_constraintBottom_toBottomOf="@id/e_beer_pr"
+        app:layout_constraintEnd_toStartOf="@id/btn_beer_done"
+        app:layout_constraintTop_toTopOf="@id/e_beer_pr" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/e_beer_pr"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/gr_size_12"
-            app:layout_constraintEnd_toStartOf="@id/btn_color"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/e_beer_name"
-            tools:layout_editor_absoluteX="0dp">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/beerRv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/gr_size_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/e_beer_pr"
+        tools:layout_editor_absoluteX="0dp" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/saorient_fasi"
-                android:inputType="numberDecimal"
-                tools:ignore="Autofill" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btn_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/gr_size_12"
-
-            android:background="@drawable/ic_order_circle"
-            android:contentDescription="@string/beerColor"
-            app:layout_constraintBottom_toBottomOf="@id/e_beer_pr"
-            app:layout_constraintEnd_toStartOf="@id/btn_beer_done"
-            app:layout_constraintTop_toTopOf="@id/e_beer_pr" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/beerRv"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/gr_size_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/e_beer_pr"
-            tools:layout_editor_absoluteX="0dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,254 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragPages.addEditObiects.AddObjectFragment">
 
-
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/addEditClientLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/gr_size_8" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/addEditClientLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="@dimen/gr_size_8" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/addEditClientRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/gr_size_8" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/addEditClientRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_end="@dimen/gr_size_8" />
+        <TextView
+            android:id="@+id/addEditClientRegionsTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/gr_size_6"
+            android:minHeight="@dimen/gr_size_48"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/addEditClientRegionBtn"
+            app:layout_constraintStart_toStartOf="@id/addEditClientLeft"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/addEditClientRegionsTv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/gr_size_6"
-                android:minHeight="@dimen/gr_size_48"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@id/addEditClientRegionBtn"
-                app:layout_constraintStart_toStartOf="@id/addEditClientLeft"
-                app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addEditClientRegionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_region"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/addEditClientRegionsTv"
+            app:layout_constraintEnd_toEndOf="@id/addEditClientRight"
+            app:layout_constraintTop_toTopOf="@id/addEditClientRegionsTv" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addEditClientRegionBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/change_region"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/addEditClientRegionsTv"
-                app:layout_constraintEnd_toEndOf="@id/addEditClientRight"
-                app:layout_constraintTop_toTopOf="@id/addEditClientRegionsTv" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEditClientName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:errorEnabled="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addEditClientRegionsTv">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addEditClientName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:errorEnabled="true"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addEditClientRegionsTv">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/dasaxeleba"
-                    android:hint="@string/dasaxeleba"
-                    android:inputType="text"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addEditClientSK"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:errorEnabled="true"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientName">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/sk"
-                    android:hint="@string/sk"
-                    android:inputType="text"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addEditClientPerson"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientSK">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/sak_piri"
-                    android:hint="@string/sak_piri"
-                    android:inputType="text"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addEditClientAdress"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintLeft_toLeftOf="@+id/addEditClientName"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientPerson">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/adress"
-                    android:hint="@string/adress"
-                    android:inputType="text"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addEditClientPhone"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintLeft_toLeftOf="@+id/addEditClientName"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientAdress">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/tel"
-                    android:hint="@string/tel"
-                    android:inputType="phone"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addEditComment"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-
-                android:layout_marginEnd="8dp"
-                app:layout_constraintLeft_toLeftOf="@+id/addEditClientName"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientPhone">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/comment"
-                    android:hint="@string/comment"
-                    android:inputType="text"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/addEditClientPricesTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_8"
-                android:background="@color/beer_price_bkg"
-                android:elevation="@dimen/gr_size_2"
-                android:padding="@dimen/gr_size_4"
-                android:text="@string/beer_prices_title"
-                android:textAlignment="center"
-                android:textSize="@dimen/textSize_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditComment" />
-
-            <LinearLayout
-                android:id="@+id/addEditClientPricesContainer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/beer_price_bkg"
-                android:orientation="vertical"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientPricesTitle" />
-
-            <TextView
-                android:id="@+id/addEditClientBottlePricesTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_4"
-                android:background="@color/bottle_price_bkg"
-                android:elevation="@dimen/gr_size_2"
-                android:padding="@dimen/gr_size_4"
-                android:text="@string/bottle_prices_title"
-                android:textAlignment="center"
-                android:textSize="@dimen/textSize_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientPricesContainer" />
-
-            <LinearLayout
-                android:id="@+id/addEditClientBottlePricesContainer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/bottle_price_bkg"
-                android:orientation="vertical"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientBottlePricesTitle" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addEditClientDoneBtn"
-                style="@style/mainBtnStyle"
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_8"
-                android:layout_marginBottom="@dimen/gr_size_8"
-                android:text="@string/dadastureba"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addEditClientBottlePricesContainer" />
+                android:autofillHints="@string/dasaxeleba"
+                android:hint="@string/dasaxeleba"
+                android:inputType="text"
+                tools:ignore="UnusedAttribute" />
 
-            <CheckBox
-                android:id="@+id/addEditClientChek"
-                android:layout_width="wrap_content"
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEditClientSK"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:errorEnabled="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientName">
+
+            <EditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/addEditClientPricesTitle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/addEditClientPricesTitle" />
+                android:autofillHints="@string/sk"
+                android:hint="@string/sk"
+                android:inputType="text"
+                tools:ignore="UnusedAttribute" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </ScrollView>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEditClientPerson"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientSK">
 
-</layout>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/sak_piri"
+                android:hint="@string/sak_piri"
+                android:inputType="text"
+                tools:ignore="UnusedAttribute" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEditClientAdress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/addEditClientName"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientPerson">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/adress"
+                android:hint="@string/adress"
+                android:inputType="text"
+                tools:ignore="UnusedAttribute" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEditClientPhone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/addEditClientName"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientAdress">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/tel"
+                android:hint="@string/tel"
+                android:inputType="phone"
+                tools:ignore="UnusedAttribute" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEditComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            android:layout_marginEnd="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/addEditClientName"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientPhone">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/comment"
+                android:hint="@string/comment"
+                android:inputType="text"
+                tools:ignore="UnusedAttribute" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/addEditClientPricesTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gr_size_8"
+            android:background="@color/beer_price_bkg"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_4"
+            android:text="@string/beer_prices_title"
+            android:textAlignment="center"
+            android:textSize="@dimen/textSize_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditComment" />
+
+        <LinearLayout
+            android:id="@+id/addEditClientPricesContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/beer_price_bkg"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientPricesTitle" />
+
+        <TextView
+            android:id="@+id/addEditClientBottlePricesTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gr_size_4"
+            android:background="@color/bottle_price_bkg"
+            android:elevation="@dimen/gr_size_2"
+            android:padding="@dimen/gr_size_4"
+            android:text="@string/bottle_prices_title"
+            android:textAlignment="center"
+            android:textSize="@dimen/textSize_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientPricesContainer" />
+
+        <LinearLayout
+            android:id="@+id/addEditClientBottlePricesContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/bottle_price_bkg"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientBottlePricesTitle" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addEditClientDoneBtn"
+            style="@style/mainBtnStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gr_size_8"
+            android:layout_marginBottom="@dimen/gr_size_8"
+            android:text="@string/dadastureba"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addEditClientBottlePricesContainer" />
+
+        <CheckBox
+            android:id="@+id/addEditClientCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/addEditClientPricesTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/addEditClientPricesTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

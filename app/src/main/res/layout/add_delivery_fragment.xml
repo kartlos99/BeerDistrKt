@@ -1,463 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragPages.realisation.AddDeliveryFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/addDeliveryClientInfo"
+        style="@style/ClientInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/addDeliveryDebtContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_4"
+        android:background="#FFF"
+        android:elevation="@dimen/gr_size_2"
+        app:layout_constraintTop_toBottomOf="@id/addDeliveryClientInfo" />
 
-        <TextView
-            android:id="@+id/addDeliveryClientInfo"
-            style="@style/ClientInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:id="@+id/addDeliveryMainScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addDeliveryDebtContainer">
 
-        <FrameLayout
-            android:id="@+id/addDeliveryDebtContainer"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/addDeliveryMainContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gr_size_4"
-            android:background="#FFF"
-            android:elevation="@dimen/gr_size_2"
-            app:layout_constraintTop_toBottomOf="@id/addDeliveryClientInfo" />
-
-        <ScrollView
-            android:id="@+id/addDeliveryMainScroll"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/gr_size_8"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addDeliveryDebtContainer">
+            android:focusableInTouchMode="true">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/addDeliveryMainContent"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/realisationTypeSelector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <Button
+                    android:id="@+id/realizationByBarrel"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/kasri" />
+
+                <Button
+                    android:id="@+id/realizationByBottle"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottle" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <com.example.beerdistrkt.customView.BeerSelectorView
+                android:id="@+id/beerSelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gr_size_8"
-                android:focusable="true"
-                android:focusableInTouchMode="true">
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector" />
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/realisationTypeSelector"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
+            <com.example.beerdistrkt.customView.BottleSelectorView
+                android:id="@+id/bottleSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/beerSelector" />
 
-                    <Button
-                        android:id="@+id/realizationByBarrel"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/kasri" />
-
-                    <Button
-                        android:id="@+id/realizationByBottle"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/bottle" />
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <com.example.beerdistrkt.customView.BeerSelectorView
-                    android:id="@+id/beerSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector" />
-
-                <com.example.beerdistrkt.customView.BottleSelectorView
-                    android:id="@+id/bottleSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/beerSelector" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/addDeliveryhideOnEditGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addDeliveryhideOnEditGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="
                         addDeliveryAddSaleItemBtn,
                         addDeliveryBarrelOutputCard,
                         addDeliveryBarrelOutput" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/addDeliveryAddSaleItemBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/img_description"
-                    android:src="@drawable/ic_playlist_add_24dp"
-                    app:fabSize="mini"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bottleSelector" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addDeliveryAddSaleItemBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/img_description"
+                android:src="@drawable/ic_playlist_add_24dp"
+                app:fabSize="mini"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bottleSelector" />
 
-                <TextView
-                    android:id="@+id/addDeliveryTotalPrice"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/gr_size_8"
-                    android:textSize="@dimen/sp14"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"
-                    app:layout_constraintStart_toStartOf="@id/beerSelector"
-                    app:layout_constraintTop_toTopOf="@id/addDeliveryAddSaleItemBtn" />
+            <TextView
+                android:id="@+id/addDeliveryTotalPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_8"
+                android:textSize="@dimen/sp14"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/addDeliveryAddSaleItemBtn"
+                app:layout_constraintStart_toStartOf="@id/beerSelector"
+                app:layout_constraintTop_toTopOf="@id/addDeliveryAddSaleItemBtn" />
 
-                <LinearLayout
-                    android:id="@+id/addDeliveryTempContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/temp_beer_cont_rect"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addDeliveryAddSaleItemBtn">
+            <LinearLayout
+                android:id="@+id/addDeliveryTempContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/temp_beer_cont_rect"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryAddSaleItemBtn">
 
-                </LinearLayout>
+            </LinearLayout>
 
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/addDeliveryBarrelGr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addDeliveryBarrelGr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="
                     addDeliveryBarrelOutput,
                     addDeliveryBarrelOutputCard" />
 
-                <TextView
-                    android:id="@+id/addDeliveryBarrelOutput"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/wamogebuli_kasrebi"
-                    android:textSize="@dimen/plius_minus_TextSize"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addDeliveryTempContainer" />
+            <TextView
+                android:id="@+id/addDeliveryBarrelOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/wamogebuli_kasrebi"
+                android:textSize="@dimen/plius_minus_TextSize"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryTempContainer" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/addDeliveryBarrelOutputCard"
-                    android:layout_width="0dp"
-                    android:layout_height="118dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    app:cardBackgroundColor="@color/gray_light"
-                    app:cardCornerRadius="@dimen/cardCornerRadius"
-                    app:cardElevation="@dimen/gr_size_2"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryBarrelOutput"
-                    app:layout_constraintVertical_bias="0.0">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/addDeliveryBarrelOutputCard"
+                android:layout_width="0dp"
+                android:layout_height="118dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="@color/gray_light"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/gr_size_2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addDeliveryBarrelOutput"
+                app:layout_constraintVertical_bias="0.0">
 
-                    <androidx.core.widget.NestedScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bkg_empty_barrels">
-
-                            <TextView
-                                android:id="@+id/addDeliveryBarrelOutput1Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_50litri"
-                                app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount1"
-                                app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount1"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount1" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/addDeliveryBarrelOutputCount1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/addDeliveryBarrelOutput2Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_30litri"
-                                app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount2"
-                                app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount2"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount2" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/addDeliveryBarrelOutputCount2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount1" />
-
-                            <TextView
-                                android:id="@+id/addDeliveryBarrelOutput3Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_20litri"
-                                app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount3"
-                                app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount3"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount3" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/addDeliveryBarrelOutputCount3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount2" />
-
-                            <TextView
-                                android:id="@+id/addDeliveryBarrelOutput4Tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/_10litri"
-                                app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount4"
-                                app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount4"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount4" />
-
-                            <com.example.beerdistrkt.customView.NumericEditText
-                                android:id="@+id/addDeliveryBarrelOutputCount4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount3" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </androidx.core.widget.NestedScrollView>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/addDeliveryMoneyGr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="
-                    addDeliveryMoneyOutput,
-                    addDeliveryMoneyOutputCard" />
-
-                <TextView
-                    android:id="@+id/addDeliveryMoneyOutput"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/gadaxdili_tanxa"
-                    android:textSize="@dimen/plius_minus_TextSize"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryBarrelOutputCard"
-                    tools:layout_editor_absoluteX="103dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/addDeliveryMoneyOutputCard"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    app:cardBackgroundColor="@color/gray_light"
-                    app:cardCornerRadius="@dimen/cardCornerRadius"
-                    app:cardElevation="@dimen/gr_size_2"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryMoneyOutput">
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:animateLayoutChanges="true">
-
-                        <EditText
-                            android:id="@+id/addDeliveryMoneyEt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="8dp"
-                            android:autofillHints="@string/default_0"
-                            android:ems="8"
-                            android:hint="@string/default_0"
-                            android:inputType="numberDecimal"
-                            android:textAlignment="center"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:ignore="UnusedAttribute" />
+                        android:background="@drawable/bkg_empty_barrels">
 
                         <TextView
-                            android:id="@+id/addDeliveryLariSign"
+                            android:id="@+id/addDeliveryBarrelOutput1Tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/gr_size_4"
-                            android:text="@string/lari"
-                            android:textSize="@dimen/textSize_4"
-                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
-                            app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyEt"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
-
-                        <ImageView
-                            android:id="@+id/addDeliveryMoneyExpander"
-                            android:layout_width="@dimen/gr_size_48"
-                            android:layout_height="@dimen/gr_size_48"
-                            android:contentDescription="@string/img_description"
-                            android:padding="@dimen/gr_size_8"
-                            android:src="@drawable/ic_arrow_down_24dp"
-                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                            android:text="@string/_50litri"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount1"
+                            app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount1"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount1" />
 
-                        <ImageView
-                            android:id="@+id/addDeliveryMoneyCashImg"
-                            android:layout_width="@dimen/gr_size_48"
-                            android:layout_height="@dimen/gr_size_48"
-                            android:contentDescription="@string/img_description"
-                            android:padding="@dimen/gr_size_8"
-                            android:src="@drawable/ic_cash"
-                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt"
-                            app:tint="@color/gray_6" />
-
-                        <EditText
-                            android:id="@+id/addDeliveryMoneyTransferEt"
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/addDeliveryBarrelOutputCount1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="8dp"
-                            android:autofillHints="@string/default_0"
-                            android:ems="8"
-                            android:hint="@string/default_0"
-                            android:inputType="numberDecimal"
-                            android:textAlignment="center"
-                            android:visibility="gone"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyEt"
-                            tools:ignore="UnusedAttribute" />
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/addDeliveryTransferLariSign"
+                            android:id="@+id/addDeliveryBarrelOutput2Tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/gr_size_4"
-                            android:text="@string/lari"
-                            android:textSize="@dimen/textSize_4"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
-                            app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyTransferEt"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt" />
+                            android:text="@string/_30litri"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount2"
+                            app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount2"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount2" />
 
-                        <ImageView
-                            android:id="@+id/addDeliveryMoneyTransferImg"
-                            android:layout_width="@dimen/gr_size_48"
-                            android:layout_height="@dimen/gr_size_48"
-                            android:contentDescription="@string/img_description"
-                            android:padding="@dimen/gr_size_8"
-                            android:src="@drawable/ic_transfer"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/addDeliveryBarrelOutputCount2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt"
-                            app:tint="@color/gray_6" />
+                            app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount1" />
+
+                        <TextView
+                            android:id="@+id/addDeliveryBarrelOutput3Tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_20litri"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount3"
+                            app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount3"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount3" />
+
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/addDeliveryBarrelOutputCount3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount2" />
+
+                        <TextView
+                            android:id="@+id/addDeliveryBarrelOutput4Tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_10litri"
+                            app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount4"
+                            app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount4"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount4" />
+
+                        <com.example.beerdistrkt.customView.NumericEditText
+                            android:id="@+id/addDeliveryBarrelOutputCount4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount3" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </androidx.core.widget.NestedScrollView>
 
+            </androidx.cardview.widget.CardView>
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/addDeliveryDateBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/gray_light"
-                    android:drawableEnd="@drawable/calendar_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyOutputCard" />
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addDeliveryMoneyGr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="
+                    addDeliveryMoneyOutput,
+                    addDeliveryMoneyOutputCard" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/addDeliveryCheckGift"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="@string/gift"
-                    app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/addDeliveryDateBtn" />
+            <TextView
+                android:id="@+id/addDeliveryMoneyOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/gadaxdili_tanxa"
+                android:textSize="@dimen/plius_minus_TextSize"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addDeliveryBarrelOutputCard"
+                tools:layout_editor_absoluteX="103dp" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/addDeliveryCheckReplace"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="@string/replace"
-                    app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addDeliveryCheckGift" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/addDeliveryMoneyOutputCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="@color/gray_light"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/gr_size_2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addDeliveryMoneyOutput">
 
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/addDeliveryBarrierForComment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="addDeliveryCheckReplace, addDeliveryDateBtn" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/addDeliveryComment"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:focusable="false"
-                    android:nextFocusLeft="@id/addDeliveryDoneBtn"
-                    android:nextFocusUp="@id/addDeliveryMoneyEt"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrierForComment"
-                    tools:layout_editor_absoluteX="8dp">
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autofillHints="@string/comment"
-                        android:hint="@string/comment"
-                        android:inputType="text"
-                        tools:ignore="UnusedAttribute" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/addDeliveryDoneBtn"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gr_size_16"
-                    android:paddingVertical="@dimen/gr_size_24"
-                    android:text="@string/dadastureba"
-                    android:textSize="@dimen/plius_minus_TextSize"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/addDeliveryComment" />
+                    android:animateLayoutChanges="true">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <EditText
+                        android:id="@+id/addDeliveryMoneyEt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:autofillHints="@string/default_0"
+                        android:ems="8"
+                        android:hint="@string/default_0"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="UnusedAttribute" />
 
-        </ScrollView>
+                    <TextView
+                        android:id="@+id/addDeliveryLariSign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/gr_size_4"
+                        android:text="@string/lari"
+                        android:textSize="@dimen/textSize_4"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                        app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyEt"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/addDeliveryMoneyExpander"
+                        android:layout_width="@dimen/gr_size_48"
+                        android:layout_height="@dimen/gr_size_48"
+                        android:contentDescription="@string/img_description"
+                        android:padding="@dimen/gr_size_8"
+                        android:src="@drawable/ic_arrow_down_24dp"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
 
-</layout>
+                    <ImageView
+                        android:id="@+id/addDeliveryMoneyCashImg"
+                        android:layout_width="@dimen/gr_size_48"
+                        android:layout_height="@dimen/gr_size_48"
+                        android:contentDescription="@string/img_description"
+                        android:padding="@dimen/gr_size_8"
+                        android:src="@drawable/ic_cash"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt"
+                        app:tint="@color/gray_6" />
+
+                    <EditText
+                        android:id="@+id/addDeliveryMoneyTransferEt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:autofillHints="@string/default_0"
+                        android:ems="8"
+                        android:hint="@string/default_0"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyEt"
+                        tools:ignore="UnusedAttribute" />
+
+                    <TextView
+                        android:id="@+id/addDeliveryTransferLariSign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/gr_size_4"
+                        android:text="@string/lari"
+                        android:textSize="@dimen/textSize_4"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
+                        app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyTransferEt"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt" />
+
+                    <ImageView
+                        android:id="@+id/addDeliveryMoneyTransferImg"
+                        android:layout_width="@dimen/gr_size_48"
+                        android:layout_height="@dimen/gr_size_48"
+                        android:contentDescription="@string/img_description"
+                        android:padding="@dimen/gr_size_8"
+                        android:src="@drawable/ic_transfer"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt"
+                        app:tint="@color/gray_6" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addDeliveryDateBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/gray_light"
+                android:drawableEnd="@drawable/calendar_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyOutputCard" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/addDeliveryCheckGift"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/gift"
+                app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addDeliveryDateBtn" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/addDeliveryCheckReplace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/replace"
+                app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryCheckGift" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/addDeliveryBarrierForComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="addDeliveryCheckReplace, addDeliveryDateBtn" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addDeliveryComment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:focusable="false"
+                android:nextFocusLeft="@id/addDeliveryDoneBtn"
+                android:nextFocusUp="@id/addDeliveryMoneyEt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrierForComment"
+                tools:layout_editor_absoluteX="8dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/comment"
+                    android:hint="@string/comment"
+                    android:inputType="text"
+                    tools:ignore="UnusedAttribute" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addDeliveryDoneBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_16"
+                android:paddingVertical="@dimen/gr_size_24"
+                android:text="@string/dadastureba"
+                android:textSize="@dimen/plius_minus_TextSize"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addDeliveryComment" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

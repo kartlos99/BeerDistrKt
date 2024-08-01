@@ -1,250 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragPages.orders.AddOrdersFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/addOrderClientInfo"
+        style="@style/ClientInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@id/addOrderWarning"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/addOrderWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/gr_size_8"
+        android:text="@string/need_cleaning"
+        android:textColor="@color/warning_text_dark"
+        android:textSize="@dimen/sp16"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/addOrderClientInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/addOrderClientInfo" />
+
+    <FrameLayout
+        android:id="@+id/addOrderDebtContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_4"
+        android:background="@color/gray_light"
+        android:elevation="@dimen/gr_size_2"
+        app:layout_constraintTop_toBottomOf="@id/addOrderClientInfo" />
 
-        <TextView
-            android:id="@+id/addOrderClientInfo"
-            style="@style/ClientInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@id/addOrderWarning"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addOrderDebtContainer">
 
-        <TextView
-            android:id="@+id/addOrderWarning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/gr_size_8"
-            android:text="@string/need_cleaning"
-            android:textColor="@color/warning_text_dark"
-            android:textSize="@dimen/sp16"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/addOrderClientInfo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/addOrderClientInfo" />
-
-        <FrameLayout
-            android:id="@+id/addOrderDebtContainer"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gr_size_4"
-            android:background="@color/gray_light"
-            android:elevation="@dimen/gr_size_2"
-            app:layout_constraintTop_toBottomOf="@id/addOrderClientInfo" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:focusable="true"
-            android:scrollbars="none"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addOrderDebtContainer">
+            android:focusableInTouchMode="true">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/realisationTypeSelector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <Button
+                    android:id="@+id/realizationByBarrel"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/kasri" />
+
+                <Button
+                    android:id="@+id/realizationByBottle"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bottle" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <com.example.beerdistrkt.customView.BeerSelectorView
+                android:id="@+id/beerSelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true">
+                app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector" />
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/realisationTypeSelector"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
+            <com.example.beerdistrkt.customView.BottleSelectorView
+                android:id="@+id/bottleSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/beerSelector" />
 
-                    <Button
-                        android:id="@+id/realizationByBarrel"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/kasri" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addOrderAddItemBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/add_order_item"
+                android:src="@drawable/ic_playlist_add_24dp"
+                android:tint="@color/white"
+                app:backgroundTintMode="src_over"
+                app:fabSize="mini"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
 
-                    <Button
-                        android:id="@+id/realizationByBottle"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/bottle" />
+            <CheckBox
+                android:id="@+id/addOrderCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:checked="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
 
-                </com.google.android.material.button.MaterialButtonToggleGroup>
+            <LinearLayout
+                android:id="@+id/addOrderItemsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/temp_beer_cont_rect"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addOrderCheckBox" />
 
-                <com.example.beerdistrkt.customView.BeerSelectorView
-                    android:id="@+id/beerSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/realisationTypeSelector"/>
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierForSpinner"
+                android:layout_width="8dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="addOrderDistributorTitle, addOrderDistributorRegionTitle, addOrderDateTitle, addOrderStatusTv"
+                app:layout_constraintTop_toTopOf="@id/addOrderDistributorRegionTitle" />
 
-                <com.example.beerdistrkt.customView.BottleSelectorView
-                    android:id="@+id/bottleSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/beerSelector"/>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/endGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/gr_size_8" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/addOrderAddItemBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/add_order_item"
-                    android:src="@drawable/ic_playlist_add_24dp"
-                    android:tint="@color/white"
-                    app:backgroundTintMode="src_over"
-                    app:fabSize="mini"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
+            <TextView
+                android:id="@+id/addOrderDistributorRegionTitle"
+                style="@style/SpinnerTitle"
+                android:text="@string/choose_distributor_region"
+                app:layout_constraintBottom_toBottomOf="@id/addOrderDistributorRegionSpinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addOrderDistributorRegionSpinner" />
 
-                <CheckBox
-                    android:id="@+id/addOrderCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:checked="true"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
+            <Spinner
+                android:id="@+id/addOrderDistributorRegionSpinner"
+                style="@style/SpinnerInOrderForm"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                app:layout_constraintStart_toStartOf="@id/barrierForSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
 
-                <LinearLayout
-                    android:id="@+id/addOrderItemsContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/temp_beer_cont_rect"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addOrderCheckBox" />
+            <TextView
+                android:id="@+id/addOrderDistributorTitle"
+                style="@style/SpinnerTitle"
+                android:text="@string/choose_distributor"
+                app:layout_constraintBottom_toBottomOf="@id/addOrderDistributorSpinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addOrderDistributorSpinner" />
 
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/barrierForSpinner"
-                    android:layout_width="8dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:barrierDirection="end"
-                    app:constraint_referenced_ids="addOrderDistributorTitle, addOrderDistributorRegionTitle, addOrderDateTitle, addOrderStatusTv"
-                    app:layout_constraintTop_toTopOf="@id/addOrderDistributorRegionTitle" />
+            <Spinner
+                android:id="@+id/addOrderDistributorSpinner"
+                style="@style/SpinnerInOrderForm"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                app:layout_constraintStart_toStartOf="@id/barrierForSpinner"
+                app:layout_constraintTop_toBottomOf="@id/addOrderDistributorRegionSpinner" />
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/endGuideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_end="@dimen/gr_size_8" />
+            <TextView
+                android:id="@+id/addOrderDateTitle"
+                style="@style/SpinnerTitle"
+                android:text="@string/order_date"
+                app:layout_constraintBottom_toBottomOf="@id/addOrderOrderDate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addOrderOrderDate" />
 
-                <TextView
-                    android:id="@+id/addOrderDistributorRegionTitle"
-                    style="@style/SpinnerTitle"
-                    android:text="@string/choose_distributor_region"
-                    app:layout_constraintBottom_toBottomOf="@id/addOrderDistributorRegionSpinner"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/addOrderDistributorRegionSpinner" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addOrderOrderDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="-4dp"
+                android:backgroundTint="@color/gray_light"
+                android:drawableEnd="@drawable/calendar_icon"
+                app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                app:layout_constraintStart_toEndOf="@id/barrierForSpinner"
+                app:layout_constraintTop_toBottomOf="@id/addOrderDistributorSpinner" />
 
-                <Spinner
-                    android:id="@+id/addOrderDistributorRegionSpinner"
-                    style="@style/SpinnerInOrderForm"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                    app:layout_constraintStart_toStartOf="@id/barrierForSpinner"
-                    app:layout_constraintTop_toBottomOf="@+id/addOrderItemsContainer" />
+            <TextView
+                android:id="@+id/addOrderStatusTv"
+                style="@style/SpinnerTitle"
+                android:text="@string/status"
+                app:layout_constraintBottom_toBottomOf="@id/addOrderStatusSpinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addOrderStatusSpinner" />
 
-                <TextView
-                    android:id="@+id/addOrderDistributorTitle"
-                    style="@style/SpinnerTitle"
-                    android:text="@string/choose_distributor"
-                    app:layout_constraintBottom_toBottomOf="@id/addOrderDistributorSpinner"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/addOrderDistributorSpinner" />
+            <Spinner
+                android:id="@+id/addOrderStatusSpinner"
+                style="@style/SpinnerInOrderForm"
+                app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                app:layout_constraintStart_toEndOf="@id/barrierForSpinner"
+                app:layout_constraintTop_toBottomOf="@id/addOrderOrderDate" />
 
-                <Spinner
-                    android:id="@+id/addOrderDistributorSpinner"
-                    style="@style/SpinnerInOrderForm"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                    app:layout_constraintStart_toStartOf="@id/barrierForSpinner"
-                    app:layout_constraintTop_toBottomOf="@id/addOrderDistributorRegionSpinner" />
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addOrderStatusGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="addOrderStatusTv, addOrderStatusSpinner" />
 
-                <TextView
-                    android:id="@+id/addOrderDateTitle"
-                    style="@style/SpinnerTitle"
-                    android:text="@string/order_date"
-                    app:layout_constraintBottom_toBottomOf="@id/addOrderOrderDate"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/addOrderOrderDate" />
+            <EditText
+                android:id="@+id/addOrderComment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_8"
+                android:autofillHints="@string/comment"
+                android:hint="@string/comment"
+                android:inputType="text"
+                android:singleLine="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addOrderStatusSpinner"
+                tools:ignore="UnusedAttribute" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/addOrderOrderDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="-4dp"
-                    android:backgroundTint="@color/gray_light"
-                    android:drawableEnd="@drawable/calendar_icon"
-                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                    app:layout_constraintStart_toEndOf="@id/barrierForSpinner"
-                    app:layout_constraintTop_toBottomOf="@id/addOrderDistributorSpinner" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addOrderDoneBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gr_size_16"
+                android:paddingVertical="@dimen/gr_size_24"
+                android:text="@string/dadastureba"
+                android:textSize="@dimen/sp18"
+                app:layout_constraintTop_toBottomOf="@+id/addOrderComment" />
 
-                <TextView
-                    android:id="@+id/addOrderStatusTv"
-                    style="@style/SpinnerTitle"
-                    android:text="@string/status"
-                    app:layout_constraintBottom_toBottomOf="@id/addOrderStatusSpinner"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/addOrderStatusSpinner" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <Spinner
-                    android:id="@+id/addOrderStatusSpinner"
-                    style="@style/SpinnerInOrderForm"
-                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                    app:layout_constraintStart_toEndOf="@id/barrierForSpinner"
-                    app:layout_constraintTop_toBottomOf="@id/addOrderOrderDate" />
+    </ScrollView>
 
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/addOrderStatusGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:constraint_referenced_ids="addOrderStatusTv, addOrderStatusSpinner" />
-
-                <EditText
-                    android:id="@+id/addOrderComment"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/comment"
-                    android:hint="@string/comment"
-                    android:layout_marginTop="@dimen/gr_size_8"
-                    android:inputType="text"
-                    android:singleLine="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addOrderStatusSpinner"
-                    tools:ignore="UnusedAttribute" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/addOrderDoneBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gr_size_16"
-                    android:paddingVertical="@dimen/gr_size_24"
-                    android:text="@string/dadastureba"
-                    android:textSize="@dimen/sp18"
-                    app:layout_constraintTop_toBottomOf="@+id/addOrderComment" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </ScrollView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -44,12 +44,23 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         savedInstanceState: Bundle?
     ): View {
         vBinding = SalesFragmentBinding.inflate(inflater)
+        return vBinding.root
+    }
 
-        vBinding.viewModel = viewModel
-        vBinding.lifecycleOwner = this
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        vBinding.salesSetDateBtn.setOnClickListener {
-            context?.let {
+        viewModel.formUsersList()
+
+        initView()
+        initViewModel()
+        initBottomSheet()
+        initExpenseFragment()
+    }
+
+    private fun initView() = with(vBinding) {
+        salesSetDateBtn.setOnClickListener {
+            /*context?.let {
                 val datePickerDialog = DatePickerDialog(
                     it,
                     dateSetListener,
@@ -61,36 +72,44 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                 datePickerDialog.setCancelable(false)
                 datePickerDialog.show()
             }
+            */
+            DatePickerDialog(
+                requireContext(),
+                dateSetListener,
+                viewModel.calendar.get(Calendar.YEAR),
+                viewModel.calendar.get(Calendar.MONTH),
+                viewModel.calendar.get(Calendar.DAY_OF_MONTH)
+            ).apply {
+                datePicker.maxDate = Date().time
+                setCancelable(false)
+            }
+                .show()
         }
-        return vBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.formUsersList()
-        vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
+        salesDayBackBtn.setOnClickListener {
+            viewModel.changeDay(-1)
+        }
+        salesDayForwardBtn.setOnClickListener {
+            viewModel.changeDay(1)
+        }
+        salesDistributorsSpinner.adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
             viewModel.getDistributorNamesList()
         )
-        vBinding.salesDistributorsSpinner.onItemSelectedListener = this
+        salesDistributorsSpinner.onItemSelectedListener = this@SalesFragment
+
         if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
-            vBinding.salesDistributorsSpinner.setSelection(
+            salesDistributorsSpinner.setSelection(
                 viewModel.usersList.map { it.id }.indexOf(Session.get().userID)
             )
-            vBinding.salesDistributorsSpinner.isEnabled = false
+            salesDistributorsSpinner.isEnabled = false
         }
         if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
             viewModel.setCurrentDate()
-            vBinding.salesSetDateBtn.isEnabled = false
-            vBinding.salesDayBackBtn.isEnabled = false
-            vBinding.salesDayForwardBtn.isEnabled = false
+            salesSetDateBtn.isEnabled = false
+            salesDayBackBtn.isEnabled = false
+            salesDayForwardBtn.isEnabled = false
         }
-
-        initViewModel()
-        initBottomSheet()
-        initExpenseFragment()
     }
 
     private fun initExpenseFragment() {
@@ -120,47 +139,52 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         }
     }
 
-    fun initViewModel() {
-        viewModel.salesLiveData.observe(viewLifecycleOwner, Observer {
+    fun initViewModel() = with(viewModel) {
+        salesLiveData.observe(viewLifecycleOwner) {
             val adapter = SalesAdapter(context, it)
             vBinding.salesList1.adapter = adapter
             fillPageData()
-        })
-        viewModel.usersLiveData.observe(viewLifecycleOwner, Observer {
-            viewModel.formUserMap(it)
-        })
-        viewModel.deleteExpenseLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        usersLiveData.observe(viewLifecycleOwner) {
+            formUserMap(it)
+        }
+        deleteExpenseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast(getString(R.string.msg_record_deleted))
                     fillPageData()
                 }
+
                 is ApiResponseState.ApiError -> {
                     showToast(getString(R.string.msg_record_not_deleted))
                 }
+
                 else -> {}
             }
-            viewModel.deleteExpenseCompleted()
-        })
-        viewModel.addExpanseLiveData.observe(viewLifecycleOwner, Observer {
+            deleteExpenseCompleted()
+        }
+        addExpanseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     fillPageData()
                     showToast(getString(R.string.msg_record_added))
                 }
+
                 is ApiResponseState.ApiError -> {
                     showToast(getString(R.string.msg_record_not_added))
                 }
+
                 else -> {}
             }
-            viewModel.addExpenseCompleted()
-        })
-        viewModel.barrelsLiveData.observe(viewLifecycleOwner, Observer {
+            addExpenseCompleted()
+        }
+        barrelsLiveData.observe(viewLifecycleOwner) {
             initBarrelBlock(it)
-        })
-        viewModel.selectedDayLiveData.observe(viewLifecycleOwner, Observer {
-            vBinding.salesDayForwardBtn.isEnabled = !viewModel.isToday()
-        })
+        }
+        selectedDayLiveData.observe(viewLifecycleOwner) { dateString ->
+            vBinding.salesDayForwardBtn.isEnabled = !isToday()
+            vBinding.salesSetDateBtn.text = dateString
+        }
     }
 
     private fun fillPageData() {
@@ -168,11 +192,17 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         val atHand = viewModel.getCashAmount() - expenseSum
         val transferAmount = viewModel.getTransferAmount()
         val frictionSize = resources.getDimensionPixelSize(R.dimen.sp14)
-        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum).setFrictionSize(frictionSize)
-        vBinding.salesSumXarji.text = resources.getString(R.string.format_gel, expenseSum).setFrictionSize(frictionSize)
-        vBinding.salesAmountAtHand.text = resources.getString(R.string.format_gel, atHand).setFrictionSize(frictionSize)
-        vBinding.salesTakenAmount.text = resources.getString(R.string.format_gel, viewModel.getCashAmount()).setFrictionSize(frictionSize)
-        vBinding.salesTakenTransferAmount.text = resources.getString(R.string.format_gel, transferAmount).setFrictionSize(frictionSize)
+        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
+            .setFrictionSize(frictionSize)
+        vBinding.salesSumXarji.text =
+            resources.getString(R.string.format_gel, expenseSum).setFrictionSize(frictionSize)
+        vBinding.salesAmountAtHand.text =
+            resources.getString(R.string.format_gel, atHand).setFrictionSize(frictionSize)
+        vBinding.salesTakenAmount.text =
+            resources.getString(R.string.format_gel, viewModel.getCashAmount())
+                .setFrictionSize(frictionSize)
+        vBinding.salesTakenTransferAmount.text =
+            resources.getString(R.string.format_gel, transferAmount).setFrictionSize(frictionSize)
     }
 
     private fun initBarrelBlock(data: List<BarrelIO>) {

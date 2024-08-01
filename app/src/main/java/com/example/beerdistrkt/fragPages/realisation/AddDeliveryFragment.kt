@@ -80,7 +80,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         savedInstanceState: Bundle?
     ): View {
         vBinding = AddDeliveryFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = viewLifecycleOwner
         return vBinding.root
     }
 

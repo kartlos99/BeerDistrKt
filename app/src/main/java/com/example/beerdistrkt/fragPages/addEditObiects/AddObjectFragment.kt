@@ -77,7 +77,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 comment = addEditComment.editText?.text.toString().trim(),
                 sk = addEditClientSK.editText?.text.toString().trim(),
                 sakpiri = addEditClientPerson.editText?.text.toString().trim(),
-                chek = if (addEditClientChek.isChecked) "1" else "0",
+                chek = if (addEditClientCheck.isChecked) "1" else "0",
             )
 
             viewModel.addClient(
@@ -232,7 +232,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         addEditClientAdress.editText?.setText(clientData.customer.adress ?: "")
         addEditClientPhone.editText?.setText(clientData.customer.tel ?: "")
         addEditComment.editText?.setText(clientData.customer.comment ?: "")
-        addEditClientChek.isChecked = clientData.customer.chek == "1"
+        addEditClientCheck.isChecked = clientData.customer.chek == "1"
     }
 
     private fun drawPriceInputFields(data: CustomerWithPrices?) {
