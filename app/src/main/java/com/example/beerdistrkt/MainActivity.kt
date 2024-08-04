@@ -37,11 +37,13 @@ import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 
 const val PREF_NAME = "folds"
 val Context.dataStore by preferencesDataStore(name = PREF_NAME)
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
 

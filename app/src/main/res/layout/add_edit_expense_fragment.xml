@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragPages.expense.AddEditExpenseFragment">
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/category_chips_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_16"
+        app:singleLine="false"
+        app:singleSelection="true">
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <EditText
+        android:id="@+id/e_xarj_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="@string/lari"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/t_xarj_amount"
+        app:layout_constraintTop_toBottomOf="@id/category_chips_group" />
+
+    <EditText
+        android:id="@+id/e_xarj_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/comment"
+        app:layout_constraintTop_toBottomOf="@id/e_xarj_amount" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

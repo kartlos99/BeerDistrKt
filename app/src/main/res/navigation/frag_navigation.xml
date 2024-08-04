@@ -137,7 +137,11 @@
         android:id="@+id/salesFragment"
         android:name="com.example.beerdistrkt.fragPages.realisationtotal.SalesFragment"
         android:label="@string/daily_sales"
-        tools:layout="@layout/sales_fragment" />
+        tools:layout="@layout/sales_fragment" >
+        <action
+            android:id="@+id/action_salesFragment_to_addEditExpenseFragment"
+            app:destination="@id/addEditExpenseFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.beerdistrkt.fragPages.login.LoginFragment"
@@ -263,4 +267,9 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <fragment
+        android:id="@+id/addEditExpenseFragment"
+        android:name="com.example.beerdistrkt.fragPages.expense.AddEditExpenseFragment"
+        android:label="add_edit_expense_fragment"
+        tools:layout="@layout/add_edit_expense_fragment" />
 </navigation>

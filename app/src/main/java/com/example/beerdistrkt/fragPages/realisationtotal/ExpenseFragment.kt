@@ -5,12 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.databinding.FragmentExpenseBinding
-import com.example.beerdistrkt.dialogs.XarjebiDialog
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.models.DeleteRequest
@@ -95,19 +95,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
 
     private fun addNewExpense() {
         if (Session.get().hasPermission(Permission.AddExpenseInPast) || viewModel.isToday())
-            XarjebiDialog(requireContext()) { comment, amount ->
-                if (amount.isEmpty()) {
-                    showToast(getString(R.string.msg_empty_not_saved))
-                } else {
-                    try {
-                        val am = amount.toFloat()
-                        viewModel.addExpense(comment, am.toString())
-                    } catch (e: NumberFormatException) {
-                        Log.d(SalesFragment.TAG, e.toString())
-                        showToast(getString(R.string.msg_invalid_format))
-                    }
-                }
-            }.show(childFragmentManager, "expenseDialogTag")
+            findNavController().navigate(R.id.action_salesFragment_to_addEditExpenseFragment)
         else
             showToast(R.string.cant_add_xarji)
     }
