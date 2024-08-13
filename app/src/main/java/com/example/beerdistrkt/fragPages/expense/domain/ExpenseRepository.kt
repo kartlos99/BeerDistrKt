@@ -7,5 +7,5 @@ interface ExpenseRepository {
 
     suspend fun putExpenseCategory(category: ExpenseCategory): ApiResponse<Any>
 
-    suspend fun getCategories(): ApiResponse<List<ExpenseCategory>>
+    suspend fun getCategories(force: Boolean): ApiResponse<List<ExpenseCategory>>
 }

@@ -9,7 +9,7 @@ class GetExpenseCategoriesUseCase @Inject constructor(
     private val repository: ExpenseRepository
 ) {
 
-    suspend operator fun invoke(): ApiResponse<List<ExpenseCategory>> {
-        return repository.getCategories()
+    suspend operator fun invoke(force: Boolean = false): ApiResponse<List<ExpenseCategory>> {
+        return repository.getCategories(force)
     }
 }
