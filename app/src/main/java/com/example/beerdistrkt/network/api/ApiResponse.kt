@@ -12,3 +12,5 @@ sealed class ApiResponse<out T> {
 fun <T> T.asSuccessResponse(): ApiResponse.Success<T> {
     return ApiResponse.Success(this)
 }
+
+const val DUPLICATE_ENTRY_API_ERROR_CODE = "1062"

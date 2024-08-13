@@ -269,7 +269,7 @@
     </fragment>
     <fragment
         android:id="@+id/addEditExpenseFragment"
-        android:name="com.example.beerdistrkt.fragPages.expense.AddEditExpenseFragment"
+        android:name="com.example.beerdistrkt.fragPages.expense.presentation.AddEditExpenseFragment"
         android:label="add_edit_expense_fragment"
         tools:layout="@layout/add_edit_expense_fragment" />
 </navigation>

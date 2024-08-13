@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragPages.expense.AddEditExpenseFragment">
+    tools:context=".fragPages.expense.presentation.AddEditExpenseFragment">
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/category_chips_group"

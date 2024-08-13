@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.expense
+package com.example.beerdistrkt.fragPages.expense.presentation
 
 import android.os.Bundle
 import android.view.View

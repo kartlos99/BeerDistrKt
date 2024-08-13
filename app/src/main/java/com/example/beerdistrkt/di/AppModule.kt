@@ -1,6 +1,9 @@
 package com.example.beerdistrkt.di
 
 import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.fragPages.expense.data.ExpenseCategoryMapper
+import com.example.beerdistrkt.fragPages.expense.data.ExpenseRepositoryImpl
+import com.example.beerdistrkt.fragPages.expense.domain.ExpenseRepository
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.example.beerdistrkt.network.api.DistributionApi
 import com.squareup.moshi.Moshi
@@ -56,4 +59,15 @@ object AppModule {
     @Singleton
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    @Provides
+    @Singleton
+    fun provideExpenseRepository(
+        api: DistributionApi,
+        mapper: ExpenseCategoryMapper,
+        dispatcher: CoroutineDispatcher,
+    ): ExpenseRepository = ExpenseRepositoryImpl(
+        api,
+        mapper,
+        dispatcher
+    )
 }
