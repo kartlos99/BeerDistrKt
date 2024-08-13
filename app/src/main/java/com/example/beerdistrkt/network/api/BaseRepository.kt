@@ -18,12 +18,15 @@ abstract class BaseRepository(private val ioDispatcher: CoroutineDispatcher) {
                 when (throwable) {
                     is IOException -> ApiResponse.Error(IO_EXCEPTION_CODE, "ioException")
                     is HttpException -> with(convertErrorBody(throwable)) {
-                        ApiResponse.Error(
-                            throwable.code(),
-                            this?.errorMessage.ifNullOrEmpty(throwable.message()),
-                            this?.errorCode
-                        )
+                        this?.let { errorResponse ->
+                            ApiResponse.Error(
+                                throwable.code(),
+                                errorResponse.errorMessage.ifNullOrEmpty(throwable.message()),
+                                errorResponse.errorCode
+                            )
+                        } ?: ApiResponse.Error(PARSE_EXCEPTION_CODE, throwable.message)
                     }
+
                     else -> ApiResponse.Error(PARSE_EXCEPTION_CODE, throwable.message)
                 }
             }
