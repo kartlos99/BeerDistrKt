@@ -27,7 +27,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
@@ -271,7 +270,7 @@ fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text
     val view: View = LayoutInflater.from(this).inflate(R.layout.text_input_layout, null)
     builder
         .setView(view)
-        .setPositiveButton(R.string.chawera) { dialog, which ->
+        .setPositiveButton(R.string.text_record) { dialog, which ->
             callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
             dialog.dismiss()
         }.show()

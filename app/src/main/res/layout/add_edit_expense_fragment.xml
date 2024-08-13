@@ -6,34 +6,83 @@
     android:layout_height="match_parent"
     tools:context=".fragPages.expense.presentation.AddEditExpenseFragment">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/expenseAmountField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_36"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:suffixText="@string/lari">
+
+        <EditText
+            android:id="@+id/expenseAmountInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/expense_amount"
+            android:hint="@string/expense_amount"
+            android:inputType="numberDecimal"
+            android:maxLength="8"
+            tools:ignore="UnusedAttribute" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/expenseCommentField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="@dimen/gr_size_16"
+        android:hint="@string/comment"
+        app:layout_constraintTop_toBottomOf="@id/expenseAmountField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/expenseCommentInput"
+            android:singleLine="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/expenseCategoriesTitle"
+        android:layout_margin="@dimen/gr_size_16"
+        app:layout_constraintTop_toBottomOf="@id/expenseCommentField"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:text="@string/expense_categories_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/category_chips_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gr_size_16"
+        android:layout_margin="@dimen/gr_size_8"
+        app:layout_constraintTop_toBottomOf="@id/expenseCategoriesTitle"
         app:singleLine="false"
         app:singleSelection="true">
 
     </com.google.android.material.chip.ChipGroup>
 
-    <EditText
-        android:id="@+id/e_xarj_amount"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/saveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:hint="@string/lari"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/t_xarj_amount"
-        app:layout_constraintTop_toBottomOf="@id/category_chips_group" />
+        android:layout_margin="@dimen/gr_size_16"
+        android:padding="@dimen/gr_size_16"
+        android:text="@string/text_record"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <EditText
-        android:id="@+id/e_xarj_comment"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:hint="@string/comment"
-        app:layout_constraintTop_toBottomOf="@id/e_xarj_amount" />
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/colorAccent_33"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:trackColor="@color/gray_transparent_20"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

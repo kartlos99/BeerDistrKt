@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         builder
             .setView(chPassView.root)
             .setTitle(R.string.change_pass)
-            .setPositiveButton(R.string.chawera, null)
+            .setPositiveButton(R.string.text_record, null)
             .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog?.dismiss()
             }

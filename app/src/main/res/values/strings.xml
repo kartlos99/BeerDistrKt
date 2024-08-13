@@ -65,7 +65,7 @@
     <string name="ssysclear">სისტ. გაწმენდა</string>
     <string name="reports">რეპორტი</string>
     <string name="damimaxsovre">დამიმახსოვრე</string>
-    <string name="chawera">ჩაწერა</string>
+    <string name="text_record">ჩაწერა</string>
     <string name="sys_clean">სისტემის გაწმენდა</string>
     <string name="past_days">დღები</string>
     <string name="chanaweris_damateba">ჩანაწერის დამატება</string>
@@ -271,5 +271,9 @@
     <string name="incorrect_beer">აირჩიე ლუდი</string>
     <string name="incorrect_price">არასწორი ფასი</string>
     <string name="incorrect_status">აირჩიე სტატუსი</string>
+
+    <string name="expense_amount">ხარჯის ოდენობა</string>
+    <string name="expense_categories_title">ხარჯის კატეგორიები</string>
+    <string name="text_confirm">დადასტურება</string>
 
 </resources>
