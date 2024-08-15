@@ -57,7 +57,6 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         savedInstanceState: Bundle?
     ): View {
         vBinding = AddOrdersFragmentBinding.inflate(inflater)
-        vBinding.lifecycleOwner = viewLifecycleOwner
         return vBinding.root
     }
 

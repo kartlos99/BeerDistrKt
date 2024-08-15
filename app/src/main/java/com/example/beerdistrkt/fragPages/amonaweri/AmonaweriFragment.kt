@@ -73,9 +73,9 @@ class AmonaweriFragment : BaseFragment<AmonaweriViewModel>() {
             }
         }
 
-        viewModel.clientLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.clientLiveData.observe(viewLifecycleOwner) {
             vBinding.fragStatementClientInfo.text = it.obieqti.dasaxeleba
-        })
+        }
         showDebt()
     }
 

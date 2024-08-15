@@ -12,7 +12,7 @@ import com.example.beerdistrkt.models.*
     User::class,
     BeerModelBase::class,
     CanModel::class
-], version = 13, exportSchema = false)
+], version = 16, exportSchema = false)
 abstract class ApeniDataBase : RoomDatabase() {
 
     abstract val apeniDataBaseDao: ApeniDatabaseDao

@@ -49,12 +49,23 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         savedInstanceState: Bundle?
     ): View {
         vBinding = SalesFragmentBinding.inflate(inflater)
+        return vBinding.root
+    }
 
-        vBinding.viewModel = viewModel
-        vBinding.lifecycleOwner = this
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        vBinding.salesSetDateBtn.setOnClickListener {
-            context?.let {
+        viewModel.formUsersList()
+
+        initView()
+        initViewModel()
+        initBottomSheet()
+        initExpenseFragment()
+    }
+
+    private fun initView() = with(vBinding) {
+        salesSetDateBtn.setOnClickListener {
+            /*context?.let {
                 val datePickerDialog = DatePickerDialog(
                     it,
                     dateSetListener,
@@ -66,41 +77,48 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                 datePickerDialog.setCancelable(false)
                 datePickerDialog.show()
             }
+            */
+            DatePickerDialog(
+                requireContext(),
+                dateSetListener,
+                viewModel.calendar.get(Calendar.YEAR),
+                viewModel.calendar.get(Calendar.MONTH),
+                viewModel.calendar.get(Calendar.DAY_OF_MONTH)
+            ).apply {
+                datePicker.maxDate = Date().time
+                setCancelable(false)
+            }
+                .show()
         }
-        return vBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.formUsersList()
-        vBinding.salesDistributorsSpinner.adapter = ArrayAdapter(
+        salesDayBackBtn.setOnClickListener {
+            viewModel.changeDay(-1)
+        }
+        salesDayForwardBtn.setOnClickListener {
+            viewModel.changeDay(1)
+        }
+        salesDistributorsSpinner.adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
             viewModel.getDistributorNamesList()
         )
-        vBinding.salesDistributorsSpinner.onItemSelectedListener = this
+        salesDistributorsSpinner.onItemSelectedListener = this@SalesFragment
 
         if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
             val currentUserIndexInSpinner =
                 viewModel.visibleDistributors.map { it.id }.indexOf(Session.get().userID)
             if (currentUserIndexInSpinner >= 0) {
-                vBinding.salesDistributorsSpinner.setSelection(currentUserIndexInSpinner)
+                salesDistributorsSpinner.setSelection(currentUserIndexInSpinner)
             } else {
                 (activity as MainActivity).logOut()
             }
-            vBinding.salesDistributorsSpinner.isEnabled = false
+            salesDistributorsSpinner.isEnabled = false
         }
         if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
             viewModel.setCurrentDate()
-            vBinding.salesSetDateBtn.isEnabled = false
-            vBinding.salesDayBackBtn.isEnabled = false
-            vBinding.salesDayForwardBtn.isEnabled = false
+            salesSetDateBtn.isEnabled = false
+            salesDayBackBtn.isEnabled = false
+            salesDayForwardBtn.isEnabled = false
         }
-
-        initViewModel()
-        initBottomSheet()
-        initExpenseFragment()
     }
 
     private fun initExpenseFragment() {
@@ -130,16 +148,16 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         }
     }
 
-    fun initViewModel() {
-        viewModel.salesLiveData.observe(viewLifecycleOwner) {
+    fun initViewModel() = with(viewModel) {
+        salesLiveData.observe(viewLifecycleOwner) {
             val adapter = SalesAdapter(context, it)
             vBinding.salesList1.adapter = adapter
             fillPageData()
         }
-        viewModel.usersLiveData.observe(viewLifecycleOwner) {
-            viewModel.formUserMap(it)
+        usersLiveData.observe(viewLifecycleOwner) {
+            formUserMap(it)
         }
-        viewModel.deleteExpenseLiveData.observe(viewLifecycleOwner) {
+        deleteExpenseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast(getString(R.string.msg_record_deleted))
@@ -152,9 +170,9 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
                 else -> {}
             }
-            viewModel.deleteExpenseCompleted()
+            deleteExpenseCompleted()
         }
-        viewModel.addExpanseLiveData.observe(viewLifecycleOwner) {
+        addExpanseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     fillPageData()
@@ -167,13 +185,14 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
                 else -> {}
             }
-            viewModel.addExpenseCompleted()
+            addExpenseCompleted()
         }
-        viewModel.barrelsLiveData.observe(viewLifecycleOwner) {
+        barrelsLiveData.observe(viewLifecycleOwner) {
             initBarrelBlock(it)
         }
-        viewModel.selectedDayLiveData.observe(viewLifecycleOwner) {
-            vBinding.salesDayForwardBtn.isEnabled = !viewModel.isToday()
+        selectedDayLiveData.observe(viewLifecycleOwner) { dateString ->
+            vBinding.salesDayForwardBtn.isEnabled = !isToday()
+            vBinding.salesSetDateBtn.text = dateString
         }
     }
 
