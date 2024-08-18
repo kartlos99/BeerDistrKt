@@ -65,6 +65,17 @@
 
     </com.google.android.material.chip.ChipGroup>
 
+    <TextView
+        android:id="@+id/infoMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_24"
+        android:textAlignment="center"
+        android:textColor="@color/design_default_color_error"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/category_chips_group"
+        tools:text="message" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveBtn"
         android:layout_width="match_parent"
