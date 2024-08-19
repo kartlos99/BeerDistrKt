@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderItemAdapter
+import com.example.beerdistrkt.getColor
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.showToast
@@ -89,7 +90,7 @@ class OrderView @JvmOverloads constructor(
                     orderStatusTv.setTextColor(Color.RED)
                 else
                     orderMainConstraint.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.red_01))
+                        ColorStateList.valueOf(getColor(R.color.red_01))
             }
             bkgForDeleted.isVisible = order.orderStatus == OrderStatus.DELETED
 
@@ -108,7 +109,7 @@ class OrderView @JvmOverloads constructor(
             orderItemList.adapter = OrderItemAdapter(
                 itemList.toSortedMap(),
                 salesList,
-                order.bottleItems,
+                order.getBottleOrderItemsToDisplay(),
                 order.bottleSales
             )
 

@@ -8,18 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.MainActivity
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.realisationtotal.adapter.BarrelsIOAdapter
+import com.example.beerdistrkt.getActCtxViewModel
+import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.models.BarrelIO
+import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelectedListener {
 
@@ -99,9 +104,13 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         salesDistributorsSpinner.onItemSelectedListener = this@SalesFragment
 
         if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
-            salesDistributorsSpinner.setSelection(
-                viewModel.usersList.map { it.id }.indexOf(Session.get().userID)
-            )
+            val currentUserIndexInSpinner =
+                viewModel.visibleDistributors.map { it.id }.indexOf(Session.get().userID)
+            if (currentUserIndexInSpinner >= 0) {
+                salesDistributorsSpinner.setSelection(currentUserIndexInSpinner)
+            } else {
+                (activity as MainActivity).logOut()
+            }
             salesDistributorsSpinner.isEnabled = false
         }
         if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
@@ -188,7 +197,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     }
 
     private fun fillPageData() {
-        val expenseSum = viewModel.expenses.sumByDouble { it.amount.toDouble() }
+        val expenseSum = viewModel.expenses.sumOf { it.amount.toDouble() }
         val atHand = viewModel.getCashAmount() - expenseSum
         val transferAmount = viewModel.getTransferAmount()
         val frictionSize = resources.getDimensionPixelSize(R.dimen.sp14)
@@ -219,7 +228,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.selectedDistributorID = viewModel.usersList[position].id.toInt()
+        viewModel.selectedDistributorID = viewModel.visibleDistributors[position].id.toInt()
         viewModel.prepareData()
     }
 }

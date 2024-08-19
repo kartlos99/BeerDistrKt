@@ -7,7 +7,9 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -20,9 +22,16 @@ class SalesHistoryViewModel : BaseViewModel() {
     private lateinit var usersList: List<User>
     private lateinit var beerList: List<BeerModelBase>
 
+    private val bottleList = ObjectCache.getInstance()
+        .getList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID) ?: listOf()
+
     private val _saleHistoryLiveData = MutableLiveData<ApiResponseState<List<SaleHistory>>>()
     val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>
         get() = _saleHistoryLiveData
+
+    private val _bottleSaleHistoryLiveData = MutableLiveData<ApiResponseState<List<BottleSaleHistory>>>()
+    val bottleSaleHistoryLiveData: LiveData<ApiResponseState<List<BottleSaleHistory>>>
+        get() = _bottleSaleHistoryLiveData
 
     private val _moneyHistoryLiveData = MutableLiveData<ApiResponseState<List<MoneyHistory>>>()
     val moneyHistoryLiveData: LiveData<ApiResponseState<List<MoneyHistory>>>
@@ -52,6 +61,23 @@ class SalesHistoryViewModel : BaseViewModel() {
                     }
 
                 _saleHistoryLiveData.value = ApiResponseState.Success(pmModel)
+            }
+        )
+    }
+
+    fun requestBottleSaleHistory(saleID: Int) {
+        sendRequest(
+            ApeniApiService.getInstance().getBottleSalesHistory(saleID),
+            successWithData = { historyData ->
+                val pmModel = historyData
+                    .mapNotNull {
+                        it.toPm(
+                            clients,
+                            usersList,
+                            bottleList
+                        )
+                    }
+                _bottleSaleHistoryLiveData.value = ApiResponseState.Success(pmModel)
             }
         )
     }

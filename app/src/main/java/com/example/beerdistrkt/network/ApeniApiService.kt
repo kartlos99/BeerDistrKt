@@ -26,6 +26,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.fragPages.settings.model.SettingParam
+import com.example.beerdistrkt.fragPages.showHistory.BottleSaleHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.MoneyHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
@@ -279,6 +280,9 @@ interface ApeniApiService {
 
     @GET("sales/getHistory.php")
     fun getSalesHistory(@Query("saleID") saleID: Int): Call<DataResponse<List<SaleHistoryDTO>>>
+
+    @GET("sales/getBottleHistory.php")
+    fun getBottleSalesHistory(@Query("saleID") saleID: Int): Call<DataResponse<List<BottleSaleHistoryDTO>>>
 
     @GET("sales/getMoneyHistory.php")
     fun getMoneyHistory(@Query("recordID") recordID: Int): Call<DataResponse<List<MoneyHistoryDTO>>>

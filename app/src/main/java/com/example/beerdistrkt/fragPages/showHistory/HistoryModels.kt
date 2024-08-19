@@ -5,6 +5,7 @@ import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.squareup.moshi.Json
 
 data class OrderHistoryDTO(
@@ -38,7 +39,7 @@ data class OrderHistoryDTO(
     ): OrderHistory {
 
         val client = clients.find {
-            it.id ?: 0 == clientID
+            (it.id ?: 0) == clientID
         } ?: Obieqti.emptyModel
 
         val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
@@ -170,6 +171,56 @@ data class MoneyHistory(
     val distributor: User,
     val moneyAmount: Double,
     val paymentType: PaymentType,
+    val comment: String?,
+    val modifyDate: String,
+    val modifyUser: User
+)
+
+
+data class BottleSaleHistoryDTO(
+    val saleDate: String,
+    val clientID: Int,
+    val distributorID: Int,
+    val bottleID: Int,
+    val price: Double,
+    val count: Int,
+    val comment: String?,
+    val modifyDate: String,
+    val modifyUserID: Int
+) {
+    fun toPm(
+        clients: List<Obieqti>,
+        usersList: List<User>,
+        bottles: List<BaseBottleModel>
+    ): BottleSaleHistory? {
+        val client = clients.find {
+            it.id == clientID
+        } ?: Obieqti.emptyModel
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        val bottle = bottles.find { it.id == bottleID } ?: return null
+
+        return BottleSaleHistory(
+            saleDate,
+            client,
+            distributor,
+            bottle,
+            price,
+            count,
+            comment,
+            modifyDate,
+            modifyUser
+        )
+    }
+}
+
+data class BottleSaleHistory(
+    val saleDate: String,
+    val client: Obieqti,
+    val distributor: User,
+    val bottle: BaseBottleModel,
+    val unitPrice: Double,
+    val count: Int,
     val comment: String?,
     val modifyDate: String,
     val modifyUser: User

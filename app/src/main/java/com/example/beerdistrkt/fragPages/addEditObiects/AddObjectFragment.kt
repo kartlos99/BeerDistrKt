@@ -124,10 +124,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         for (i in 0 until binding.addEditClientBottlePricesContainer.childCount) {
             val priceRow = binding.addEditClientBottlePricesContainer.getChildAt(i) as LinearLayout
             val eText = priceRow.getChildAt(1) as EditText
-            val price = if (eText.text.isEmpty())
-                eText.hint
-            else
-                eText.text
+            val price = eText.text.ifEmpty { eText.hint }
 
             val bottleID = eText.tag as Int
 

@@ -132,6 +132,24 @@ data class Order(
 
         return result
     }
+
+    fun getBottleOrderItemsToDisplay() : List<BottleItem> {
+        return bottleItems.toMutableList().apply {
+            val keys = map { it.bottle.id }
+            bottleSales
+                .filter { keys.contains(it.bottle.id).not() }
+                .forEach {
+                    add(
+                        BottleItem(
+                        0,
+                        it.orderID,
+                        it.bottle,
+                        0
+                    )
+                    )
+                }
+        }
+    }
 }
 
 enum class OrderStatus(val textRes: Int, val data: Int) {

@@ -81,33 +81,33 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     fun AddOrdersFragmentBinding.initView() {
 
-        vBinding.addOrderStatusGroup.isVisible = viewModel.editingOrderID > 0
+        addOrderStatusGroup.isVisible = viewModel.editingOrderID > 0
 
-        vBinding.beerSelector.initView(
+        beerSelector.initView(
             viewModel.beerList,
             viewModel.cansList,
             ::checkForm
         )
-        vBinding.beerSelector.onDeleteClick = {
+        beerSelector.onDeleteClick = {
             viewModel.removeOrderItemFromList(it)
         }
         bottleSelector.initView(
             viewModel.bottleList,
             ::checkForm
         )
-        vBinding.bottleSelector.onDeleteClick = {
+        bottleSelector.onDeleteClick = {
             viewModel.removeOrderItemFromList(it)
         }
         initDistributorSpinner()
 
-        vBinding.addOrderStatusSpinner.adapter = ArrayAdapter(
+        addOrderStatusSpinner.adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
             viewModel.orderStatusList.map {
                 resources.getString(it.textRes)
             }
         )
-        vBinding.addOrderStatusSpinner.onItemSelectedListener = this@AddOrdersFragment
+        addOrderStatusSpinner.onItemSelectedListener = this@AddOrdersFragment
 
         realisationTypeSelector.check(R.id.realizationByBarrel)
         realisationTypeSelector.addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -329,7 +329,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent?.id) {
             R.id.addOrderDistributorSpinner ->
-                viewModel.selectedDistributor = viewModel.usersList[position]
+                viewModel.selectedDistributor = viewModel.visibleDistributors[position]
 
             R.id.addOrderStatusSpinner ->
                 viewModel.selectedStatus = viewModel.orderStatusList[position]

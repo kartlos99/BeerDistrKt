@@ -10,12 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.fragPages.amonaweri.model.CtxMenuItem
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
-import com.example.beerdistrkt.fragPages.amonaweri.adapter.StatementAdapter
 import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
+import com.example.beerdistrkt.fragPages.amonaweri.adapter.StatementAdapter
+import com.example.beerdistrkt.fragPages.amonaweri.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment
+import com.example.beerdistrkt.fragPages.amonaweri.model.StatementRecordType
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
 import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -135,9 +138,14 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             CtxMenuItem.History.itemID -> {
                 val statementItem = statementListAdapter.getItem(item.groupId)
                 if (statementItem.pay != 0F)
-                    onShowHistory?.invoke(statementItem.id, SalesHistoryFragment.money)
-                else
-                    onShowHistory?.invoke(statementItem.id, SalesHistoryFragment.delivery)
+                    onShowHistory?.invoke(statementItem.id, MONEY)
+                else {
+                    when (statementItem.recordType) {
+                        StatementRecordType.SALE_BEER -> onShowHistory?.invoke(statementItem.id, BARREL_DELIVERY)
+                        StatementRecordType.SALE_BOTTLE -> onShowHistory?.invoke(statementItem.id, BOTTLE_DELIVERY)
+                        else -> {}
+                    }
+                }
                 return true
             }
 
