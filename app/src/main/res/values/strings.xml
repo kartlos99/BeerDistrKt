@@ -122,7 +122,8 @@
     <string name="expense_title">ხარჯები</string>
     <string name="xelze_tanxa">ხელზე თანხა:</string>
     <string name="odenoba">ოდენობა</string>
-    <string name="add_xarji">ხარჯის დამატება</string>
+    <string name="add_expense">ხარჯის დამატება</string>
+    <string name="edit_expense">ხარჯის რედაქტირება</string>
     <string name="comments">კომენტარები</string>
     <string name="notif_text">სანახავად დააჭირეთ</string>
     <string name="notif_title">ახალი კომენტარი</string>

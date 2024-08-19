@@ -172,21 +172,6 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             }
             deleteExpenseCompleted()
         }
-        addExpanseLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> {
-                    fillPageData()
-                    showToast(getString(R.string.msg_record_added))
-                }
-
-                is ApiResponseState.ApiError -> {
-                    showToast(getString(R.string.msg_record_not_added))
-                }
-
-                else -> {}
-            }
-            addExpenseCompleted()
-        }
         barrelsLiveData.observe(viewLifecycleOwner) {
             initBarrelBlock(it)
         }

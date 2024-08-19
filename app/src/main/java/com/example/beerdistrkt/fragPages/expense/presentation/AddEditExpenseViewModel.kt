@@ -92,9 +92,6 @@ class AddEditExpenseViewModel @Inject constructor(
         categoryID: Int
     ) = viewModelScope.launch {
         _errorStateFlow.value = ""
-        if (categoryID == -1) {
-            _errorStateFlow.value = ERROR_TEXT_NO_CATEGORY
-        }
         _categoriesStateFlow.value.firstOrNull {
             it.id == categoryID
         }?.let { category ->
@@ -107,7 +104,7 @@ class AddEditExpenseViewModel @Inject constructor(
             )
             putExpense(expense)
         }
-            ?: _errorStateFlow.emit("Can't match category!")
+            ?: _errorStateFlow.emit(ERROR_TEXT_NO_CATEGORY)
     }
 
     private suspend fun putExpense(expense: Expense) {

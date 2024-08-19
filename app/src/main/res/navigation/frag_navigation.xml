@@ -270,6 +270,6 @@
     <fragment
         android:id="@+id/addEditExpenseFragment"
         android:name="com.example.beerdistrkt.fragPages.expense.presentation.AddEditExpenseFragment"
-        android:label="add_edit_expense_fragment"
+        android:label="@string/add_expense"
         tools:layout="@layout/add_edit_expense_fragment" />
 </navigation>

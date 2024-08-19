@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequestModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.models.CanModel
@@ -19,7 +18,6 @@ import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import java.util.Calendar
 import java.util.Date
 
@@ -37,17 +35,9 @@ class SalesViewModel : BaseViewModel() {
     val deleteExpenseLiveData: LiveData<ApiResponseState<String>>
         get() = _deleteExpenseLiveData
 
-    private val _addExpenseLiveData = MutableLiveData<ApiResponseState<String>>()
-    val addExpanseLiveData: LiveData<ApiResponseState<String>>
-        get() = _addExpenseLiveData
-
     private val _selectedDayLiveData = MutableLiveData<String>()
     val selectedDayLiveData: LiveData<String>
         get() = _selectedDayLiveData
-
-//    private val _realizationDayLiveData = MutableLiveData<RealizationDay>()
-//    val realizationDayLiveData: LiveData<RealizationDay>
-//        get() = _realizationDayLiveData
 
     private val _salesLiveData = MutableLiveData<List<SaleInfo>>()
     val salesLiveData: LiveData<List<SaleInfo>>
@@ -165,41 +155,6 @@ class SalesViewModel : BaseViewModel() {
                 Log.d(TAG, "successfully Deleted = $it")
             }
         )
-    }
-
-    fun addExpense(comment: String, amount: String) {
-        Log.d(TAG, " comm $amount")
-        sendRequest(
-            ApeniApiService.getInstance().addXarji(
-                AddXarjiRequestModel(
-                    Session.get().userID!!,
-                    amount.toDouble(),
-                    comment,
-                    dateTimeFormat.format(calendar.time)
-                )
-
-            ),
-            successWithData = {
-                expenses.add(
-                    Xarji(
-                        comment,
-                        Session.get().userID!!,
-                        it.toString(),
-                        amount = amount.toFloat()
-                    )
-                )
-                _expenseLiveData.value = expenses
-                _addExpenseLiveData.value = ApiResponseState.Success("")
-            },
-            responseFailure = { i: Int, s: String ->
-                _addExpenseLiveData.value = ApiResponseState.ApiError(i, s)
-            }
-        )
-    }
-
-    fun addExpenseCompleted() {
-        if (_addExpenseLiveData.value !is ApiResponseState.Sleep)
-            _addExpenseLiveData.value = ApiResponseState.Sleep
     }
 
     fun deleteExpenseCompleted() {
