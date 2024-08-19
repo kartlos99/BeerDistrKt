@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
@@ -60,6 +61,15 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.errorStateFlow.collectLatest {
                     setInfo(it)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEventsFlow.collectLatest {
+                    when (it) {
+                        AddExpenseUiEvent.GoBack -> findNavController().navigateUp()
+                    }
                 }
             }
         }

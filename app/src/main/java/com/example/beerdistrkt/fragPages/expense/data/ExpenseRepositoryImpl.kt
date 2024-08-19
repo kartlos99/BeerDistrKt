@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.expense.data
 
 import com.example.beerdistrkt.fragPages.expense.domain.ExpenseRepository
+import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
@@ -14,6 +15,7 @@ import javax.inject.Inject
 class ExpenseRepositoryImpl @Inject constructor(
     private val api: DistributionApi,
     private val expenseCategoryMapper: ExpenseCategoryMapper,
+    private val expenseMapper: ExpenseMapper,
     ioDispatcher: CoroutineDispatcher
 ) : BaseRepository(ioDispatcher), ExpenseRepository {
 
@@ -22,6 +24,12 @@ class ExpenseRepositoryImpl @Inject constructor(
     override suspend fun putExpenseCategory(category: ExpenseCategory): ApiResponse<Any> {
         return apiCall {
             api.putExpenseCategory(expenseCategoryMapper.mapToDto(category))
+        }
+    }
+
+    override suspend fun putExpense(expense: Expense): ApiResponse<Any> {
+        return apiCall {
+            api.putExpense(expenseMapper.mapToDto(expense))
         }
     }
 

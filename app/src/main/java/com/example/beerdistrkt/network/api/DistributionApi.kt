@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
+import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.squareup.moshi.Moshi
@@ -63,6 +64,11 @@ interface DistributionApi {
     @POST("expense/putCategory.php")
     suspend fun putExpenseCategory(
         @Body data: ExpenseCategoryDto
+    ): Any
+
+    @POST("expense/putExpense.php")
+    suspend fun putExpense(
+        @Body data: ExpenseDto
     ): Any
 
 }

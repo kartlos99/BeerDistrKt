@@ -4,21 +4,29 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.domain.model.EntityStatus
+import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseCategoryUseCase
+import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.DUPLICATE_ENTRY_API_ERROR_CODE
+import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class AddEditExpenseViewModel @Inject constructor(
     private val putExpenseCategoryUseCase: PutExpenseCategoryUseCase,
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
+    private val putExpenseUseCase: PutExpenseUseCase,
 ) : BaseViewModel() {
 
     private val _categoriesStateFlow = MutableStateFlow<List<ExpenseCategory>>(listOf())
@@ -26,6 +34,9 @@ class AddEditExpenseViewModel @Inject constructor(
 
     private val _errorStateFlow = MutableStateFlow("")
     val errorStateFlow = _errorStateFlow.asStateFlow()
+
+    private val _uiEventsFlow = MutableSharedFlow<AddExpenseUiEvent>()
+    val uiEventsFlow = _uiEventsFlow.asSharedFlow()
 
 
     init {
@@ -84,10 +95,37 @@ class AddEditExpenseViewModel @Inject constructor(
         if (categoryID == -1) {
             _errorStateFlow.value = ERROR_TEXT_NO_CATEGORY
         }
+        _categoriesStateFlow.value.firstOrNull {
+            it.id == categoryID
+        }?.let { category ->
+            val expense = Expense(
+                Session.get().userID!!,
+                amount.toDouble(),
+                comment,
+                dateTimeFormat.format(Calendar.getInstance().time),
+                category
+            )
+            putExpense(expense)
+        }
+            ?: _errorStateFlow.emit("Can't match category!")
+    }
 
+    private suspend fun putExpense(expense: Expense) {
+        when (val result = putExpenseUseCase(expense)) {
+            is ApiResponse.Error -> {
+                _errorStateFlow.value = "FAILED ${result.message}"
+            }
+
+            is ApiResponse.Success -> {
+                _errorStateFlow.value = "DONE"
+                delay(DELAY_FOR_NAVIGATION_BACK)
+                _uiEventsFlow.emit(AddExpenseUiEvent.GoBack)
+            }
+        }
     }
 
     companion object {
         const val ERROR_TEXT_NO_CATEGORY = "აირჩიეთ კატეგორია!"
+        const val DELAY_FOR_NAVIGATION_BACK = 1500L
     }
 }
