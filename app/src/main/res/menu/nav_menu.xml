@@ -44,6 +44,11 @@
             android:title="@string/settings"/>
 
         <item
+            android:id="@+id/expenseCategoryListFragment"
+            android:icon="@drawable/vertical_split_24"
+            android:title="@string/expense_categories_title" />
+
+        <item
             android:id="@+id/mChangePass"
             android:icon="@drawable/ic_lock_portrait_24"
             android:title="@string/change_pass"/>

@@ -272,4 +272,9 @@
         android:name="com.example.beerdistrkt.fragPages.expense.presentation.AddEditExpenseFragment"
         android:label="@string/add_expense"
         tools:layout="@layout/add_edit_expense_fragment" />
+    <fragment
+        android:id="@+id/expenseCategoryListFragment"
+        android:name="com.example.beerdistrkt.fragPages.expensecategory.presentation.ExpenseCategoryListFragment"
+        android:label="fragment_expense_category_list"
+        tools:layout="@layout/fragment_expense_category_list" />
 </navigation>
