@@ -37,7 +37,7 @@ class ExpenseCategoryListViewModel @Inject constructor (
 
                 is ApiResponse.Success -> {
                     _categoriesStateFlow.emit(result.data.filter {
-                        it.status == EntityStatus.ACTIVE
+                        it.status == EntityStatus.ACTIVE || it.status == EntityStatus.INACTIVE
                     })
                 }
             }

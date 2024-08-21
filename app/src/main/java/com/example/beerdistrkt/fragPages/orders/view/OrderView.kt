@@ -135,7 +135,7 @@ class OrderView @JvmOverloads constructor(
                 if (order?.orderStatus != OrderStatus.DELETED)
                     order?.onDeleteClick?.invoke()
                 else {
-                    context.showToast(R.string.deleted)
+                    context.showToast(R.string.is_deleted)
                     binding.orderUnitRootSwipe.close(true)
                 }
 

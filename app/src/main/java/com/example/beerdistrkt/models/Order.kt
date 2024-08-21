@@ -163,7 +163,7 @@ enum class OrderStatus(val textRes: Int, val data: Int) {
     CANCELED(R.string.canceled, 3),
 
     @Json(name = "order_deleted")
-    DELETED(R.string.deleted, 4),
+    DELETED(R.string.is_deleted, 4),
 
     @Json(name = "order_auto_created")
     AUTO_CREATED(R.string.auto_created, 5)

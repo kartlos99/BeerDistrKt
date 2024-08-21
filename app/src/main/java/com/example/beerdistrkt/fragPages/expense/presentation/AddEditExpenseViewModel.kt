@@ -1,16 +1,13 @@
 package com.example.beerdistrkt.fragPages.expense.presentation
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
-import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseCategoryUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
 import com.example.beerdistrkt.network.api.ApiResponse
-import com.example.beerdistrkt.network.api.DUPLICATE_ENTRY_API_ERROR_CODE
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -24,7 +21,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditExpenseViewModel @Inject constructor(
-    private val putExpenseCategoryUseCase: PutExpenseCategoryUseCase,
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val putExpenseUseCase: PutExpenseUseCase,
 ) : BaseViewModel() {
@@ -54,33 +50,6 @@ class AddEditExpenseViewModel @Inject constructor(
                     _categoriesStateFlow.emit(result.data.filter {
                         it.status == EntityStatus.ACTIVE
                     })
-                }
-            }
-        }
-    }
-
-    private fun addCategory() {
-        viewModelScope.launch {
-            val result = putExpenseCategoryUseCase.invoke(
-                ExpenseCategory(
-                    null, "realCat", EntityStatus.ACTIVE, "#345678"
-                )
-            )
-            when (result) {
-                is ApiResponse.Error -> {
-                    if (result.errorCode == DUPLICATE_ENTRY_API_ERROR_CODE) {
-//                        already exists error
-                    } else {
-//                        base error
-                    }
-                    Log.d(TAG, "addCategory: ERRRR - ${result.message}")
-                    Log.d(TAG, "addCategory: ERRRR - ${result.errorCode}")
-                    Log.d(TAG, "addCategory: ERRRR - ${result.statusCode}")
-                }
-
-                is ApiResponse.Success -> {
-                    val ss = result.data.toString()
-                    Log.d(TAG, "addCategory: SUccsess $ss")
                 }
             }
         }

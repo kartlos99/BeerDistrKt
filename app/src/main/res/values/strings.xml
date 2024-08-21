@@ -155,10 +155,12 @@
     <string name="amount_is">თანხა: %.2f ₾</string>
 
     <string name="active">აქტიური</string>
+    <string name="not_active">არა აქტიური</string>
     <string name="completed">დასრულებული</string>
     <string name="canceled">გაუქმებული</string>
     <string name="cancel">გაუქმება</string>
-    <string name="deleted">წაშლილია</string>
+    <string name="is_deleted">წაშლილია</string>
+    <string name="deleted">წაშლილი</string>
     <string name="auto_created">ავტომატური</string>
 
     <string name="fill_data">შეავსეთ მონაცემები</string>
@@ -276,5 +278,9 @@
     <string name="expense_amount">ხარჯის ოდენობა</string>
     <string name="expense_categories_title">ხარჯის კატეგორიები</string>
     <string name="text_confirm">დადასტურება</string>
+    <string name="category">კატეგორია</string>
+    <string name="add_category">კატეგორიის დამატება</string>
+    <string name="edit_category">კატეგორიის რედაქტირება</string>
+
 
 </resources>

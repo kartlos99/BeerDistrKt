@@ -275,6 +275,21 @@
     <fragment
         android:id="@+id/expenseCategoryListFragment"
         android:name="com.example.beerdistrkt.fragPages.expensecategory.presentation.ExpenseCategoryListFragment"
-        android:label="fragment_expense_category_list"
-        tools:layout="@layout/fragment_expense_category_list" />
+        android:label="@string/expense_categories_title"
+        tools:layout="@layout/fragment_expense_category_list" >
+        <action
+            android:id="@+id/action_expenseCategoryListFragment_to_expenseCategoryFragment"
+            app:destination="@id/expenseCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/expenseCategoryFragment"
+        android:name="com.example.beerdistrkt.fragPages.expensecategory.presentation.ExpenseCategoryFragment"
+        android:label="@string/add_category"
+        tools:layout="@layout/fragment_expense_category" >
+        <argument
+            android:name="category"
+            app:argType="com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>

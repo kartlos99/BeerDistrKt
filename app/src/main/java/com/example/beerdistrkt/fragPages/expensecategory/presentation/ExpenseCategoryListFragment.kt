@@ -2,12 +2,12 @@ package com.example.beerdistrkt.fragPages.expensecategory.presentation
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ExpenseCategoryListFragment: BaseFragment<ExpenseCategoryListViewModel>() {
+class ExpenseCategoryListFragment : BaseFragment<ExpenseCategoryListViewModel>() {
 
     override val viewModel: ExpenseCategoryListViewModel by viewModels()
 
@@ -38,7 +38,7 @@ class ExpenseCategoryListFragment: BaseFragment<ExpenseCategoryListViewModel>() 
 
     private fun initView() = with(binding) {
         addBtn.setOnClickListener {
-//            go add page
+            openDetails()
         }
     }
 
@@ -48,6 +48,13 @@ class ExpenseCategoryListFragment: BaseFragment<ExpenseCategoryListViewModel>() 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categoriesStateFlow.collectLatest {
                     initRecycler(it)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.errorStateFlow.collectLatest {
+                    showToast(it)
                 }
             }
         }
@@ -61,11 +68,11 @@ class ExpenseCategoryListFragment: BaseFragment<ExpenseCategoryListViewModel>() 
             onBind = { item, view ->
                 ExpenseCategoryRowBinding.bind(view).apply {
                     name.text = item.name
-                    status.text = item.status.name
+                    status.text = getString(item.status.displayName)
                     indicator.setBackgroundColor(Color.parseColor(item.color))
                     dotsImg.setOnClickListener {
                         item.id?.let {
-                            openDetails(it)
+                            openDetails(item)
                         } ?: showToast("araswori monacemebi")
                     }
                 }
@@ -73,13 +80,11 @@ class ExpenseCategoryListFragment: BaseFragment<ExpenseCategoryListViewModel>() 
         )
     }
 
-    private fun openDetails(itemID: Int) {
-        Log.d(TAG, "openDetails: $itemID")
-//        findNavController().navigate(
-//            BottleListFragmentDirections.actionBottleListFragmentToBottleDetailFragment(
-//                bottleID
-//            )
-//        )
+    private fun openDetails(item: ExpenseCategory? = null) {
+        findNavController().navigate(
+            ExpenseCategoryListFragmentDirections
+                .actionExpenseCategoryListFragmentToExpenseCategoryFragment(item)
+        )
     }
 
 }

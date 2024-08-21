@@ -131,7 +131,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         viewModel.deleteUserLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResponseState.Success -> {
-                    showToast(R.string.deleted)
+                    showToast(R.string.is_deleted)
                     findNavController().navigateUp()
                 }
                 else -> {}
