@@ -12,6 +12,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ExpenseCategoryViewModel @AssistedInject constructor(
@@ -22,6 +23,16 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
     private val _screenStateFlow = MutableStateFlow(UiState())
     val screenStateFlow = _screenStateFlow.asStateFlow()
 
+    private val _categoryStatusesStateFlow = MutableStateFlow(listOf<Int>())
+    val categoryStatusesStateFlow = _categoryStatusesStateFlow.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _categoryStatusesStateFlow.emit(EntityStatus.entries
+                .filter { it.value > "0" }
+                .map { it.displayName })
+        }
+    }
 
     fun onSaveClick(
         name: String?,

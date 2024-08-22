@@ -1,7 +1,9 @@
 package com.example.beerdistrkt.fragPages.expensecategory.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,7 +33,7 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
     }
 
     @Inject
-    lateinit var factory : ExpenseCategoryViewModel.Factory
+    lateinit var factory: ExpenseCategoryViewModel.Factory
 
     override val viewModel: ExpenseCategoryViewModel by lazy {
         factory.create(category)
@@ -48,7 +50,6 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
         category?.let {
             fillForm(it)
         }
-        setupStatusDropDown()
         saveBtn.setOnClickListener {
             viewModel.onSaveClick(
                 nameInput.text.toString().trim(),
@@ -59,8 +60,12 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
         colorBtn.setOnClickListener { }
     }
 
-    private fun setupStatusDropDown() {
-        binding.statusInput.setAdapter(EntityStatus.getDropDownAdapter(requireContext()))
+    private fun setupStatusDropDown(categories: List<Int>) {
+        binding.statusInput.setAdapter(ArrayAdapter(
+            requireContext(),
+            R.layout.support_simple_spinner_dropdown_item,
+            categories.map { getString(it) }
+        ))
     }
 
     private fun fillForm(expenseCategory: ExpenseCategory) = with(binding) {
@@ -73,6 +78,13 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.screenStateFlow.collectLatest {
                     updateUi(it)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.categoryStatusesStateFlow.collectLatest {
+                    setupStatusDropDown(it)
                 }
             }
         }
