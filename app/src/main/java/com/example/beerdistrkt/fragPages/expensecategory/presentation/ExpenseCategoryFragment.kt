@@ -2,9 +2,7 @@ package com.example.beerdistrkt.fragPages.expensecategory.presentation
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,6 +15,7 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
@@ -31,7 +30,12 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
         args.category
     }
 
-    override val viewModel: ExpenseCategoryViewModel by viewModels()
+    @Inject
+    lateinit var factory : ExpenseCategoryViewModel.Factory
+
+    override val viewModel: ExpenseCategoryViewModel by lazy {
+        factory.create(category)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

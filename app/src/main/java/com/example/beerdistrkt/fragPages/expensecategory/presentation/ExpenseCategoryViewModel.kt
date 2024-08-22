@@ -7,14 +7,15 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseCategoryUseCase
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.DUPLICATE_ENTRY_API_ERROR_CODE
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ExpenseCategoryViewModel @Inject constructor(
+class ExpenseCategoryViewModel @AssistedInject constructor(
+    @Assisted private val category: ExpenseCategory?,
     private val putExpenseCategoryUseCase: PutExpenseCategoryUseCase,
 ) : BaseViewModel() {
 
@@ -33,7 +34,7 @@ class ExpenseCategoryViewModel @Inject constructor(
             status == null -> emitError(ERROR_MESSAGE_NO_CATEGORY_IS_SET)
             else -> addCategory(
                 ExpenseCategory(
-                    null, name, status, color
+                    category?.id, name, status, color
                 )
             )
         }
@@ -59,6 +60,11 @@ class ExpenseCategoryViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(category: ExpenseCategory?): ExpenseCategoryViewModel
     }
 
     companion object {
