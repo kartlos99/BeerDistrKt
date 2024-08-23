@@ -5,12 +5,12 @@ import android.view.*
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
 import com.example.beerdistrkt.fragPages.login.LoginFragment
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     protected abstract val viewModel: T
-    protected val dateFormatDash = SimpleDateFormat("yyyy-MM-dd")
+    protected val dateFormatDash = SimpleDateFormat(SIMPLE_DATE_PATTERN)
 
     fun showToast(message: String?) {
         if (!message.isNullOrEmpty())
@@ -33,6 +33,9 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     @LayoutRes
     open var frLayout: Int? = null
+
+    @StringRes
+    open val titleRes: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +50,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.apiFailureLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.apiFailureLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.NoInternetConnection -> showToast(R.string.error_no_connection)
                 is ApiResponseState.ApiError -> {
@@ -56,15 +59,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                         automatedLogout()
                     }
                 }
+
                 else -> {}
             }
             if (it !is ApiResponseState.Sleep)
                 viewModel.showNetworkFailMsgComplete()
-        })
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        titleRes?.let { setPageTitle(it) }
         if (
             !Session.get().isAccessTokenValid()
             && this !is LoginFragment
@@ -100,5 +105,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     companion object {
         const val TAG = "TAG_FR"
+        const val SIMPLE_DATE_PATTERN = "yyyy-MM-dd"
     }
 }

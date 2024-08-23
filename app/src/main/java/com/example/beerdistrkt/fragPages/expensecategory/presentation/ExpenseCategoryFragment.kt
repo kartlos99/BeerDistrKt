@@ -39,6 +39,9 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
         factory.create(category)
     }
 
+    override val titleRes: Int
+        get() = if (category == null) R.string.add_category else R.string.edit_category
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
