@@ -9,13 +9,14 @@ import com.example.beerdistrkt.network.api.ApiResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ExpenseCategoryListViewModel @Inject constructor (
+class ExpenseCategoryListViewModel @Inject constructor(
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
-): BaseViewModel() {
+) : BaseViewModel() {
 
     private val _categoriesStateFlow = MutableStateFlow<List<ExpenseCategory>>(listOf())
     val categoriesStateFlow = _categoriesStateFlow.asStateFlow()
@@ -25,12 +26,12 @@ class ExpenseCategoryListViewModel @Inject constructor (
 
 
     init {
-        getCategories()
+        observeCategories()
     }
 
-    private fun getCategories() {
-        viewModelScope.launch {
-            when (val result = getExpenseCategoriesUseCase()) {
+    private fun observeCategories() = viewModelScope.launch {
+        getExpenseCategoriesUseCase.invoke().collectLatest { result ->
+            when (result) {
                 is ApiResponse.Error -> {
                     _errorStateFlow.emit(result.message.orEmpty())
                 }

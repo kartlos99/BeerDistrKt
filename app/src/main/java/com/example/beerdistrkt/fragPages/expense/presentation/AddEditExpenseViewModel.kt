@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
@@ -39,9 +40,9 @@ class AddEditExpenseViewModel @Inject constructor(
         getCategories()
     }
 
-    private fun getCategories() {
-        viewModelScope.launch {
-            when (val result = getExpenseCategoriesUseCase()) {
+    private fun getCategories() = viewModelScope.launch {
+        getExpenseCategoriesUseCase().collectLatest { result ->
+            when (result) {
                 is ApiResponse.Error -> {
                     _errorStateFlow.emit(result.message.orEmpty())
                 }
@@ -77,7 +78,7 @@ class AddEditExpenseViewModel @Inject constructor(
     }
 
     private suspend fun putExpense(expense: Expense) {
-        when (val result = putExpenseUseCase(expense)) {
+        when (val result = putExpenseUseCase.invoke(expense)) {
             is ApiResponse.Error -> {
                 _errorStateFlow.value = "FAILED ${result.message}"
             }

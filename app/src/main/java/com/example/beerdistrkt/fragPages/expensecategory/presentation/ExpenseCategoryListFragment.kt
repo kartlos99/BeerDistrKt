@@ -4,21 +4,17 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SimpleListAdapter
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.ExpenseCategoryRowBinding
 import com.example.beerdistrkt.databinding.FragmentExpenseCategoryListBinding
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ExpenseCategoryListFragment : BaseFragment<ExpenseCategoryListViewModel>() {
@@ -44,19 +40,11 @@ class ExpenseCategoryListFragment : BaseFragment<ExpenseCategoryListViewModel>()
 
 
     private fun observeData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.categoriesStateFlow.collectLatest {
-                    initRecycler(it)
-                }
-            }
+        viewModel.errorStateFlow.collectLatest(viewLifecycleOwner) {
+            showToast(it)
         }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.errorStateFlow.collectLatest {
-                    showToast(it)
-                }
-            }
+        viewModel.categoriesStateFlow.collectLatest(viewLifecycleOwner) {
+            initRecycler(it)
         }
     }
 

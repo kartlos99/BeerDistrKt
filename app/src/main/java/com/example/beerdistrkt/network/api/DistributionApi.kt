@@ -64,7 +64,7 @@ interface DistributionApi {
     @POST("expense/putCategory.php")
     suspend fun putExpenseCategory(
         @Body data: ExpenseCategoryDto
-    ): Any
+    ): List<ExpenseCategoryDto>
 
     @POST("expense/putExpense.php")
     suspend fun putExpense(

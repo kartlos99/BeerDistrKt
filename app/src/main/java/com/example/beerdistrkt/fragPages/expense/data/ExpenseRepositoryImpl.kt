@@ -6,9 +6,11 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
-import com.example.beerdistrkt.network.api.asSuccessResponse
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ActivityRetainedScoped
@@ -19,11 +21,21 @@ class ExpenseRepositoryImpl @Inject constructor(
     ioDispatcher: CoroutineDispatcher
 ) : BaseRepository(ioDispatcher), ExpenseRepository {
 
-    private var categories: List<ExpenseCategory>? = null
+    override val categoriesFlow: MutableStateFlow<ApiResponse<List<ExpenseCategory>>> =
+        MutableStateFlow(ApiResponse.Success(listOf()))
+
+    init {
+        CoroutineScope(ioDispatcher).launch {
+            getCategories(true)
+        }
+    }
 
     override suspend fun putExpenseCategory(category: ExpenseCategory): ApiResponse<Any> {
         return apiCall {
             api.putExpenseCategory(expenseCategoryMapper.mapToDto(category))
+                .map(expenseCategoryMapper::mapToDomain)
+        }.also {
+            categoriesFlow.emit(it)
         }
     }
 
@@ -33,15 +45,18 @@ class ExpenseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCategories(force: Boolean): ApiResponse<List<ExpenseCategory>> {
-        return if (categories == null || force) {
+    override suspend fun refreshCategories() {
+        getCategories(true)
+    }
+
+    private suspend fun getCategories(force: Boolean) {
+        val categories = (categoriesFlow.value as? ApiResponse.Success)?.data
+        if (categories.isNullOrEmpty() || force) {
             apiCall {
-                api.getExpenseCategories().map(expenseCategoryMapper::mapToDomain).also {
-                    categories = it
-                }
+                api.getExpenseCategories().map(expenseCategoryMapper::mapToDomain)
+            }.also {
+                categoriesFlow.emit(it)
             }
-        } else {
-            categories!!.asSuccessResponse()
         }
     }
 }
