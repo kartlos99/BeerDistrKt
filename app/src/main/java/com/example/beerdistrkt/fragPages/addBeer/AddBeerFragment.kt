@@ -13,10 +13,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
+import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.COLOR_SELECTOR_REQUEST_KEY
+import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.BeerStatus
+import com.example.beerdistrkt.showAskingDialog
+import com.example.beerdistrkt.showInfoDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 
 
@@ -83,13 +88,20 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
             }
         }
         binding.btnColor.setOnClickListener {
-            val colorDialog = ChooseColorDialog { color ->
-                myColor(color)
-            }
-            colorDialog.show(childFragmentManager, beerColor.toString())
+            ChooseColorDialog.getInstance(beerColor)
+                .show(childFragmentManager, ChooseColorDialog.TAG)
         }
         myColor(beerColor)
         initViewModel()
+        setResultListeners()
+    }
+
+    private fun setResultListeners() {
+        childFragmentManager.setFragmentResultListener(
+            COLOR_SELECTOR_REQUEST_KEY, viewLifecycleOwner
+        ) { _, bundle ->
+            myColor(bundle.getInt(SELECTED_COLOR_KEY))
+        }
     }
 
     fun initViewModel() {
@@ -100,6 +112,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                     showToast(it.data + " Added")
                     findNavController().navigateUp()
                 }
+
                 is ApiResponseState.ApiError -> {
                     context?.showInfoDialog(
                         R.string.server_error,
@@ -109,6 +122,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                     )
                     binding.btnBeerDone.isEnabled = true
                 }
+
                 else -> {}
             }
         }
@@ -119,6 +133,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                     showToast("ლუდის სახეობა წაიშალა!")
                     findNavController().navigateUp()
                 }
+
                 is ApiResponseState.ApiError -> {
                     context?.showInfoDialog(
                         R.string.server_error,
@@ -128,6 +143,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                     )
                     binding.btnBeerDone.isEnabled = true
                 }
+
                 else -> {}
             }
         }
