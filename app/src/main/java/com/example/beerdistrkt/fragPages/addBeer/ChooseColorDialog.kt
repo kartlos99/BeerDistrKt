@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ChooseColorDialogBinding
+import kotlin.random.Random
 
 class ChooseColorDialog : DialogFragment() {
 
@@ -89,6 +90,17 @@ class ChooseColorDialog : DialogFragment() {
             dismiss()
         }
         dismissBtn.setOnClickListener { dismiss() }
+        imgShowColor.setOnClickListener { setRandomColor() }
+    }
+
+    private fun setRandomColor() = with(binding) {
+        posR = Random.nextInt(0, 255)
+        posG = Random.nextInt(0, 255)
+        posB = Random.nextInt(0, 255)
+        seekbarR.progress = posR
+        seekbarG.progress = posG
+        seekbarB.progress = posB
+        setColorToView()
     }
 
     override fun onDestroyView() {
