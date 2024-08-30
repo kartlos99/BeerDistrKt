@@ -122,4 +122,10 @@
         <item name="android:maxLines">2</item>
     </style>
 
+    <style name="ColorChooserStyle" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

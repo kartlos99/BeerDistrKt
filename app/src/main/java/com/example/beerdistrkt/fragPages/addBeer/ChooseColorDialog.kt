@@ -45,12 +45,18 @@ class ChooseColorDialog : DialogFragment() {
         binding.imgShowColor.setBackgroundColor(Color.rgb(posR, posG, posB))
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.ColorChooserStyle)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = ChooseColorDialogBinding.inflate(inflater, container, false)
+//        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return binding.root
     }
 

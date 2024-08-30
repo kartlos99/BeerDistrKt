@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="360dp"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_95"
+    android:minWidth="400dp"
+    android:minHeight="280dp">
 
     <ImageView
         android:id="@+id/img_show_color"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="35"
         android:background="#3ac"
-        android:contentDescription="@string/choose_color" />
+        android:contentDescription="@string/choose_color"
+        app:layout_constraintEnd_toStartOf="@id/seekbar_container"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
+        android:id="@+id/seekbar_container"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="65"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/buttons_separator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="6"
+        app:layout_constraintStart_toEndOf="@id/img_show_color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <SeekBar
             android:id="@+id/seekbar_r"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="12dp"
             android:max="255"
             android:progress="0"
             android:thumbTint="#ff0000" />
@@ -31,7 +43,7 @@
             android:id="@+id/seekbar_g"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="12dp"
             android:max="255"
             android:progress="0"
             android:thumbTint="#00ff00" />
@@ -40,42 +52,46 @@
             android:id="@+id/seekbar_b"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="12dp"
             android:max="255"
             android:progress="0"
             android:thumbTint="#0000ff" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="@dimen/gr_size_12"
-            android:background="#EEE" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/dismissBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/gr_size_12"
-                android:layout_weight="1"
-                android:backgroundTint="#DBB"
-                android:text="@string/cancel" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/positiveBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/gr_size_12"
-                android:layout_weight="1"
-                android:backgroundTint="#BDB"
-                android:text="@string/choose_color" />
-        </LinearLayout>
-
     </LinearLayout>
 
+    <View
+        android:id="@+id/buttons_separator"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="@dimen/gr_size_12"
+        android:background="@color/gray_3"
+        app:layout_constraintBottom_toTopOf="@id/dismissBtn"
+        app:layout_constraintEnd_toEndOf="@id/seekbar_container"
+        app:layout_constraintStart_toStartOf="@id/seekbar_container"
+        app:layout_constraintTop_toBottomOf="@id/seekbar_container" />
 
-</LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/dismissBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_4"
+        android:backgroundTint="#DBB"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/positiveBtn"
+        app:layout_constraintStart_toStartOf="@id/seekbar_container"
+        app:layout_constraintTop_toBottomOf="@id/buttons_separator" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/positiveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_4"
+        android:backgroundTint="#BDB"
+        android:text="@string/choose_color"
+        app:layout_constraintBottom_toBottomOf="@id/dismissBtn"
+        app:layout_constraintEnd_toEndOf="@id/seekbar_container"
+        app:layout_constraintStart_toEndOf="@id/dismissBtn"
+        app:layout_constraintTop_toTopOf="@id/dismissBtn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
