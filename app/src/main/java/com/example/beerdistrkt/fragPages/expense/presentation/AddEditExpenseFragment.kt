@@ -84,7 +84,7 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
                 checkedIcon = ResourcesCompat.getDrawable(resources, R.drawable.check_24, null)
                 isCheckable = true
                 chipStrokeWidth = 4f
-                chipStrokeColor = ColorStateList.valueOf(Color.parseColor(categoryData.color))
+                chipStrokeColor = ColorStateList.valueOf(categoryData.color)
             }
             binding.categoryChipsGroup.addView(chip)
         }

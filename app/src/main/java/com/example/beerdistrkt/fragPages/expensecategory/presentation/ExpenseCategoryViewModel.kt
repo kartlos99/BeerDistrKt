@@ -10,13 +10,15 @@ import com.example.beerdistrkt.network.api.DUPLICATE_ENTRY_API_ERROR_CODE
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@HiltViewModel(assistedFactory = ExpenseCategoryViewModel.Factory::class)
 class ExpenseCategoryViewModel @AssistedInject constructor(
-    @Assisted private val category: ExpenseCategory?,
+    @Assisted private val category: ExpenseCategory,
     private val putExpenseCategoryUseCase: PutExpenseCategoryUseCase,
 ) : BaseViewModel() {
 
@@ -25,6 +27,8 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
 
     private val _categoryStatusesStateFlow = MutableStateFlow(listOf<Int>())
     val categoryStatusesStateFlow = _categoryStatusesStateFlow.asStateFlow()
+
+    val categoryState = MutableStateFlow(category)
 
     init {
         viewModelScope.launch {
@@ -37,7 +41,6 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
     fun onSaveClick(
         name: String?,
         status: EntityStatus?,
-        color: String
     ) {
         when {
             name.isNullOrBlank() -> emitError(ERROR_MESSAGE_NO_CATEGORY_NAME)
@@ -45,7 +48,7 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
             status == null -> emitError(ERROR_MESSAGE_NO_CATEGORY_IS_SET)
             else -> addCategory(
                 ExpenseCategory(
-                    category?.id, name, status, color
+                    category.id, name, status, categoryState.value.color
                 )
             )
         }
@@ -73,9 +76,27 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
         }
     }
 
+    fun setColor(color: Int)  {
+        categoryState.update {
+            it.copy(color = color)
+        }
+    }
+
+    fun setName(name: String) {
+        categoryState.update {
+            it.copy(name = name)
+        }
+    }
+
+    fun setStatus(status: EntityStatus?) = status?.let { validStatus ->
+        categoryState.update {
+            it.copy(status = validStatus)
+        }
+    }
+
     @AssistedFactory
     interface Factory {
-        fun create(category: ExpenseCategory?): ExpenseCategoryViewModel
+        fun create(category: ExpenseCategory): ExpenseCategoryViewModel
     }
 
     companion object {

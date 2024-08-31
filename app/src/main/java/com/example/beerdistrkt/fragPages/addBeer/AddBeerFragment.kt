@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.asHexColor
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
 import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.COLOR_SELECTOR_REQUEST_KEY
 import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
@@ -73,12 +74,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                     BeerModelBase(
                         beerID,
                         binding.eBeerName.editText?.text.toString(),
-                        String.format(
-                            "#%02X%02X%02X",
-                            Color.red(beerColor),
-                            Color.green(beerColor),
-                            Color.blue(beerColor)
-                        ),
+                        beerColor.asHexColor(),
                         binding.eBeerPr.editText?.text.toString().toDouble(),
                         BeerStatus.ACTIVE,
                         "_"

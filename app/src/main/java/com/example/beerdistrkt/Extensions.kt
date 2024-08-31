@@ -2,6 +2,7 @@ package com.example.beerdistrkt
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Handler
 import android.os.Looper
@@ -34,6 +35,7 @@ import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
@@ -304,6 +306,7 @@ fun MutableList<Order>.getSummedBottleOrders(): List<Order.BottleItem> {
         }
         .toList()
 }
+
 fun MutableList<Order>.getSummedRemainingOrder(): List<Order.Item> {
     val sumOrderItems = mutableListOf<Order.Item>()
     val resultList = mutableListOf<Order.Item>()
@@ -482,3 +485,15 @@ fun String?.ifNullOrEmpty(alternative: String): String = if (isNullOrBlank())
     alternative
 else
     this
+
+fun Int.asHexColor() = String.format(
+    "#%02X%02X%02X",
+    Color.red(this),
+    Color.green(this),
+    Color.blue(this)
+)
+
+fun TextInputEditText.setDifferText(text: String) {
+    if (this.text.toString() != text)
+        this.setText(text)
+}

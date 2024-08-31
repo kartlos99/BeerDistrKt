@@ -57,7 +57,7 @@ class ExpenseCategoryListFragment : BaseFragment<ExpenseCategoryListViewModel>()
                 ExpenseCategoryRowBinding.bind(view).apply {
                     name.text = item.name
                     status.text = getString(item.status.displayName)
-                    indicator.setBackgroundColor(Color.parseColor(item.color))
+                    indicator.setBackgroundColor(item.color)
                     dotsImg.setOnClickListener {
                         item.id?.let {
                             openDetails(item)

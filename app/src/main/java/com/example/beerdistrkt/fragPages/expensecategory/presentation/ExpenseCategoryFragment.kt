@@ -1,23 +1,28 @@
 package com.example.beerdistrkt.fragPages.expensecategory.presentation
 
+import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.databinding.FragmentExpenseCategoryBinding
+import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
+import com.example.beerdistrkt.setDifferText
+import com.example.beerdistrkt.simpleTextChangeListener
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.withCreationCallback
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
@@ -32,12 +37,12 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
         args.category
     }
 
-    @Inject
-    lateinit var factory: ExpenseCategoryViewModel.Factory
-
-    override val viewModel: ExpenseCategoryViewModel by lazy {
-        factory.create(category)
-    }
+    override val viewModel: ExpenseCategoryViewModel by viewModels<ExpenseCategoryViewModel>(
+        extrasProducer = {
+            defaultViewModelCreationExtras.withCreationCallback<ExpenseCategoryViewModel.Factory> { factory ->
+                factory.create(category ?: ExpenseCategory.newInstance())
+            }
+        })
 
     override val titleRes: Int
         get() = if (category == null) R.string.add_category else R.string.edit_category
@@ -47,20 +52,36 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
 
         initView()
         observeData()
+        setResultListeners()
     }
 
     private fun initView() = with(binding) {
-        category?.let {
-            fillForm(it)
-        }
         saveBtn.setOnClickListener {
             viewModel.onSaveClick(
                 nameInput.text.toString().trim(),
                 EntityStatus.fromDisplayName(requireContext(), statusInput.text.toString()),
-                "#ee2222"
             )
         }
-        colorBtn.setOnClickListener { }
+        colorBtn.setOnClickListener {
+            ChooseColorDialog.getInstance(colorBtn.backgroundTintList?.defaultColor)
+                .show(childFragmentManager, ChooseColorDialog.TAG)
+        }
+        nameInput.simpleTextChangeListener { text ->
+            viewModel.setName(text.toString().trim())
+        }
+        statusInput.simpleTextChangeListener {
+            viewModel.setStatus(
+                EntityStatus.fromDisplayName(requireContext(), statusInput.text.toString())
+            )
+        }
+    }
+
+    private fun setResultListeners() {
+        childFragmentManager.setFragmentResultListener(
+            ChooseColorDialog.COLOR_SELECTOR_REQUEST_KEY, viewLifecycleOwner
+        ) { _, bundle ->
+            viewModel.setColor(bundle.getInt(ChooseColorDialog.SELECTED_COLOR_KEY))
+        }
     }
 
     private fun setupStatusDropDown(categories: List<Int>) {
@@ -72,8 +93,9 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
     }
 
     private fun fillForm(expenseCategory: ExpenseCategory) = with(binding) {
-        nameInput.setText(expenseCategory.name)
+        nameInput.setDifferText(expenseCategory.name)
         statusInput.setText(getString(expenseCategory.status.displayName), false)
+        colorBtn.backgroundTintList = ColorStateList.valueOf(expenseCategory.color)
     }
 
     private fun observeData() {
@@ -90,6 +112,9 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
                     setupStatusDropDown(it)
                 }
             }
+        }
+        viewModel.categoryState.collectLatest(viewLifecycleOwner) { category ->
+            fillForm(category)
         }
     }
 
