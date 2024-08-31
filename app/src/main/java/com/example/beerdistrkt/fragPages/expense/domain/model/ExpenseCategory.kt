@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Parcelable
 import com.example.beerdistrkt.common.domain.model.EntityStatus
 import kotlinx.parcelize.Parcelize
+import kotlin.random.Random
 
 @Parcelize
 data class ExpenseCategory(
@@ -17,7 +18,11 @@ data class ExpenseCategory(
         fun newInstance() = ExpenseCategory(
             name = "",
             status = EntityStatus.ACTIVE,
-            color = Color.GRAY
+            color = Color.rgb(
+                Random.nextInt(0, 255),
+                Random.nextInt(0, 255),
+                Random.nextInt(0, 255)
+            )
         )
     }
 }
