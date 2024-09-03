@@ -9,6 +9,8 @@ interface ExpenseRepository {
 
     suspend fun putExpenseCategory(category: ExpenseCategory): ApiResponse<Any>
 
+    suspend fun deleteExpenseCategory(categoryId: Int): ApiResponse<Any>
+
     suspend fun putExpense(expense: Expense): ApiResponse<Any>
 
     suspend fun refreshCategories()

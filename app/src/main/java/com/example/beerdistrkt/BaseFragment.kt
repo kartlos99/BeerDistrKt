@@ -106,5 +106,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     companion object {
         const val TAG = "TAG_FR"
         const val SIMPLE_DATE_PATTERN = "yyyy-MM-dd"
+        const val AUTO_BACK_DELAY = 1234L
     }
 }

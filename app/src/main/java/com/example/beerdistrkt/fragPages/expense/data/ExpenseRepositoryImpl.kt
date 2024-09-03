@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.expense.data
 
+import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
 import com.example.beerdistrkt.fragPages.expense.domain.ExpenseRepository
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
@@ -33,6 +34,15 @@ class ExpenseRepositoryImpl @Inject constructor(
     override suspend fun putExpenseCategory(category: ExpenseCategory): ApiResponse<Any> {
         return apiCall {
             api.putExpenseCategory(expenseCategoryMapper.mapToDto(category))
+                .map(expenseCategoryMapper::mapToDomain)
+        }.also {
+            categoriesFlow.emit(it)
+        }
+    }
+
+    override suspend fun deleteExpenseCategory(categoryId: Int): ApiResponse<Any> {
+        return apiCall {
+            api.deleteExpenseCategory(DeleteExpenseCategoryRequestDto(categoryId))
                 .map(expenseCategoryMapper::mapToDomain)
         }.also {
             categoriesFlow.emit(it)

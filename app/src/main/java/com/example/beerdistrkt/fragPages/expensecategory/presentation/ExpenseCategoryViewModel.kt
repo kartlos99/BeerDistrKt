@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
+import com.example.beerdistrkt.fragPages.expense.domain.usecase.DeleteExpenseCategoryUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseCategoryUseCase
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.DUPLICATE_ENTRY_API_ERROR_CODE
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class ExpenseCategoryViewModel @AssistedInject constructor(
     @Assisted private val category: ExpenseCategory,
     private val putExpenseCategoryUseCase: PutExpenseCategoryUseCase,
+    private val deleteExpenseCategoryUseCase: DeleteExpenseCategoryUseCase,
 ) : BaseViewModel() {
 
     private val _screenStateFlow = MutableStateFlow(UiState())
@@ -70,13 +72,13 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
                 }
 
                 is ApiResponse.Success -> {
-                    _screenStateFlow.emit(UiState(successResult = true))
+                    _screenStateFlow.emit(UiState(successResult = SuccessOf.UPDATE))
                 }
             }
         }
     }
 
-    fun setColor(color: Int)  {
+    fun setColor(color: Int) {
         categoryState.update {
             it.copy(color = color)
         }
@@ -94,6 +96,19 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
         }
     }
 
+    fun deleteCategory() {
+        category.id?.let {
+            deleteCategory(it)
+        } ?: emitError(ERROR_MESSAGE_CATEGORY_NOT_SAVED)
+    }
+
+    private fun deleteCategory(categoryId: Int) = viewModelScope.launch {
+        when (val result = deleteExpenseCategoryUseCase.invoke(categoryId)) {
+            is ApiResponse.Error -> _screenStateFlow.emit(UiState(error = result.message))
+            is ApiResponse.Success -> _screenStateFlow.emit(UiState(successResult = SuccessOf.DELETE))
+        }
+    }
+
     @AssistedFactory
     interface Factory {
         fun create(category: ExpenseCategory): ExpenseCategoryViewModel
@@ -104,5 +119,6 @@ class ExpenseCategoryViewModel @AssistedInject constructor(
         const val ERROR_MESSAGE_NO_CATEGORY_IS_SET = "კატეგორია არ არის არჩეული!"
         const val ERROR_MESSAGE_NO_CATEGORY_NAME = "შეიყვანეთ კატეგორიის დასახელება!"
         const val ERROR_MESSAGE_SHORT_NAME = "დასახელება მინიმუმ 3 სიმბოლო!"
+        const val ERROR_MESSAGE_CATEGORY_NOT_SAVED = "კატეგორია არ არის შენახული!"
     }
 }

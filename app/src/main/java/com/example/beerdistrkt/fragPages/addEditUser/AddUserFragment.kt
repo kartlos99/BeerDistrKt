@@ -209,6 +209,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         inflater.inflate(R.menu.add_user_manu, menu)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.mDeleteUser -> {

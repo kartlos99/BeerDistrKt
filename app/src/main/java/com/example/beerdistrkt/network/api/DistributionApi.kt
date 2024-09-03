@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
@@ -64,6 +65,11 @@ interface DistributionApi {
     @POST("expense/putCategory.php")
     suspend fun putExpenseCategory(
         @Body data: ExpenseCategoryDto
+    ): List<ExpenseCategoryDto>
+
+    @POST("expense/deleteCategory.php")
+    suspend fun deleteExpenseCategory(
+        @Body data: DeleteExpenseCategoryRequestDto
     ): List<ExpenseCategoryDto>
 
     @POST("expense/putExpense.php")

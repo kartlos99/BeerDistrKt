@@ -281,6 +281,9 @@
     <string name="category">კატეგორია</string>
     <string name="add_category">კატეგორიის დამატება</string>
     <string name="edit_category">კატეგორიის რედაქტირება</string>
+    <string name="remove_category">კატეგორიის წაშლა</string>
+    <string name="recovery_is_impossible">წაშლილი ჩანაწერის აღდგენა არ ხდება! წავშალო?</string>
+    <string name="recovery_is_impossible_from_app">წაშლილი ჩანაწერის აღდგენას აპლიკაციიდან ვერ შეძლებთ! წავშალო?</string>
 
 
 </resources>

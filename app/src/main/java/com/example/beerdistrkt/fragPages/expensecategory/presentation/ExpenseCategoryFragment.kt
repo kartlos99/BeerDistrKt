@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.expensecategory.presentation
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
@@ -18,9 +20,11 @@ import com.example.beerdistrkt.databinding.FragmentExpenseCategoryBinding
 import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.setDifferText
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.simpleTextChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -47,6 +51,28 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
     override val titleRes: Int
         get() = if (category == null) R.string.add_category else R.string.edit_category
 
+    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.delete -> {
+                askForRemoving()
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun askForRemoving() {
+        context?.showAskingDialog(
+            R.string.remove_category,
+            R.string.recovery_is_impossible_from_app,
+            R.string.yes,
+            R.string.no,
+            R.style.ThemeOverlay_MaterialComponents_Dialog
+        ) {
+            viewModel.deleteCategory()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,6 +82,8 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
     }
 
     private fun initView() = with(binding) {
+        if (category != null)
+            setupMenu(R.menu.expense_category_detail_manu, ::onMenuItemSelected)
         saveBtn.setOnClickListener {
             viewModel.onSaveClick(
                 nameInput.text.toString().trim(),
@@ -121,8 +149,16 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
     private fun updateUi(uiState: UiState) = with(binding) {
         infoMessage.isVisible = uiState.error != null
         infoMessage.text = uiState.error
-        if (uiState.successResult != null)
-            showToast(R.string.data_saved)
+        if (uiState.successResult != null) {
+            when (uiState.successResult) {
+                SuccessOf.DELETE -> showToast(R.string.is_deleted)
+                SuccessOf.UPDATE -> showToast(R.string.data_saved)
+            }
+            lifecycleScope.launch {
+                delay(AUTO_BACK_DELAY)
+                findNavController().navigateUp()
+            }
+        }
     }
 
 }
