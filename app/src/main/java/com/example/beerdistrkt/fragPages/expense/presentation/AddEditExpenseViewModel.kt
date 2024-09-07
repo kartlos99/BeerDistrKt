@@ -70,6 +70,7 @@ class AddEditExpenseViewModel @Inject constructor(
             it.id == categoryID
         }?.let { category ->
             val expense = Expense(
+                null,
                 Session.get().userID!!,
                 amount.toDouble(),
                 comment,

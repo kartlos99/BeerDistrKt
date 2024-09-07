@@ -4,13 +4,16 @@ import com.squareup.moshi.Json
 import java.io.Serializable
 import java.util.*
 
+/*
 data class OrderCommentRowModel(
     var objName: String,
     var comment: String,
     var comment_Of: String
 )
+*/
 
 
+/*
 data class SawyobiDetailRow(
     var id: String,
     var tarigi: String,
@@ -78,7 +81,9 @@ class Shekvetebi(
     }
 
 }
+*/
 
+/*
 data class ShekvetebiGR(
     var name: String,
     var childs: ArrayList<Shekvetebi>
@@ -90,7 +95,9 @@ data class ShekvetebiGR(
     var k30 = 0f
     var k50 = 0f
 }
+*/
 
+/*
 class ShekvetebiSum : Serializable {
     var ludi: String? = null
     var distrib_Name: String? = null
@@ -109,6 +116,7 @@ class Totalinout(
     var k50r: Float
 ) :
     Serializable
+*/
 
 class Xarji(
     var comment: String,
@@ -135,9 +143,11 @@ data class DeleteRequest(
     val userID: String
 )
 
+/*
 data class SimpleResponce(
     val result: String,
     val error: String? = null,
     val data: String? = null,
     val post: String? = null
 )
+*/

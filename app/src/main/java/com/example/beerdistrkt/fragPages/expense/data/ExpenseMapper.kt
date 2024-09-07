@@ -9,6 +9,7 @@ class ExpenseMapper @Inject constructor() {
 
     fun mapToDto(expense: Expense): ExpenseDto =
         ExpenseDto(
+            id = expense.id,
             distributorID = expense.distributorID,
             amount = expense.amount,
             comment = expense.comment,
@@ -21,6 +22,7 @@ class ExpenseMapper @Inject constructor() {
         categories: List<ExpenseCategory>?
     ): Expense? {
         return Expense(
+            id = expenseDto.id,
             distributorID = expenseDto.distributorID,
             amount = expenseDto.amount,
             comment = expenseDto.comment,
