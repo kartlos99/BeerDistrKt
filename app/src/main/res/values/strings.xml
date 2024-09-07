@@ -274,6 +274,7 @@
     <string name="incorrect_beer">აირჩიე ლუდი</string>
     <string name="incorrect_price">არასწორი ფასი</string>
     <string name="incorrect_status">აირჩიე სტატუსი</string>
+    <string name="incorrect_data">არასწორი მონაცემები</string>
 
     <string name="expense_amount">ხარჯის ოდენობა</string>
     <string name="expense_categories_title">ხარჯის კატეგორიები</string>

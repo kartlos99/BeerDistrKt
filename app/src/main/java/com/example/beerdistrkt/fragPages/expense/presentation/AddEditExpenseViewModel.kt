@@ -8,6 +8,8 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
 import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -43,15 +45,17 @@ class AddEditExpenseViewModel @Inject constructor(
     private fun getCategories() = viewModelScope.launch {
         getExpenseCategoriesUseCase().collectLatest { result ->
             when (result) {
-                is ApiResponse.Error -> {
+                is ResultState.Error -> {
                     _errorStateFlow.emit(result.message.orEmpty())
                 }
 
-                is ApiResponse.Success -> {
+                is ResultState.Success -> {
                     _categoriesStateFlow.emit(result.data.filter {
                         it.status == EntityStatus.ACTIVE
                     })
                 }
+
+                ResultState.Loading -> {}
             }
         }
     }

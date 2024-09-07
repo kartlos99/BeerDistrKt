@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.expense.domain
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.model.ResultState
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface ExpenseRepository {
@@ -15,5 +16,5 @@ interface ExpenseRepository {
 
     suspend fun refreshCategories()
 
-    val categoriesFlow: MutableStateFlow<ApiResponse<List<ExpenseCategory>>>
+    val categoriesFlow: MutableStateFlow<ResultState<List<ExpenseCategory>>>
 }

@@ -1,8 +1,8 @@
 package com.example.beerdistrkt.fragPages.expensecategory.presentation
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +14,9 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.ExpenseCategoryRowBinding
 import com.example.beerdistrkt.databinding.FragmentExpenseCategoryListBinding
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,15 +39,23 @@ class ExpenseCategoryListFragment : BaseFragment<ExpenseCategoryListViewModel>()
         addBtn.setOnClickListener {
             openDetails()
         }
+        swipeRefresh.setOnRefreshListener {
+            viewModel.refreshCategories()
+        }
     }
 
 
     private fun observeData() {
-        viewModel.errorStateFlow.collectLatest(viewLifecycleOwner) {
-            showToast(it)
-        }
-        viewModel.categoriesStateFlow.collectLatest(viewLifecycleOwner) {
-            initRecycler(it)
+        viewModel.uiStateFlow.collectLatest(viewLifecycleOwner) { result ->
+            binding.progressIndicator.isVisible = result is ResultState.Loading
+            result.onSuccess {
+                binding.swipeRefresh.isRefreshing = false
+                initRecycler(it)
+            }
+            result.onError { _, message ->
+                binding.swipeRefresh.isRefreshing = false
+                showToast(message)
+            }
         }
     }
 
@@ -61,7 +72,7 @@ class ExpenseCategoryListFragment : BaseFragment<ExpenseCategoryListViewModel>()
                     dotsImg.setOnClickListener {
                         item.id?.let {
                             openDetails(item)
-                        } ?: showToast("araswori monacemebi")
+                        } ?: showToast(R.string.incorrect_data)
                     }
                 }
             }

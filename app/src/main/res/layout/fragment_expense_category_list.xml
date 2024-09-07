@@ -6,12 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".fragPages.expensecategory.presentation.ExpenseCategoryListFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="4"
-        tools:listitem="@layout/expense_category_row" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:itemCount="4"
+            tools:listitem="@layout/expense_category_row" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
@@ -24,5 +32,16 @@
         android:src="@drawable/ic_add_24dp"
         app:fabSize="normal"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/colorAccent_33"
+        app:trackColor="@color/gray_transparent_20"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
