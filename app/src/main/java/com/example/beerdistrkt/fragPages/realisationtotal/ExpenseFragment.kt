@@ -5,22 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.customView.XarjiRowView
 import com.example.beerdistrkt.databinding.FragmentExpenseBinding
+import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
+import com.example.beerdistrkt.fragPages.expense.presentation.view.ExpenseItemView
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.models.DeleteRequest
-import com.example.beerdistrkt.models.Xarji
 import com.example.beerdistrkt.utils.Session
-import java.util.*
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 
+@AndroidEntryPoint
 class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
 
-    override val viewModel: SalesViewModel by lazy { getActCtxViewModel() }
+    override val viewModel: SalesViewModel by viewModels({  requireParentFragment() })
 
     private val binding by viewBinding(FragmentExpenseBinding::bind)
 
@@ -54,28 +56,32 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
         }
     }
 
-    private fun onUpdate(expenseList: List<Xarji>?) {
+    private fun onUpdate(expenseList: List<Expense>) {
         if (expenseList == null) return
         binding.fragExpenseList.removeAllViews()
         val canDel = Session.get().hasPermission(Permission.DeleteExpense) ||
                 viewModel.selectedDayLiveData.value == dateFormatDash.format(Date())
 
         Log.d("XARJEBI", expenseList.toString())
-        expenseList.forEach {
-            binding.fragExpenseList.addView(XarjiRowView(
-                requireContext(),
-                it,
-                viewModel.userMap[it.distrID]!![0].username,
-                canDel
-            ) { recID ->
-                viewModel.deleteExpense(
-                    DeleteRequest(
-                        recID,
-                        "xarjebi",
-                        Session.get().userID!!
+        expenseList.forEach { expense ->
+            binding.fragExpenseList.addView(
+                ExpenseItemView(requireContext()).apply {
+                    setData(
+                        expense,
+                        viewModel.userMap[expense.distributorID]!![0].username,
+                        canDel
                     )
-                )
-            })
+                    onRemoveClick = { recID ->
+                        viewModel.deleteExpense(
+                            DeleteRequest(
+                                recID,
+                                "xarjebi",
+                                Session.get().userID!!
+                            )
+                        )
+                    }
+                }
+            )
         }
 //            fragExpenseScroll.post {
 //                fragExpenseScroll.smoothScrollTo(

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.MainActivity
@@ -16,16 +17,17 @@ import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.realisationtotal.adapter.BarrelsIOAdapter
-import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import java.util.Date
 
+@AndroidEntryPoint
 class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelectedListener {
 
     companion object {
@@ -34,9 +36,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     }
 
     private lateinit var vBinding: SalesFragmentBinding
-    override val viewModel: SalesViewModel by lazy {
-        getActCtxViewModel()
-    }
+    override val viewModel: SalesViewModel by viewModels()
 
     private lateinit var expenseBottomSheet: BottomSheetBehavior<*>
 
@@ -65,19 +65,6 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     private fun initView() = with(vBinding) {
         salesSetDateBtn.setOnClickListener {
-            /*context?.let {
-                val datePickerDialog = DatePickerDialog(
-                    it,
-                    dateSetListener,
-                    viewModel.calendar.get(Calendar.YEAR),
-                    viewModel.calendar.get(Calendar.MONTH),
-                    viewModel.calendar.get(Calendar.DAY_OF_MONTH)
-                )
-                datePickerDialog.datePicker.maxDate = Date().time
-                datePickerDialog.setCancelable(false)
-                datePickerDialog.show()
-            }
-            */
             DatePickerDialog(
                 requireContext(),
                 dateSetListener,

@@ -17,4 +17,6 @@ interface ExpenseRepository {
     suspend fun refreshCategories()
 
     val categoriesFlow: MutableStateFlow<ResultState<List<ExpenseCategory>>>
+
+    fun getCategoriesList(): List<ExpenseCategory>
 }

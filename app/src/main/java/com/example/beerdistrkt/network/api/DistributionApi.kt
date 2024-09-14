@@ -4,6 +4,7 @@ import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
+import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.squareup.moshi.Moshi
@@ -77,4 +78,9 @@ interface DistributionApi {
         @Body data: ExpenseDto
     ): Any
 
+    @GET("realization/getDayTotal.php")
+    suspend fun getRealizationDayInfo(
+        @Query("date") date: String,
+        @Query("distributorId") distributorId: Int
+    ): RealizationDayDto
 }

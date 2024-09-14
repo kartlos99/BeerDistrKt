@@ -15,12 +15,14 @@ fun <T> T.asSuccessState(): ResultState.Success<T> {
     return ResultState.Success(this)
 }
 
-fun <T> ResultState<T>.onSuccess(onSuccess: (data: T) -> Unit) {
+fun <T> ResultState<T>.onSuccess(onSuccess: (data: T) -> Unit): ResultState<T> {
     if (this is ResultState.Success)
         onSuccess(this.data)
+    return this
 }
 
-fun <T> ResultState<T>.onError(onError: (code: String?, message: String?) -> Unit) {
+fun <T> ResultState<T>.onError(onError: (code: String?, message: String?) -> Unit): ResultState<T> {
     if (this is ResultState.Error)
         onError(this.errorCode, this.message)
+    return this
 }

@@ -1,5 +1,8 @@
 package com.example.beerdistrkt.fragPages.expense.data.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class ExpenseDto(
     val id: String?,
     val distributorID: String,

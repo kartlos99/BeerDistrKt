@@ -19,17 +19,21 @@ class ExpenseMapper @Inject constructor() {
 
     fun mapToDomain(
         expenseDto: ExpenseDto,
-        categories: List<ExpenseCategory>?
-    ): Expense? {
+        categories: List<ExpenseCategory>
+    ): Expense {
         return Expense(
             id = expenseDto.id,
             distributorID = expenseDto.distributorID,
             amount = expenseDto.amount,
             comment = expenseDto.comment,
             date = expenseDto.date,
-            category = categories?.firstOrNull {
+            category = categories.firstOrNull {
                 it.id == expenseDto.category
-            } ?: return null
+            } ?: throw NoSuchElementException(NO_MATCHING_CATEGORY)
         )
+    }
+
+    companion object {
+        private const val NO_MATCHING_CATEGORY = "expense category can't be found!"
     }
 }

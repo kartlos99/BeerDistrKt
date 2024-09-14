@@ -15,4 +15,7 @@ class GetExpenseCategoriesUseCase @Inject constructor(
         repository.categoriesFlow.asStateFlow()
 
     suspend fun refresh() = repository.refreshCategories()
+
+    val categories: List<ExpenseCategory>
+        get() = repository.getCategoriesList()
 }

@@ -33,6 +33,12 @@ class ExpenseRepositoryImpl @Inject constructor(
         }
     }
 
+    private var categories: List<ExpenseCategory> = emptyList()
+
+    override fun getCategoriesList(): List<ExpenseCategory> {
+        return categories
+    }
+
     override suspend fun putExpenseCategory(category: ExpenseCategory): ApiResponse<Any> {
         return apiCall {
             api.putExpenseCategory(expenseCategoryMapper.mapToDto(category))
@@ -64,7 +70,9 @@ class ExpenseRepositoryImpl @Inject constructor(
     private suspend fun getCategories() {
         categoriesFlow.emit(ResultState.Loading)
         apiCall {
-            api.getExpenseCategories().map(expenseCategoryMapper::mapToDomain)
+            api.getExpenseCategories().map(expenseCategoryMapper::mapToDomain).also {
+                categories = it
+            }
         }.also { response ->
             categoriesFlow.emit(response.toResultState())
         }
