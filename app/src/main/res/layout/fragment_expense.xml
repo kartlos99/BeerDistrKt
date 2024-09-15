@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:clickable="true"
+    android:focusable="true"
     android:focusableInTouchMode="true">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/gr_size_2"
         android:background="@drawable/left_right_gradient"
-        app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="@color/orange_08"/>
+        android:backgroundTint="@color/orange_08"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/fragExpenseAddItem"
@@ -44,31 +46,29 @@
         android:id="@+id/fragExpenseTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/gr_size_8"
         android:text="@string/expense_title"
         android:textSize="@dimen/sp18"
-        android:padding="@dimen/gr_size_8"
         app:layout_constraintBottom_toBottomOf="@+id/fragExpenseAddItem"
         app:layout_constraintEnd_toStartOf="@+id/fragExpenseClose"
         app:layout_constraintStart_toEndOf="@+id/fragExpenseAddItem"
         app:layout_constraintTop_toTopOf="@+id/fragExpenseAddItem" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/fragExpenseScroll"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/gr_size_8"
+        android:background="@drawable/list_divider_line"
+        app:layout_constraintTop_toBottomOf="@id/fragExpenseAddItem" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/expenseRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/gr_size_8"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fragExpenseAddItem"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <LinearLayout
-            android:id="@+id/fragExpenseList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:showDividers="middle"
-            android:divider="@drawable/bkg_underline"
-            android:background="@drawable/temp_beer_cont_rect"
-            android:orientation="vertical"/>
-
-    </androidx.core.widget.NestedScrollView>
+        tools:itemCount="4"
+        tools:listitem="@layout/expense_item_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

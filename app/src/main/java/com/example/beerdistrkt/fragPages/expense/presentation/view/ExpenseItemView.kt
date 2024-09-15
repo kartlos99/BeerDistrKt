@@ -34,6 +34,7 @@ class ExpenseItemView @JvmOverloads constructor(
         expenseAuthor.text = author
         expenseAmount.text = context.getString(R.string.format_gel, expense.amount)
         removeBtn.isVisible = canDelete && expense.id != null
+        categoryIndicator.setBackgroundColor(expense.category.color)
 
         removeBtn.setOnClickListener {
             expense.id?.let {

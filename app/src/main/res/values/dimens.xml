@@ -12,6 +12,7 @@
     <dimen name="buttonMargin">4sp</dimen>
     <dimen name="main_btn_hor_margin">12dp</dimen>
     <dimen name="main_btn_hor_margin_half">6dp</dimen>
+    <dimen name="gr_size_0">0dp</dimen>
     <dimen name="gr_size_1">1dp</dimen>
     <dimen name="gr_size_2">2dp</dimen>
     <dimen name="gr_size_4">4dp</dimen>
