@@ -85,20 +85,24 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         categoryID: Int
     ) = viewModelScope.launch {
         _errorStateFlow.value = ""
-        _categoriesStateFlow.value.firstOrNull {
-            it.id == categoryID
-        }?.let { category ->
-            val expense = Expense(
-                expense?.id,
-                Session.get().userID!!,
-                parseDouble(amountStr),
-                comment,
-                dateTimeFormat.format(Calendar.getInstance().time),
-                category
-            )
-            putExpense(expense)
+        when {
+            comment.length < 3 -> _errorStateFlow.emit(ERROR_TEXT_NO_COMMENT)
+            parseDouble(amountStr) <= .0 -> _errorStateFlow.emit(ERROR_TEXT_NO_AMOUNT)
+            else -> _categoriesStateFlow.value.firstOrNull {
+                it.id == categoryID
+            }?.let { category ->
+                val expense = Expense(
+                    expense?.id,
+                    Session.get().userID!!,
+                    parseDouble(amountStr),
+                    comment,
+                    dateTimeFormat.format(Calendar.getInstance().time),
+                    category
+                )
+                putExpense(expense)
+            }
+                ?: _errorStateFlow.emit(ERROR_TEXT_NO_CATEGORY)
         }
-            ?: _errorStateFlow.emit(ERROR_TEXT_NO_CATEGORY)
     }
 
     private fun parseDouble(string: String): Double = try {
@@ -144,6 +148,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
 
     companion object {
         const val ERROR_TEXT_NO_CATEGORY = "აირჩიეთ კატეგორია!"
+        const val ERROR_TEXT_NO_AMOUNT = "ჩაწერეთ ხარჯის ოდენობა!"
+        const val ERROR_TEXT_NO_COMMENT = "ჩაწერეთ კომენტარი, მინ 3 სიმბოლო!"
         const val DELAY_FOR_NAVIGATION_BACK = 1500L
     }
 }
