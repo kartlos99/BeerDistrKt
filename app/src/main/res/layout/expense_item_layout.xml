@@ -50,18 +50,18 @@
         android:layout_marginStart="4dp"
         android:textSize="@dimen/textSize_3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/removeBtn"
+        app:layout_constraintEnd_toStartOf="@id/optionsBtn"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="100" />
 
     <ImageButton
-        android:id="@+id/removeBtn"
+        android:id="@+id/optionsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:contentDescription="@string/minusi"
         android:padding="8dp"
-        android:src="@drawable/ic_remove_circle_24dp"
+        android:src="@drawable/ic_more_vert"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

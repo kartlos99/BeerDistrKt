@@ -65,14 +65,15 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                         author = viewModel.userMap[item.distributorID]!![0].username,
                         canDelete = canDeleteExpense()
                     )
-                    itemView.onRemoveClick = { recID ->
-                        viewModel.deleteExpense(
-                            DeleteRequest(
-                                recID,
-                                EXPENSE_TABLE_NAME,
-                                Session.get().userID!!
-                            )
-                        )
+                    itemView.onOptionClick = {
+                        openExpenseDetails(it)
+//                        viewModel.deleteExpense(
+//                            DeleteRequest(
+//                                recID,
+//                                EXPENSE_TABLE_NAME,
+//                                Session.get().userID!!
+//                            )
+//                        )
                     }
                 }
             },
@@ -106,15 +107,18 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.fragExpenseAddItem -> addNewExpense()
+            R.id.fragExpenseAddItem -> openExpenseDetails()
             R.id.fragExpenseClose -> onClose()
             R.id.fragExpenseTitle -> onTitleClick()
         }
     }
 
-    private fun addNewExpense() {
+    private fun openExpenseDetails(expense: Expense? = null) {
         if (Session.get().hasPermission(Permission.AddExpenseInPast) || viewModel.isToday())
-            findNavController().navigate(R.id.action_salesFragment_to_addEditExpenseFragment)
+            findNavController().navigate(
+                SalesFragmentDirections
+                    .actionSalesFragmentToAddEditExpenseFragment(expense)
+            )
         else
             showToast(R.string.cant_add_xarji)
     }

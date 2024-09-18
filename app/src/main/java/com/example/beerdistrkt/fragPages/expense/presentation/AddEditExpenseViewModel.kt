@@ -7,10 +7,13 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
+import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.model.ResultState
-import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.utils.Session
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,12 +21,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import javax.inject.Inject
 
-@HiltViewModel
-class AddEditExpenseViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AddEditExpenseViewModel.Factory::class)
+class AddEditExpenseViewModel @AssistedInject constructor(
+    @Assisted
+    private val expense: Expense?,
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val putExpenseUseCase: PutExpenseUseCase,
 ) : BaseViewModel() {
@@ -37,6 +42,11 @@ class AddEditExpenseViewModel @Inject constructor(
     private val _uiEventsFlow = MutableSharedFlow<AddExpenseUiEvent>()
     val uiEventsFlow = _uiEventsFlow.asSharedFlow()
 
+    private val _expenseState = MutableStateFlow(expense ?: createExpense())
+    val expenseState = _expenseState.asStateFlow()
+
+    private val _expenseAmountState = MutableStateFlow(expense?.amount.mapToString())
+    val expenseAmountState = _expenseAmountState.asStateFlow()
 
     init {
         getCategories()
@@ -51,7 +61,7 @@ class AddEditExpenseViewModel @Inject constructor(
 
                 is ResultState.Success -> {
                     _categoriesStateFlow.emit(result.data.filter {
-                        it.status == EntityStatus.ACTIVE
+                        it.status == EntityStatus.ACTIVE || it.id == expense?.category?.id
                     })
                 }
 
@@ -60,8 +70,17 @@ class AddEditExpenseViewModel @Inject constructor(
         }
     }
 
+    private fun createExpense(): Expense = Expense(
+        null,
+        Session.get().userID!!,
+        .0,
+        "",
+        dateTimeFormat.format(Calendar.getInstance().time),
+        ExpenseCategory.newInstance()
+    )
+
     fun onDoneClick(
-        amount: String,
+        amountStr: String,
         comment: String,
         categoryID: Int
     ) = viewModelScope.launch {
@@ -70,9 +89,9 @@ class AddEditExpenseViewModel @Inject constructor(
             it.id == categoryID
         }?.let { category ->
             val expense = Expense(
-                null,
+                expense?.id,
                 Session.get().userID!!,
-                amount.toDouble(),
+                parseDouble(amountStr),
                 comment,
                 dateTimeFormat.format(Calendar.getInstance().time),
                 category
@@ -80,6 +99,28 @@ class AddEditExpenseViewModel @Inject constructor(
             putExpense(expense)
         }
             ?: _errorStateFlow.emit(ERROR_TEXT_NO_CATEGORY)
+    }
+
+    private fun parseDouble(string: String): Double = try {
+        string.toDouble()
+    } catch (e: NumberFormatException) {
+        -.1
+    }
+
+    fun setComment(comment: String) = _expenseState.update {
+        it.copy(comment = comment)
+    }
+
+    fun setAmount(amountStr: String) {
+        _expenseAmountState.value = amountStr
+    }
+
+    fun setCategory(categoryID: Int) = _categoriesStateFlow.value.firstOrNull {
+        it.id == categoryID
+    }?.let { category ->
+        _expenseState.update {
+            it.copy(category = category)
+        }
     }
 
     private suspend fun putExpense(expense: Expense) {
@@ -94,6 +135,11 @@ class AddEditExpenseViewModel @Inject constructor(
                 _uiEventsFlow.emit(AddExpenseUiEvent.GoBack)
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(expense: Expense?): AddEditExpenseViewModel
     }
 
     companion object {

@@ -271,7 +271,13 @@
         android:id="@+id/addEditExpenseFragment"
         android:name="com.example.beerdistrkt.fragPages.expense.presentation.AddEditExpenseFragment"
         android:label="@string/add_expense"
-        tools:layout="@layout/add_edit_expense_fragment" />
+        tools:layout="@layout/add_edit_expense_fragment" >
+        <argument
+            android:name="expense"
+            app:argType="com.example.beerdistrkt.fragPages.expense.domain.model.Expense"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/expenseCategoryListFragment"
         android:name="com.example.beerdistrkt.fragPages.expensecategory.presentation.ExpenseCategoryListFragment"

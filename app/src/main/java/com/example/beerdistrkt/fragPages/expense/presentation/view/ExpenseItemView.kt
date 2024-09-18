@@ -13,7 +13,7 @@ class ExpenseItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    var onRemoveClick: ((id: String) -> Unit)? = null
+    var onOptionClick: ((expense: Expense) -> Unit)? = null
 
     private val binding =
         ExpenseItemLayoutBinding.bind(inflate(context, R.layout.expense_item_layout, this))
@@ -33,13 +33,13 @@ class ExpenseItemView @JvmOverloads constructor(
         comment.text = expense.comment
         expenseAuthor.text = author
         expenseAmount.text = context.getString(R.string.format_gel, expense.amount)
-        removeBtn.isVisible = canDelete && expense.id != null
+        optionsBtn.isVisible = canDelete && expense.id != null
         categoryIndicator.setBackgroundColor(expense.category.color)
 
-        removeBtn.setOnClickListener {
+        optionsBtn.setOnClickListener {
             expense.id?.let {
-                onRemoveClick?.invoke(expense.id)
-            } ?: throw Exception("has no ID!")
+                onOptionClick?.invoke(expense)
+            } ?: throw Exception("expense has no ID!")
         }
     }
 }

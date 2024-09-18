@@ -384,7 +384,6 @@ fun EditText.simpleTextChangeListener(onChange: (value: CharSequence) -> Unit) {
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             onChange(p0 ?: "")
         }
-
     })
 }
 
@@ -493,7 +492,16 @@ fun Int.asHexColor() = String.format(
     Color.blue(this)
 )
 
-fun TextInputEditText.setDifferText(text: String) {
+fun EditText.setDifferText(text: String) {
     if (this.text.toString() != text)
         this.setText(text)
 }
+
+fun Double?.mapToString(): String {
+    return if (this == null || this < .0)
+        String.empty()
+    else
+        this.toBigDecimal().toPlainString()
+}
+
+fun String.Companion.empty() = ""
