@@ -7,7 +7,10 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
+import com.example.beerdistrkt.fragPages.realisationtotal.SalesViewModel
 import com.example.beerdistrkt.mapToString
+import com.example.beerdistrkt.models.DeleteRequest
+import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.utils.Session
@@ -141,6 +144,35 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         }
     }
 
+    fun onDeleteClick() {
+        viewModelScope.launch {
+            expense?.id?.let {
+                deleteExpense(it)
+            } ?: _errorStateFlow.emit(ERROR_MESSAGE_EXPENSE_NOT_SAVED)
+        }
+    }
+
+    private fun deleteExpense(id: String) {
+
+        sendRequest(
+            apiRequest = ApeniApiService.getInstance().deleteRecord(
+                DeleteRequest(
+                    id,
+                    EXPENSE_TABLE_NAME,
+                    Session.get().userID!!
+                )
+            ),
+            success = {
+                viewModelScope.launch {
+                    _errorStateFlow.value = "DONE"
+                    delay(DELAY_FOR_NAVIGATION_BACK)
+                    _uiEventsFlow.emit(AddExpenseUiEvent.GoBack)
+                }
+            },
+            finally = {}
+        )
+    }
+
     @AssistedFactory
     interface Factory {
         fun create(expense: Expense?): AddEditExpenseViewModel
@@ -150,6 +182,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         const val ERROR_TEXT_NO_CATEGORY = "აირჩიეთ კატეგორია!"
         const val ERROR_TEXT_NO_AMOUNT = "ჩაწერეთ ხარჯის ოდენობა!"
         const val ERROR_TEXT_NO_COMMENT = "ჩაწერეთ კომენტარი, მინ 3 სიმბოლო!"
-        const val DELAY_FOR_NAVIGATION_BACK = 1500L
+        const val DELAY_FOR_NAVIGATION_BACK = 1200L
+        const val EXPENSE_TABLE_NAME = "xarjebi"
+        const val ERROR_MESSAGE_EXPENSE_NOT_SAVED = "მონაცემები არაა ბაზაში შენახული!"
     }
 }

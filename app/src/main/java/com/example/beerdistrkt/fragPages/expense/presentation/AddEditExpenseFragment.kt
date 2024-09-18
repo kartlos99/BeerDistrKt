@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.expense.presentation
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
@@ -15,6 +16,7 @@ import com.example.beerdistrkt.databinding.AddEditExpenseFragmentBinding
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.setDifferText
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.simpleTextChangeListener
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +53,8 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
     }
 
     private fun initView() = with(binding) {
+        if (expense != null)
+            setupMenu(R.menu.expense_detail_manu, ::onMenuItemSelected)
         categoryChipsGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             setInfo(null)
             viewModel.setCategory(checkedIds.firstOrNull() ?: -1)
@@ -119,5 +123,27 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
 
     private fun setInfo(info: String?) {
         binding.infoMessage.text = info
+    }
+
+    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.delete -> {
+                askForRemoving()
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun askForRemoving() {
+        context?.showAskingDialog(
+            R.string.delete_expense,
+            R.string.recovery_is_impossible_from_app,
+            R.string.yes,
+            R.string.no,
+            R.style.ThemeOverlay_MaterialComponents_Dialog
+        ) {
+            viewModel.onDeleteClick()
+        }
     }
 }

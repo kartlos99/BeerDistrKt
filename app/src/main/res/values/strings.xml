@@ -124,6 +124,7 @@
     <string name="odenoba">ოდენობა</string>
     <string name="add_expense">ხარჯის დამატება</string>
     <string name="edit_expense">ხარჯის რედაქტირება</string>
+    <string name="delete_expense">ხარჯის წაშლა</string>
     <string name="comments">კომენტარები</string>
     <string name="notif_text">სანახავად დააჭირეთ</string>
     <string name="notif_title">ახალი კომენტარი</string>
