@@ -59,13 +59,6 @@ data class BarrelIO(
     var barrelName: String? = null
 }
 
-data class RealizationDay(
-    val sale: List<SaleInfo>,
-    val takenMoney: List<MoneyInfo>,
-    val barrels: List<BarrelIO>,
-    val xarji: List<Xarji>
-)
-
 data class MoneyInfo(
     val paymentType: PaymentType,
     val amount: Double

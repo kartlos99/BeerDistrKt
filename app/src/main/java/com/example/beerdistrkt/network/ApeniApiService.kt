@@ -272,12 +272,6 @@ interface ApeniApiService {
     @POST("sales/update.php")
     fun updateSale(@Body saleObject: SaleRequestModel): Call<DataResponse<String>>
 
-    @GET("sales/getDayTotal.php")
-    fun getDayInfo(
-        @Query("tarigi") tarigi: String,
-        @Query("distrid") distrid: Int
-    ): Call<DataResponse<RealizationDay>>
-
     @GET("sales/getHistory.php")
     fun getSalesHistory(@Query("saleID") saleID: Int): Call<DataResponse<List<SaleHistoryDTO>>>
 

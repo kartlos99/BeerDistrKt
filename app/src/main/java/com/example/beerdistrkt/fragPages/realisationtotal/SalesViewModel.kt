@@ -156,29 +156,6 @@ class SalesViewModel @Inject constructor(
         return takeMoney.find { it.paymentType == PaymentType.Transfer }?.amount ?: .0
     }
 
-    fun deleteExpense(request: DeleteRequest) {
-        sendRequest(
-            apiRequest = ApeniApiService.getInstance().deleteRecord(request),
-            success = {
-                Log.d(TAG, "successfully Deleted")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    expenses.removeIf { x -> x.id == request.recordID }
-                } else {
-                    for (expense in expenses) {
-                        if (expense.id == request.recordID) {
-                            expenses.remove(expense)
-                        }
-                    }
-                }
-                _expenseLiveData.value = expenses
-                _deleteExpenseLiveData.value = ApiResponseState.Success("")
-            },
-            finally = {
-                Log.d(TAG, "successfully Deleted = $it")
-            }
-        )
-    }
-
     fun deleteExpenseCompleted() {
         if (_deleteExpenseLiveData.value !is ApiResponseState.Sleep)
             _deleteExpenseLiveData.value = ApiResponseState.Sleep

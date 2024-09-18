@@ -67,13 +67,6 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                     )
                     itemView.onOptionClick = {
                         openExpenseDetails(it)
-//                        viewModel.deleteExpense(
-//                            DeleteRequest(
-//                                recID,
-//                                EXPENSE_TABLE_NAME,
-//                                Session.get().userID!!
-//                            )
-//                        )
                     }
                 }
             },
@@ -123,7 +116,4 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
             showToast(R.string.cant_add_xarji)
     }
 
-    companion object {
-        const val EXPENSE_TABLE_NAME = "xarjebi"
-    }
 }
