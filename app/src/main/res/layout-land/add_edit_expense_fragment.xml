@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".fragPages.expense.presentation.AddEditExpenseFragment">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/middleGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/expenseCommentField"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/gr_size_8"
         android:layout_marginTop="@dimen/gr_size_36"
         android:hint="@string/comment"
+        app:layout_constraintEnd_toEndOf="@id/middleGuideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -26,11 +35,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/expenseAmountField"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/gr_size_8"
         android:layout_marginTop="@dimen/gr_size_16"
         android:hint="@string/expense_amount"
+        app:layout_constraintEnd_toEndOf="@id/middleGuideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/expenseCommentField"
         app:suffixText="@string/lari">
 
@@ -52,14 +63,18 @@
         android:layout_margin="@dimen/gr_size_16"
         android:text="@string/expense_categories_title"
         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/expenseAmountField" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/middleGuideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/category_chips_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="@dimen/gr_size_8"
+        app:layout_constraintBottom_toTopOf="@id/saveBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/middleGuideline"
         app:layout_constraintTop_toBottomOf="@id/expenseCategoriesTitle"
         app:singleLine="false"
         app:singleSelection="true">
@@ -68,23 +83,27 @@
 
     <TextView
         android:id="@+id/infoMessage"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/gr_size_24"
         android:textAlignment="center"
         android:textColor="@color/design_default_color_error"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/category_chips_group"
+        app:layout_constraintEnd_toEndOf="@id/middleGuideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/expenseAmountField"
         tools:text="message" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveBtn"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/gr_size_16"
         android:padding="@dimen/gr_size_16"
         android:text="@string/text_record"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/middleGuideline" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressIndicator"
