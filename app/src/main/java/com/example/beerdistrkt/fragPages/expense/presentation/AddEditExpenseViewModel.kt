@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.expense.presentation
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.domain.model.EntityStatus
+import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
@@ -128,6 +129,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         _expenseState.update {
             it.copy(category = category)
         }
+    }.also {
+        _errorStateFlow.value = String.empty()
     }
 
     private suspend fun putExpense(expense: Expense) {

@@ -56,7 +56,6 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
         if (expense != null)
             setupMenu(R.menu.expense_detail_manu, ::onMenuItemSelected)
         categoryChipsGroup.setOnCheckedStateChangeListener { _, checkedIds ->
-            setInfo(null)
             viewModel.setCategory(checkedIds.firstOrNull() ?: -1)
         }
         saveBtn.setOnClickListener {
