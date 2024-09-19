@@ -8,7 +8,6 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
-import com.example.beerdistrkt.fragPages.realisationtotal.SalesViewModel
 import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
@@ -78,7 +77,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         null,
         Session.get().userID!!,
         .0,
-        "",
+        String.empty(),
         dateTimeFormat.format(Calendar.getInstance().time),
         ExpenseCategory.newInstance()
     )
@@ -88,7 +87,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         comment: String,
         categoryID: Int
     ) = viewModelScope.launch {
-        _errorStateFlow.value = ""
+        _errorStateFlow.value = String.empty()
         when {
             comment.length < 3 -> _errorStateFlow.emit(ERROR_TEXT_NO_COMMENT)
             parseDouble(amountStr) <= .0 -> _errorStateFlow.emit(ERROR_TEXT_NO_AMOUNT)
@@ -136,11 +135,11 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     private suspend fun putExpense(expense: Expense) {
         when (val result = putExpenseUseCase.invoke(expense)) {
             is ApiResponse.Error -> {
-                _errorStateFlow.value = "FAILED ${result.message}"
+                _errorStateFlow.value = "FAILED: ${result.message}"
             }
 
             is ApiResponse.Success -> {
-                _errorStateFlow.value = "DONE"
+                _errorStateFlow.value = OPERATION_IS_DONE
                 delay(DELAY_FOR_NAVIGATION_BACK)
                 _uiEventsFlow.emit(AddExpenseUiEvent.GoBack)
             }
@@ -167,7 +166,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             ),
             success = {
                 viewModelScope.launch {
-                    _errorStateFlow.value = "DONE"
+                    _errorStateFlow.value = OPERATION_IS_DONE
                     delay(DELAY_FOR_NAVIGATION_BACK)
                     _uiEventsFlow.emit(AddExpenseUiEvent.GoBack)
                 }
@@ -188,5 +187,6 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         const val DELAY_FOR_NAVIGATION_BACK = 1200L
         const val EXPENSE_TABLE_NAME = "xarjebi"
         const val ERROR_MESSAGE_EXPENSE_NOT_SAVED = "მონაცემები არაა ბაზაში შენახული!"
+        const val OPERATION_IS_DONE = "ოპერაცია შესრულებულია!"
     }
 }
