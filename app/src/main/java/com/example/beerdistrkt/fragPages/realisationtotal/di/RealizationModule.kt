@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.fragPages.realisationtotal.di
 
-import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationRepositoryImpl
+import com.example.beerdistrkt.fragPages.realisationtotal.data.RealizationRepositoryImpl
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.RealizationRepository
 import dagger.Binds
 import dagger.Module

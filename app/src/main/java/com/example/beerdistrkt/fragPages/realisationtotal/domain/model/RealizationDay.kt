@@ -9,5 +9,6 @@ data class RealizationDay(
     val sale: List<SaleInfo>,
     val takenMoney: List<MoneyInfo>,
     val barrels: List<BarrelIO>,
-    val expenses: List<Expense>
+    val expenses: List<Expense>,
+    val bottleSale: List<BottleSale>,
 )

@@ -1,6 +1,5 @@
-package com.example.beerdistrkt.fragPages.realisationtotal.data.model
+package com.example.beerdistrkt.fragPages.realisationtotal.data
 
-import com.example.beerdistrkt.fragPages.realisationtotal.data.RealizationDayMapper
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.RealizationRepository
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay
 import com.example.beerdistrkt.network.api.ApiResponse

@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.fragPages.realisationtotal
 
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,11 +12,9 @@ import com.example.beerdistrkt.fragPages.realisationtotal.domain.usecase.GetReal
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.models.CanModel
-import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.MoneyInfo
 import com.example.beerdistrkt.models.SaleInfo
 import com.example.beerdistrkt.models.User
-import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.storage.ObjectCache
@@ -124,25 +121,28 @@ class SalesViewModel @Inject constructor(
     private fun getDayInfo(date: String, distributorID: Int) = viewModelScope.launch {
         _dayStateFlow.emit(ResultState.Loading)
         getRealizationDayUseCase.invoke(date, distributorID)
-            .onSuccess {
+            .onSuccess { dayData ->
                 val sales: ArrayList<SaleInfo> = ArrayList()
-                sales.addAll(it.sale)
+                sales.addAll(dayData.sale)
                 expenses.clear()
-                expenses.addAll(it.expenses)
+                expenses.addAll(dayData.expenses)
                 _expenseLiveData.value = expenses
 
                 priceSum = sales.sumOf { obj -> obj.price }
 
                 takeMoney.clear()
-                takeMoney.addAll(it.takenMoney)
+                takeMoney.addAll(dayData.takenMoney)
 
-                val barrelIOList = it.barrels
+                val barrelIOList = dayData.barrels
                 barrelIOList.forEach { bIO ->
                     bIO.barrelName = barrelsList.find { can -> can.id == bIO.canTypeID }?.name
                 }
                 _barrelsLiveData.value = barrelIOList
 //                _realizationDayLiveData.value = it
-                _salesLiveData.value = it.sale
+                _salesLiveData.value = dayData.sale
+                dayData.bottleSale.forEach {
+                    Log.d(TAG, "getDayInfo: $it")
+                }
             }.also {
                 _dayStateFlow.emit(it)
             }
