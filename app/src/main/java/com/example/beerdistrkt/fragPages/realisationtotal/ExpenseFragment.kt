@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
 import com.example.beerdistrkt.common.helper.LinearDividerItemDecoration
 import com.example.beerdistrkt.databinding.FragmentExpenseBinding
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.presentation.view.ExpenseItemView
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.models.DeleteRequest
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
@@ -71,7 +72,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                 }
             },
         )
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        layoutManager = LinearLayoutManager(requireContext())
         adapter = expenseSimpleDataAdapter
         addItemDecoration(
             LinearDividerItemDecoration(
@@ -84,8 +85,10 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
             )
         )
 
-        viewModel.expenseLiveData.observe(viewLifecycleOwner) {
-            expenseSimpleDataAdapter.submitList(it)
+        viewModel.dayStateFlow.collectLatest(viewLifecycleOwner) {result ->
+            result.onSuccess {
+                expenseSimpleDataAdapter.submitList(it.expenses)
+            }
         }
     }
 

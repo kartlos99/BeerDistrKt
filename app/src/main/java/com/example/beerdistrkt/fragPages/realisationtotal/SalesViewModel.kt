@@ -5,23 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
-import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.BottleSale
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.usecase.GetRealizationDayUseCase
-import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.models.CanModel
-import com.example.beerdistrkt.models.MoneyInfo
-import com.example.beerdistrkt.models.SaleInfo
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
-import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,36 +30,17 @@ class SalesViewModel @Inject constructor(
     private val getRealizationDayUseCase: GetRealizationDayUseCase,
 ) : BaseViewModel() {
 
-    private var takeMoney = mutableListOf<MoneyInfo>()
-    var priceSum = 0.0
-    val expenses: ArrayList<Expense> = ArrayList()
-
     private val barrelsList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     val visibleDistributors = mutableListOf<User>()
-
-    private val _deleteExpenseLiveData = MutableLiveData<ApiResponseState<String>>()
-    val deleteExpenseLiveData: LiveData<ApiResponseState<String>>
-        get() = _deleteExpenseLiveData
 
     private val _selectedDayLiveData = MutableLiveData<String>()
     val selectedDayLiveData: LiveData<String>
         get() = _selectedDayLiveData
 
-    private val _salesLiveData = MutableLiveData<List<SaleInfo>>()
-    val salesLiveData: LiveData<List<SaleInfo>>
-        get() = _salesLiveData
-
-    private val _barrelsLiveData = MutableLiveData<List<BarrelIO>>()
-    val barrelsLiveData: LiveData<List<BarrelIO>>
-        get() = _barrelsLiveData
-
-    private val _expenseLiveData = MutableLiveData<List<Expense>>()
-    val expenseLiveData: LiveData<List<Expense>>
-        get() = _expenseLiveData
-
-    private val _bottleSaleLiveData = MutableLiveData<List<BottleSale>>()
-    val bottleSaleLiveData: LiveData<List<BottleSale>> by ::_bottleSaleLiveData
+    private val _dayStateFlow: MutableStateFlow<ResultState<RealizationDay>> =
+        MutableStateFlow(ResultState.Loading)
+    val dayStateFlow = _dayStateFlow.asStateFlow()
 
     val usersLiveData = database.getUsers()
 
@@ -97,9 +72,6 @@ class SalesViewModel @Inject constructor(
         Log.d(TAG, userMap.toString())
     }
 
-    private val _dayStateFlow: MutableStateFlow<ResultState<RealizationDay>> =
-        MutableStateFlow(ResultState.Loading)
-    val dayStateFlow = _dayStateFlow.asStateFlow()
 
     init {
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
@@ -126,40 +98,13 @@ class SalesViewModel @Inject constructor(
         _dayStateFlow.emit(ResultState.Loading)
         getRealizationDayUseCase.invoke(date, distributorID)
             .onSuccess { dayData ->
-                expenses.clear()
-                expenses.addAll(dayData.expenses)
-                _expenseLiveData.value = expenses
-
-                priceSum = dayData.getTotalPrice()
-
-                takeMoney.clear()
-                takeMoney.addAll(dayData.takenMoney)
-
-                val barrelIOList = dayData.barrels
-                barrelIOList.forEach { bIO ->
+                dayData.barrels.forEach { bIO ->
                     bIO.barrelName = barrelsList.find { can -> can.id == bIO.canTypeID }?.name
                 }
-                _barrelsLiveData.value = barrelIOList
-//                _realizationDayLiveData.value = it
-                _salesLiveData.value = dayData.sale
-
-                _bottleSaleLiveData.value = dayData.bottleSale
-            }.also {
-                _dayStateFlow.emit(it)
+                _dayStateFlow.value = ResultState.Success(dayData)
+            }.onError { error ->
+                _dayStateFlow.value = error
             }
-    }
-
-    fun getCashAmount(): Double {
-        return takeMoney.find { it.paymentType == PaymentType.Cash }?.amount ?: .0
-    }
-
-    fun getTransferAmount(): Double {
-        return takeMoney.find { it.paymentType == PaymentType.Transfer }?.amount ?: .0
-    }
-
-    fun deleteExpenseCompleted() {
-        if (_deleteExpenseLiveData.value !is ApiResponseState.Sleep)
-            _deleteExpenseLiveData.value = ApiResponseState.Sleep
     }
 
     fun setCurrentDate() {

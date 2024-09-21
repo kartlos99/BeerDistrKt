@@ -26,8 +26,18 @@
                 app:layout_constraintEnd_toStartOf="@+id/salesDayForwardBtn"
                 app:layout_constraintStart_toEndOf="@+id/salesDayBackBtn"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:layout_editor_absoluteX="97dp" />
+                app:layout_constraintVertical_bias="0.0" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/salesSetDateBtn"
+                app:indicatorColor="@color/colorAccent_33"
+                app:trackColor="@color/gray_transparent_20"
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/salesDayBackBtn"

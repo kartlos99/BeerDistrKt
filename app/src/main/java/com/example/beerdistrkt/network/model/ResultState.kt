@@ -26,3 +26,9 @@ fun <T> ResultState<T>.onError(onError: (code: String?, message: String?) -> Uni
         onError(this.errorCode, this.message)
     return this
 }
+
+fun <T> ResultState<T>.onError(onError: (error: ResultState.Error) -> Unit): ResultState<T> {
+    if (this is ResultState.Error)
+        onError(this)
+    return this
+}

@@ -427,6 +427,13 @@ fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableStri
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
             )
     }
+    if (length > 1 && indexOf("-") == 0)
+        sp.setSpan(
+            ForegroundColorSpan(Color.RED),
+            0,
+            length,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
     return sp
 }
 
@@ -515,5 +522,7 @@ fun Double?.mapToString(): String {
     else
         this.toBigDecimal().toPlainString()
 }
+
+fun Double?.orZero(): Double = this ?: .0
 
 fun String.Companion.empty() = ""
