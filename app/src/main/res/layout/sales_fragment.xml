@@ -86,7 +86,6 @@
                 app:cardBackgroundColor="@color/blue_1"
                 app:cardCornerRadius="@dimen/cardCornerRadius"
                 app:cardElevation="@dimen/lowElevation"
-
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/salesDistributorsSpinner">
@@ -98,27 +97,58 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/t_gayidvebi"
-                        android:layout_width="352dp"
+                        android:id="@+id/barrelSaleTitle"
+                        style="@style/RealizationSectionTitle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:text="@string/sales"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textSize_4"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteX="16dp" />
+                        android:text="@string/barrel_sale_title"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.example.beerdistrkt.customView.NonScrollListView
                         android:id="@+id/sales_list1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/t_gayidvebi"
+                        app:layout_constraintTop_toBottomOf="@+id/barrelSaleTitle"
                         tools:layout_editor_absoluteX="8dp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewBottlesSale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@color/blue_1"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/lowElevation"
+                app:layout_constraintTop_toBottomOf="@+id/cardView_sales">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/bottleSaleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/bottleSaleTitle"
+                        style="@style/RealizationSectionTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/bottle_sale_title"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bottlesRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/bottleSaleTitle"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/bottles_sale_row" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -137,7 +167,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView_sales"
+                app:layout_constraintTop_toBottomOf="@+id/cardViewBottlesSale"
                 app:layout_constraintVertical_bias="0.0">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -146,16 +176,12 @@
 
                     <TextView
                         android:id="@+id/salesTitleBarrel"
-                        android:layout_width="0dp"
+                        style="@style/RealizationSectionTitle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_margin="8dp"
                         android:text="@string/kasri"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textSize_4"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteX="8dp" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/salesTitleBarrel1"
@@ -221,14 +247,11 @@
 
                     <TextView
                         android:id="@+id/salesTitleMoney"
-                        android:layout_width="0dp"
+                        style="@style/RealizationSectionTitle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_margin="8dp"
                         android:text="@string/finances"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/textSize_4"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -293,13 +316,13 @@
                         android:layout_height="wrap_content"
                         android:text="@string/xarjebi"
                         android:textColor="@color/linked_text_color"
-                        app:layout_constraintBottom_toBottomOf="@id/salesSumXarji"
+                        app:layout_constraintBottom_toBottomOf="@id/expenseSum"
                         app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/salesSumXarji" />
+                        app:layout_constraintTop_toTopOf="@id/expenseSum" />
 
                     <TextView
-                        android:id="@+id/salesSumXarji"
+                        android:id="@+id/expenseSum"
                         style="@style/FinanceAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -323,7 +346,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/default_0"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/salesSumXarji" />
+                        app:layout_constraintTop_toBottomOf="@id/expenseSum" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline3"

@@ -20,6 +20,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.annotation.ColorRes
@@ -27,7 +28,12 @@ import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
@@ -35,7 +41,7 @@ import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import com.google.android.material.textfield.TextInputEditText
+import com.example.beerdistrkt.utils.RELATIVE_FRICTION_SIZE
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +56,7 @@ import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
+import java.util.Date
 import kotlin.coroutines.CoroutineContext
 
 //learning commit update 22 just count . last bit ...fcce
@@ -422,6 +428,12 @@ fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableStri
             )
     }
     return sp
+}
+
+fun TextView.setAmount(value: Double) {
+    val frictionSize = (this.textSize * RELATIVE_FRICTION_SIZE).toInt()
+    this.text = resources.getString(R.string.format_gel, value)
+        .setFrictionSize(frictionSize)
 }
 
 fun TextInputLayout.text(): String =

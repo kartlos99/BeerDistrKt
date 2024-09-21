@@ -14,12 +14,15 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
+import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
+import com.example.beerdistrkt.databinding.BottlesSaleRowBinding
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.realisationtotal.adapter.BarrelsIOAdapter
+import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.BottleSale
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.models.BarrelIO
-import com.example.beerdistrkt.setFrictionSize
+import com.example.beerdistrkt.setAmount
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -106,6 +109,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             salesDayBackBtn.isEnabled = false
             salesDayForwardBtn.isEnabled = false
         }
+        setupBottleSalesAdapter()
     }
 
     private fun initExpenseFragment() {
@@ -168,30 +172,37 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         }
     }
 
-    private fun fillPageData() {
-        val expenseSum = viewModel.expenses.sumOf { it.amount.toDouble() }
-        val atHand = viewModel.getCashAmount() - expenseSum
-        val transferAmount = viewModel.getTransferAmount()
-        val frictionSize = resources.getDimensionPixelSize(R.dimen.sp14)
-        vBinding.salesSumPrice.text = resources.getString(R.string.format_gel, viewModel.priceSum)
-            .setFrictionSize(frictionSize)
-        vBinding.salesSumXarji.text =
-            resources.getString(R.string.format_gel, expenseSum).setFrictionSize(frictionSize)
-        vBinding.salesAmountAtHand.text =
-            resources.getString(R.string.format_gel, atHand).setFrictionSize(frictionSize)
-        vBinding.salesTakenAmount.text =
-            resources.getString(R.string.format_gel, viewModel.getCashAmount())
-                .setFrictionSize(frictionSize)
-        vBinding.salesTakenTransferAmount.text =
-            resources.getString(R.string.format_gel, transferAmount).setFrictionSize(frictionSize)
+    private fun setupBottleSalesAdapter() = with(vBinding) {
+        val bottleSalesAdapter = SimpleDataAdapter<BottleSale>(
+            layoutId = R.layout.bottles_sale_row,
+            onBind = { item, view ->
+                with(BottlesSaleRowBinding.bind(view)) {
+                    bottleName.text = item.name
+                    count.text = getString(R.string.format_count, item.count.toString())
+                    price.setAmount(item.price)
+                }
+            }
+        )
+        bottlesRecycler.adapter = bottleSalesAdapter
+        bottlesRecycler.layoutManager = LinearLayoutManager(context)
+
+        viewModel.bottleSaleLiveData.observe(viewLifecycleOwner) {
+            bottleSalesAdapter.submitList(it)
+        }
+    }
+
+    private fun fillPageData() = with(vBinding) {
+        val expenseSumValue = viewModel.expenses.sumOf { it.amount }
+        val atHand = viewModel.getCashAmount() - expenseSumValue
+        salesSumPrice.setAmount(viewModel.priceSum)
+        salesTakenAmount.setAmount(viewModel.getCashAmount())
+        salesTakenTransferAmount.setAmount(viewModel.getTransferAmount())
+        expenseSum.setAmount(expenseSumValue)
+        salesAmountAtHand.setAmount(atHand)
     }
 
     private fun initBarrelBlock(data: List<BarrelIO>) {
-        vBinding.salesBarrelRecycler.layoutManager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.VERTICAL,
-            false
-        )
+        vBinding.salesBarrelRecycler.layoutManager = LinearLayoutManager(requireContext())
         vBinding.salesBarrelRecycler.adapter = BarrelsIOAdapter(data)
     }
 

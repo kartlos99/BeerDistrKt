@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
+import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.BottleSale
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.usecase.GetRealizationDayUseCase
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
@@ -62,6 +63,9 @@ class SalesViewModel @Inject constructor(
     private val _expenseLiveData = MutableLiveData<List<Expense>>()
     val expenseLiveData: LiveData<List<Expense>>
         get() = _expenseLiveData
+
+    private val _bottleSaleLiveData = MutableLiveData<List<BottleSale>>()
+    val bottleSaleLiveData: LiveData<List<BottleSale>> by ::_bottleSaleLiveData
 
     val usersLiveData = database.getUsers()
 
@@ -122,13 +126,11 @@ class SalesViewModel @Inject constructor(
         _dayStateFlow.emit(ResultState.Loading)
         getRealizationDayUseCase.invoke(date, distributorID)
             .onSuccess { dayData ->
-                val sales: ArrayList<SaleInfo> = ArrayList()
-                sales.addAll(dayData.sale)
                 expenses.clear()
                 expenses.addAll(dayData.expenses)
                 _expenseLiveData.value = expenses
 
-                priceSum = sales.sumOf { obj -> obj.price }
+                priceSum = dayData.getTotalPrice()
 
                 takeMoney.clear()
                 takeMoney.addAll(dayData.takenMoney)
@@ -140,9 +142,8 @@ class SalesViewModel @Inject constructor(
                 _barrelsLiveData.value = barrelIOList
 //                _realizationDayLiveData.value = it
                 _salesLiveData.value = dayData.sale
-                dayData.bottleSale.forEach {
-                    Log.d(TAG, "getDayInfo: $it")
-                }
+
+                _bottleSaleLiveData.value = dayData.bottleSale
             }.also {
                 _dayStateFlow.emit(it)
             }

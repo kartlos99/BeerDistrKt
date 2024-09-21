@@ -11,4 +11,6 @@ data class RealizationDay(
     val barrels: List<BarrelIO>,
     val expenses: List<Expense>,
     val bottleSale: List<BottleSale>,
-)
+) {
+    fun getTotalPrice(): Double = sale.sumOf { it.price } + bottleSale.sumOf { it.price }
+}
