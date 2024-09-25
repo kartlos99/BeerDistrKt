@@ -100,7 +100,7 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
     }
 
     private fun setupStatusDropDown() {
-        val data = BottleStatus.values()
+        val data = BottleStatus.entries
             .filter {
                 it == BottleStatus.ACTIVE || it == BottleStatus.INACTIVE
             }

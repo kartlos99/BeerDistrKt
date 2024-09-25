@@ -289,5 +289,9 @@
     <string name="recovery_is_impossible">წაშლილი ჩანაწერის აღდგენა არ ხდება! წავშალო?</string>
     <string name="recovery_is_impossible_from_app">წაშლილი ჩანაწერის აღდგენას აპლიკაციიდან ვერ შეძლებთ! წავშალო?</string>
 
+    <string name="customer_group_title">ობიექტის ტიპი/კლასი</string>
+    <string name="customer_base">საბაზისო</string>
+    <string name="customer_restaurant">რესტორანი</string>
+
 
 </resources>

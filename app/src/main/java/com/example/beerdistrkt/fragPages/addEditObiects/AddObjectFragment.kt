@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,6 +18,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.AddObjectFragmentBinding
+import com.example.beerdistrkt.fragPages.addEditObiects.model.CustomerGroup
 import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
@@ -25,6 +27,7 @@ import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.ObjToBeerPrice
+import com.example.beerdistrkt.models.bottle.BottleStatus
 import com.example.beerdistrkt.models.bottle.ClientBottlePrice
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.showInfoDialog
@@ -68,6 +71,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     }
 
     private fun AddObjectFragmentBinding.initView() {
+        setupCustomerGroupDropDown()
         addEditClientDoneBtn.setOnClickListener {
             val customer = Customer(
                 id = viewModel.clientID,
@@ -78,6 +82,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
                 sk = addEditClientSK.editText?.text.toString().trim(),
                 sakpiri = addEditClientPerson.editText?.text.toString().trim(),
                 chek = if (addEditClientCheck.isChecked) "1" else "0",
+                group = CustomerGroup.from(requireContext(), clientGroupInput.text.toString())
             )
 
             viewModel.addClient(
@@ -94,16 +99,26 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         }
     }
 
+    private fun setupCustomerGroupDropDown() {
+        val data = CustomerGroup.entries
+            .map {
+                getString(it.displayName)
+            }
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.support_simple_spinner_dropdown_item,
+            data
+        )
+        binding.clientGroupInput.setAdapter(adapter)
+    }
+
     private fun getEditedBeerPrices(): List<ObjToBeerPrice> {
         val priceList = mutableListOf<ObjToBeerPrice>()
 
         for (i in 0 until binding.addEditClientPricesContainer.childCount) {
             val priceRow = binding.addEditClientPricesContainer.getChildAt(i) as LinearLayout
             val eText = priceRow.getChildAt(1) as EditText
-            val price = if (eText.text.isEmpty())
-                eText.hint
-            else
-                eText.text
+            val price = eText.text.ifEmpty { eText.hint }
 
             val beerID = eText.tag as Int
 
@@ -230,6 +245,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         addEditClientPhone.editText?.setText(clientData.customer.tel ?: "")
         addEditComment.editText?.setText(clientData.customer.comment ?: "")
         addEditClientCheck.isChecked = clientData.customer.chek == "1"
+        clientGroupInput.setText(getString(clientData.customer.group.displayName), false)
     }
 
     private fun drawPriceInputFields(data: CustomerWithPrices?) {

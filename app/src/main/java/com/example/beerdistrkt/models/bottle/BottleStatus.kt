@@ -21,7 +21,7 @@ enum class BottleStatus(@StringRes val displayName: Int) {
 
     companion object {
         fun from(context: Context, displayName: String): BottleStatus? {
-            return values().firstOrNull {
+            return entries.firstOrNull {
                 context.getString(it.displayName) == displayName
             }
         }

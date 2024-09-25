@@ -42,14 +42,15 @@ class ApeniRepo {
         with(customerDto) {
 
             val customer = Customer(
-                id,
-                dasaxeleba,
-                adress,
-                tel,
-                comment,
-                sk,
-                sakpiri,
-                chek
+                id = id,
+                dasaxeleba = dasaxeleba,
+                adress = adress,
+                tel = tel,
+                comment = comment,
+                sk = sk,
+                sakpiri = sakpiri,
+                chek = chek,
+                group = group,
             )
 
             return CustomerWithPrices(

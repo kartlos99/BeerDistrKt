@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.models
 
 import androidx.room.*
+import com.example.beerdistrkt.fragPages.addEditObiects.model.CustomerGroup
 import com.example.beerdistrkt.fragPages.objList.model.Customer
 
 @Entity(tableName = "obieqts_table")
@@ -26,17 +27,11 @@ data class Obieqti(
     @ColumnInfo
     var chek: String? = null
 
+    @ColumnInfo
+    var group: CustomerGroup = CustomerGroup.BASE
+
     @PrimaryKey
     var id: Int? = null
-
-    @ColumnInfo
-    var valiM: Int? = null
-
-    @ColumnInfo
-    var valiK30: Int? = null
-
-    @ColumnInfo
-    var valiK50: Int? = null
 
 //    var fasebi : FloatArray? = null
 
