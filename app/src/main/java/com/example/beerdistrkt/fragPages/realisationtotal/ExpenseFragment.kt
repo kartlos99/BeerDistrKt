@@ -63,7 +63,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                 (view as? ExpenseItemView)?.let { itemView ->
                     itemView.setData(
                         expense = item,
-                        author = viewModel.userMap[item.distributorID]!![0].username,
+                        author = viewModel.userMap[item.distributorID]?.get(0)?.username.orEmpty(),
                         canDelete = canDeleteExpense()
                     )
                     itemView.onOptionClick = {

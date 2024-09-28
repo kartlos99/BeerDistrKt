@@ -129,10 +129,11 @@ class BeerSelectorView @JvmOverloads constructor(
     }
 
     private fun setCan(pos: Int) {
-        selectedCan = if (pos >= 0)
+        selectedCan = try {
             cansList[pos]
-        else
+        } catch (e: Exception) {
             null
+        }
     }
 
     fun formIsValid(): Boolean {

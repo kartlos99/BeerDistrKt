@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.customView.TempBottleRowView
@@ -248,31 +249,27 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 }
             }
         }
-        lifecycleScope.launchWhenStarted {
-            viewModel.realisationStateFlow.collectLatest {
-                when (it) {
-                    BARREL -> {
-                        vBinding.beerSelector.isVisible = true
-                        vBinding.bottleSelector.isVisible = false
-                    }
-
-                    BOTTLE -> {
-                        vBinding.beerSelector.isVisible = false
-                        vBinding.bottleSelector.isVisible = true
-                    }
-
-                    NONE -> {}
+        viewModel.realisationStateFlow.collectLatest(viewLifecycleOwner) {
+            when (it) {
+                BARREL -> {
+                    vBinding.beerSelector.isVisible = true
+                    vBinding.bottleSelector.isVisible = false
                 }
+
+                BOTTLE -> {
+                    vBinding.beerSelector.isVisible = false
+                    vBinding.bottleSelector.isVisible = true
+                }
+
+                NONE -> {}
             }
         }
-        lifecycleScope.launchWhenStarted {
-            viewModel.editOperationState.collectLatest {
-                when (it) {
-                    is SaleRowModel -> fillSale(it)
-                    is SaleBottleRowModel -> fillBottleSale(it)
-                    is BarrelRowModel -> fillBarrels(it)
-                    is MoneyRowModel -> fillMoney(it)
-                }
+        viewModel.editOperationState.collectLatest(viewLifecycleOwner) {
+            when (it) {
+                is SaleRowModel -> fillSale(it)
+                is SaleBottleRowModel -> fillBottleSale(it)
+                is BarrelRowModel -> fillBarrels(it)
+                is MoneyRowModel -> fillMoney(it)
             }
         }
     }
@@ -317,11 +314,12 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
     }
 
-    private fun fillSale(saleData: SaleRowModel) {
-        val data = saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)
-        vBinding.beerSelector.fillBeerItemForm(data)
-        vBinding.addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
-        vBinding.addDeliveryComment.editText?.setText(saleData.comment ?: "")
+    private fun fillSale(saleData: SaleRowModel) = with(vBinding) {
+        saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)?.let { data ->
+            beerSelector.fillBeerItemForm(data)
+            addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
+            addDeliveryComment.editText?.setText(saleData.comment.orEmpty())
+        } ?: showToast(R.string.missed_barrel_or_user)
     }
 
     private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) {
