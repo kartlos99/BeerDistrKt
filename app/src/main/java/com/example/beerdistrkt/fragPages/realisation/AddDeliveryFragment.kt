@@ -319,7 +319,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             beerSelector.fillBeerItemForm(data)
             addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
             addDeliveryComment.editText?.setText(saleData.comment.orEmpty())
-        } ?: showToast(R.string.missed_barrel_or_user)
+        }
+            ?: showToast(R.string.missed_barrel_or_beer)
     }
 
     private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) {
@@ -438,7 +439,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.addBarrelToList(4, vBinding.addDeliveryBarrelOutputCount4.amount)
         } else if (viewModel.operation == K_OUT) {
             viewModel.addBarrelToList(
-                vBinding.beerSelector.selectedCan?.id ?: 0,
+                vBinding.beerSelector.getBarrelID(),
                 vBinding.beerSelector.getBarrelsCount()
             )
         }

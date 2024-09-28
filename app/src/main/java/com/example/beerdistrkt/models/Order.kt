@@ -65,17 +65,19 @@ data class Order(
             barrels: List<CanModel>,
             onRemove: (beerItem: TempBeerItemModel) -> Unit,
             onEdit: (beerItem: TempBeerItemModel) -> Unit
-        ): TempBeerItemModel {
+        ): TempBeerItemModel? {
             val canType = barrels.find { it.id == canTypeID }
-            return TempBeerItemModel(
-                ID = orderID,
-                beer = beer,
-                canType = canType!!,
-                count = count,
-                orderItemID = ID,
-                onRemoveClick = onRemove,
-                onEditClick = onEdit
-            )
+            return takeUnless { canType == null }?.let {
+                TempBeerItemModel(
+                    ID = orderID,
+                    beer = beer,
+                    canType = canType!!,
+                    count = count,
+                    orderItemID = ID,
+                    onRemoveClick = onRemove,
+                    onEditClick = onEdit
+                )
+            }
         }
     }
 
@@ -133,7 +135,7 @@ data class Order(
         return result
     }
 
-    fun getBottleOrderItemsToDisplay() : List<BottleItem> {
+    fun getBottleOrderItemsToDisplay(): List<BottleItem> {
         return bottleItems.toMutableList().apply {
             val keys = map { it.bottle.id }
             bottleSales
@@ -141,11 +143,11 @@ data class Order(
                 .forEach {
                     add(
                         BottleItem(
-                        0,
-                        it.orderID,
-                        it.bottle,
-                        0
-                    )
+                            0,
+                            it.orderID,
+                            it.bottle,
+                            0
+                        )
                     )
                 }
         }

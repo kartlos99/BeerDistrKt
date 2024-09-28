@@ -292,7 +292,7 @@
     <string name="customer_group_title">ობიექტის ტიპი/კლასი</string>
     <string name="customer_base">საბაზისო</string>
     <string name="customer_restaurant">რესტორანი</string>
-    <string name="missed_barrel_or_user">კასრი ან მომხმარებელი ვერ მოიძებნა</string>
+    <string name="missed_barrel_or_beer">კასრი ან ლუდი ვერ მოიძებნა</string>
 
 
 </resources>

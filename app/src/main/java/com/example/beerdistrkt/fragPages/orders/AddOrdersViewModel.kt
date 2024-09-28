@@ -138,14 +138,14 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     }
 
     private fun addOrderItemsToList(order: Order) {
-        order.items.forEach {
-            orderItemsList.add(
-                it.toTempBeerItemModel(
-                    cansList,
-                    onRemove = ::removeOrderItemFromList,
-                    onEdit = ::editOrderItemFromList
-                )
-            )
+        order.items.forEach { orderItem ->
+            orderItem.toTempBeerItemModel(
+                cansList,
+                onRemove = ::removeOrderItemFromList,
+                onEdit = ::editOrderItemFromList
+            )?.let {
+                orderItemsList.add(it)
+            }
         }
         order.bottleItems.forEach {
             bottleOrderItemsList.add(
@@ -164,13 +164,15 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
                 it.orderItemID == editingOrderItemID
             }
 
-        if (orderItemsList.any {
+        if (
+            orderItemsList.any {
                 it.beer.id == item.beer.id && it.canType.id == item.canType.id
-            })
+            }
+        ) {
             viewModelScope.launch {
                 eventsFlow.emit(Event.DuplicateBarrelItem)
             }
-        else {
+        } else {
             orderItemsList.add(item)
             updateTempOrderItemList()
         }
