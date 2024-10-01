@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.customView.TempBottleRowView
@@ -62,7 +63,6 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
 
         vBinding.addOrderAddItemBtn.setOnClickListener(this)
         vBinding.addOrderDoneBtn.setOnClickListener(this)
@@ -77,6 +77,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 R.string.add_order
         )
         showDebt()
+        initViewModel()
     }
 
     fun AddOrdersFragmentBinding.initView() {
@@ -209,9 +210,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         }
         viewModel.bottleOrderItemEditLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
+                viewModel.switchToBottle()
                 vBinding.bottleSelector.fillBottleItemForm(it)
                 vBinding.realisationTypeSelector.check(R.id.realizationByBottle)
-                viewModel.switchToBottle()
                 viewModel.bottleOrderItemEditLiveData.value = null
             }
         }
@@ -234,21 +235,19 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 }
             }
         }
-        lifecycleScope.launchWhenStarted {
-            viewModel.realisationStateFlow.collectLatest {
-                when (it) {
-                    BARREL -> {
-                        vBinding.beerSelector.isVisible = true
-                        vBinding.bottleSelector.isVisible = false
-                    }
-
-                    BOTTLE -> {
-                        vBinding.beerSelector.isVisible = false
-                        vBinding.bottleSelector.isVisible = true
-                    }
-
-                    NONE -> {}
+        viewModel.realisationStateFlow.collectLatest(viewLifecycleOwner) {
+            when (it) {
+                BARREL -> {
+                    vBinding.beerSelector.isVisible = true
+                    vBinding.bottleSelector.isVisible = false
                 }
+
+                BOTTLE -> {
+                    vBinding.beerSelector.isVisible = false
+                    vBinding.bottleSelector.isVisible = true
+                }
+
+                NONE -> {}
             }
         }
     }

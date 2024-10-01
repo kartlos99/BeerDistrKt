@@ -100,7 +100,7 @@ class BottleSelectorView @JvmOverloads constructor(
     fun updateBottles(bottles: List<BaseBottleModel>) {
         allBottles = bottles
         visibleBottles = bottles.getVisibleBeers(selectedBottle)
-        initBeerRecycler()
+        initBottleRecycler()
         selectedBottle?.let { scrollToItem(it.id) }
         checkForm()
     }
@@ -144,7 +144,7 @@ class BottleSelectorView @JvmOverloads constructor(
     fun fillBottleItemForm(item: TempBottleItemModel) = with(binding) {
         selectedBottle = item.bottle
         visibleBottles = allBottles.getVisibleBeers(item.bottle)
-        initBeerRecycler()
+        initBottleRecycler()
         itemID = item.orderItemID //?? why we need it
         scrollToItem(item.bottle.id)
         bottleCountControl.amount = item.count
@@ -152,7 +152,7 @@ class BottleSelectorView @JvmOverloads constructor(
 
     fun getBottleCount() = binding.bottleCountControl.amount
 
-    private fun initBeerRecycler() = with(binding) {
+    private fun initBottleRecycler() = with(binding) {
         bottleRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         bottleRecycler.adapter = BottleAdapter()
