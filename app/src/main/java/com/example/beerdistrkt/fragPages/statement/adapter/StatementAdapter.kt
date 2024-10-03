@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.amonaweri.adapter
+package com.example.beerdistrkt.fragPages.statement.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.AmonaweriListRowBinding
-import com.example.beerdistrkt.fragPages.amonaweri.model.CtxMenuItem
-import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
+import com.example.beerdistrkt.databinding.StatementListRowBinding
+import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
+import com.example.beerdistrkt.fragPages.statement.model.StatementModel
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
@@ -38,7 +38,7 @@ class StatementAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatementViewHolder {
         return StatementViewHolder(
-            AmonaweriListRowBinding.inflate(LayoutInflater.from(parent.context)),
+            StatementListRowBinding.inflate(LayoutInflater.from(parent.context)),
             location,
             checkGrouped
         )
@@ -70,7 +70,7 @@ class StatementAdapter(
 
 
     class StatementViewHolder(
-        private val binding: AmonaweriListRowBinding,
+        private val binding: StatementListRowBinding,
         private val location: Int,
         private val isGrouped: () -> Boolean
     ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
@@ -170,19 +170,19 @@ class StatementAdapter(
                         if (location == M_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.finance_menu_title))
                             menu?.add(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 CtxMenuItem.Edit.itemID,
                                 1,
                                 CtxMenuItem.Edit.title
                             ) //groupId, itemId, order, title
                             menu?.add(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 CtxMenuItem.History.itemID,
                                 2,
                                 CtxMenuItem.History.title
                             )
                             menu?.add(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 CtxMenuItem.Delete.itemID,
                                 3,
                                 CtxMenuItem.Delete.title
@@ -191,13 +191,13 @@ class StatementAdapter(
                         if (location == K_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.barrel_menu_title))
                             menu?.add(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 CtxMenuItem.EditBarrel.itemID,
                                 1,
                                 CtxMenuItem.EditBarrel.title
                             )
                             menu?.add(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 CtxMenuItem.DeleteBarrel.itemID,
                                 3,
                                 CtxMenuItem.DeleteBarrel.title

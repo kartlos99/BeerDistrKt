@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.amonaweri
+package com.example.beerdistrkt.fragPages.statement
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,11 +11,11 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
-import com.example.beerdistrkt.databinding.AmonaweriSubPageFragmentBinding
-import com.example.beerdistrkt.fragPages.amonaweri.adapter.StatementAdapter
-import com.example.beerdistrkt.fragPages.amonaweri.model.CtxMenuItem
-import com.example.beerdistrkt.fragPages.amonaweri.model.StatementModel
-import com.example.beerdistrkt.fragPages.amonaweri.model.StatementRecordType
+import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
+import com.example.beerdistrkt.fragPages.statement.adapter.StatementAdapter
+import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
+import com.example.beerdistrkt.fragPages.statement.model.StatementModel
+import com.example.beerdistrkt.fragPages.statement.model.StatementRecordType
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
@@ -25,24 +25,19 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID
 
-class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
+class StatementSubPageFragment : BaseFragment<StatementSubPageViewModel>() {
 
-    private val vBinding by viewBinding(AmonaweriSubPageFragmentBinding::bind)
+    private val vBinding by viewBinding(StatementSubPageFragmentBinding::bind)
 
     private var pagePos: Int = -1
 
     var action: ((operation: String, recordID: Int) -> Unit)? = null
     var updateAnotherPage: (() -> Unit)? = null
     var onShowHistory: ((recordID: Int, historyOf: String) -> Unit)? = null
-    lateinit var statementListAdapter: StatementAdapter
+    private lateinit var statementListAdapter: StatementAdapter
 
-    companion object {
-        fun newInstance() = AmonaweriSubPageFrag()
-        const val TAG = "AmonaweriSubPageFrag"
-    }
-
-    override val viewModel: AmonaweriSubPageViewModel by lazy {
-        getViewModel { AmonaweriSubPageViewModel() }
+    override val viewModel: StatementSubPageViewModel by lazy {
+        getViewModel { StatementSubPageViewModel() }
     }
 
     override fun onCreateView(
@@ -54,7 +49,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         viewModel.pagePos = pagePos
         viewModel.clientID = arguments?.getInt(OBJ_ID) ?: 0
 
-        return inflater.inflate(R.layout.amonaweri_sub_page_fragment, container, false)
+        return inflater.inflate(R.layout.statement_sub_page_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,7 +74,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
             adapter = statementListAdapter
             addOnScrollListener(PaginatedListener(linearLayoutManager))
         }
-        viewModel.requestAmonaweriList()
+        viewModel.requestStatementList()
         initViewModel()
     }
 
@@ -87,7 +82,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         viewModel.isGroupedLiveData.observe(viewLifecycleOwner) { grouped: Boolean ->
             statementListAdapter.isGrouped = grouped
         }
-        viewModel.amonaweriLiveData.observe(viewLifecycleOwner) {
+        viewModel.statementLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Loading ->
                     vBinding.statementProgressBar.isVisible = it.showLoading
@@ -107,7 +102,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         }
     }
 
-    fun chengeAmonaweriAppearance(grouped: Boolean) {
+    fun changeStatementAppearance(grouped: Boolean) {
         viewModel.changeDataStructure(grouped)
     }
 
@@ -141,8 +136,12 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
                     onShowHistory?.invoke(statementItem.id, MONEY)
                 else {
                     when (statementItem.recordType) {
-                        StatementRecordType.SALE_BEER -> onShowHistory?.invoke(statementItem.id, BARREL_DELIVERY)
-                        StatementRecordType.SALE_BOTTLE -> onShowHistory?.invoke(statementItem.id, BOTTLE_DELIVERY)
+                        StatementRecordType.SALE_BEER ->
+                            onShowHistory?.invoke(statementItem.id, BARREL_DELIVERY)
+
+                        StatementRecordType.SALE_BOTTLE ->
+                            onShowHistory?.invoke(statementItem.id, BOTTLE_DELIVERY)
+
                         else -> {}
                     }
                 }
@@ -169,7 +168,7 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
 
     fun updateData() {
         statementListAdapter.clearData()
-        viewModel.requestAmonaweriList()
+        viewModel.requestStatementList()
     }
 
     inner class PaginatedListener(layoutManager: LinearLayoutManager) :
@@ -182,5 +181,10 @@ class AmonaweriSubPageFrag : BaseFragment<AmonaweriSubPageViewModel>() {
         override fun isLastPage() = viewModel.isLastPage
 
         override fun isLoading() = viewModel.isLoading
+    }
+
+    companion object {
+        fun newInstance() = StatementSubPageFragment()
+        const val TAG = "StatementSubPageFragment"
     }
 }

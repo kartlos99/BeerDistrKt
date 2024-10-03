@@ -11,7 +11,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
+import com.example.beerdistrkt.fragPages.statement.StatementSubPageFragment
 import com.example.beerdistrkt.fragPages.login.LoginFragment
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -73,7 +73,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (
             !Session.get().isAccessTokenValid()
             && this !is LoginFragment
-            && this !is AmonaweriSubPageFrag // because it's placed on another fragment
+            && this !is StatementSubPageFragment // because it's placed on another fragment
         )
             automatedLogout()
     }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragPages.amonaweri.AmonaweriFragment">
+    tools:context=".fragPages.statement.StatementFragment">
 
     <TextView
         android:id="@+id/fragStatementClientInfo"
@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fragStatementDebtContainer" />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewpager_amonaweri"
+        android:id="@+id/statement_viewpager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.amonaweri.model
+package com.example.beerdistrkt.fragPages.statement.model
 
 import android.annotation.SuppressLint
 import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment

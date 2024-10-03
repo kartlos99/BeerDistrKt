@@ -1,9 +1,10 @@
 package com.example.beerdistrkt.adapters
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.fragPages.amonaweri.AmonaweriSubPageFrag
+import com.example.beerdistrkt.fragPages.statement.StatementSubPageFragment
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID
 
@@ -13,19 +14,20 @@ class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
 
     private var titles = arrayOf(" ფინანსები ", " კასრები ")
 
-    private val mPagerFragments: MutableList<AmonaweriSubPageFrag> = ArrayList()
+    private val mPagerFragments: MutableList<StatementSubPageFragment> = ArrayList()
 
-    fun getDataFromAdapter(): List<AmonaweriSubPageFrag> {
+    fun getDataFromAdapter(): List<StatementSubPageFragment> {
         return mPagerFragments
     }
 
-    override fun getItem(position: Int): AmonaweriSubPageFrag {
-        val bundle = Bundle()
-        bundle.putInt(LOCATION, position)
-        bundle.putInt(OBJ_ID, objId)
-        val amonSubPageFrag = AmonaweriSubPageFrag.newInstance()
-        amonSubPageFrag.arguments = bundle
-        return amonSubPageFrag
+    override fun getItem(position: Int): StatementSubPageFragment {
+        val bundle = bundleOf(
+            LOCATION to position,
+            OBJ_ID to objId,
+        )
+        return StatementSubPageFragment.newInstance().apply {
+            arguments = bundle
+        }
     }
 
     override fun getCount(): Int {
@@ -36,19 +38,19 @@ class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
         this.titles = titles
     }
 
-    val fragmentM: AmonaweriSubPageFrag
+    val fragmentM: StatementSubPageFragment
         get() = fm.findFragmentByTag(makeFragmentTag(0))
-                as AmonaweriSubPageFrag
+                as StatementSubPageFragment
 
-    val fragmentK: AmonaweriSubPageFrag
+    val fragmentK: StatementSubPageFragment
         get() = fm.findFragmentByTag(makeFragmentTag(1))
-                as AmonaweriSubPageFrag
+                as StatementSubPageFragment
 
     override fun getPageTitle(position: Int): CharSequence {
         return titles[position]
     }
 
     private fun makeFragmentTag(id: Long): String? {
-        return "android:switcher:${R.id.viewpager_amonaweri}:$id"
+        return "android:switcher:${R.id.statement_viewpager}:$id"
     }
 }

@@ -118,7 +118,7 @@
         tools:layout="@layout/obj_list_fragment">
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
-            app:destination="@id/amonaweriFragment" />
+            app:destination="@id/statementFragment" />
         <action
             android:id="@+id/action_objListFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
@@ -154,18 +154,18 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/amonaweriFragment"
-        android:name="com.example.beerdistrkt.fragPages.amonaweri.AmonaweriFragment"
+        android:id="@+id/statementFragment"
+        android:name="com.example.beerdistrkt.fragPages.statement.StatementFragment"
         android:label="@string/statement_title"
-        tools:layout="@layout/amonaweri_fragment">
+        tools:layout="@layout/statement_fragment">
         <argument
             android:name="clientObjectID"
             app:argType="integer" />
         <action
-            android:id="@+id/action_amonaweriFragment_to_addDeliveryFragment"
+            android:id="@+id/action_statementFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
         <action
-            android:id="@+id/action_amonaweriFragment_to_salesHistoryFragment"
+            android:id="@+id/action_statementFragment_to_salesHistoryFragment"
             app:destination="@id/salesHistoryFragment" />
     </fragment>
     <fragment

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.amonaweri.model
+package com.example.beerdistrkt.fragPages.statement.model
 
 data class StatementResponse(
     val totalCount: Int,
