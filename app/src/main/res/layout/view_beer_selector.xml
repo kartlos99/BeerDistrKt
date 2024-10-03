@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/beerSelectorMainConstraint"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <TextView
         android:id="@+id/beerSelectorBeerKindTv"
@@ -21,9 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/gr_size_16"
+        app:layout_constraintTop_toBottomOf="@id/beerSelectorBeerKindTv"
         tools:itemCount="1"
-        tools:listitem="@layout/beer_item_view"
-        app:layout_constraintTop_toBottomOf="@id/beerSelectorBeerKindTv" />
+        tools:listitem="@layout/beer_item_view" />
 
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/beerSelectorBeerListIndicator"
@@ -43,8 +45,8 @@
         android:layout_width="@dimen/gr_size_24"
         android:layout_height="@dimen/gr_size_48"
         android:layout_margin="@dimen/gr_size_8"
-        android:scaleType="fitXY"
         android:contentDescription="@string/img_description"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_arrow_left_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -56,9 +58,9 @@
         android:layout_width="@dimen/gr_size_24"
         android:layout_height="@dimen/gr_size_48"
         android:layout_margin="@dimen/gr_size_8"
+        android:contentDescription="@string/img_description"
         android:rotation="180"
         android:scaleType="fitXY"
-        android:contentDescription="@string/img_description"
         android:src="@drawable/ic_arrow_left_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintRight_toRightOf="parent"
@@ -99,13 +101,10 @@
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/beerSelectorChipGr"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/gr_size_8"
-            android:layout_marginEnd="@dimen/gr_size_8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/beerSelectorCanTypeTv"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             app:singleLine="true"
             app:singleSelection="true">
 
@@ -115,18 +114,38 @@
     <View
         android:layout_width="@dimen/gr_size_16"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="@id/beerSelectorCansScroll"
-        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll"
+        android:background="@drawable/left_right_gradient"
         app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
-        android:background="@drawable/left_right_gradient" />
+        app:layout_constraintStart_toStartOf="@id/beerSelectorCansScroll"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll" />
 
     <View
+        android:id="@+id/endGradiant"
         android:layout_width="@dimen/gr_size_16"
         android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="@id/beerSelectorCansScroll"
-        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll"
+        android:background="@drawable/right_left_gradient"
         app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
-        android:background="@drawable/right_left_gradient" />
+        app:layout_constraintStart_toEndOf="@id/beerSelectorCansScroll"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll" />
+
+<!--    until the better solution -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FFF"
+        app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
+        app:layout_constraintEnd_toStartOf="@id/beerSelectorCansScroll"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FFF"
+        app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/endGradiant"
+        app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll" />
 
     <TextView
         android:id="@+id/beerSelectorCanCountTv"
