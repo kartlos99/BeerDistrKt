@@ -3,21 +3,34 @@ package com.example.beerdistrkt.fragPages.addEditUser
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.MainActivity
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.AddUserFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.UserStatus
+import com.example.beerdistrkt.setText
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import com.example.beerdistrkt.utils.*
+import com.example.beerdistrkt.text
+import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.show
 
 class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
@@ -30,8 +43,6 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     override val viewModel by lazy {
         getViewModel { AddUserViewModel(userID) }
     }
-
-    var userType = UserType.DISTRIBUTOR
 
     val userID by lazy {
         val args = AddUserFragmentArgs.fromBundle(arguments ?: Bundle())
@@ -52,7 +63,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         initViewModel()
         binding.initView()
 
-        if (Session.get().hasPermission(Permission.ManageRegion) && !userID.isBlank())
+        if (Session.get().hasPermission(Permission.ManageRegion) && userID.isNotBlank())
             viewModel.getRegionForUser()
     }
 
@@ -67,22 +78,16 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
 
         addUserChangePassBox.setOnCheckedChangeListener { _, isChecked ->
-            addUserPass.visibleIf(isChecked)
-            addUserPassConfirm.visibleIf(isChecked)
+            addUserPass.isVisible = isChecked
+            addUserPassConfirm.isVisible = isChecked
         }
         addUserAdminBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                userType = UserType.ADMIN
+            if (isChecked)
                 addUserManagerBox.isChecked = false
-            } else
-                userType = UserType.DISTRIBUTOR
         }
         addUserManagerBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                userType = UserType.MANAGER
+            if (isChecked)
                 addUserAdminBox.isChecked = false
-            } else
-                userType = UserType.DISTRIBUTOR
         }
 
         addUserDoneBtn.setOnClickListener {
@@ -102,7 +107,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         userID,
         binding.addUserUsername.text(),
         binding.addUserName.text(),
-        userType.value,
+        getUserType(),
         binding.addUserPhone.text(),
         binding.addUserAddress.text(),
         Session.get().userID ?: "0",
@@ -110,33 +115,41 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         UserStatus.ACTIVE
     )
 
+    private fun getUserType(): String = when {
+        binding.addUserAdminBox.isChecked -> UserType.ADMIN.value
+        binding.addUserManagerBox.isChecked -> UserType.MANAGER.value
+        else -> UserType.DISTRIBUTOR.value
+    }
+
     private fun initViewModel() {
-        viewModel.addUserLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.addUserLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Loading -> {
                 }
+
                 is ApiResponseState.Success -> {
                     showToast(it.data)
                     findNavController().navigateUp()
                 }
+
                 else -> {}
             }
-        })
-        viewModel.userLiveData.observe(viewLifecycleOwner, Observer { user ->
-            Log.d("user", user.toString())
+        }
+        viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 fillForm(user)
             }
-        })
-        viewModel.deleteUserLiveData.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.deleteUserLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     showToast(R.string.is_deleted)
                     findNavController().navigateUp()
                 }
+
                 else -> {}
             }
-        })
+        }
         viewModel.userRegionsLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> showRegions(it.data)
@@ -144,6 +157,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                     SharedPreferenceDataSource.getInstance().saveRegion(null)
                     (activity as MainActivity).logOut()
                 }
+
                 else -> {}
             }
         }
@@ -163,10 +177,13 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 UserValidationResult.ErrorType.InvalidUsername ->
                     binding.addUserUsername.error =
                         resources.getString(R.string.username_invalid_error_text)
+
                 UserValidationResult.ErrorType.InvalidName -> binding.addUserName.error =
                     resources.getString(R.string.username_invalid_error_text)
+
                 UserValidationResult.ErrorType.InvalidPassword -> binding.addUserPass.error =
                     resources.getString(R.string.password_invalid_error_text)
+
                 UserValidationResult.ErrorType.PasswordNotMatch -> binding.addUserPassConfirm.error =
                     resources.getString(R.string.password_confirm_error_text)
             }
