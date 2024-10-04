@@ -13,18 +13,20 @@ import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.databinding.StatementFragmentBinding
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_HISTORY_OF
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
-import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.paramViewModels
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class StatementFragment : BaseFragment<StatementViewModel>() {
 
     val frag = this
 
-    override val viewModel by lazy {
-        getViewModel { StatementViewModel(clientID) }
+    override val viewModel by paramViewModels<StatementViewModel, StatementViewModel.Factory> { factory ->
+        factory.create(clientID)
     }
     private val clientID by lazy {
-        val args = StatementFragmentArgs.fromBundle(arguments ?: Bundle())
-        args.clientObjectID
+        StatementFragmentArgs.fromBundle(requireArguments()).clientObjectID
     }
 
     private val binding by viewBinding(StatementFragmentBinding::bind)

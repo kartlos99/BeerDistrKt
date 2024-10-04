@@ -17,9 +17,9 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import java.text.SimpleDateFormat
 
-abstract class BaseFragment<T : BaseViewModel> : Fragment() {
+abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
 
-    protected abstract val viewModel: T
+    protected abstract val viewModel: VM
     protected val dateFormatDash = SimpleDateFormat(SIMPLE_DATE_PATTERN)
 
     fun showToast(message: String?) {

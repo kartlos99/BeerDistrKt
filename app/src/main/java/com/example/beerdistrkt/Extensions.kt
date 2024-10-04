@@ -25,9 +25,11 @@ import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
+import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -44,6 +46,7 @@ import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.RELATIVE_FRICTION_SIZE
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.lifecycle.withCreationCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -147,6 +150,18 @@ fun SnapHelper.getSnapPosition(recyclerView: RecyclerView): Int {
     return layoutManager.getPosition(snapView)
 }
 
+@MainThread
+inline fun <reified VM : ViewModel, VMF> Fragment.paramViewModels(
+    noinline callback: (factory: VMF) -> ViewModel
+): Lazy<VM> {
+    return viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.withCreationCallback<VMF> {
+                callback(it)
+            }
+        }
+    )
+}
 
 class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

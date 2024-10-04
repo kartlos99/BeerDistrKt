@@ -3,9 +3,16 @@ package com.example.beerdistrkt.fragPages.statement
 import androidx.lifecycle.MutableLiveData
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.models.ObiectWithPrices
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
-class StatementViewModel(val clientID: Int) : BaseViewModel() {
+@HiltViewModel(assistedFactory = StatementViewModel.Factory::class)
+class StatementViewModel @AssistedInject constructor(
+    @Assisted val clientID: Int
+) : BaseViewModel() {
 
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
@@ -22,4 +29,8 @@ class StatementViewModel(val clientID: Int) : BaseViewModel() {
         }
     }
 
+    @AssistedFactory
+    interface Factory {
+        fun create(clientID: Int): StatementViewModel
+    }
 }
