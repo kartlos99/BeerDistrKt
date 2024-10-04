@@ -3,8 +3,6 @@ package com.example.beerdistrkt.customView
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +23,7 @@ import com.example.beerdistrkt.getSnapPosition
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
+import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.google.android.material.chip.Chip
@@ -62,28 +61,9 @@ class BeerSelectorView @JvmOverloads constructor(
         )
 
         with(binding) {
-            beerSelectorCanCountControl.getEditTextView()
-                .addTextChangedListener(object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {}
-
-                    override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-                    }
-
-                    override fun onTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
-                        checkForm()
-                    }
-                })
-
+            beerSelectorCanCountControl.getEditTextView().simpleTextChangeListener {
+                checkForm()
+            }
             beerSelectorBtnLeftImg.setOnClickListener {
                 beerPos =
                     (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + visibleBeers.size - 1) % visibleBeers.size
@@ -123,6 +103,7 @@ class BeerSelectorView @JvmOverloads constructor(
                 context,
                 R.drawable.beer_icon
             )
+            chipBackgroundColor = AppCompatResources.getColorStateList(context, R.color.barrel_chip_color)
             chipStrokeColor = AppCompatResources.getColorStateList(context, R.color.gray_3)
             chipStrokeWidth = resources.getDimensionPixelSize(R.dimen.gr_size_1).toFloat()
             isCheckable = true
