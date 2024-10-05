@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -17,27 +18,22 @@ import com.example.beerdistrkt.databinding.OrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.adapter.ParentOrderAdapter
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.storage.UserPreferencesRepository
 import com.example.beerdistrkt.utils.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.*
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@AndroidEntryPoint
 class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         fun newInstance() = OrdersFragment()
     }
 
-    override val viewModel: OrdersViewModel by lazy {
-        getViewModel {
-            OrdersViewModel(UserPreferencesRepository(requireActivity().dataStore))
-        }
-    }
+    override val viewModel: OrdersViewModel by viewModels()
 
     private lateinit var vBinding: OrdersFragmentBinding
     private lateinit var ordersAdapter: ParentOrderAdapter

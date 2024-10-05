@@ -75,8 +75,6 @@ inline fun SearchView.onTextChanged(crossinline listener: (String) -> Unit) {
     })
 }
 
-@ExperimentalCoroutinesApi
-@CheckResult
 fun SearchView.changesAsFlow(): Flow<CharSequence?> {
     return callbackFlow {
         checkMainThread("")
@@ -94,7 +92,9 @@ fun SearchView.changesAsFlow(): Flow<CharSequence?> {
         this@changesAsFlow.setOnQueryTextListener(qListener)
 
         awaitClose { }
-    }.onStart { emit("") }
+    }.onStart {
+        emit("")
+    }
 }
 
 fun CharSequence?.orEmpty(): String = this?.toString() ?: ""

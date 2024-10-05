@@ -24,20 +24,23 @@ import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.notifyNewComment
+import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Calendar
 
+@AndroidEntryPoint
 class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListener,
     AdapterView.OnItemSelectedListener {
 
-    override val viewModel by lazy {
-        getViewModel { AddOrdersViewModel(clientID, orderID) }
+    override val viewModel by paramViewModels<AddOrdersViewModel, AddOrdersViewModel.Factory> { factory ->
+        factory.create(clientID, orderID)
     }
+
     private lateinit var vBinding: AddOrdersFragmentBinding
 
     private val clientID by lazy {

@@ -31,13 +31,21 @@ import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : BaseViewModel() {
+@HiltViewModel(assistedFactory = AddOrdersViewModel.Factory::class)
+class AddOrdersViewModel @AssistedInject constructor(
+    @Assisted(CLIENT_ID_KEY) private val clientID: Int,
+    @Assisted(EDIT_ORDER_ID_KEY) var editingOrderID: Int
+) : BaseViewModel() {
 
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
@@ -360,4 +368,17 @@ class AddOrdersViewModel(private val clientID: Int, var editingOrderID: Int) : B
     }
 
     fun hasNoOrderItems(): Boolean = orderItemsList.isEmpty() && bottleOrderItemsList.isEmpty()
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted(CLIENT_ID_KEY) clientID: Int,
+            @Assisted(EDIT_ORDER_ID_KEY) editingOrderID: Int
+        ): AddOrdersViewModel
+    }
+
+    companion object {
+        private const val CLIENT_ID_KEY = "clientID"
+        private const val EDIT_ORDER_ID_KEY = "editingOrderID"
+    }
 }

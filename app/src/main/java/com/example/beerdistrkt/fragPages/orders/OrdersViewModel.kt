@@ -11,16 +11,19 @@ import com.example.beerdistrkt.models.*
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
 import com.example.beerdistrkt.utils.eventValue
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.sign
 
-class OrdersViewModel(
+@HiltViewModel
+class OrdersViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : BaseViewModel() {
 
