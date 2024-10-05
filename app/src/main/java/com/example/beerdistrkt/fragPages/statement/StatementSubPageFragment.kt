@@ -6,25 +6,27 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
 import com.example.beerdistrkt.fragPages.statement.adapter.StatementAdapter
 import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
 import com.example.beerdistrkt.fragPages.statement.model.StatementRecordType
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.LOCATION
 import com.example.beerdistrkt.utils.OBJ_ID
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class StatementSubPageFragment : BaseFragment<StatementSubPageViewModel>() {
 
     private val vBinding by viewBinding(StatementSubPageFragmentBinding::bind)
@@ -36,9 +38,8 @@ class StatementSubPageFragment : BaseFragment<StatementSubPageViewModel>() {
     var onShowHistory: ((recordID: Int, historyOf: String) -> Unit)? = null
     private lateinit var statementListAdapter: StatementAdapter
 
-    override val viewModel: StatementSubPageViewModel by lazy {
-        getViewModel { StatementSubPageViewModel() }
-    }
+    override val viewModel by viewModels<StatementSubPageViewModel>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

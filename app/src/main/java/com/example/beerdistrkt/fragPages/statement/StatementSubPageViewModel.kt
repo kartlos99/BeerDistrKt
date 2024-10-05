@@ -10,10 +10,13 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import com.example.beerdistrkt.utils.Session
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.ParseException
 import java.util.Date
+import javax.inject.Inject
 
-class StatementSubPageViewModel : BaseViewModel() {
+@HiltViewModel
+class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
 
     private val _statementLiveData = MutableLiveData<ApiResponseState<List<StatementModel>>>()
     val statementLiveData: LiveData<ApiResponseState<List<StatementModel>>>
