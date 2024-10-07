@@ -1,8 +1,13 @@
 package com.example.beerdistrkt.fragPages.usersList
 
 import android.os.Bundle
-import android.view.*
-import androidx.lifecycle.Observer
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -10,10 +15,10 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.UserListFragmentBinding
 import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
-import com.example.beerdistrkt.models.UserStatus
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserListFragment : BaseFragment<UserListViewModel>() {
 
     companion object {
@@ -22,9 +27,7 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
 
     private val binding by viewBinding(UserListFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { UserListViewModel() }
-    }
+    override val viewModel by viewModels<UserListViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

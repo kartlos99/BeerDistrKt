@@ -10,11 +10,14 @@ import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SysClearViewModel : BaseViewModel() {
+@HiltViewModel
+class SysClearViewModel @Inject constructor() : BaseViewModel() {
 
     private val clientListLiveData = database.getAllObieqts()
 
