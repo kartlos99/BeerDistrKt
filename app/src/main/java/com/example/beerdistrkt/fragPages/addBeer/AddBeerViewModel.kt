@@ -7,8 +7,11 @@ import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AddBeerViewModel : BaseViewModel() {
+@HiltViewModel
+class AddBeerViewModel @Inject constructor() : BaseViewModel() {
 
     val beerList = ObjectCache.getInstance()
         .getList(BeerModelBase::class, ObjectCache.BEER_LIST_ID)

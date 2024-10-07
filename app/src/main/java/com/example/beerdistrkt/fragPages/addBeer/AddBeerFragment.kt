@@ -24,8 +24,9 @@ import com.example.beerdistrkt.models.BeerStatus
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showInfoDialog
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
 
     private var beerID = 0
@@ -63,12 +64,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         }
         binding.btnBeerDone.setOnClickListener {
             if (binding.eBeerName.editText?.text.isNullOrEmpty() || binding.eBeerPr.editText?.text.isNullOrEmpty()) {
-                val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-                builder.setMessage(R.string.fields_request2)
-                builder.setPositiveButton("OK", { dialogInterface, i -> })
-                val alertDialog: AlertDialog = builder.create()
-                alertDialog.setTitle(getString(R.string.feel_empty_fields))
-                alertDialog.show()
+                showInfoAlertDialog()
             } else {
                 viewModel.sendDataToDB(
                     BeerModelBase(
@@ -90,6 +86,16 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         myColor(beerColor)
         initViewModel()
         setResultListeners()
+    }
+
+    private fun showInfoAlertDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext()).apply {
+            setMessage(R.string.fields_request2)
+            setPositiveButton("OK") { dialogInterface, i -> }
+        }
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.setTitle(getString(R.string.feel_empty_fields))
+        alertDialog.show()
     }
 
     private fun setResultListeners() {
