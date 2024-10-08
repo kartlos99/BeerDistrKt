@@ -17,16 +17,20 @@ import androidx.core.view.isVisible
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.FragmentClientDebtBinding
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.DebtResponse
+import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
 
-    override val viewModel: ClientDebtViewModel by lazy {
-        getViewModel { ClientDebtViewModel() }
+    val clientID: Int? by lazy {
+        requireArguments().getInt(CLIENT_ID_KEY)
     }
-    var clientID: Int? = null
+    override val viewModel by paramViewModels<ClientDebtViewModel, ClientDebtViewModel.Factory> { factory ->
+        factory.create(clientID)
+    }
 
     lateinit var binding: FragmentClientDebtBinding
 
@@ -41,10 +45,7 @@ class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        clientID = arguments?.getInt(CLIENT_ID_KEY)
-        clientID?.let {
-            viewModel.getDebt(it)
-        }
+
         viewModel.clientDebtLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> onDebtDataReceived(it.data)
