@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/left_right_gradient"
     android:gravity="center_vertical"
-    android:padding="@dimen/gr_size_8"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/beerName"
-        android:layout_weight="75"
-        android:textSize="@dimen/sp24"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="75"
+        android:ellipsize="end"
+        android:padding="@dimen/gr_size_8"
+        android:textSize="@dimen/sp24"
+        tools:text="ლაგერი" />
 
     <TextView
         android:id="@+id/beerPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/gr_size_8"
+        android:textAlignment="textEnd"
         android:textSize="@dimen/sp24"
-        android:layout_weight="25"
-        android:textAlignment="center"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        tools:text="4.35" />
 
     <ImageView
         android:id="@+id/beerMoreIcon"
-        android:layout_width="@dimen/gr_size_24"
+        android:layout_width="@dimen/gr_size_40"
         android:layout_height="@dimen/gr_size_32"
-        android:src="@drawable/ic_more_vert"
-        android:contentDescription="@string/img_description" />
+        android:contentDescription="@string/img_description"
+        android:paddingHorizontal="@dimen/gr_size_8"
+        android:src="@drawable/ic_three_line_h_24" />
 </LinearLayout>
