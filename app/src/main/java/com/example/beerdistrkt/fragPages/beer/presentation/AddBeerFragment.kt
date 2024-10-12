@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addBeer
+package com.example.beerdistrkt.fragPages.beer.presentation
 
 import android.app.AlertDialog
 import android.content.res.ColorStateList
@@ -18,10 +18,10 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.asHexColor
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
-import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.COLOR_SELECTOR_REQUEST_KEY
-import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
-import com.example.beerdistrkt.fragPages.addBeer.adapter.BeerListAdapter
-import com.example.beerdistrkt.fragPages.addBeer.adapter.TouchCallback
+import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Companion.COLOR_SELECTOR_REQUEST_KEY
+import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
+import com.example.beerdistrkt.fragPages.beer.presentation.adapter.BeerListAdapter
+import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.BeerStatus
 import com.example.beerdistrkt.showAskingDialog
@@ -80,7 +80,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                         beerColor.asHexColor(),
                         binding.eBeerPr.editText?.text.toString().toDouble(),
                         BeerStatus.ACTIVE,
-                        "_"
+                        viewModel.beerList.maxOf { it.sortValue } + 1
                     )
 
                 )

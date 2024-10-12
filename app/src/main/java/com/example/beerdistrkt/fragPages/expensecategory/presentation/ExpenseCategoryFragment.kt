@@ -17,7 +17,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.databinding.FragmentExpenseCategoryBinding
-import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog
+import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showAskingDialog

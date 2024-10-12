@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragPages.addBeer.AddBeerFragment">
+    tools:context=".fragPages.beer.presentation.AddBeerFragment">
 
     <TextView
         android:id="@+id/t_addedit_beer"

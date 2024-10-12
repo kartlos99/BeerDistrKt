@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addBeer
+package com.example.beerdistrkt.fragPages.beer.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

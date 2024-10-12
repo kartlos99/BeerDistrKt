@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addBeer.adapter
+package com.example.beerdistrkt.fragPages.beer.presentation.adapter
 
 import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper

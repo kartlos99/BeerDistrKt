@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addBeer
+package com.example.beerdistrkt.fragPages.beer.presentation
 
 import android.graphics.Color
 import android.os.Bundle

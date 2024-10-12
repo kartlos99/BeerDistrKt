@@ -56,8 +56,8 @@
     </fragment>
     <fragment
         android:id="@+id/addBeerFragment"
-        android:name="com.example.beerdistrkt.fragPages.addBeer.AddBeerFragment"
-        android:label="add_beer_fragment"
+        android:name="com.example.beerdistrkt.fragPages.beer.presentation.AddBeerFragment"
+        android:label="@string/beer"
         tools:layout="@layout/add_beer_fragment" />
     <fragment
         android:id="@+id/sysClearFragment"

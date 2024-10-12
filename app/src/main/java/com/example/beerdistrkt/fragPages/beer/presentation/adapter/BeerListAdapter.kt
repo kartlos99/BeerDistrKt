@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addBeer.adapter
+package com.example.beerdistrkt.fragPages.beer.presentation.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color

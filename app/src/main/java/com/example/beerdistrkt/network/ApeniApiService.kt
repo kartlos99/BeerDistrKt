@@ -2,7 +2,7 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.addBeer.DeleteBeerModel
+import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel

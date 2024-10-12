@@ -16,7 +16,7 @@ data class BeerModelBase(
     var fasi: Double? = null,
     @Json(name = "active")
     var status: BeerStatus = BeerStatus.ACTIVE,
-    var sortValue: String = ""
+    var sortValue: Double = .0
 ): DiffItem {
 
     override val key: Int
