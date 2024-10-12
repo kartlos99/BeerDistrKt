@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addBeer
+package com.example.beerdistrkt.fragPages.addBeer.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -6,30 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.BeerRowBinding
 import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.utils.DefaultDiffItemCallback
 
 class BeerListAdapter(
     private val beers: List<BeerModelBase>,
     private val onEditClick: (beer: BeerModelBase) -> Unit,
     private val onDeleteClick: (beerID: Int) -> Unit
 ) :
-    RecyclerView.Adapter<BeerListAdapter.ViewHolder>() {
+    ListAdapter<BeerModelBase, BeerListAdapter.ViewHolder>(DefaultDiffItemCallback<BeerModelBase>()) {
 
     inner class ViewHolder(val binding: BeerRowBinding) : RecyclerView.ViewHolder(binding.root)
     {
-        fun bind(item: BeerModelBase) {
-            binding.beerName.text = item.dasaxeleba
-            binding.beerPrice.text = item.fasi.toString()
-            binding.beerMoreIcon.tag = item
-            binding.beerMoreIcon.setOnClickListener {
+        fun bind(item: BeerModelBase) = with(binding) {
+            beerName.text = item.dasaxeleba
+            beerPrice.text = item.fasi.toString()
+            beerMoreIcon.tag = item
+            beerMoreIcon.setOnClickListener {
                 popupMenus(it)
             }
             item.displayColor?.let {
-                binding.root.backgroundTintList =
-                    ColorStateList.valueOf(Color.parseColor(it))
+                root.backgroundTintList = ColorStateList.valueOf(Color.parseColor(it))
             }
         }
 
@@ -46,7 +47,6 @@ class BeerListAdapter(
             popupMenu.inflate(R.menu.context_menu_beer)
             popupMenu.show()
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

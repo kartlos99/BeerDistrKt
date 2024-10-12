@@ -1,12 +1,7 @@
 package com.example.beerdistrkt.fragPages.orders.adapter
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.beerdistrkt.R
-import com.example.beerdistrkt.customView.BeerAmountRowView
 import com.example.beerdistrkt.fragPages.orders.view.OrderView
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus

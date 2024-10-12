@@ -3,6 +3,7 @@ package com.example.beerdistrkt.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
+import com.example.beerdistrkt.utils.DiffItem
 import com.squareup.moshi.Json
 
 @Entity(tableName = "beer_table")
@@ -16,7 +17,11 @@ data class BeerModelBase(
     @Json(name = "active")
     var status: BeerStatus = BeerStatus.ACTIVE,
     var sortValue: String = ""
-) {
+): DiffItem {
+
+    override val key: Int
+        get() = id
+
     val isActive: Boolean
         get() = status == BeerStatus.ACTIVE
 }

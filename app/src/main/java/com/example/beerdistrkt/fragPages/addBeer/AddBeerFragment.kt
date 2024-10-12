@@ -11,6 +11,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
@@ -19,6 +20,8 @@ import com.example.beerdistrkt.asHexColor
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
 import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.COLOR_SELECTOR_REQUEST_KEY
 import com.example.beerdistrkt.fragPages.addBeer.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
+import com.example.beerdistrkt.fragPages.addBeer.adapter.BeerListAdapter
+import com.example.beerdistrkt.fragPages.addBeer.adapter.TouchCallback
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.BeerStatus
 import com.example.beerdistrkt.showAskingDialog
@@ -46,6 +49,9 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val touchCallback = TouchCallback(::onItemMove)
+        val touchHelper = ItemTouchHelper(touchCallback)
+
         val beerListAdapter = BeerListAdapter(
             viewModel.beerList,
             ::onEditClick,
@@ -54,6 +60,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         binding.beerRv.adapter = beerListAdapter
         binding.beerRv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        touchHelper.attachToRecyclerView(binding.beerRv)
         binding.btnBeerUaryofa.setOnClickListener {
             beerID = 0
             binding.eBeerName.editText?.setText("")
@@ -86,6 +93,12 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         myColor(beerColor)
         initViewModel()
         setResultListeners()
+    }
+
+    private fun onItemMove(startPosition: Int, endPosition: Int) {
+        // calculate new sort value
+        // update local list
+        // update value on server db
     }
 
     private fun showInfoAlertDialog() {

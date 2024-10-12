@@ -138,8 +138,8 @@ class ParentOrderAdapter(
                             sourceVH: RecyclerView.ViewHolder,
                             targetVH: RecyclerView.ViewHolder
                         ): Boolean {
-                            val sourcePosition = sourceVH.adapterPosition
-                            val targetPosition = targetVH.adapterPosition
+                            val sourcePosition = sourceVH.bindingAdapterPosition
+                            val targetPosition = targetVH.bindingAdapterPosition
                             Log.d("drag size2", "${grItem.ordersList.size}")
 
                             newSortValue = calculateSortValue(sourcePosition, targetPosition)
@@ -155,8 +155,8 @@ class ParentOrderAdapter(
                             viewHolder: RecyclerView.ViewHolder
                         ) {
                             super.clearView(recyclerView, viewHolder)
-                            Log.d("drag posFin", "${viewHolder.adapterPosition}")
-                            val dragFinalPosition = viewHolder.adapterPosition
+                            Log.d("drag posFin", "${viewHolder.bindingAdapterPosition}")
+                            val dragFinalPosition = viewHolder.bindingAdapterPosition
                             viewHolder.itemView.findViewById<ConstraintLayout>(R.id.orderMainConstraint)
                                 ?.backgroundTintList = orderBkgColor
 
