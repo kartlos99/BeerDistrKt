@@ -1,13 +1,34 @@
 package com.example.beerdistrkt
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.RefreshBeerUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.Session
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainActViewModel: BaseViewModel() {
+@HiltViewModel
+class MainActViewModel @Inject constructor(
+    private val refreshBeerUseCase: RefreshBeerUseCase,
+): BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()
+
+    val showContentFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
+
+    init {
+        updateInitialData()
+    }
+
+    private fun updateInitialData() = viewModelScope.launch {
+        showContentFlow.emit(false)
+        refreshBeerUseCase()
+        showContentFlow.emit(true)
+    }
 
     fun changePassword(oldPass: String, newPass: String, callback: (text: String?) -> Unit) {
         sendRequest(

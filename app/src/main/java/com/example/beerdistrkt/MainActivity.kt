@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
@@ -17,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -45,9 +45,8 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 
     private val vBinding by viewBinding(ActivityMainBinding::bind)
 
-    val viewModel by lazy {
-        getViewModel { MainActViewModel() }
-    }
+    val viewModel by viewModels<MainActViewModel>()
+
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +62,25 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         vBinding.toolBar.title = getString(R.string.home_def_title)
         setSupportActionBar(vBinding.toolBar)
 
+        initNavController()
+
+        setObservers()
+
+        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun setObservers() {
+        viewModel.headerUpdateLiveData.observe(this) {
+            updateNavigationView()
+        }
+        viewModel.showContentFlow.collectLatest(this) {
+            vBinding.progressIndicator.isVisible = !it
+        }
+    }
+
+    private fun initNavController() {
         val navController = this.findNavController(R.id.mainNavHostFragment)
 
         setupActionBarWithNavController(navController, vBinding.drawerLayout)
@@ -103,17 +121,6 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
             vBinding.drawerLayout.closeDrawer(GravityCompat.START)
             return@OnNavigationItemSelectedListener true
         })
-
-        viewModel.headerUpdateLiveData.observe(this, Observer {
-            updateNavigationView()
-        })
-
-//        intent.extras?.keySet()?.forEach {
-//            Log.d("extr", "$it - ${intent?.extras?.get(it!!)}")
-//        }
-        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView).apply {
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
     }
 
     fun setFullScreen() {
@@ -190,10 +197,14 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val navController = this.findNavController(R.id.mainNavHostFragment)
 //        if (!navController.popBackStack())
-        if (navController.currentDestination?.id == R.id.loginFragment)
+        if (
+            navController.currentDestination?.id == R.id.loginFragment ||
+            navController.currentDestination?.id == R.id.homeFragment
+        )
             finish()
         super.onBackPressed()
     }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -19,7 +19,9 @@
             android:background="@color/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/MyToolbar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <fragment
             android:id="@+id/mainNavHostFragment"
@@ -28,9 +30,23 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/frag_navigation"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolBar"
+            app:navGraph="@navigation/frag_navigation" />
 
-    </LinearLayout>
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="@dimen/gr_size_4"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/colorAccent_33"
+            app:layout_constraintTop_toTopOf="@id/mainNavHostFragment"
+            app:trackColor="@color/gray_transparent_20"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
