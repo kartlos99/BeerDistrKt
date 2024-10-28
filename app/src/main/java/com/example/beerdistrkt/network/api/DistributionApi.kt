@@ -1,13 +1,13 @@
 package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.beer.data.model.BeerSortUpdateDto
+import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
+import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
 import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -88,5 +88,8 @@ interface DistributionApi {
 
     /* BEER */
     @POST("beer/updateSortValue.php")
-    suspend fun updateBeerSortValue(@Body data: BeerSortUpdateDto): List<BeerModelBase>
+    suspend fun updateBeerSortValue(@Body data: BeerOrderingUpdateDto): List<BeerDto>
+
+    @GET("listing/beers.php")
+    suspend fun getBeers(): List<BeerDto>
 }

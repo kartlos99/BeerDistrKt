@@ -17,7 +17,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.asHexColor
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Companion.COLOR_SELECTOR_REQUEST_KEY
 import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.BeerListAdapter
@@ -49,56 +51,59 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val touchCallback = TouchCallback(::onItemMove)
-        val touchHelper = ItemTouchHelper(touchCallback)
-
-        val beerListAdapter = BeerListAdapter(
-            viewModel.beerList,
-            ::onEditClick,
-            ::onDeleteClick
-        )
-        binding.beerRv.adapter = beerListAdapter
-        binding.beerRv.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        touchHelper.attachToRecyclerView(binding.beerRv)
-        binding.btnBeerUaryofa.setOnClickListener {
-            beerID = 0
-            binding.eBeerName.editText?.setText("")
-            binding.eBeerPr.editText?.setText("")
-            binding.btnBeerDone.text = "+"
-            binding.tAddeditBeer.text = "ახალი ლუდის დამატება"
-            binding.btnBeerUaryofa.isInvisible = true
-        }
-        binding.btnBeerDone.setOnClickListener {
-            if (binding.eBeerName.editText?.text.isNullOrEmpty() || binding.eBeerPr.editText?.text.isNullOrEmpty()) {
-                showInfoAlertDialog()
-            } else {
-                viewModel.sendDataToDB(
-                    BeerModelBase(
-                        beerID,
-                        binding.eBeerName.editText?.text.toString(),
-                        beerColor.asHexColor(),
-                        binding.eBeerPr.editText?.text.toString().toDouble(),
-                        BeerStatus.ACTIVE,
-                        viewModel.beerList.maxOf { it.sortValue } + 1
-                    )
-
-                )
-            }
-        }
-        binding.btnColor.setOnClickListener {
-            ChooseColorDialog.getInstance(beerColor)
-                .show(childFragmentManager, ChooseColorDialog.TAG)
-        }
+        initView()
         myColor(beerColor)
         initViewModel()
         setResultListeners()
     }
 
-    private fun onItemMove(startPosition: Int, endPosition: Int) {
-        // calculate new sort value
-        // update local list
-        // update value on server db
+    private fun initView() = with(binding) {
+        setupRecycler()
+        btnBeerUaryofa.setOnClickListener {
+            beerID = 0
+            eBeerName.editText?.setText("")
+            eBeerPr.editText?.setText("")
+            btnBeerDone.text = "+"
+            tAddeditBeer.text = "ახალი ლუდის დამატება"
+            btnBeerUaryofa.isInvisible = true
+        }
+        btnBeerDone.setOnClickListener {
+            if (eBeerName.editText?.text.isNullOrEmpty() || eBeerPr.editText?.text.isNullOrEmpty()) {
+                showInfoAlertDialog()
+            } else {
+                viewModel.sendDataToDB(
+                    BeerModelBase(
+                        beerID,
+                        eBeerName.editText?.text.toString(),
+                        beerColor.asHexColor(),
+                        eBeerPr.editText?.text.toString().toDouble(),
+                        BeerStatus.ACTIVE,
+                        viewModel.beerList.maxOf { it.sortValue } + 1
+                    )
+                )
+            }
+        }
+        btnColor.setOnClickListener {
+            ChooseColorDialog.getInstance(beerColor)
+                .show(childFragmentManager, ChooseColorDialog.TAG)
+        }
+    }
+
+    private fun setupRecycler() = with(binding.beerRv) {
+        val touchCallback = TouchCallback(viewModel::onItemMove)
+        val touchHelper = ItemTouchHelper(touchCallback)
+
+        val beerListAdapter = BeerListAdapter(
+            ::onEditClick,
+            ::onDeleteClick
+        )
+        adapter = beerListAdapter
+        layoutManager = LinearLayoutManager(context)
+        touchHelper.attachToRecyclerView(this)
+
+        viewModel.beersFlow.collectLatest(viewLifecycleOwner) {
+            beerListAdapter.submitList(it)
+        }
     }
 
     private fun showInfoAlertDialog() {
@@ -164,9 +169,9 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         }
     }
 
-    private fun onEditClick(beer: BeerModelBase) = with(binding) {
-        eBeerName.editText?.setText(beer.dasaxeleba)
-        eBeerPr.editText?.setText((beer.fasi ?: 0).toString())
+    private fun onEditClick(beer: Beer) = with(binding) {
+        eBeerName.editText?.setText(beer.name)
+        eBeerPr.editText?.setText((beer.price ?: 0).toString())
         beerID = beer.id
         btnBeerDone.text = "ჩაწერა"
         tAddeditBeer.text = "რედაქტირება"

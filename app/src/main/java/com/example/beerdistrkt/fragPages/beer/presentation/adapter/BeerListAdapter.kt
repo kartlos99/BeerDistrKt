@@ -10,21 +10,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.BeerRowBinding
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.utils.DefaultDiffItemCallback
 
 class BeerListAdapter(
-    private val beers: List<BeerModelBase>,
-    private val onEditClick: (beer: BeerModelBase) -> Unit,
+    private val onEditClick: (beer: Beer) -> Unit,
     private val onDeleteClick: (beerID: Int) -> Unit
 ) :
-    ListAdapter<BeerModelBase, BeerListAdapter.ViewHolder>(DefaultDiffItemCallback<BeerModelBase>()) {
+    ListAdapter<Beer, BeerListAdapter.ViewHolder>(DefaultDiffItemCallback<Beer>()) {
 
     inner class ViewHolder(val binding: BeerRowBinding) : RecyclerView.ViewHolder(binding.root)
     {
-        fun bind(item: BeerModelBase) = with(binding) {
-            beerName.text = item.dasaxeleba
-            beerPrice.text = item.fasi.toString()
+        fun bind(item: Beer) = with(binding) {
+            beerName.text = item.name
+            beerPrice.text = item.price.toString()
             beerMoreIcon.tag = item
             beerMoreIcon.setOnClickListener {
                 popupMenus(it)
@@ -36,7 +35,7 @@ class BeerListAdapter(
 
         private fun popupMenus(view: View) {
             val popupMenu = PopupMenu(binding.root.context, view)
-            val beer = view.tag as BeerModelBase
+            val beer = view.tag as Beer
             popupMenu.setOnMenuItemClickListener {
                 when(it.itemId) {
                     R.id.cm_edit -> onEditClick.invoke(beer)
@@ -55,9 +54,7 @@ class BeerListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(beers[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount() = beers.size
 
 }

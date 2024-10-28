@@ -1,4 +1,54 @@
 package com.example.beerdistrkt.fragPages.beer.data
 
-class BeerRepositoryImpl {
+import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
+import com.example.beerdistrkt.fragPages.beer.domain.BeerRepository
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.api.BaseRepository
+import com.example.beerdistrkt.network.api.DistributionApi
+import dagger.hilt.android.scopes.ActivityRetainedScoped
+import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
+
+@ActivityRetainedScoped
+class BeerRepositoryImpl @Inject constructor(
+    private val api: DistributionApi,
+    private val beerMapper: BeerMapper,
+    ioDispatcher: CoroutineDispatcher
+) : BaseRepository(ioDispatcher), BeerRepository {
+
+    private var beers: List<Beer> = emptyList()
+
+    override suspend fun updateBeerSortValue(
+        beerId: Int,
+        sortValue: Double
+    ): ApiResponse<List<Beer>> {
+        return apiCall {
+            api.updateBeerSortValue(
+                BeerOrderingUpdateDto(beerId, sortValue)
+            )
+                .map(beerMapper::toDomain)
+                .also {
+                    beers = it
+                }
+        }
+    }
+
+    override suspend fun getBeers(): List<Beer> {
+        return beers
+    }
+
+    private suspend fun fetchBeers() {
+        apiCall {
+            api.getBeers()
+                .map(beerMapper::toDomain)
+                .also {
+                    beers = it
+                }
+        }
+    }
+
+    override suspend fun refreshBeers() {
+        fetchBeers()
+    }
 }
