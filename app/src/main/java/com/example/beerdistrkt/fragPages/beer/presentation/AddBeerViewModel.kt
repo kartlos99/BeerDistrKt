@@ -11,6 +11,7 @@ import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.PutBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.UpdateBeerPositionUseCase
+import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse
@@ -51,6 +52,9 @@ class AddBeerViewModel @Inject constructor(
     val deleteBeerLiveData: LiveData<ApiResponseState<String>>
         get() = _deleteBeerLiveData
 
+    private val _priceState = MutableStateFlow(String.empty())
+    val priceState = _priceState.asStateFlow()
+
     init {
         initBeers()
     }
@@ -71,14 +75,20 @@ class AddBeerViewModel @Inject constructor(
                     sortValue = .0
                 )
             )
+            _priceState.emit(String.empty())
         }
     }
 
     fun saveChanges() {
         _currentBeerStateFlow.value?.let { beer ->
             viewModelScope.launch {
-
-                when (val result = putBeerUseCase(beer)) {
+                val result = putBeerUseCase(
+                    beer.copy(
+                        name = beer.name.trim(),
+                        price = _priceState.value.parseDouble()
+                    )
+                )
+                when (result) {
                     is ApiResponse.Error -> {
                         Log.d(TAG, "saveChanges: ${result.message}")
                     }
@@ -161,12 +171,14 @@ class AddBeerViewModel @Inject constructor(
     fun clearBeerData() {
         viewModelScope.launch {
             _currentBeerStateFlow.emit(null)
+            _priceState.emit(String.empty())
         }
     }
 
     fun editBeer(beer: Beer) {
         viewModelScope.launch {
             _currentBeerStateFlow.emit(beer)
+            _priceState.emit(beer.price.mapToString())
         }
     }
 
@@ -183,8 +195,8 @@ class AddBeerViewModel @Inject constructor(
     }
 
     fun setBeerPrice(price: String) {
-        _currentBeerStateFlow.update {
-            it?.copy(price = price.parseDouble())
+        _priceState.update {
+            price
         }
     }
 

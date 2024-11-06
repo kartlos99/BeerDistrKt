@@ -306,6 +306,11 @@ fun Context.showSoftKeyboard(view: View) {
     }
 }
 
+fun Context.hideKeyboard(view: View) {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
 fun MutableList<Order>.getSummedBottleOrders(): List<Order.BottleItem> {
     return this.asSequence()
         .filter {
@@ -548,5 +553,5 @@ fun areNotNull(vararg objects: Any?): Boolean =
 fun String.parseDouble(defaultValue: Double = -1.0): Double = try {
     this.toDouble()
 } catch (e: NumberFormatException) {
-    -.1
+    defaultValue
 }

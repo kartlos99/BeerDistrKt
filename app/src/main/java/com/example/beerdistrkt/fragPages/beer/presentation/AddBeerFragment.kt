@@ -21,7 +21,7 @@ import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Com
 import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.BeerListAdapter
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
-import com.example.beerdistrkt.mapToString
+import com.example.beerdistrkt.hideKeyboard
 import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showInfoDialog
@@ -61,6 +61,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                 showInfoAlertDialog()
             } else {
                 viewModel.saveChanges()
+                requireContext().hideKeyboard(binding.root)
             }
         }
         btnColor.setOnClickListener {
@@ -71,10 +72,10 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
             viewModel.initNewBeer()
         }
         eBeerName.editText?.simpleTextChangeListener {
-            viewModel.setBeerName(it.toString().trim())
+            viewModel.setBeerName(it.toString())
         }
         eBeerPr.editText?.simpleTextChangeListener {
-            viewModel.setBeerPrice(it.toString().trim())
+            viewModel.setBeerPrice(it.toString())
         }
     }
 
@@ -113,13 +114,16 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         }
     }
 
-    fun initViewModel() {
-        viewModel.currentBeerStateFlow.collectLatest(viewLifecycleOwner) { beer: Beer? ->
+    fun initViewModel() = with(viewModel) {
+        currentBeerStateFlow.collectLatest(viewLifecycleOwner) { beer: Beer? ->
             beer?.let(::fillBeerData)
             binding.modifyBeerGroup.isVisible = beer != null
             binding.addBtn.isVisible = beer == null
         }
-        viewModel.addBeerLiveData.observe(viewLifecycleOwner) {
+        priceState.collectLatest(viewLifecycleOwner) { amountText ->
+            binding.eBeerPr.editText?.setDifferText(amountText)
+        }
+        addBeerLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     binding.btnBeerDone.isEnabled = true
@@ -140,7 +144,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
                 else -> {}
             }
         }
-        viewModel.deleteBeerLiveData.observe(viewLifecycleOwner) {
+        deleteBeerLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
                     binding.btnBeerDone.isEnabled = true
@@ -165,7 +169,6 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
 
     private fun fillBeerData(beer: Beer) = with(binding) {
         eBeerName.editText?.setDifferText(beer.name)
-        eBeerPr.editText?.setDifferText(beer.price.mapToString())
         modifyTitle.text = if (beer.id > 0) "რედაქტირება" else "ახალი"
         btnColor.backgroundTintList = ColorStateList.valueOf(beer.displayColor)
     }
