@@ -28,9 +28,7 @@ class BeerListAdapter(
             beerMoreIcon.setOnClickListener {
                 popupMenus(it)
             }
-            item.displayColor?.let {
-                root.backgroundTintList = ColorStateList.valueOf(Color.parseColor(it))
-            }
+            root.backgroundTintList = ColorStateList.valueOf(item.displayColor)
         }
 
         private fun popupMenus(view: View) {

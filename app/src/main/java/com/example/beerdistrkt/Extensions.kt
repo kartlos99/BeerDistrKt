@@ -544,3 +544,9 @@ fun String.Companion.empty() = ""
 
 fun areNotNull(vararg objects: Any?): Boolean =
     objects.all { it != null }
+
+fun String.parseDouble(defaultValue: Double = -1.0): Double = try {
+    this.toDouble()
+} catch (e: NumberFormatException) {
+    -.1
+}

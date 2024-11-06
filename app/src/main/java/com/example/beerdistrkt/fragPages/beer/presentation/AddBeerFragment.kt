@@ -2,12 +2,10 @@ package com.example.beerdistrkt.fragPages.beer.presentation
 
 import android.app.AlertDialog
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.asHexColor
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddBeerFragmentBinding
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
@@ -24,18 +21,16 @@ import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Com
 import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Companion.SELECTED_COLOR_KEY
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.BeerListAdapter
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.BeerStatus
+import com.example.beerdistrkt.mapToString
+import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showInfoDialog
+import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
-
-    private var beerID = 0
-    private var beerColor: Int = Color.rgb(128, 128, 128)
 
     private val binding by viewBinding(AddBeerFragmentBinding::bind)
 
@@ -52,40 +47,34 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-        myColor(beerColor)
         initViewModel()
         setResultListeners()
     }
 
     private fun initView() = with(binding) {
         setupRecycler()
-        btnBeerUaryofa.setOnClickListener {
-            beerID = 0
-            eBeerName.editText?.setText("")
-            eBeerPr.editText?.setText("")
-            btnBeerDone.text = "+"
-            tAddeditBeer.text = "ახალი ლუდის დამატება"
-            btnBeerUaryofa.isInvisible = true
+        btnCancel.setOnClickListener {
+            viewModel.clearBeerData()
         }
         btnBeerDone.setOnClickListener {
             if (eBeerName.editText?.text.isNullOrEmpty() || eBeerPr.editText?.text.isNullOrEmpty()) {
                 showInfoAlertDialog()
             } else {
-                viewModel.sendDataToDB(
-                    BeerModelBase(
-                        beerID,
-                        eBeerName.editText?.text.toString(),
-                        beerColor.asHexColor(),
-                        eBeerPr.editText?.text.toString().toDouble(),
-                        BeerStatus.ACTIVE,
-                        viewModel.beerList.maxOf { it.sortValue } + 1
-                    )
-                )
+                viewModel.saveChanges()
             }
         }
         btnColor.setOnClickListener {
-            ChooseColorDialog.getInstance(beerColor)
+            ChooseColorDialog.getInstance(viewModel.currentBeerColor)
                 .show(childFragmentManager, ChooseColorDialog.TAG)
+        }
+        addBtn.setOnClickListener {
+            viewModel.initNewBeer()
+        }
+        eBeerName.editText?.simpleTextChangeListener {
+            viewModel.setBeerName(it.toString().trim())
+        }
+        eBeerPr.editText?.simpleTextChangeListener {
+            viewModel.setBeerPrice(it.toString().trim())
         }
     }
 
@@ -120,11 +109,16 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         childFragmentManager.setFragmentResultListener(
             COLOR_SELECTOR_REQUEST_KEY, viewLifecycleOwner
         ) { _, bundle ->
-            myColor(bundle.getInt(SELECTED_COLOR_KEY))
+            viewModel.setBeerColor(bundle.getInt(SELECTED_COLOR_KEY))
         }
     }
 
     fun initViewModel() {
+        viewModel.currentBeerStateFlow.collectLatest(viewLifecycleOwner) { beer: Beer? ->
+            beer?.let(::fillBeerData)
+            binding.modifyBeerGroup.isVisible = beer != null
+            binding.addBtn.isVisible = beer == null
+        }
         viewModel.addBeerLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResponseState.Success -> {
@@ -169,15 +163,15 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         }
     }
 
-    private fun onEditClick(beer: Beer) = with(binding) {
-        eBeerName.editText?.setText(beer.name)
-        eBeerPr.editText?.setText((beer.price ?: 0).toString())
-        beerID = beer.id
-        btnBeerDone.text = "ჩაწერა"
-        tAddeditBeer.text = "რედაქტირება"
-        btnBeerUaryofa.isVisible = true
-        beerColor = Color.parseColor(beer.displayColor)
-        myColor(beerColor)
+    private fun fillBeerData(beer: Beer) = with(binding) {
+        eBeerName.editText?.setDifferText(beer.name)
+        eBeerPr.editText?.setDifferText(beer.price.mapToString())
+        modifyTitle.text = if (beer.id > 0) "რედაქტირება" else "ახალი"
+        btnColor.backgroundTintList = ColorStateList.valueOf(beer.displayColor)
+    }
+
+    private fun onEditClick(beer: Beer) {
+        viewModel.editBeer(beer)
     }
 
     private fun onDeleteClick(beerID: Int) {
@@ -192,8 +186,4 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         }
     }
 
-    private fun myColor(color: Int) {
-        beerColor = color
-        binding.btnColor.backgroundTintList = ColorStateList.valueOf(color)
-    }
 }

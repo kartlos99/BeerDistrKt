@@ -10,4 +10,6 @@ interface BeerRepository {
     suspend fun getBeers(): List<Beer>
 
     suspend fun refreshBeers()
+
+    suspend fun putBeer(beer: Beer): ApiResponse<List<Beer>>
 }

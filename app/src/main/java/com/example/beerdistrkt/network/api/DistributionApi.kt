@@ -90,6 +90,9 @@ interface DistributionApi {
     @POST("beer/updateSortValue.php")
     suspend fun updateBeerSortValue(@Body data: BeerOrderingUpdateDto): List<BeerDto>
 
+    @POST("beer/add.php")
+    suspend fun putBeer(@Body beer: BeerDto): List<BeerDto>
+
     @GET("listing/beers.php")
     suspend fun getBeers(): List<BeerDto>
 }

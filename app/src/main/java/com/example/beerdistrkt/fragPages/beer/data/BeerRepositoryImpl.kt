@@ -51,4 +51,12 @@ class BeerRepositoryImpl @Inject constructor(
     override suspend fun refreshBeers() {
         fetchBeers()
     }
+
+    override suspend fun putBeer(beer: Beer): ApiResponse<List<Beer>> {
+        return apiCall {
+            api.putBeer(beerMapper.toDto(beer))
+                .map(beerMapper::toDomain)
+                .also { beers = it }
+        }
+    }
 }
