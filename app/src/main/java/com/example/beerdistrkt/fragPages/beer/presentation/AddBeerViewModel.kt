@@ -1,7 +1,6 @@
 package com.example.beerdistrkt.fragPages.beer.presentation
 
 import android.graphics.Color
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -15,6 +14,9 @@ import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.api.toResultState
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.asSuccessState
 import com.example.beerdistrkt.parseDouble
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -38,8 +40,8 @@ class AddBeerViewModel @Inject constructor(
         ?.filter { it.isActive }
         ?: mutableListOf()
 
-    private val _beersFlow: MutableStateFlow<List<Beer>> = MutableStateFlow(listOf())
-    val beersFlow: StateFlow<List<Beer>> = _beersFlow.asStateFlow()
+    private val _beersFlow: MutableStateFlow<ResultState<List<Beer>>> = MutableStateFlow(ResultState.Loading)
+    val beersFlow: StateFlow<ResultState<List<Beer>>> = _beersFlow.asStateFlow()
 
     private val _currentBeerStateFlow: MutableStateFlow<Beer?> = MutableStateFlow(null)
     val currentBeerStateFlow: StateFlow<Beer?> = _currentBeerStateFlow.asStateFlow()
@@ -64,6 +66,7 @@ class AddBeerViewModel @Inject constructor(
             getBeerUseCase.invoke()
                 .filter { it.isActive }
                 .sortedBy { it.sortValue }
+                .asSuccessState()
         )
     }
 
@@ -82,6 +85,7 @@ class AddBeerViewModel @Inject constructor(
     fun saveChanges() {
         _currentBeerStateFlow.value?.let { beer ->
             viewModelScope.launch {
+                _beersFlow.emit(ResultState.Loading)
                 val result = putBeerUseCase(
                     beer.copy(
                         name = beer.name.trim(),
@@ -90,7 +94,7 @@ class AddBeerViewModel @Inject constructor(
                 )
                 when (result) {
                     is ApiResponse.Error -> {
-                        Log.d(TAG, "saveChanges: ${result.message}")
+                        _beersFlow.emit(result.toResultState())
                     }
 
                     is ApiResponse.Success -> {
@@ -98,8 +102,10 @@ class AddBeerViewModel @Inject constructor(
                             result.data
                                 .filter { it.isActive }
                                 .sortedBy { it.sortValue }
+                                .asSuccessState()
                         )
                         _currentBeerStateFlow.emit(null)
+                        _priceState.update { String.empty() }
                     }
                 }
             }

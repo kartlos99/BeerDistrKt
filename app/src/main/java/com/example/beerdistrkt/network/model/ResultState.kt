@@ -7,7 +7,11 @@ sealed class ResultState<out T> {
         val statusCode: Int = 0,
         val message: String? = null,
         val errorCode: String? = null
-    ) : ResultState<Nothing>()
+    ) : ResultState<Nothing>() {
+
+        val formatedMessage: String
+            get() = "Error: code=$errorCode - msg=$message"
+    }
 }
 
 
@@ -32,3 +36,5 @@ fun <T> ResultState<T>.onError(onError: (error: ResultState.Error) -> Unit): Res
         onError(this)
     return this
 }
+
+fun <T> ResultState<T>.isLoading() = this == ResultState.Loading

@@ -22,6 +22,9 @@ import com.example.beerdistrkt.fragPages.beer.presentation.ChooseColorDialog.Com
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.BeerListAdapter
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
 import com.example.beerdistrkt.hideKeyboard
+import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showInfoDialog
@@ -91,8 +94,14 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         layoutManager = LinearLayoutManager(context)
         touchHelper.attachToRecyclerView(this)
 
-        viewModel.beersFlow.collectLatest(viewLifecycleOwner) {
-            beerListAdapter.submitList(it)
+        viewModel.beersFlow.collectLatest(viewLifecycleOwner) {result ->
+            binding.progressIndicator.isVisible = result.isLoading()
+            result.onError { error ->
+                showToast(error.formatedMessage)
+            }
+            result.onSuccess {
+                beerListAdapter.submitList(it)
+            }
         }
     }
 
