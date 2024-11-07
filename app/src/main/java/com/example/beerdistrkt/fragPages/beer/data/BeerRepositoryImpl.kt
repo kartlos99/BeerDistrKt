@@ -59,4 +59,12 @@ class BeerRepositoryImpl @Inject constructor(
                 .also { beers = it }
         }
     }
+
+    override suspend fun deleteBeer(beerId: Int): ApiResponse<List<Beer>> {
+        return apiCall {
+            api.deleteBeer(beerId)
+                .map(beerMapper::toDomain)
+                .also { beers = it }
+        }
+    }
 }

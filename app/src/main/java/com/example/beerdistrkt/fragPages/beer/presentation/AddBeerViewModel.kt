@@ -7,12 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.DeleteBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.PutBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.UpdateBeerPositionUseCase
 import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
@@ -33,6 +33,7 @@ class AddBeerViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val updateBeerPositionUseCase: UpdateBeerPositionUseCase,
     private val putBeerUseCase: PutBeerUseCase,
+    private val deleteBeerUseCase: DeleteBeerUseCase,
 ) : BaseViewModel() {
 
     val beerList = ObjectCache.getInstance()
@@ -112,41 +113,19 @@ class AddBeerViewModel @Inject constructor(
         }
     }
 
-/*
-    fun sendDataToDB(beer: BeerModelBase) {
-
-        _addBeerLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().addBeer(beer),
-            successWithData = {
-                _addBeerLiveData.value = ApiResponseState.Success(it)
-            },
-            responseFailure = { code, error ->
-                _addBeerLiveData.value = ApiResponseState.ApiError(code, error)
-            },
-            finally = {
-                _addBeerLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
-    }
-*/
-
     fun removeBeer(beerId: Int) {
-
-        _deleteBeerLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().deleteBeer(DeleteBeerModel(beerId)),
-            successWithData = {
-                _deleteBeerLiveData.value = ApiResponseState.Success(it)
-            },
-            responseFailure = { code, error ->
-                _deleteBeerLiveData.value = ApiResponseState.ApiError(code, error)
-            },
-            finally = {
-                _deleteBeerLiveData.value = ApiResponseState.Loading(false)
+        viewModelScope.launch {
+            _beersFlow.emit(ResultState.Loading)
+            when(val result = deleteBeerUseCase(beerId)) {
+                is ApiResponse.Error -> _beersFlow.emit(result.toResultState())
+                is ApiResponse.Success -> _beersFlow.emit(
+                    result.data
+                        .filter { it.isActive }
+                        .sortedBy { it.sortValue }
+                        .asSuccessState()
+                )
             }
-        )
-
+        }
     }
 
     fun onItemMove(startPosition: Int, endPosition: Int) = viewModelScope.launch {
