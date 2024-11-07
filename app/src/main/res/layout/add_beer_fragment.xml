@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/gr_size_12"
             android:layout_marginBottom="@dimen/gr_size_8"
-            app:layout_constraintBottom_toTopOf="@id/beerRv"
+            app:layout_constraintBottom_toTopOf="@id/beerRefresh"
             app:layout_constraintEnd_toStartOf="@id/btn_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/e_beer_name"
@@ -106,17 +106,24 @@
             android:visibility="gone"
             app:constraint_referenced_ids="btn_beer_done, btnCancel,btn_color, e_beer_name, e_beer_pr, modifyTitle" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/beerRv"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/beerRefresh"
+            android:layout_width="@dimen/gr_size_0"
+            android:layout_height="@dimen/gr_size_0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/e_beer_pr"
-            tools:itemCount="3"
-            tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/beer_row" />
+            app:layout_constraintTop_toBottomOf="@+id/e_beer_pr">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/beerRv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:itemCount="3"
+                tools:layout_editor_absoluteX="0dp"
+                tools:listitem="@layout/beer_row" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -80,6 +80,9 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         eBeerPr.editText?.simpleTextChangeListener {
             viewModel.setBeerPrice(it.toString())
         }
+        beerRefresh.setOnRefreshListener {
+            viewModel.refresh()
+        }
     }
 
     private fun setupRecycler() = with(binding.beerRv) {
@@ -96,6 +99,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
 
         viewModel.beersFlow.collectLatest(viewLifecycleOwner) {result ->
             binding.progressIndicator.isVisible = result.isLoading()
+            binding.beerRefresh.isRefreshing = result.isLoading()
             result.onError { error ->
                 showToast(error.formatedMessage)
             }

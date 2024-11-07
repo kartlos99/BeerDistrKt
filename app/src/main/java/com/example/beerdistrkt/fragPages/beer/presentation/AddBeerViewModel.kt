@@ -10,6 +10,7 @@ import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.DeleteBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.PutBeerUseCase
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.RefreshBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.UpdateBeerPositionUseCase
 import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.models.BeerModelBase
@@ -34,6 +35,7 @@ class AddBeerViewModel @Inject constructor(
     private val updateBeerPositionUseCase: UpdateBeerPositionUseCase,
     private val putBeerUseCase: PutBeerUseCase,
     private val deleteBeerUseCase: DeleteBeerUseCase,
+    private val refreshBeerUseCase: RefreshBeerUseCase,
 ) : BaseViewModel() {
 
     val beerList = ObjectCache.getInstance()
@@ -41,7 +43,8 @@ class AddBeerViewModel @Inject constructor(
         ?.filter { it.isActive }
         ?: mutableListOf()
 
-    private val _beersFlow: MutableStateFlow<ResultState<List<Beer>>> = MutableStateFlow(ResultState.Loading)
+    private val _beersFlow: MutableStateFlow<ResultState<List<Beer>>> =
+        MutableStateFlow(ResultState.Loading)
     val beersFlow: StateFlow<ResultState<List<Beer>>> = _beersFlow.asStateFlow()
 
     private val _currentBeerStateFlow: MutableStateFlow<Beer?> = MutableStateFlow(null)
@@ -116,7 +119,7 @@ class AddBeerViewModel @Inject constructor(
     fun removeBeer(beerId: Int) {
         viewModelScope.launch {
             _beersFlow.emit(ResultState.Loading)
-            when(val result = deleteBeerUseCase(beerId)) {
+            when (val result = deleteBeerUseCase(beerId)) {
                 is ApiResponse.Error -> _beersFlow.emit(result.toResultState())
                 is ApiResponse.Success -> _beersFlow.emit(
                     result.data
@@ -183,6 +186,18 @@ class AddBeerViewModel @Inject constructor(
         _priceState.update {
             price
         }
+    }
+
+    fun refresh() = viewModelScope.launch {
+        _beersFlow.emit(ResultState.Loading)
+        refreshBeerUseCase()
+        _beersFlow.emit(
+            getBeerUseCase.invoke()
+                .filter { it.isActive }
+                .sortedBy { it.sortValue }
+                .asSuccessState()
+
+        )
     }
 
     val currentBeerColor: Int
