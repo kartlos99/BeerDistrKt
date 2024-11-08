@@ -1,7 +1,5 @@
 package com.example.beerdistrkt.fragPages.sawyobi.models
 
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.squareup.moshi.Json
 
 data class StoreHouseListResponse(
@@ -10,7 +8,7 @@ data class StoreHouseListResponse(
     @Json(name = "bottles")
     val bottlesIo: List<BottleIoModel>,
 ) {
-    fun merge(
+    /*fun merge(
         beers: List<BeerModelBase>,
         bottles: List<BaseBottleModel>
     ): List<CombinedIoModel> {
@@ -45,5 +43,5 @@ data class StoreHouseListResponse(
         return result.sortedByDescending {
             it.date
         }
-    }
+    }*/
 }

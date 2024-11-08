@@ -23,22 +23,23 @@ import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.objList.model.Customer
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.ObjToBeerPrice
-import com.example.beerdistrkt.models.bottle.BottleStatus
 import com.example.beerdistrkt.models.bottle.ClientBottlePrice
+import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.showInfoDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.show
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
 
-    override val viewModel by lazy {
-        getViewModel { AddObjectViewModel(clientID) }
+    override val viewModel by paramViewModels<AddObjectViewModel, AddObjectViewModel.Factory> {
+        it.create(clientID)
     }
 
     private val clientID by lazy {
@@ -155,13 +156,10 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
     }
 
     private fun initViewModel() {
-        viewModel.beersLiveData.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty() && clientID == 0) drawPriceInputFields(null)
-        }
         viewModel.clientObjectLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
-                fillForm(it)
-                drawPriceInputFields(it)
+                it.first?.let(::fillForm)
+                drawPriceInputFields(it.second, it.third)
                 viewModel.clientObjectLiveData.value = null
             }
         }
@@ -248,18 +246,18 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         clientGroupInput.setText(getString(clientData.customer.group.displayName), false)
     }
 
-    private fun drawPriceInputFields(data: CustomerWithPrices?) {
-        val mapper = PriceMapper()
-        mapper.getBeerPrices(data)
-            .forEachIndexed { index, priceEditModel ->
-                binding.addEditClientPricesContainer
-                    .addView(getFilledPriceView(index, priceEditModel), index)
-            }
-        mapper.getBottlePrices(data)
-            .forEachIndexed { index, priceEditModel ->
-                binding.addEditClientBottlePricesContainer
-                    .addView(getFilledPriceView(index, priceEditModel), index)
-            }
+    private fun drawPriceInputFields(
+        beerPrices: List<PriceEditModel>,
+        bottlePrices: List<PriceEditModel>,
+    ) {
+        beerPrices.forEachIndexed { index, priceEditModel ->
+            binding.addEditClientPricesContainer
+                .addView(getFilledPriceView(index, priceEditModel), index)
+        }
+        bottlePrices.forEachIndexed { index, priceEditModel ->
+            binding.addEditClientBottlePricesContainer
+                .addView(getFilledPriceView(index, priceEditModel), index)
+        }
     }
 
     private fun getFilledPriceView(index: Int, item: PriceEditModel): LinearLayout {

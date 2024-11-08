@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.addEditObiects
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.CustomerWithPrices
@@ -10,15 +11,21 @@ import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.utils.ApiResponseState
-import kotlinx.coroutines.delay
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
+@HiltViewModel(assistedFactory = AddObjectViewModel.Factory::class)
+class AddObjectViewModel @AssistedInject constructor(
+    private val priceMapper: PriceMapper,
+    @Assisted val clientID: Int,
+) : BaseViewModel() {
 
-    val beersLiveData = database.getBeerList()
-    val clientObjectLiveData = MutableLiveData<CustomerWithPrices?>()
+    val clientObjectLiveData = MutableLiveData<Triple<CustomerWithPrices?, List<PriceEditModel>, List<PriceEditModel>>>()
     val clientSaveMutableLiveData = MutableLiveData<ApiResponseState<CustomerWithPrices?>>()
     val clientRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
     val regions = mutableListOf<AttachedRegion>()
@@ -27,22 +34,31 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
     private val repository = ApeniRepo()
 
     init {
-        beersLiveData.observeForever {
+        viewModelScope.launch {
             if (clientID > 0) {
-                viewModelScope.launch {
-                    repository.getCustomerDataFlow(clientID)
-                        .onEach {
-                            it?.let { customerData ->
-                                uiScope.launch {
-                                    delay(50)
-                                    clientObjectLiveData.value = customerData
-                                }
+                repository.getCustomerDataFlow(clientID)
+                    .onEach {
+                        it?.let { customerData ->
+                            uiScope.launch {
+//                                delay(50)
+                                proceedCustomer(customerData)
                             }
                         }
-                        .collect()
-                }
+                    }
+                    .collect()
+            } else {
+                proceedCustomer(null)
             }
         }
+    }
+
+    private suspend fun proceedCustomer(customerData: CustomerWithPrices?) {
+
+        clientObjectLiveData.value = Triple(
+            customerData,
+            priceMapper.getBeerPrices(customerData),
+            priceMapper.getBottlePrices(customerData)
+        )
     }
 
     fun addClient(clientData: CustomerWithPrices) {
@@ -136,5 +152,10 @@ class AddObjectViewModel(val clientID: Int) : BaseViewModel() {
                 getRegionForClient()
             }
         )
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(clientID: Int): AddObjectViewModel
     }
 }

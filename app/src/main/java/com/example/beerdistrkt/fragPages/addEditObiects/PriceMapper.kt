@@ -1,25 +1,24 @@
 package com.example.beerdistrkt.fragPages.addEditObiects
 
 import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.storage.ObjectCache
+import javax.inject.Inject
 
-private const val NO_NAME = "name??"
+class PriceMapper @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+) {
 
-class PriceMapper {
-
-    private val beers = ObjectCache.getInstance()
-        .getList(BeerModelBase::class, ObjectCache.BEER_LIST_ID) ?: listOf()
     private val bottles = ObjectCache.getInstance()
         .getList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID) ?: listOf()
 
-    fun getBeerPrices(data: CustomerWithPrices?): List<PriceEditModel> {
-        return beers
+    suspend fun getBeerPrices(data: CustomerWithPrices?): List<PriceEditModel> {
+        return getBeerUseCase()
             .filter { it.isActive }
             .map { beer ->
-                val defaultPrice = beer.fasi ?: 0.0
+                val defaultPrice = beer.price ?: 0.0
                 val price = data?.beerPrices
                     ?.firstOrNull {
                         it.beerID == beer.id
@@ -28,7 +27,7 @@ class PriceMapper {
 
                 PriceEditModel(
                     id = beer.id,
-                    displayName = beer.dasaxeleba ?: NO_NAME,
+                    displayName = beer.name,
                     defaultPrice = defaultPrice,
                     price = price
                 )
