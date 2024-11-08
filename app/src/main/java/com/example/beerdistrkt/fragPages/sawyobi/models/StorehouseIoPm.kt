@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.sawyobi.models
 
+import android.graphics.Color
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseIO
 import com.example.beerdistrkt.utils.DiffItem
@@ -52,7 +53,7 @@ data class StorehouseIoPm(
                             countByBarrelMap,
                             icon,
                             iconColor,
-                            singleBeerList[0].beer.displayColor
+                            Color.parseColor(singleBeerList[0].beer.displayColor)
                         )
                     )
                 }

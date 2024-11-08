@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.fragPages.showHistory
 
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.User
@@ -89,7 +89,7 @@ data class SaleHistoryDTO(
     fun toPm(
         clients: List<Obieqti>,
         usersList: List<User>,
-        beerList: List<BeerModelBase>
+        beerList: List<Beer>
     ): SaleHistory? {
         val client = clients.find {
             it.id == clientID
@@ -118,7 +118,7 @@ data class SaleHistory(
     val saleDate: String,
     val client: Obieqti,
     val distributor: User,
-    val beer: BeerModelBase,
+    val beer: Beer,
     val chek: Int,
     val unitPrice: Double,
     val canTypeID: Int,

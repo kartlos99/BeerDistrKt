@@ -68,7 +68,7 @@ class BeerAmountRowView @JvmOverloads constructor(
         }
 
         data.underlineColor?.let {
-            orderItemNameUnderline.setBackgroundColor(Color.parseColor(it))
+            orderItemNameUnderline.setBackgroundColor(it)
         }
         orderMiddleIcon.visibleIf(data.middleIconRes != null)
         data.middleIconRes?.let {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
@@ -16,16 +17,15 @@ import com.example.beerdistrkt.databinding.ViewMoneyHistoryItemBinding
 import com.example.beerdistrkt.databinding.ViewSalesHistoryItemBinding
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
 
     private val frBinding by viewBinding(FragmentSalesHistoryBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { SalesHistoryViewModel() }
-    }
+    override val viewModel: SalesHistoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -188,7 +188,7 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
                 itemBinding.viewSaleHistoryComment.text = item.comment
                 itemBinding.viewSaleHistoryBeerRow.setData(
                     SimpleBeerRowModel(
-                        item.beer.dasaxeleba ?: "",
+                        item.beer.name,
                         mapOf(item.canTypeID to item.count),
                         null,
                         null,

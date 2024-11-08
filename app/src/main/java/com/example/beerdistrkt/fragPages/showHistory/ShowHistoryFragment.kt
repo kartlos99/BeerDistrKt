@@ -5,24 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.FragmentShowHistoryBinding
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ShowHistoryFragment: BaseFragment<ShowHistoryViewModel>() {
 
     private val TAG = "ShowHistoryFragment"
 
     private val binding by viewBinding(FragmentShowHistoryBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { ShowHistoryViewModel() }
-    }
+    override val viewModel: ShowHistoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

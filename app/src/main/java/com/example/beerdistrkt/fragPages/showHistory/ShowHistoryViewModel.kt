@@ -3,14 +3,23 @@ package com.example.beerdistrkt.fragPages.showHistory
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ShowHistoryViewModel : BaseViewModel() {
+@HiltViewModel
+class ShowHistoryViewModel @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+) : BaseViewModel() {
+
     private val TAG = "ShowHistoryViewModel"
 
     private val clientsLiveData = database.getAllObieqts()
@@ -20,18 +29,17 @@ class ShowHistoryViewModel : BaseViewModel() {
     private lateinit var usersList: List<User>
 
 
-    private val beerLiveData = database.getBeerList()
-    lateinit var beerMap: Map<Int, BeerModelBase>
+    lateinit var beerMap: Map<Int, Beer>
 
     private val _orderHistoryLiveData = MutableLiveData<ApiResponseState<List<OrderHistory>>>()
     val orderHistoryLiveData: LiveData<ApiResponseState<List<OrderHistory>>>
         get() = _orderHistoryLiveData
 
     init {
-        beerLiveData.observeForever { beerList ->
-            beerMap = beerList.groupBy { it.id }.mapValues {
-                it.value[0]
-            }
+        viewModelScope.launch {
+            beerMap = getBeerUseCase()
+                .groupBy { it.id }
+                .mapValues { it.value[0] }
         }
         clientsLiveData.observeForever { clients = it }
         userLiveData.observeForever { usersList = it }
