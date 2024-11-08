@@ -10,22 +10,31 @@ import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
-import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.ObjToBeerPrice
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.DefaultBottleDtoMapper
+import com.example.beerdistrkt.models.bottle.BottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.waitFor
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import javax.inject.Inject
 
-class HomeViewModel : BaseViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val bottleMapper: BottleDtoMapper,
+) : BaseViewModel() {
 
     private val usersLiveData = database.getUsers()
     private val beerLiveData = database.getBeerList()
@@ -167,20 +176,23 @@ class HomeViewModel : BaseViewModel() {
             successWithData = {
                 saveVersion()
                 Log.d(TAG, "getBeerList_respOK")
-                if (it.beers.isNotEmpty()) {
-                    ioScope.launch {
-                        database.clearBeerTable()
-                        it.beers.forEach { beer ->
-                            insertBeerToDB(beer)
-                        }
+//                if (it.beers.isNotEmpty()) {
+//                    ioScope.launch {
+//                        database.clearBeerTable()
+//                        it.beers.forEach { beer ->
+//                            insertBeerToDB(beer)
+//                        }
+//                    }
+//                }
+
+//                val bottleMapper = DefaultBottleDtoMapper(listOf())
+                viewModelScope.launch {
+                    val bottles = it.bottles.map { dto ->
+                        bottleMapper.map(dto)
                     }
+                    ObjectCache.getInstance()
+                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
                 }
-                val bottleMapper = DefaultBottleDtoMapper(it.beers)
-                val bottles = it.bottles.map { dto ->
-                    bottleMapper.map(dto)
-                }
-                ObjectCache.getInstance()
-                    .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
             }
         )
     }

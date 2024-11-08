@@ -5,11 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.models.MappedUser
@@ -26,7 +27,6 @@ import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -43,6 +43,7 @@ import java.util.Date
 
 @HiltViewModel(assistedFactory = AddOrdersViewModel.Factory::class)
 class AddOrdersViewModel @AssistedInject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(EDIT_ORDER_ID_KEY) var editingOrderID: Int
 ) : BaseViewModel() {
@@ -50,8 +51,6 @@ class AddOrdersViewModel @AssistedInject constructor(
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
-    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
-        ?: mutableListOf()
     val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
         ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
@@ -64,6 +63,8 @@ class AddOrdersViewModel @AssistedInject constructor(
         get() = usersList.filter {
             it.isActive
         }
+
+    var beers: List<Beer> = listOf()
 
     lateinit var selectedDistributor: User
     private var selectedDistributorRegionID: Int = 0
@@ -107,12 +108,17 @@ class AddOrdersViewModel @AssistedInject constructor(
     init {
         Log.d("addOrderVM", clientID.toString())
 
+        getBeers()
         clientsLiveData.observeForever { clients = it }
         getClient()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
         selectedDistributorRegionID = Session.get().region?.regionID?.toInt() ?: 0
         getDebt()
         getAllUsers()
+    }
+
+    private fun getBeers() = viewModelScope.launch {
+        beers = getBeerUseCase()
     }
 
     private fun getAllUsers() {
@@ -312,7 +318,7 @@ class AddOrdersViewModel @AssistedInject constructor(
                     Log.d("editingOrder", it.toString())
                     if (it.isNotEmpty()) {
 
-                        val order = it[0].toPm(clients, beerList, bottleList, {}, {})
+                        val order = it[0].toPm(clients, beers, bottleList, {}, {})
 
                         getOrderLiveData.value = order
                         addOrderItemsToList(order)

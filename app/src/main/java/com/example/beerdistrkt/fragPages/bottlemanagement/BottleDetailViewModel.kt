@@ -4,19 +4,27 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.models.bottle.BottleDtoMapper
 import com.example.beerdistrkt.models.bottle.BottleStatus
-import com.example.beerdistrkt.models.bottle.DefaultBottleDtoMapper
 import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class BottleDetailViewModel(
-    private val bottleID: Int
+@HiltViewModel(assistedFactory = BottleDetailViewModel.Factory::class)
+class BottleDetailViewModel @AssistedInject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+    private val bottleMapper: BottleDtoMapper,
+    @Assisted private val bottleID: Int
 ) : BaseViewModel() {
 
     val eventsFlow = MutableSharedFlow<Event>()
@@ -24,15 +32,16 @@ class BottleDetailViewModel(
 
     private val bottleList = ObjectCache.getInstance()
         .getList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID) ?: mutableListOf()
-    private val beerList = ObjectCache.getInstance()
-        .getList(BeerModelBase::class, ObjectCache.BEER_LIST_ID) ?: mutableListOf()
+    private var beerList: List<Beer> = listOf()
 
     init {
-        if (bottleID > 0) {
-            bottleList.firstOrNull {
-                it.id == bottleID
-            }?.let {
-                viewModelScope.launch {
+        viewModelScope.launch {
+            beerList = getBeerUseCase()
+            if (bottleID > 0) {
+                bottleList.firstOrNull {
+                    it.id == bottleID
+                }?.let {
+
                     stateFlow.emit(Event.EditBottle(it))
                 }
             }
@@ -85,7 +94,7 @@ class BottleDetailViewModel(
 
     private fun isBeerValid(beerName: String): Int? {
         val ss = beerList.firstOrNull {
-            it.dasaxeleba == beerName
+            it.name == beerName
         }
         return if (ss == null) {
             throwEvent(R.string.incorrect_beer)
@@ -120,13 +129,13 @@ class BottleDetailViewModel(
         sendRequest(
             ApeniApiService.getInstance().saveBottle(bottleModel),
             successWithData = {
-                val bottleMapper = DefaultBottleDtoMapper(beerList)
-                val bottles = it.map { dto ->
-                    bottleMapper.map(dto)
-                }
-                ObjectCache.getInstance()
-                    .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
+
                 viewModelScope.launch {
+                    val bottles = it.map { dto ->
+                        bottleMapper.map(dto)
+                    }
+                    ObjectCache.getInstance()
+                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
                     eventsFlow.emit(Event.DataSaved)
                 }
             },
@@ -146,6 +155,13 @@ class BottleDetailViewModel(
     fun getBeerNames(): List<String> {
         return beerList
             .filter { it.isActive }
-            .map { it.dasaxeleba ?: "-" }
+            .map { it.name }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted bottleID: Int
+        ): BottleDetailViewModel
     }
 }

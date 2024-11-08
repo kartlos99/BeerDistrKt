@@ -1,29 +1,43 @@
 package com.example.beerdistrkt.fragPages.orders
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
-import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.MappedUser
+import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.UserStatus
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
 import com.example.beerdistrkt.utils.eventValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
+import kotlin.collections.List
 import kotlin.math.sign
 
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : BaseViewModel() {
 
@@ -38,13 +52,12 @@ class OrdersViewModel @Inject constructor(
         ?: mutableListOf()
 
     private val clientsLiveData = database.getAllObieqts()
-    private val beersLiveData = database.getBeerList()
     private val userLiveData = database.getUsers()
     private val barrelsLiveData = database.getCansList()
     val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
     private lateinit var clients: List<Obieqti>
-    private lateinit var beers: List<BeerModelBase>
+    private lateinit var beers: List<Beer>
     private lateinit var usersList: List<User>
     lateinit var barrelsList: List<CanModel>
 
@@ -73,8 +86,8 @@ class OrdersViewModel @Inject constructor(
     private val foldsLiveData = userPreferencesRepository.userPreferencesFlow.asLiveData()
 
     init {
+        getBeers()
         clientsLiveData.observeForever { clients = it }
-        beersLiveData.observeForever { beers = it }
         userLiveData.observeForever { usersList = it }
         barrelsLiveData.observeForever { barrelsList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
@@ -84,6 +97,10 @@ class OrdersViewModel @Inject constructor(
             }
         }
         getAllUsers()
+    }
+
+    private fun getBeers() = viewModelScope.launch {
+        beers = getBeerUseCase()
     }
 
     private fun getAllUsers() {

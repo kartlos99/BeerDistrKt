@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -33,22 +34,22 @@ import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Calendar
 
+@AndroidEntryPoint
 class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickListener {
 
     private val binding by viewBinding(SawyobiFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { StoreHouseViewModel() }
-    }
+    override val viewModel by viewModels<StoreHouseViewModel>()
+
     private var dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
 

@@ -27,8 +27,8 @@ import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.notifyNewComment
+import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.setTint
 import com.example.beerdistrkt.simpleTextChangeListener
@@ -38,13 +38,15 @@ import com.example.beerdistrkt.utils.explodeAnim
 import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.waitFor
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Calendar
 
+@AndroidEntryPoint
 class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickListener {
 
-    override val viewModel by lazy {
-        getViewModel { AddDeliveryViewModel(clientID, orderID) }
+    override val viewModel by paramViewModels<AddDeliveryViewModel, AddDeliveryViewModel.Factory> {
+        it.create(clientID, orderID)
     }
 
     private val clientID by lazy {

@@ -1,7 +1,6 @@
 package com.example.beerdistrkt.fragPages.orders.view
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -32,10 +31,8 @@ class OrderItemView @JvmOverloads constructor(
             salesOfThisBeer!![0].beer
 
         with(binding) {
-            orderItemNameTv.text = thisBeer.dasaxeleba ?: ""
-            orderItemNameUnderline.setBackgroundColor(
-                Color.parseColor(thisBeer.displayColor ?: "#444444")
-            )
+            orderItemNameTv.text = thisBeer.name
+            orderItemNameUnderline.setBackgroundColor(thisBeer.displayColor)
             orderItems.forEach {
                 val saleItem = salesOfThisBeer?.find { sItem ->
                     sItem.canTypeID == it.canTypeID

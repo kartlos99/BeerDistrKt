@@ -10,7 +10,7 @@ data class Beer(
     var displayColor: Int = Color.rgb(128, 128, 128),
     var price: Double? = .0,
     var status: BeerStatus = BeerStatus.ACTIVE,
-    var sortValue: Double
+    var sortValue: Double = .0
 ) : DiffItem {
 
     override val key: Int

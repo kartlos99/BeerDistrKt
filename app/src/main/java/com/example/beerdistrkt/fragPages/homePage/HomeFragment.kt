@@ -2,13 +2,22 @@ package com.example.beerdistrkt.fragPages.homePage
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.MainActViewModel
+import com.example.beerdistrkt.MainActivity
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
@@ -16,16 +25,24 @@ import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
-import com.example.beerdistrkt.utils.*
+import com.example.beerdistrkt.getDimenPixelOffset
+import com.example.beerdistrkt.notifyNewComment
+import com.example.beerdistrkt.showTextInputDialog
+import com.example.beerdistrkt.utils.AMONAWERI
+import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.MITANA
+import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     private val binding by viewBinding(HomeFragmentBinding::bind)
 
-    override val viewModel: HomeViewModel by lazy {
-        getActCtxViewModel()
-    }
+    override val viewModel: HomeViewModel by viewModels()
+
     lateinit var actViewModel: MainActViewModel
 
     private lateinit var storeHouseBottomSheet: BottomSheetBehavior<*>

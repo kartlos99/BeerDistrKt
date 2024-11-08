@@ -14,11 +14,13 @@ import com.example.beerdistrkt.fragPages.bottlemanagement.Event.DataSaved
 import com.example.beerdistrkt.fragPages.bottlemanagement.Event.Error
 import com.example.beerdistrkt.fragPages.bottlemanagement.Event.IncorrectDataEntered
 import com.example.beerdistrkt.fragPages.bottlemanagement.Event.ShowLoading
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.BottleStatus
+import com.example.beerdistrkt.paramViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
 
     private val bottleID by lazy {
@@ -26,8 +28,8 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
         args.bottleID
     }
 
-    override val viewModel: BottleDetailViewModel by lazy {
-        getViewModel { BottleDetailViewModel(bottleID) }
+    override val viewModel: BottleDetailViewModel by paramViewModels<BottleDetailViewModel, BottleDetailViewModel.Factory> {
+        it.create(bottleID)
     }
 
     private val binding by viewBinding(FragmentBottleDetailBinding::bind)
@@ -94,7 +96,7 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
         setPageTitle(R.string.m_edit)
         bottleNameInput.setText(bottle.name)
         bottleVolumeInput.setText(bottle.volume.toString())
-        beerInput.setText(bottle.beer.dasaxeleba, false)
+        beerInput.setText(bottle.beer.name, false)
         bottlePriceInput.setText(bottle.price.toString())
         bottleStatusInput.setText(getString(bottle.status.displayName), false)
     }

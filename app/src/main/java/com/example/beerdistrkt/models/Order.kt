@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.squareup.moshi.Json
@@ -53,7 +54,7 @@ data class Order(
         val ID: Int,
         val orderID: Int,
         val beerID: Int,
-        val beer: BeerModelBase,
+        val beer: Beer,
         val canTypeID: Int,
         val count: Int,
         val check: Int,
@@ -84,7 +85,7 @@ data class Order(
     data class Sales(
         val orderID: Int,
         val beerID: Int,
-        val beer: BeerModelBase,
+        val beer: Beer,
         val check: Int,
         val canTypeID: Int,
         val count: Int

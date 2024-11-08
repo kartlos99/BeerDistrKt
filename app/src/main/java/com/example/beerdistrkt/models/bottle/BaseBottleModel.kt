@@ -1,13 +1,13 @@
 package com.example.beerdistrkt.models.bottle
 
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 
 data class BaseBottleModel(
     val id: Int,
     val name: String,
     val volume: Double,
     val actualVolume: Double,
-    val beer: BeerModelBase,
+    val beer: Beer,
     val price: Double,
     val status: BottleStatus,
     val sortValue: String,

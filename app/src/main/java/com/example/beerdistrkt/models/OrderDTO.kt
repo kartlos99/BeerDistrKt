@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.models
 
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.squareup.moshi.Json
 
@@ -33,8 +34,8 @@ data class OrderDTO(
         val modifyDate: String,
         val modifyUserID: Int
     ) {
-        fun toPm(beerList: List<BeerModelBase>): Order.Item {
-            val beer = beerList.find { it.id == beerID } ?: BeerModelBase()
+        fun toPm(beerList: List<Beer>): Order.Item {
+            val beer = beerList.find { it.id == beerID } ?: Beer(name = "")
             return Order.Item(
                 ID,
                 orderID,
@@ -57,8 +58,8 @@ data class OrderDTO(
         val canTypeID: Int,
         val count: Int
     ) {
-        fun toPm(beerList: List<BeerModelBase>): Order.Sales {
-            val beer = beerList.find { it.id == beerID } ?: BeerModelBase()
+        fun toPm(beerList: List<Beer>): Order.Sales {
+            val beer = beerList.find { it.id == beerID } ?: Beer(name = "")
             return Order.Sales(
                 orderID,
                 beerID,
@@ -106,7 +107,7 @@ data class OrderDTO(
 
     fun toPm(
         clients: List<Obieqti>,
-        beerList: List<BeerModelBase>,
+        beerList: List<Beer>,
         bottles: List<BaseBottleModel>,
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,

@@ -5,17 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
-import com.example.beerdistrkt.fragPages.realisation.RealisationType.*
-import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
-import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
 import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
-import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
-import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.ObjToBeerPrice
@@ -28,10 +27,13 @@ import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,17 +43,18 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class AddDeliveryViewModel(
-    private val clientID: Int,
-    private val orderID: Int = 0
+@HiltViewModel(assistedFactory = AddDeliveryViewModel.Factory::class)
+class AddDeliveryViewModel @AssistedInject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+    @Assisted(CLIENT_ID_KEY) private val clientID: Int,
+    @Assisted(ORDER_ID_KEY) private val orderID: Int,
 ) : BaseViewModel() {
 
     val clientLiveData = MutableLiveData<CustomerWithPrices>()
 
-    val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
-    val beerList =
-        ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
-            ?: mutableListOf()
+    val beerListLiveData = MutableLiveData<List<Beer>>()
+
+    var beerList: List<Beer> = listOf()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
@@ -98,6 +101,7 @@ class AddDeliveryViewModel(
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
         viewModelScope.launch {
+            getBeers()
             repository.getCustomerDataFlow(clientID)
                 .onEach {
                     it?.let { customer ->
@@ -114,6 +118,10 @@ class AddDeliveryViewModel(
         }
     }
 
+    private suspend fun getBeers() {
+        beerList = getBeerUseCase()
+    }
+
     /**
      * if beer price not defined for customer, takes 0 as price
      */
@@ -121,7 +129,7 @@ class AddDeliveryViewModel(
         beerListLiveData.value = beerList
             .map { beerModel ->
                 val price = findBeerPrice(beerModel, pricesForClient)
-                beerModel.copy(fasi = price.round())
+                beerModel.copy(price = price.round())
             }
     }
 
@@ -141,7 +149,7 @@ class AddDeliveryViewModel(
     }
 
     private fun findBeerPrice(
-        beerModel: BeerModelBase,
+        beerModel: Beer,
         pricesForClient: List<ObjToBeerPrice>
     ): Double = pricesForClient.find { objToBeerPrice ->
         objToBeerPrice.beerID == beerModel.id
@@ -152,7 +160,7 @@ class AddDeliveryViewModel(
         callIsBlocked = true
 
         val hasZeroPrice = saleItemsList.any {
-            (it.beer.fasi ?: .0) < 0.01
+            (it.beer.price ?: .0) < 0.01
         } || bottleSaleItemsList.any {
             it.bottle.price < 0.01
         }
@@ -373,7 +381,7 @@ class AddDeliveryViewModel(
             it.bottle.price * it.count
         }.plus(
             saleItemsList.sumOf {
-                it.canType.volume * it.count * (it.beer.fasi ?: 0.0)
+                it.canType.volume * it.count * (it.beer.price ?: 0.0)
             }
         ).round()
 
@@ -392,7 +400,18 @@ class AddDeliveryViewModel(
         bottleSaleItemsList.clear()
     }
 
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted(CLIENT_ID_KEY) clientID: Int,
+            @Assisted(ORDER_ID_KEY) orderID: Int
+        ): AddDeliveryViewModel
+    }
+
     companion object {
+        private const val CLIENT_ID_KEY = "clientID"
+        private const val ORDER_ID_KEY = "orderID"
         const val TAG = "TAG AddDelivery-----"
     }
 }

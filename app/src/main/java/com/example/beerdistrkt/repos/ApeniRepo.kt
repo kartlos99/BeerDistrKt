@@ -127,7 +127,7 @@ class ApeniRepo {
         )
     }
 
-    fun getBaseData() {
+   /* fun getBaseData() {
         ApeniApiService.getInstance().getBaseData().sendRequest(
             successWithData = {
                 val bottleMapper = DefaultBottleDtoMapper(it.beers)
@@ -144,5 +144,5 @@ class ApeniRepo {
 
             }
         )
-    }
+    }*/
 }

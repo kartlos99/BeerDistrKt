@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.realisation.models
 
 import com.example.beerdistrkt.areNotNull
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
@@ -31,7 +32,7 @@ data class SaleRowModel(
 ) {
     fun toTempBeerItemModel(
         barrels: List<CanModel>,
-        beerList: List<BeerModelBase>
+        beerList: List<Beer>
     ): TempBeerItemModel? {
         val canType = barrels.find { it.id == canTypeID }
         val beer = beerList.find { it.id == beerID }

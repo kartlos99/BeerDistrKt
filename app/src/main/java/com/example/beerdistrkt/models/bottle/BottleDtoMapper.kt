@@ -1,19 +1,20 @@
 package com.example.beerdistrkt.models.bottle
 
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
+import javax.inject.Inject
 
 interface BottleDtoMapper {
-    fun map(dto: BaseBottleModelDto): BaseBottleModel
+    suspend fun map(dto: BaseBottleModelDto): BaseBottleModel
 }
 
-class DefaultBottleDtoMapper(
-    private val beers: List<BeerModelBase>
+class DefaultBottleDtoMapper @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
 ) : BottleDtoMapper {
 
-    override fun map(dto: BaseBottleModelDto): BaseBottleModel = with(dto) {
-
+    override suspend fun map(dto: BaseBottleModelDto): BaseBottleModel = with(dto) {
+        val beers = getBeerUseCase()
         return BaseBottleModel(
             id = id,
             name = name,

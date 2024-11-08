@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.BottleIoModel
@@ -13,7 +15,6 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
@@ -21,17 +22,21 @@ import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 import java.util.UUID
+import javax.inject.Inject
 
-class StoreHouseViewModel : BaseViewModel() {
+@HiltViewModel
+class StoreHouseViewModel @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+) : BaseViewModel() {
 
     var selectedDate: Calendar = Calendar.getInstance()
     var editMode = false
@@ -67,8 +72,8 @@ class StoreHouseViewModel : BaseViewModel() {
     val editDataReceiveLiveData: LiveData<ApiResponseState<IoModel>>
         get() = _editDataReceiveLiveData
 
-    val beerList = ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)
-        ?: mutableListOf()
+    var beerList: List<Beer> = listOf()
+
     val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
         ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
@@ -89,7 +94,12 @@ class StoreHouseViewModel : BaseViewModel() {
     val eventsFlow = MutableSharedFlow<Event>()
 
     init {
+        getBeers()
         getStoreBalance()
+    }
+
+    private fun getBeers() = viewModelScope.launch {
+        beerList = getBeerUseCase()
     }
 
     fun setCurrentTime() {
@@ -150,7 +160,7 @@ class StoreHouseViewModel : BaseViewModel() {
             }
             val title = beerList.firstOrNull { b ->
                 b.id == it[0].beerID
-            }?.dasaxeleba ?: "_"
+            }?.name ?: "_"
             result.add(SimpleBeerRowModel(title, valueOfDiff))
         }
         _fullBarrelsListLiveData.value = result

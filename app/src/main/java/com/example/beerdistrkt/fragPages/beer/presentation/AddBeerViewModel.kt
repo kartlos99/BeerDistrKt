@@ -13,13 +13,11 @@ import com.example.beerdistrkt.fragPages.beer.domain.usecase.PutBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.RefreshBeerUseCase
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.UpdateBeerPositionUseCase
 import com.example.beerdistrkt.mapToString
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
 import com.example.beerdistrkt.parseDouble
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,11 +35,6 @@ class AddBeerViewModel @Inject constructor(
     private val deleteBeerUseCase: DeleteBeerUseCase,
     private val refreshBeerUseCase: RefreshBeerUseCase,
 ) : BaseViewModel() {
-
-    val beerList = ObjectCache.getInstance()
-        .getList(BeerModelBase::class, ObjectCache.BEER_LIST_ID)
-        ?.filter { it.isActive }
-        ?: mutableListOf()
 
     private val _beersFlow: MutableStateFlow<ResultState<List<Beer>>> =
         MutableStateFlow(ResultState.Loading)

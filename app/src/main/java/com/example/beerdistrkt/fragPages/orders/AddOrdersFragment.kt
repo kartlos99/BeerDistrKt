@@ -88,7 +88,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         addOrderStatusGroup.isVisible = viewModel.editingOrderID > 0
 
         beerSelector.initView(
-            viewModel.beerList,
+            viewModel.beers,
             viewModel.cansList,
             ::checkForm
         )
