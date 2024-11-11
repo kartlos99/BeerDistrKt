@@ -3,8 +3,8 @@ package com.example.beerdistrkt.repos
 import androidx.lifecycle.LiveData
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
-import com.example.beerdistrkt.fragPages.objList.model.Customer
-import com.example.beerdistrkt.models.CustomerDataDTO
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.ObiectWithPrices
@@ -35,13 +35,13 @@ class ApeniRepo {
 
     private val clientDataFlow: MutableStateFlow<CustomerWithPrices?> = MutableStateFlow(null)
 
-    private fun mapCustomerDtoToPm(customerDto: CustomerDataDTO): CustomerWithPrices =
+    private fun mapCustomerDtoToPm(customerDto: CustomerDTO): CustomerWithPrices =
         with(customerDto) {
 
             val customer = Customer(
                 id = id,
                 dasaxeleba = dasaxeleba,
-                adress = adress,
+                address = address,
                 tel = tel,
                 comment = comment,
                 sk = sk,

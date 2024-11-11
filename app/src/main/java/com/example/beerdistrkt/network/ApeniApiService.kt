@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
@@ -212,7 +213,7 @@ interface ApeniApiService {
     fun getAttachedRegions(@Query("clientID") clientID: Int): Call<DataResponse<List<AttachedRegion>>>
 
     @GET("client/getAllData.php")
-    fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDataDTO>>
+    fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDTO>>
 
     @GET("client/getIdleInfo.php")
     fun getCustomersIdleInfo(): Call<DataResponse<List<CustomerIdlInfo>>>

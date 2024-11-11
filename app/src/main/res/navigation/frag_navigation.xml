@@ -70,9 +70,9 @@
     </fragment>
     <fragment
         android:id="@+id/addObjectFragment"
-        android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
+        android:name="com.example.beerdistrkt.fragPages.customer.presentation.AddCustomerFragment"
         android:label="@string/create_client"
-        tools:layout="@layout/add_object_fragment">
+        tools:layout="@layout/add_customer_fragment">
         <argument
             android:name="clientID"
             android:defaultValue="0"

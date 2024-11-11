@@ -1,6 +1,6 @@
-package com.example.beerdistrkt.fragPages.addEditObiects
+package com.example.beerdistrkt.fragPages.customer.domain.mapper
 
-import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
+import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.bottle.BaseBottleModel

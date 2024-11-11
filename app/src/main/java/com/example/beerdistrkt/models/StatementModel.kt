@@ -1,8 +1,8 @@
 package com.example.beerdistrkt.models
 
 import androidx.room.*
-import com.example.beerdistrkt.fragPages.addEditObiects.model.CustomerGroup
-import com.example.beerdistrkt.fragPages.objList.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 
 @Entity(tableName = "obieqts_table")
 data class Obieqti(

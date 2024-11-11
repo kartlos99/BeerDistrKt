@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.*
 import com.example.beerdistrkt.databinding.ObjListFragmentBinding
 import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
 import com.example.beerdistrkt.utils.*
@@ -181,7 +180,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                         "ობიექტი: %s\n    %s\n    %s",
                         selectedClient.dasaxeleba,
                         selectedClient.sk ?: "-",
-                        selectedClient.adress ?: "-"
+                        selectedClient.address ?: "-"
                     ),
                     String.format(
                         "საკ.პირი: %s\n    %s",

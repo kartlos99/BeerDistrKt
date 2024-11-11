@@ -1,12 +1,13 @@
-package com.example.beerdistrkt.models
+package com.example.beerdistrkt.fragPages.customer.data.model
 
-import com.example.beerdistrkt.fragPages.addEditObiects.model.CustomerGroup
+import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
+import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.bottle.ClientBottlePrice
 
-data class CustomerDataDTO(
+data class CustomerDTO(
     var dasaxeleba: String,
     var group: CustomerGroup = CustomerGroup.BASE,
-    var adress: String? = null,
+    var address: String? = null,
     var tel: String? = null,
     var comment: String? = null,
     var sk: String? = null,

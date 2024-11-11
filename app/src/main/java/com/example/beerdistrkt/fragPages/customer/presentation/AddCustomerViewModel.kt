@@ -1,9 +1,10 @@
-package com.example.beerdistrkt.fragPages.addEditObiects
+package com.example.beerdistrkt.fragPages.customer.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
+import com.example.beerdistrkt.fragPages.customer.domain.mapper.PriceMapper
+import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.CustomerWithPrices
@@ -19,8 +20,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = AddObjectViewModel.Factory::class)
-class AddObjectViewModel @AssistedInject constructor(
+@HiltViewModel(assistedFactory = AddCustomerViewModel.Factory::class)
+class AddCustomerViewModel @AssistedInject constructor(
     private val priceMapper: PriceMapper,
     @Assisted val clientID: Int,
 ) : BaseViewModel() {
@@ -156,6 +157,6 @@ class AddObjectViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(clientID: Int): AddObjectViewModel
+        fun create(clientID: Int): AddCustomerViewModel
     }
 }

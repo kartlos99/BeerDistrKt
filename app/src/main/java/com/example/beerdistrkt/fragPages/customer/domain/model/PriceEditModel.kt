@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addEditObiects.model
+package com.example.beerdistrkt.fragPages.customer.domain.model
 
 data class PriceEditModel(
     val id: Int,

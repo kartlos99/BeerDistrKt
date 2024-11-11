@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addEditObiects
+package com.example.beerdistrkt.fragPages.customer.presentation
 
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -17,12 +17,12 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.AddObjectFragmentBinding
-import com.example.beerdistrkt.fragPages.addEditObiects.model.CustomerGroup
-import com.example.beerdistrkt.fragPages.addEditObiects.model.PriceEditModel
+import com.example.beerdistrkt.databinding.AddCustomerFragmentBinding
+import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
+import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.objList.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.ObjToBeerPrice
@@ -36,24 +36,24 @@ import com.example.beerdistrkt.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
+class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
-    override val viewModel by paramViewModels<AddObjectViewModel, AddObjectViewModel.Factory> {
+    override val viewModel by paramViewModels<AddCustomerViewModel, AddCustomerViewModel.Factory> {
         it.create(clientID)
     }
 
     private val clientID by lazy {
-        val args = AddObjectFragmentArgs.fromBundle(arguments ?: Bundle())
+        val args = AddCustomerFragmentArgs.fromBundle(arguments ?: Bundle())
         args.clientID
     }
 
-    val binding by viewBinding(AddObjectFragmentBinding::bind)
+    val binding by viewBinding(AddCustomerFragmentBinding::bind)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.add_object_fragment, container, false)
+        return inflater.inflate(R.layout.add_customer_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,13 +71,13 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
             viewModel.getRegionForClient()
     }
 
-    private fun AddObjectFragmentBinding.initView() {
+    private fun AddCustomerFragmentBinding.initView() {
         setupCustomerGroupDropDown()
         addEditClientDoneBtn.setOnClickListener {
             val customer = Customer(
                 id = viewModel.clientID,
                 dasaxeleba = addEditClientName.editText?.text.toString().trim(),
-                adress = addEditClientAdress.editText?.text.toString().trim(),
+                address = addEditClientAdress.editText?.text.toString().trim(),
                 tel = addEditClientPhone.editText?.text.toString().trim(),
                 comment = addEditComment.editText?.text.toString().trim(),
                 sk = addEditClientSK.editText?.text.toString().trim(),
@@ -239,7 +239,7 @@ class AddObjectFragment : BaseFragment<AddObjectViewModel>() {
         addEditClientName.editText?.setText(clientData.customer.dasaxeleba)
         addEditClientSK.editText?.setText(clientData.customer.sk ?: "")
         addEditClientPerson.editText?.setText(clientData.customer.sakpiri ?: "")
-        addEditClientAdress.editText?.setText(clientData.customer.adress ?: "")
+        addEditClientAdress.editText?.setText(clientData.customer.address ?: "")
         addEditClientPhone.editText?.setText(clientData.customer.tel ?: "")
         addEditComment.editText?.setText(clientData.customer.comment ?: "")
         addEditClientCheck.isChecked = clientData.customer.chek == "1"

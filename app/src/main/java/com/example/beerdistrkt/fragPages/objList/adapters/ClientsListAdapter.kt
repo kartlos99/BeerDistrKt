@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ObjListRowBinding
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.objList.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.utils.Session
 
 class ClientsListAdapter :

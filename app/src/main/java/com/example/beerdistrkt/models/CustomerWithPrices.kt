@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.models
 
-import com.example.beerdistrkt.fragPages.objList.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.bottle.ClientBottlePrice
 
 data class CustomerWithPrices(

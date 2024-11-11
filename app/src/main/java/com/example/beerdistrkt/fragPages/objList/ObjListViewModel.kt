@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.objList.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.ClientDeactivateModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.Obieqti
