@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
-import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.User
@@ -27,6 +28,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
@@ -34,12 +37,14 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val bottleMapper: BottleDtoMapper,
+    private val getBeerUseCase: GetBeerUseCase,
 ) : BaseViewModel() {
 
     private val usersLiveData = database.getUsers()
-    private val beerLiveData = database.getBeerList()
+
+    //    private val beerLiveData = database.getBeerList()
     private val cansLiveData = database.getCansList()
-    lateinit var beerList: List<BeerModelBase>
+    lateinit var beerList: List<Beer>
 
     private var localVersionState: VcsResponse? = null
     private var numberOfUpdatingTables = 0
@@ -64,16 +69,23 @@ class HomeViewModel @Inject constructor(
     private val _bottomSheetStateFlow = MutableStateFlow(0)
     val bottomSheetStateFlow = _bottomSheetStateFlow.asStateFlow()
 
+    private val _storeHouseDataFlow: MutableStateFlow<StoreHouseResponse?> = MutableStateFlow(null)
+//    val storeHouseDataFlow: StateFlow<StoreHouseResponse?> = _storeHouseDataFlow.asStateFlow()
+
     init {
 //        if (Session.get().isUserLogged())
 //            getTableVersionsFromServer()
-        localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
+//        localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
         Log.d("homeVM localVers", localVersionState.toString())
+        getStoreBalance()
 
-        beerLiveData.observeForever {
-            beerList = it
-            ObjectCache.getInstance().putList(BeerModelBase::class, ObjectCache.BEER_LIST_ID, it)
-        }
+        getBeerUseCase.beerAsFlow().combine(_storeHouseDataFlow.asStateFlow()) { beer, data ->
+            if (!beer.isNullOrEmpty() && data != null) {
+                beerList = beer
+                formAllBarrelsList(data)
+            }
+        }.launchIn(viewModelScope)
+
         cansLiveData.observeForever {
             ObjectCache.getInstance().putList(CanModel::class, ObjectCache.BARREL_LIST_ID, it)
         }
@@ -135,16 +147,16 @@ class HomeViewModel @Inject constructor(
                     getCanTypes()
                 }
                 mainLoaderLiveData.value = numberOfUpdatingTables > 0
-                localVersionState = it
+//                localVersionState = it
             }
         )
     }
 
     private fun saveVersion() {
         numberOfUpdatingTables--
-        if (numberOfUpdatingTables == 0 && localVersionState != null) {
+        if (numberOfUpdatingTables == 0 /*&& localVersionState != null*/) {
             mainLoaderLiveData.value = false
-            SharedPreferenceDataSource.getInstance().saveVersions(localVersionState!!)
+//            SharedPreferenceDataSource.getInstance().saveVersions(localVersionState!!)
         }
     }
 
@@ -250,11 +262,6 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private fun insertBeerToDB(beerModel: BeerModelBase) {
-        Log.d(TAG, beerModel.toString())
-        database.insertBeer(beerModel)
-    }
-
     private suspend fun insertBeetPrice(bPrice: ObjToBeerPrice) {
         if (bPrice.objID < 50) {
 //            Log.d("obj_prIns", bPrice.toString())
@@ -288,7 +295,9 @@ class HomeViewModel @Inject constructor(
             ),
             successWithData = {
                 Log.d("store", it.empty.toString())
-                300 waitFor { formAllBarrelsList(it) }
+                viewModelScope.launch {
+                    _storeHouseDataFlow.emit(it)
+                }
             },
             finally = {
                 if (!it)
@@ -339,7 +348,7 @@ class HomeViewModel @Inject constructor(
             val currBeer = beerList.firstOrNull { beerModel ->
                 beerModel.id == it[0].beerID
             }
-            val title = currBeer?.dasaxeleba ?: "_"
+            val title = currBeer?.name ?: "_"
             result.add(SimpleBeerRowModel(title, valueOfDiff))
         }
         val valueOfDiff = mutableMapOf<Int, Int>()
@@ -350,7 +359,6 @@ class HomeViewModel @Inject constructor(
 
         storeHouseData.clear()
         storeHouseData.addAll(result)
-        _barrelsListLiveData.value = ApiResponseState.Loading(false)
         _barrelsListLiveData.value = ApiResponseState.Success(result)
     }
 

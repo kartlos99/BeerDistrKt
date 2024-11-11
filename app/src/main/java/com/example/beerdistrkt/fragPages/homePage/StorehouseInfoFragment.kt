@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,17 +15,17 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.FragmentStorehouseInfoBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
-import com.example.beerdistrkt.getActCtxViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
 
     var onToggle: () -> Unit = {}
-    override val viewModel: HomeViewModel by lazy { getActCtxViewModel() }
+    override val viewModel: HomeViewModel by viewModels({ requireParentFragment() })
     private val binding by viewBinding(FragmentStorehouseInfoBinding::bind)
 
     override fun onCreateView(
@@ -38,10 +40,9 @@ class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner) {
+            binding.homeMainStoreHouseLoader.isVisible = it is ApiResponseState.Loading
             when (it) {
-                is ApiResponseState.Loading -> {
-                    binding.homeMainStoreHouseLoader.visibleIf(it.showLoading)
-                }
+                is ApiResponseState.Loading -> {}
                 is ApiResponseState.Success -> initStoreHouseRecycler(it.data)
                 else -> showToast(R.string.some_error)
             }
