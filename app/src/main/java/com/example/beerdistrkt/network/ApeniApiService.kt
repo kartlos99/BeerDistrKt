@@ -6,8 +6,8 @@ import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
-import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
-import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse

@@ -27,7 +27,7 @@ import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.databinding.NavHeaderBinding
 import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.fragPages.homePage.HomeFragment
+import com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.objList.ObjListFragment

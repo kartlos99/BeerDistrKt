@@ -78,4 +78,9 @@ class BeerRepositoryImpl @Inject constructor(
                 }
         }
     }
+
+    override suspend fun setBeers(beers: List<Beer>) {
+        this.beers = beers
+        beersFlow.emit(beers)
+    }
 }

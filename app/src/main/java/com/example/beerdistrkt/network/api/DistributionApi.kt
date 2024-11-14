@@ -3,9 +3,11 @@ package com.example.beerdistrkt.network.api
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
+import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
+import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.network.AuthInterceptor
@@ -98,4 +100,12 @@ interface DistributionApi {
 
     @GET("listing/beers.php")
     suspend fun getBeers(): List<BeerDto>
+
+    /* customer */
+    @GET("listing/customers.php")
+    suspend fun getCustomers(): List<CustomerDTO>
+
+    /* general */
+    @GET("general/getBaseData.php")
+    suspend fun getBaseData(): BaseDataDto
 }

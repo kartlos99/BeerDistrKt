@@ -17,4 +17,6 @@ interface BeerRepository {
     suspend fun putBeer(beer: Beer): ApiResponse<List<Beer>>
 
     suspend fun deleteBeer(beerId: Int): ApiResponse<List<Beer>>
+
+    suspend fun setBeers(beers: List<Beer>)
 }

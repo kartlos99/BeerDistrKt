@@ -2,7 +2,6 @@ package com.example.beerdistrkt.customView
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderItemBinding
-import com.example.beerdistrkt.fragPages.homePage.HomeFragment
+import com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment
 import com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView.Companion.BOLD_STYLE_NEGATIVE
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.utils.visibleIf

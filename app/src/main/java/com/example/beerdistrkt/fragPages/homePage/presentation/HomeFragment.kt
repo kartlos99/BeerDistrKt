@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.homePage
+package com.example.beerdistrkt.fragPages.homePage.presentation
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -19,9 +19,9 @@ import com.example.beerdistrkt.MainActViewModel
 import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.HomeFragmentBinding
-import com.example.beerdistrkt.fragPages.homePage.adapter.CommentsAdapter
-import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
-import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
+import com.example.beerdistrkt.fragPages.homePage.presentation.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
@@ -89,6 +89,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
         binding.btnOrder.text =
             getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        viewModel.getStoreBalance()
     }
 
     private fun showStoreHouseData() {
@@ -103,8 +104,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         viewModel.mainLoaderLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 binding.homeMainProgressBar.visibleIf(it)
-                if (!it)
-                    viewModel.getStoreBalance()
+//                if (!it)
+//                    viewModel.getStoreBalance()
             }
         }
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer { comments ->

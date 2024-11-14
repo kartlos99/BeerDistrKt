@@ -8,7 +8,6 @@ data class BaseDataDto(
     val beers: List<BeerDto>,
     val bottles: List<BaseBottleModelDto>,
     val barrels: List<BarrelDto>,
-    val users: List<UserDto>
 )
 
 

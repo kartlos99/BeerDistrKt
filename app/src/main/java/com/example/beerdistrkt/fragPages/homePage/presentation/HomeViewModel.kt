@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.homePage
+package com.example.beerdistrkt.fragPages.homePage.presentation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.homePage.models.AddCommentModel
-import com.example.beerdistrkt.fragPages.homePage.models.CommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -19,6 +19,7 @@ import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.BottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -44,7 +45,6 @@ class HomeViewModel @Inject constructor(
 
     //    private val beerLiveData = database.getBeerList()
     private val cansLiveData = database.getCansList()
-    lateinit var beerList: List<Beer>
 
     private var localVersionState: VcsResponse? = null
     private var numberOfUpdatingTables = 0
@@ -52,7 +52,6 @@ class HomeViewModel @Inject constructor(
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
-    private val storeHouseData = mutableListOf<SimpleBeerRowModel>()
 
     private val _barrelsListLiveData = MutableLiveData<ApiResponseState<List<SimpleBeerRowModel>>>()
     val barrelsListLiveData: LiveData<ApiResponseState<List<SimpleBeerRowModel>>>
@@ -69,7 +68,8 @@ class HomeViewModel @Inject constructor(
     private val _bottomSheetStateFlow = MutableStateFlow(0)
     val bottomSheetStateFlow = _bottomSheetStateFlow.asStateFlow()
 
-    private val _storeHouseDataFlow: MutableStateFlow<StoreHouseResponse?> = MutableStateFlow(null)
+    private val _storeHouseDataFlow: MutableStateFlow<ResultState<StoreHouseResponse>?> =
+        MutableStateFlow(null)
 //    val storeHouseDataFlow: StateFlow<StoreHouseResponse?> = _storeHouseDataFlow.asStateFlow()
 
     init {
@@ -77,12 +77,17 @@ class HomeViewModel @Inject constructor(
 //            getTableVersionsFromServer()
 //        localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
         Log.d("homeVM localVers", localVersionState.toString())
-        getStoreBalance()
 
         getBeerUseCase.beerAsFlow().combine(_storeHouseDataFlow.asStateFlow()) { beer, data ->
-            if (!beer.isNullOrEmpty() && data != null) {
-                beerList = beer
-                formAllBarrelsList(data)
+            when (data) {
+                is ResultState.Error -> {}
+
+                is ResultState.Success -> if (!beer.isNullOrEmpty()) {
+                    _barrelsListLiveData.value =
+                        ApiResponseState.Success(formAllBarrelsList(data.data, beer))
+                }
+
+                else -> _barrelsListLiveData.value = ApiResponseState.Loading(true)
             }
         }.launchIn(viewModelScope)
 
@@ -280,8 +285,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getStoreBalance() {
-        _barrelsListLiveData.value = ApiResponseState.Loading(true)
+    fun getStoreBalance() = viewModelScope.launch {
+        _storeHouseDataFlow.value = ResultState.Loading
         if (Session.get().region?.hasOwnStorage() == true)
             getRegionBalance()
         else
@@ -296,13 +301,9 @@ class HomeViewModel @Inject constructor(
             successWithData = {
                 Log.d("store", it.empty.toString())
                 viewModelScope.launch {
-                    _storeHouseDataFlow.emit(it)
+                    _storeHouseDataFlow.emit(ResultState.Success(it))
                 }
             },
-            finally = {
-                if (!it)
-                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
-            }
         )
     }
 
@@ -316,28 +317,26 @@ class HomeViewModel @Inject constructor(
                 it.forEach { globalModel ->
                     valueOfDiff[globalModel.id] = globalModel.getBalance()
                 }
-                storeHouseData.clear()
-                storeHouseData.addAll(listOf(SimpleBeerRowModel("კასრები:საწარმოში", valueOfDiff)))
                 300 waitFor {
-                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
                     _barrelsListLiveData.value = ApiResponseState.Success(
                         listOf(
                             SimpleBeerRowModel(
-                                "კასრები:საწარმოში",
+                                BARRELS_IN_BREWERY_TITLE,
                                 valueOfDiff
                             )
                         )
                     )
                 }
             },
-            finally = {
-                if (!it)
-                    _barrelsListLiveData.value = ApiResponseState.Loading(false)
-            }
         )
     }
 
-    private fun formAllBarrelsList(data: StoreHouseResponse) {
+    private fun formAllBarrelsList(
+        data: StoreHouseResponse?,
+        beer: List<Beer>?,
+    ): List<SimpleBeerRowModel> {
+        if (beer.isNullOrEmpty() || data == null) return emptyList()
+
         val result = mutableListOf<SimpleBeerRowModel>()
         val a = data.full.groupBy { it.beerID }
         a.values.forEach {
@@ -345,7 +344,7 @@ class HomeViewModel @Inject constructor(
             it.forEach { fbm ->
                 valueOfDiff[fbm.barrelID] = fbm.inputToStore - fbm.saleCount
             }
-            val currBeer = beerList.firstOrNull { beerModel ->
+            val currBeer = beer.firstOrNull { beerModel ->
                 beerModel.id == it[0].beerID
             }
             val title = currBeer?.name ?: "_"
@@ -356,10 +355,7 @@ class HomeViewModel @Inject constructor(
             valueOfDiff[ebm.barrelID] = ebm.inputEmptyToStore - ebm.outputEmptyFromStoreCount
         }
         result.add(SimpleBeerRowModel(HomeFragment.emptyBarrelTitle, valueOfDiff))
-
-        storeHouseData.clear()
-        storeHouseData.addAll(result)
-        _barrelsListLiveData.value = ApiResponseState.Success(result)
+        return result
     }
 
     override fun onCleared() {
@@ -397,5 +393,6 @@ class HomeViewModel @Inject constructor(
 
     companion object {
         const val TAG = "homeVM"
+        private const val BARRELS_IN_BREWERY_TITLE = "კასრები:საწარმოში"
     }
 }

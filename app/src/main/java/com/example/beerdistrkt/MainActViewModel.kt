@@ -2,7 +2,7 @@ package com.example.beerdistrkt
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.beerdistrkt.fragPages.beer.domain.usecase.RefreshBeerUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.Session
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActViewModel @Inject constructor(
-    private val refreshBeerUseCase: RefreshBeerUseCase,
+    private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
 ): BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()
@@ -26,7 +26,7 @@ class MainActViewModel @Inject constructor(
 
     private fun updateInitialData() = viewModelScope.launch {
         showContentFlow.emit(false)
-        refreshBeerUseCase()
+        refreshBaseDataUseCase()
         showContentFlow.emit(true)
     }
 

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.homePage
+package com.example.beerdistrkt.fragPages.homePage.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentStorehouseInfoBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
@@ -19,7 +19,6 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
@@ -52,13 +51,11 @@ class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
             onToggle.invoke()
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.bottomSheetStateFlow.collectLatest { state ->
-                if (state == BottomSheetBehavior.STATE_EXPANDED)
-                    binding.homeHideStoreHouse.rotation = 0f
-                else
-                    binding.homeHideStoreHouse.rotation = 180f
-            }
+        viewModel.bottomSheetStateFlow.collectLatest(viewLifecycleOwner) { state ->
+            if (state == BottomSheetBehavior.STATE_EXPANDED)
+                binding.homeHideStoreHouse.rotation = 0f
+            else
+                binding.homeHideStoreHouse.rotation = 180f
         }
     }
 
