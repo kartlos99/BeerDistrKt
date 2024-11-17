@@ -20,12 +20,11 @@ import com.example.beerdistrkt.databinding.AddUserFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.UserStatus
+import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.showAskingDialog
-import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.text
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -40,8 +39,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
     private val binding by viewBinding(AddUserFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { AddUserViewModel(userID) }
+    override val viewModel by paramViewModels<AddUserViewModel, AddUserViewModel.Factory> { factory ->
+        factory.create(userID)
     }
 
     val userID by lazy {
@@ -154,7 +153,6 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             when (it) {
                 is ApiResponseState.Success -> showRegions(it.data)
                 is ApiResponseState.ApiError -> {
-                    SharedPreferenceDataSource.getInstance().saveRegion(null)
                     (activity as MainActivity).logOut()
                 }
 

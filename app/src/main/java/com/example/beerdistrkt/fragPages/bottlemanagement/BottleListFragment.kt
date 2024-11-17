@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -13,7 +14,10 @@ import com.example.beerdistrkt.adapters.SimpleListAdapter
 import com.example.beerdistrkt.databinding.BottleRowBinding
 import com.example.beerdistrkt.databinding.FragmentBottleListBinding
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class BottleListFragment : BaseFragment<BottleListViewModel>() {
 
     override val viewModel: BottleListViewModel by viewModels()
@@ -25,9 +29,11 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initRecycler(viewModel.bottleList)
         binding.addBottle.setOnClickListener {
             openDetails(0)
+        }
+        lifecycleScope.launch {
+            initRecycler(viewModel.getBottleList())
         }
     }
 

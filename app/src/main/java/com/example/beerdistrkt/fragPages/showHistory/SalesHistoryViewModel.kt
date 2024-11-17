@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -20,15 +20,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SalesHistoryViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
+    private val getBottleUseCase: GetBottleUseCase,
 ) : BaseViewModel() {
     private val userLiveData = database.getUsers()
 
     private var clients: List<Obieqti> = listOf()
     private lateinit var usersList: List<User>
     private lateinit var beerList: List<Beer>
-
-    private val bottleList = ObjectCache.getInstance()
-        .getList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID) ?: listOf()
+    private lateinit var bottleList: List<BaseBottleModel>
 
     private val _saleHistoryLiveData = MutableLiveData<ApiResponseState<List<SaleHistory>>>()
     val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>
@@ -46,6 +45,7 @@ class SalesHistoryViewModel @Inject constructor(
         userLiveData.observeForever { usersList = it }
         viewModelScope.launch {
             beerList = getBeerUseCase()
+            bottleList = getBottleUseCase()
             database.getCustomers().collectLatest {
                 clients = it
             }

@@ -3,22 +3,24 @@ package com.example.beerdistrkt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActViewModel @Inject constructor(
     private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
-): BaseViewModel() {
+    private val userPreferencesRepository: UserPreferencesRepository,
+) : BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()
 
-    val showContentFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val showContentFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
     init {
         updateInitialData()
@@ -26,6 +28,12 @@ class MainActViewModel @Inject constructor(
 
     private fun updateInitialData() = viewModelScope.launch {
         showContentFlow.emit(false)
+        userPreferencesRepository.readUserSession().also { userInfo ->
+            Session.get().restoreFromSavedInfo(userInfo)
+        }
+        userPreferencesRepository.readRegion().also { region ->
+            Session.get().restoreLastRegion(region)
+        }
         refreshBaseDataUseCase()
         showContentFlow.emit(true)
     }
@@ -42,7 +50,7 @@ class MainActViewModel @Inject constructor(
             success = {
                 callback(null)
             },
-            responseFailure = {_, error ->
+            responseFailure = { _, error ->
                 callback(error)
             }
         )

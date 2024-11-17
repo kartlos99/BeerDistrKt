@@ -2,19 +2,28 @@ package com.example.beerdistrkt.fragPages.addEditUser
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
-import com.example.beerdistrkt.models.AttachRegionsRequest
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.UserAttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
-class AddUserViewModel(private val userID: String) : BaseViewModel() {
+@HiltViewModel(assistedFactory = AddUserViewModel.Factory::class)
+class AddUserViewModel @AssistedInject constructor(
+    private val userPreferencesRepository: UserPreferencesRepository,
+    @Assisted private val userID: String,
+) : BaseViewModel() {
 
     companion object {
         const val REGION_RESTRICTION_KAY: Int = 234
@@ -115,11 +124,14 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
 
                 if (Session.get().userID == userID) {
                     Session.get().regions.clear()
-                    Session.get().regions.addAll(regions.filter { it.isAttached }
-                        .map { it.toWorkRegion() })
+                    Session.get().regions.addAll(
+                        regions
+                            .filter { it.isAttached }
+                            .map { it.toWorkRegion() }
+                    )
                     if (shouldSave) {
                         shouldSave = false
-                        Session.get().saveSession()
+                        saveSession()
                     }
                     if (!this.regions
                             .filter { it.isAttached }
@@ -128,11 +140,20 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
                     ) {
                         userRegionsLiveData.value =
                             ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
+                        clearSavedRegion()
                     }
 
                 }
             }
         )
+    }
+
+    private fun clearSavedRegion() = viewModelScope.launch {
+        userPreferencesRepository.saveRegion(null)
+    }
+
+    private fun saveSession() = viewModelScope.launch {
+        userPreferencesRepository.saveUserSession(Session.get().getUserInfo())
     }
 
     fun getAllRegionNames(): Array<String> {
@@ -157,5 +178,10 @@ class AddUserViewModel(private val userID: String) : BaseViewModel() {
                 getRegionForUser()
             }
         )
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(userID: String): AddUserViewModel
     }
 }

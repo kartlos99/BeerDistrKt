@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
@@ -23,7 +24,6 @@ import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.UserStatus
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
@@ -32,24 +32,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
-import kotlin.collections.List
 import kotlin.math.sign
 
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
+    private val getBottleUseCase: GetBottleUseCase,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : BaseViewModel() {
 
     private val state = SavedStateHandle()
 
     val searchQuery = state.getLiveData("searchQuery", "")
-
-    private val bottleList = ObjectCache.getInstance().getList(
-        BaseBottleModel::class,
-        ObjectCache.BOTTLE_LIST_ID
-    )
-        ?: mutableListOf()
 
     private val clientsLiveData = database.getAllObieqts()
     private val userLiveData = database.getUsers()
@@ -58,6 +52,7 @@ class OrdersViewModel @Inject constructor(
 
     private lateinit var clients: List<Obieqti>
     private lateinit var beers: List<Beer>
+    private lateinit var bottleList: List<BaseBottleModel>
     private lateinit var usersList: List<User>
     lateinit var barrelsList: List<CanModel>
 
@@ -101,6 +96,7 @@ class OrdersViewModel @Inject constructor(
 
     private fun getBeers() = viewModelScope.launch {
         beers = getBeerUseCase()
+        bottleList = getBottleUseCase()
     }
 
     private fun getAllUsers() {

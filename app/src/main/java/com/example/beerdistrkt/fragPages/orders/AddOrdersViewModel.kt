@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
@@ -27,7 +28,6 @@ import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -44,6 +44,7 @@ import java.util.Date
 @HiltViewModel(assistedFactory = AddOrdersViewModel.Factory::class)
 class AddOrdersViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
+    private val getBottleUseCase: GetBottleUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(EDIT_ORDER_ID_KEY) var editingOrderID: Int
 ) : BaseViewModel() {
@@ -51,8 +52,6 @@ class AddOrdersViewModel @AssistedInject constructor(
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<ObiectWithPrices>()
 
-    val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
-        ?: mutableListOf()
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
     private var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
@@ -65,6 +64,7 @@ class AddOrdersViewModel @AssistedInject constructor(
         }
 
     var beers: List<Beer> = listOf()
+    var bottleList: List<BaseBottleModel> = listOf()
 
     lateinit var selectedDistributor: User
     private var selectedDistributorRegionID: Int = 0
@@ -119,6 +119,7 @@ class AddOrdersViewModel @AssistedInject constructor(
 
     private fun getBeers() = viewModelScope.launch {
         beers = getBeerUseCase()
+        bottleList = getBottleUseCase()
     }
 
     private fun getAllUsers() {

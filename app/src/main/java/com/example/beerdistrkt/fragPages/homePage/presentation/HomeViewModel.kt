@@ -10,13 +10,13 @@ import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.VcsResponse
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.BottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.model.ResultState
@@ -39,6 +39,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val bottleMapper: BottleDtoMapper,
     private val getBeerUseCase: GetBeerUseCase,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : BaseViewModel() {
 
     private val usersLiveData = database.getUsers()
@@ -98,17 +99,26 @@ class HomeViewModel @Inject constructor(
             ObjectCache.getInstance()
                 .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.username })
         }
+        viewModelScope.launch {
+            val userInfo = userPreferencesRepository.readUserSession()
+            Session.get().restoreFromSavedInfo(userInfo)
+            getComments()
+        }
     }
 
     fun updateBottomSheetState(state: Int) = viewModelScope.launch {
         _bottomSheetStateFlow.emit(state)
     }
 
-    fun changeRegion(selectedRegion: WorkRegion) {
-        SharedPreferenceDataSource.getInstance().saveRegion(selectedRegion)
+    fun setRegion(selectedRegion: WorkRegion) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveRegion(selectedRegion)
+        }
         SharedPreferenceDataSource.getInstance().clearVersions()
         localVersionState = null
         getTableVersionsFromServer()
+        getStoreBalance()
+        getComments()
     }
 
     fun checkVersionUpdates() = getTableVersionsFromServer()
@@ -124,8 +134,8 @@ class HomeViewModel @Inject constructor(
                      * till better solution, I always need to receive beer & bottles list
                      */
 //                    if (it.beer > localVersionState!!.beer) {
-                    getBeerList()
-                    numberOfUpdatingTables++
+//                    getBeerList()
+//                    numberOfUpdatingTables++
 //                    }
                     if (it.client > localVersionState!!.client) {
                         getObjects()
@@ -144,11 +154,11 @@ class HomeViewModel @Inject constructor(
                         numberOfUpdatingTables++
                     }
                 } else {
-                    numberOfUpdatingTables = 5
+                    numberOfUpdatingTables = 4
                     getObjects()
                     getPrices()
                     getUsers()
-                    getBeerList()
+//                    getBeerList()
                     getCanTypes()
                 }
                 mainLoaderLiveData.value = numberOfUpdatingTables > 0
@@ -207,8 +217,9 @@ class HomeViewModel @Inject constructor(
                     val bottles = it.bottles.map { dto ->
                         bottleMapper.map(dto)
                     }
-                    ObjectCache.getInstance()
-                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
+
+//                    ObjectCache.getInstance()
+//                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
                 }
             }
         )

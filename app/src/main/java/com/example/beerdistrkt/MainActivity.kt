@@ -56,13 +56,8 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         SharedPreferenceDataSource.initialize(this)
         setContentView(R.layout.activity_main)
 
-        Session.get().restoreLastRegion(SharedPreferenceDataSource.getInstance().getRegion())
-        Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())
-
         vBinding.toolBar.title = getString(R.string.home_def_title)
         setSupportActionBar(vBinding.toolBar)
-
-        initNavController()
 
         setObservers()
 
@@ -77,6 +72,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         }
         viewModel.showContentFlow.collectLatest(this) {
             vBinding.progressIndicator.isVisible = !it
+            if (it) initNavController()
         }
     }
 

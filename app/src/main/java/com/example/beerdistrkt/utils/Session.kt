@@ -49,7 +49,6 @@ class Session {
         permissions.clear()
         permissions.addAll(userdata.permissions)
         regions = userdata.regions.toMutableList()
-        SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
     }
 
     fun clearSession() {
@@ -70,7 +69,7 @@ class Session {
 
     fun isLogOutDone(): Boolean = userName.isNullOrEmpty()
 
-    private fun getUserInfo(): UserInfo {
+    fun getUserInfo(): UserInfo {
         return UserInfo(
             userID ?: "",
             userType,
@@ -106,7 +105,7 @@ class Session {
     }
 
     fun saveSession() {
-        SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
+//        SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
     }
 
     companion object {

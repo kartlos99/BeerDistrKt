@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
@@ -27,7 +28,6 @@ import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import dagger.assisted.Assisted
@@ -46,6 +46,7 @@ import java.util.Date
 @HiltViewModel(assistedFactory = AddDeliveryViewModel.Factory::class)
 class AddDeliveryViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
+    private val getBottleUseCase: GetBottleUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(ORDER_ID_KEY) private val orderID: Int,
 ) : BaseViewModel() {
@@ -55,13 +56,12 @@ class AddDeliveryViewModel @AssistedInject constructor(
     val beerListLiveData = MutableLiveData<List<Beer>>()
 
     var beerList: List<Beer> = listOf()
+    var bottleList: List<BaseBottleModel> = listOf()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
 
     val bottleListLiveData = MutableLiveData<List<BaseBottleModel>>()
-    val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
-        ?: listOf()
 
     var saleDateCalendar: Calendar = Calendar.getInstance()
     private val _saleDayLiveData = MutableLiveData<String>()
@@ -120,6 +120,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
 
     private suspend fun getBeers() {
         beerList = getBeerUseCase()
+        bottleList = getBottleUseCase()
     }
 
     /**

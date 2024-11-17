@@ -1,14 +1,22 @@
 package com.example.beerdistrkt.fragPages.login
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : BaseViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val userPreferencesRepository: UserPreferencesRepository,
+) : BaseViewModel() {
 
     val loginResponseLiveData = MutableLiveData<ApiResponseState<LoginResponse>>()
 
@@ -33,5 +41,8 @@ class LoginViewModel : BaseViewModel() {
 
     fun setUserData(data: LoginResponse) {
         Session.get().justLoggedIn(data)
+        viewModelScope.launch {
+            userPreferencesRepository.saveUserSession(Session.get().getUserInfo())
+        }
     }
 }

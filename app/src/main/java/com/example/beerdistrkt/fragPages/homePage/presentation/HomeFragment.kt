@@ -32,7 +32,6 @@ import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.MITANA
 import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.visibleIf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,7 +66,6 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         }
 
         showStoreHouseData()
-        getComments()
         initViewModel()
         StoreHouseListFragment.editingGroupID = ""
     }
@@ -102,10 +100,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     private fun initViewModel() {
         viewModel.mainLoaderLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                binding.homeMainProgressBar.visibleIf(it)
-//                if (!it)
-//                    viewModel.getStoreBalance()
+            it?.let { isLoading ->
+                binding.homeMainProgressBar.isVisible = isLoading
             }
         }
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer { comments ->
@@ -182,8 +178,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     private fun onRegionChange(region: WorkRegion) {
         if (Session.get().region == region) return
         Session.get().region = region
-        viewModel.changeRegion(region)
-        getComments()
+        viewModel.setRegion(region)
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
         binding.btnOrder.text =

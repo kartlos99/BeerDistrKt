@@ -6,12 +6,10 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.BottleDtoMapper
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.models.bottle.BottleStatus
 import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,22 +21,20 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = BottleDetailViewModel.Factory::class)
 class BottleDetailViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val bottleMapper: BottleDtoMapper,
+    private val getBottleUseCase: GetBottleUseCase,
     @Assisted private val bottleID: Int
 ) : BaseViewModel() {
 
     val eventsFlow = MutableSharedFlow<Event>()
     val stateFlow = MutableStateFlow<Event>(Event.ShowLoading(false))
 
-    private val bottleList = ObjectCache.getInstance()
-        .getList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID) ?: mutableListOf()
     private var beerList: List<Beer> = listOf()
 
     init {
         viewModelScope.launch {
             beerList = getBeerUseCase()
             if (bottleID > 0) {
-                bottleList.firstOrNull {
+                getBottleUseCase().firstOrNull {
                     it.id == bottleID
                 }?.let {
 
@@ -131,11 +127,16 @@ class BottleDetailViewModel @AssistedInject constructor(
             successWithData = {
 
                 viewModelScope.launch {
-                    val bottles = it.map { dto ->
-                        bottleMapper.map(dto)
-                    }
-                    ObjectCache.getInstance()
-                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
+//                    val bottles = it.map { dto ->
+//                        bottleMapper.map(dto)
+//                    }
+                    /**
+                     * TODO
+                     * Save method response should return whole list and saved in repo.
+                     * Here we don't do such operation
+                     */
+//                    ObjectCache.getInstance()
+//                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
                     eventsFlow.emit(Event.DataSaved)
                 }
             },

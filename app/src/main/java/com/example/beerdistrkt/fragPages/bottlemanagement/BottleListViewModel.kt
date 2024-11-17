@@ -1,16 +1,16 @@
 package com.example.beerdistrkt.fragPages.bottlemanagement
 
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.storage.ObjectCache
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class BottleListViewModel : BaseViewModel() {
+@HiltViewModel
+class BottleListViewModel @Inject constructor(
+    private val getBottleUseCase: GetBottleUseCase,
+) : BaseViewModel() {
 
-    val bottleList: List<BaseBottleModel>
-        get() = ObjectCache.getInstance().getList(
-            BaseBottleModel::class,
-            ObjectCache.BOTTLE_LIST_ID
-        )
-            ?: mutableListOf()
+    suspend fun getBottleList(): List<BaseBottleModel> = getBottleUseCase()
 
 }
