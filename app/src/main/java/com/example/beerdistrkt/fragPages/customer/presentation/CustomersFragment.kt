@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.objList
+package com.example.beerdistrkt.fragPages.customer.presentation
 
 import android.Manifest
 import android.content.Context
@@ -6,28 +6,40 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.beerdistrkt.*
-import com.example.beerdistrkt.databinding.ObjListFragmentBinding
-import com.example.beerdistrkt.fragPages.objList.adapters.ClientsListAdapter
-import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
+import com.example.beerdistrkt.databinding.FragmentCustomersBinding
+import com.example.beerdistrkt.fragPages.customer.presentation.adapters.ClientsListAdapter
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
-import com.example.beerdistrkt.utils.*
+import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
+import com.example.beerdistrkt.showAskingDialog
+import com.example.beerdistrkt.showListDialog
+import com.example.beerdistrkt.utils.ADD_ORDER
+import com.example.beerdistrkt.utils.AMONAWERI
+import com.example.beerdistrkt.utils.MITANA
+import com.example.beerdistrkt.utils.SYS_CLEAR
+import com.example.beerdistrkt.utils.onTextChanged
+import dagger.hilt.android.AndroidEntryPoint
 
-class ObjListFragment : BaseFragment<ObjListViewModel>() {
+@AndroidEntryPoint
+class CustomersFragment : BaseFragment<CustomersViewModel>() {
 
-    override val viewModel by lazy {
-        getViewModel { ObjListViewModel() }
-    }
+    override val viewModel by viewModels<CustomersViewModel>()
 
-    private lateinit var vBinding: ObjListFragmentBinding
+    private lateinit var vBinding: FragmentCustomersBinding
 
     private var clientListAdapter = ClientsListAdapter()
 
@@ -41,7 +53,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        vBinding = ObjListFragmentBinding.inflate(inflater)
+        vBinding = FragmentCustomersBinding.inflate(inflater)
         return vBinding.root
     }
 
@@ -55,28 +67,31 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
 
     private fun setupObservers() {
 
-        viewModel.customersLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.customersLiveData.observe(viewLifecycleOwner) {
             clientListAdapter.submitList(it)
-        })
+        }
     }
 
     private fun navigateTo(clientID: Int) {
         searchView.setOnQueryTextListener(null)
         val argsBundle = arguments ?: Bundle()
-        val args = ObjListFragmentArgs.fromBundle(argsBundle)
+        val args = CustomersFragmentArgs.fromBundle(argsBundle)
         when (args.directionTo) {
             ADD_ORDER -> vBinding.root.findNavController().navigate(
-                ObjListFragmentDirections
+                CustomersFragmentDirections
                     .actionObjListFragmentToAddOrdersFragment(clientID)
             )
+
             MITANA -> vBinding.root.findNavController().navigate(
-                ObjListFragmentDirections
+                CustomersFragmentDirections
                     .actionObjListFragmentToAddDeliveryFragment(clientID, null, 0, 0)
             )
+
             AMONAWERI -> vBinding.root.findNavController().navigate(
-                ObjListFragmentDirections
+                CustomersFragmentDirections
                     .actionObjListFragmentToAmonaweriFragment(clientID)
             )
+
             SYS_CLEAR -> {
                 setFragmentResult(
                     SYS_CLEAR_REQUEST_KEY,
@@ -174,6 +189,7 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                     dialTo()
                 }
             }
+
             R.id.cm_info -> {
                 val arr = listOf(
                     String.format(
@@ -191,12 +207,14 @@ class ObjListFragment : BaseFragment<ObjListViewModel>() {
                 )
                 context?.showListDialog(R.string.info, arr.toTypedArray()) {}
             }
+
             R.id.cm_edit_obj -> {
                 searchView.setOnQueryTextListener(null)
-                val direction = ObjListFragmentDirections
+                val direction = CustomersFragmentDirections
                     .actionObjListFragmentToAddObjectFragment(selectedClient.id ?: 0)
                 vBinding.root.findNavController().navigate(direction)
             }
+
             R.id.cm_del -> {
                 requireContext().showAskingDialog(
                     null,

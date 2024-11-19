@@ -6,8 +6,11 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.settings.model.SettingParam
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SettingsViewModel : BaseViewModel() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor() : BaseViewModel() {
 
     private val _getSettingsLiveData = MutableLiveData<ApiResponseState<List<SettingParam>>>()
     val getSettingsLiveData: LiveData<ApiResponseState<List<SettingParam>>>

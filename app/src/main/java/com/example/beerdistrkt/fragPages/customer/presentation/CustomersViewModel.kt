@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.objList
+package com.example.beerdistrkt.fragPages.customer.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,10 +11,13 @@ import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ObjListViewModel : BaseViewModel() {
+@HiltViewModel
+class CustomersViewModel @Inject constructor() : BaseViewModel() {
 
     private var customers: List<Customer> = listOf()
     private val _customersLiveData = MutableLiveData<List<Customer>>()

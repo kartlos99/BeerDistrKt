@@ -3,18 +3,19 @@ package com.example.beerdistrkt.fragPages.settings
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SettingsFragmentBinding
 import com.example.beerdistrkt.fragPages.settings.SettingsViewModel.SettingCode.IDLE_WARNING
 import com.example.beerdistrkt.fragPages.settings.model.SettingParam
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment<SettingsViewModel>() {
-    override val viewModel by lazy {
-        getViewModel { SettingsViewModel() }
-    }
+
+    override val viewModel by viewModels<SettingsViewModel>()
 
     override var frLayout: Int? = R.layout.settings_fragment
 

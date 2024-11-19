@@ -113,9 +113,9 @@
         tools:layout="@layout/sawyobi_list_fragment" />
     <fragment
         android:id="@+id/objListFragment"
-        android:name="com.example.beerdistrkt.fragPages.objList.ObjListFragment"
+        android:name="com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment"
         android:label="@string/choose_client"
-        tools:layout="@layout/obj_list_fragment">
+        tools:layout="@layout/fragment_customers">
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
             app:destination="@id/statementFragment" />

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.objList.adapters
+package com.example.beerdistrkt.fragPages.customer.presentation.adapters
 
 import android.content.Context
 import android.view.*

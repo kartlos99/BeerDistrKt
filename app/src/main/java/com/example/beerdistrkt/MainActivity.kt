@@ -30,7 +30,7 @@ import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.fragPages.objList.ObjListFragment
+import com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
@@ -40,7 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
+class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
 
     private val vBinding by viewBinding(ActivityMainBinding::bind)
@@ -216,12 +216,12 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == ObjListFragment.CALL_PERMISSION_REQUEST) {
+        if (requestCode == CustomersFragment.CALL_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                findNavController(R.id.mainNavHostFragment).currentDestination?.id = R.id.objListFragment
                 val hostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment)
                 val activeFragment = hostFragment?.childFragmentManager?.fragments?.get(0)
-                if (activeFragment is ObjListFragment)
+                if (activeFragment is CustomersFragment)
                     activeFragment.dialTo()
             }
 
@@ -232,7 +232,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.CALL_PHONE),
-            ObjListFragment.CALL_PERMISSION_REQUEST
+            CustomersFragment.CALL_PERMISSION_REQUEST
         )
     }
 

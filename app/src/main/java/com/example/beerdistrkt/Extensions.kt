@@ -163,6 +163,7 @@ inline fun <reified VM : ViewModel, VMF> Fragment.paramViewModels(
     )
 }
 
+/*
 class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return creator() as T
@@ -189,6 +190,7 @@ inline fun <reified T : ViewModel> Fragment.getActCtxViewModel(noinline creator:
     else
         ViewModelProvider(requireActivity(), BaseViewModelFactory(creator))[T::class.java]
 }
+*/
 
 fun Context.showAskingDialog(
     title: Int?,
