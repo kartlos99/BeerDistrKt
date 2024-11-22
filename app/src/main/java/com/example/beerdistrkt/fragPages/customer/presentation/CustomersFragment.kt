@@ -194,13 +194,13 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
                 val arr = listOf(
                     String.format(
                         "ობიექტი: %s\n    %s\n    %s",
-                        selectedClient.dasaxeleba,
-                        selectedClient.sk ?: "-",
+                        selectedClient.name,
+                        selectedClient.identifyCode ?: "-",
                         selectedClient.address ?: "-"
                     ),
                     String.format(
                         "საკ.პირი: %s\n    %s",
-                        selectedClient.sakpiri,
+                        selectedClient.contactPerson,
                         selectedClient.tel
                     ),
                     String.format(selectedClient.comment ?: "")

@@ -45,7 +45,7 @@ class ClientsListAdapter :
         }
 
         fun bind(client: Customer) = with(binding) {
-            clientNameTv.text = client.dasaxeleba
+            clientNameTv.text = client.name
             tvPassedTime.text = formatPassedTime(root.context, client.warnInfo?.passedDays ?: 0)
             infoIcon.isVisible = client.warnInfo != null
             tvPassedTime.isVisible = client.warnInfo != null
@@ -57,7 +57,7 @@ class ClientsListAdapter :
             v: View?,
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
-            val title = (itemView.tag as Customer).dasaxeleba
+            val title = (itemView.tag as Customer).name
             menu?.setHeaderTitle(title)
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)

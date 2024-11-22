@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
@@ -39,6 +40,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val bottleMapper: BottleDtoMapper,
     private val getBeerUseCase: GetBeerUseCase,
+    private val refreshCustomers: RefreshCustomersUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : BaseViewModel() {
 
@@ -113,6 +115,7 @@ class HomeViewModel @Inject constructor(
     fun setRegion(selectedRegion: WorkRegion) {
         viewModelScope.launch {
             userPreferencesRepository.saveRegion(selectedRegion)
+            refreshCustomers()
         }
         SharedPreferenceDataSource.getInstance().clearVersions()
         localVersionState = null

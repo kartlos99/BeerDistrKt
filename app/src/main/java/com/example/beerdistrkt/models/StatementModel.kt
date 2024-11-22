@@ -51,7 +51,9 @@ data class Obieqti(
         comment,
         sk,
         sakpiri,
-        chek
+        chek,
+        beerPrices = emptyList(),
+        bottlePrices = emptyList(),
     )
 
     companion object {

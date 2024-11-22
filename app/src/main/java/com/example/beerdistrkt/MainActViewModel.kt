@@ -2,6 +2,7 @@ package com.example.beerdistrkt
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.models.ChangePassRequestModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class MainActViewModel @Inject constructor(
     private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val refreshCustomers: RefreshCustomersUseCase,
 ) : BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()
@@ -33,6 +35,7 @@ class MainActViewModel @Inject constructor(
         }
         userPreferencesRepository.readRegion().also { region ->
             Session.get().restoreLastRegion(region)
+            region?.let { refreshCustomers() }
         }
         refreshBaseDataUseCase()
         showContentFlow.emit(true)

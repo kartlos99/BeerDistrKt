@@ -26,7 +26,7 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.ObjToBeerPrice
-import com.example.beerdistrkt.models.bottle.ClientBottlePrice
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.showInfoDialog
@@ -76,14 +76,16 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         addEditClientDoneBtn.setOnClickListener {
             val customer = Customer(
                 id = viewModel.clientID,
-                dasaxeleba = addEditClientName.editText?.text.toString().trim(),
+                name = addEditClientName.editText?.text.toString().trim(),
                 address = addEditClientAdress.editText?.text.toString().trim(),
                 tel = addEditClientPhone.editText?.text.toString().trim(),
                 comment = addEditComment.editText?.text.toString().trim(),
-                sk = addEditClientSK.editText?.text.toString().trim(),
-                sakpiri = addEditClientPerson.editText?.text.toString().trim(),
+                identifyCode = addEditClientSK.editText?.text.toString().trim(),
+                contactPerson = addEditClientPerson.editText?.text.toString().trim(),
                 chek = if (addEditClientCheck.isChecked) "1" else "0",
-                group = CustomerGroup.from(requireContext(), clientGroupInput.text.toString())
+                group = CustomerGroup.from(requireContext(), clientGroupInput.text.toString()),
+                beerPrices = emptyList(),
+                bottlePrices = emptyList(),
             )
 
             viewModel.addClient(
@@ -236,9 +238,9 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
     }
 
     private fun fillForm(clientData: CustomerWithPrices) = with(binding) {
-        addEditClientName.editText?.setText(clientData.customer.dasaxeleba)
-        addEditClientSK.editText?.setText(clientData.customer.sk ?: "")
-        addEditClientPerson.editText?.setText(clientData.customer.sakpiri ?: "")
+        addEditClientName.editText?.setText(clientData.customer.name)
+        addEditClientSK.editText?.setText(clientData.customer.identifyCode ?: "")
+        addEditClientPerson.editText?.setText(clientData.customer.contactPerson ?: "")
         addEditClientAdress.editText?.setText(clientData.customer.address ?: "")
         addEditClientPhone.editText?.setText(clientData.customer.tel ?: "")
         addEditComment.editText?.setText(clientData.customer.comment ?: "")

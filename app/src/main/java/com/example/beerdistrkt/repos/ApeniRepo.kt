@@ -40,12 +40,12 @@ class ApeniRepo {
 
             val customer = Customer(
                 id = id,
-                dasaxeleba = dasaxeleba,
+                name = dasaxeleba,
                 address = address,
                 tel = tel,
                 comment = comment,
-                sk = sk,
-                sakpiri = sakpiri,
+                identifyCode = sk,
+                contactPerson = sakpiri,
                 chek = chek,
                 group = group,
             )

@@ -75,7 +75,7 @@ class CustomersViewModel @Inject constructor() : BaseViewModel() {
 
     fun onNewQuery(query: String) {
         _customersLiveData.value = customers.filter {
-            it.dasaxeleba.contains(query)
+            it.name.contains(query)
         }
     }
 

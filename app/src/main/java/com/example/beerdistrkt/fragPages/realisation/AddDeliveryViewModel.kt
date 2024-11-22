@@ -21,7 +21,7 @@ import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.ClientBottlePrice
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.repos.ApeniRepo

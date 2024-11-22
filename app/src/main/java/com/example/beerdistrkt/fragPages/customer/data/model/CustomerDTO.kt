@@ -2,7 +2,7 @@ package com.example.beerdistrkt.fragPages.customer.data.model
 
 import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
 import com.example.beerdistrkt.models.ObjToBeerPrice
-import com.example.beerdistrkt.models.bottle.ClientBottlePrice
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 
 data class CustomerDTO(
     var dasaxeleba: String,

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.models.bottle
+package com.example.beerdistrkt.fragPages.customer.domain.model
 
 data class ClientBottlePrice(
     val clientID: Int,
