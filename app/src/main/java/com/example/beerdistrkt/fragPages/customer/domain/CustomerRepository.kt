@@ -13,7 +13,7 @@ interface CustomerRepository {
 
     suspend fun getCustomers(): List<Customer>
 
-    suspend fun getCustomer(customerID: Int): Customer
+    suspend fun getCustomer(customerID: Int): Customer?
 
     val customersFlow: StateFlow<List<Customer>?>
 }

@@ -6,18 +6,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.models.ClientDeactivateModel
-import com.example.beerdistrkt.models.CustomerIdlInfo
-import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.repos.ApeniRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CustomersViewModel @Inject constructor() : BaseViewModel() {
+class CustomersViewModel @Inject constructor(
+    private val getCustomersUseCase: GetCustomersUseCase,
+) : BaseViewModel() {
 
     private var customers: List<Customer> = listOf()
     private val _customersLiveData = MutableLiveData<List<Customer>>()
@@ -28,31 +28,13 @@ class CustomersViewModel @Inject constructor() : BaseViewModel() {
 
     val searchQuery = state.getLiveData("searchQuery", "")
 
-    private val repository = ApeniRepo()
-
     init {
         viewModelScope.launch {
-            repository.allData.collectLatest {
-                updateList(it.first, it.second)
+            getCustomersUseCase.customersAsFlow().collectLatest {
+                customers = it ?: emptyList()
+                _customersLiveData.value = it
             }
         }
-        repository.getCustomers()
-        repository.getCustomersIdleInfo()
-//        repository.getBaseData()
-    }
-
-    private fun updateList(
-        customerObjects: List<Obieqti>,
-        idles: List<CustomerIdlInfo>
-    ) {
-        customers = customerObjects.map { obj ->
-            obj.toCustomer().apply {
-                warnInfo = idles.firstOrNull { idleInfo ->
-                    obj.id == idleInfo.clientID
-                }
-            }
-        }
-        _customersLiveData.value = customers
     }
 
     override fun onCleared() {
@@ -86,6 +68,6 @@ class CustomersViewModel @Inject constructor() : BaseViewModel() {
     }
 
     companion object {
-        const val TAG = "O_L_VM"
+        const val TAG = "CUSTOMER_LIST_VM"
     }
 }

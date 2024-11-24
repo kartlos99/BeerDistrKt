@@ -3,23 +3,24 @@ package com.example.beerdistrkt.fragPages.customer.data
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.models.ObjToBeerPrice
 import javax.inject.Inject
 
 class CustomerMapper @Inject constructor() {
 
-    fun toDomain(dto: CustomerDTO): Customer {
+    fun toDomain(dto: CustomerDTO, idles: Map<Int, List<CustomerIdlInfo>>): Customer {
 
         return Customer(
             id = dto.id,
-            name = dto.dasaxeleba,
+            name = dto.dasaxeleba.trim(),
             address = dto.address,
             tel = dto.tel,
             comment = dto.comment,
             identifyCode = dto.sk,
             contactPerson = dto.sakpiri,
             chek = dto.chek,
-            warnInfo = null,
+            warnInfo = idles[dto.id]?.firstOrNull(),
             group = dto.group,
             beerPrices = dto.prices.map(::mapBeerPrice),
             bottlePrices = dto.bottlePrices

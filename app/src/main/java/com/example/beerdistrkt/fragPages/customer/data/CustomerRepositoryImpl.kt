@@ -4,15 +4,19 @@ import com.example.beerdistrkt.fragPages.customer.domain.CustomerRepository
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@ActivityRetainedScoped
 class CustomerRepositoryImpl @Inject constructor(
     private val api: DistributionApi,
     private val customerMapper: CustomerMapper,
-    ioDispatcher: CoroutineDispatcher,
-): BaseRepository(ioDispatcher), CustomerRepository {
+    private val ioDispatcher: CoroutineDispatcher,
+) : BaseRepository(ioDispatcher), CustomerRepository {
 
     private var customers: List<Customer> = emptyList()
 
@@ -31,21 +35,26 @@ class CustomerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCustomers(): List<Customer> {
-        TODO("Not yet implemented")
+        return customers
     }
 
-    override suspend fun getCustomer(customerID: Int): Customer {
-        TODO("Not yet implemented")
+    override suspend fun getCustomer(customerID: Int): Customer? {
+        return customers.firstOrNull { it.id == customerID }
     }
 
     private suspend fun fetchCustomers() {
         apiCall {
-            api.getCustomers()
-                .map(customerMapper::toDomain)
-                .also {
+            withContext(ioDispatcher) {
+                val idleResult = async { api.getIdleInfo() }
+                val customerResult = async { api.getCustomers() }
+                val idlesMap = idleResult.await().groupBy { it.clientID }
+                customerResult.await().map {
+                    customerMapper.toDomain(it, idlesMap)
+                }.also {
                     customers = it
                     customersFlow.emit(customers)
                 }
+            }
         }
     }
 }

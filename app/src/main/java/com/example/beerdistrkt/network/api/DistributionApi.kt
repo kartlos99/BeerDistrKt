@@ -10,6 +10,7 @@ import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
+import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -104,6 +105,9 @@ interface DistributionApi {
     /* customer */
     @GET("listing/customers.php")
     suspend fun getCustomers(): List<CustomerDTO>
+
+    @GET("customer/idleInfo.php")
+    suspend fun getIdleInfo(): List<CustomerIdlInfo>
 
     /* general */
     @GET("general/getBaseData.php")
