@@ -10,6 +10,7 @@ import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ class MainActViewModel @Inject constructor(
 
     val headerUpdateLiveData = MutableLiveData<Int>()
 
-    val showContentFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    val showContentFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     init {
         updateInitialData()
