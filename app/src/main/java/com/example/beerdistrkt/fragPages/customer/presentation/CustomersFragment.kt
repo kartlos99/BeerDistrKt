@@ -41,7 +41,7 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
 
     private lateinit var vBinding: FragmentCustomersBinding
 
-    private var clientListAdapter = ClientsListAdapter()
+    private var clientListAdapter = ClientsListAdapter(::navigateTo)
 
     var clientPhone: String? = null
 
@@ -105,7 +105,6 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
 
     private fun initClientsRecycler() = with(vBinding.clientsRecycler) {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        clientListAdapter.onItemClick = ::navigateTo
         adapter = clientListAdapter
 
 /*
@@ -211,7 +210,7 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
             R.id.cm_edit_obj -> {
                 searchView.setOnQueryTextListener(null)
                 val direction = CustomersFragmentDirections
-                    .actionObjListFragmentToAddObjectFragment(selectedClient.id ?: 0)
+                    .actionCustomersFragmentToAddCustomerFragment(selectedClient.id ?: 0)
                 vBinding.root.findNavController().navigate(direction)
             }
 

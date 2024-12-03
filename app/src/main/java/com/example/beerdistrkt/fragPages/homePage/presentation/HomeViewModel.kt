@@ -140,10 +140,10 @@ class HomeViewModel @Inject constructor(
 //                    getBeerList()
 //                    numberOfUpdatingTables++
 //                    }
-                    if (it.client > localVersionState!!.client) {
-                        getObjects()
-                        numberOfUpdatingTables++
-                    }
+//                    if (it.client > localVersionState!!.client) {
+//                        getObjects()
+//                        numberOfUpdatingTables++
+//                    }
                     if (it.user > localVersionState!!.user) {
                         getUsers()
                         numberOfUpdatingTables++
@@ -152,14 +152,14 @@ class HomeViewModel @Inject constructor(
                         getCanTypes()
                         numberOfUpdatingTables++
                     }
-                    if (it.price > localVersionState!!.price) {
-                        getPrices()
-                        numberOfUpdatingTables++
-                    }
+//                    if (it.price > localVersionState!!.price) {
+//                        getPrices()
+//                        numberOfUpdatingTables++
+//                    }
                 } else {
-                    numberOfUpdatingTables = 4
-                    getObjects()
-                    getPrices()
+                    numberOfUpdatingTables = 2
+//                    getObjects()
+//                    getPrices()
                     getUsers()
 //                    getBeerList()
                     getCanTypes()

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/addObjectFragment"
+            android:id="@+id/addCustomerFragment"
             android:checked="false"
             android:icon="@drawable/ic_client_add_24"
             android:title="@string/add_object" />

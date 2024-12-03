@@ -109,6 +109,9 @@ interface DistributionApi {
     @GET("customer/idleInfo.php")
     suspend fun getIdleInfo(): List<CustomerIdlInfo>
 
+    @POST("customer/add.php")
+    suspend fun addCustomer(@Body customerDTO: CustomerDTO): String
+
     /* general */
     @GET("general/getBaseData.php")
     suspend fun getBaseData(): BaseDataDto

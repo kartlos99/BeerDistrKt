@@ -27,7 +27,12 @@ class CustomerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun putCustomer(customer: Customer): List<Customer> {
-        TODO("Not yet implemented")
+        apiCall {
+            if (customer.id == null)
+                api.addCustomer(customerMapper.toDto(customer))
+        }
+        fetchCustomers()
+        return customers
     }
 
     override suspend fun deleteCustomer(customerID: Int): List<Customer> {

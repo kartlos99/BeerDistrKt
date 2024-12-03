@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.mapper.PriceMapper
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.PutCustomersUseCase
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.CustomerWithPrices
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = AddCustomerViewModel.Factory::class)
 class AddCustomerViewModel @AssistedInject constructor(
     private val priceMapper: PriceMapper,
+    private val putCustomersUseCase: PutCustomersUseCase,
     @Assisted val clientID: Int,
 ) : BaseViewModel() {
 
@@ -60,6 +63,12 @@ class AddCustomerViewModel @AssistedInject constructor(
             priceMapper.getBeerPrices(customerData),
             priceMapper.getBottlePrices(customerData)
         )
+    }
+
+    fun putCustomer(customer: Customer) {
+        viewModelScope.launch {
+            putCustomersUseCase(customer)
+        }
     }
 
     fun addClient(clientData: CustomerWithPrices) {

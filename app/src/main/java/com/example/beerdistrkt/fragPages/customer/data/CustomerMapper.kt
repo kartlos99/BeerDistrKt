@@ -13,16 +13,16 @@ class CustomerMapper @Inject constructor() {
 
         return Customer(
             id = dto.id,
-            name = dto.dasaxeleba.trim(),
+            name = dto.name.trim(),
             address = dto.address,
             tel = dto.tel,
             comment = dto.comment,
-            identifyCode = dto.sk,
-            contactPerson = dto.sakpiri,
+            identifyCode = dto.identifyCode,
+            contactPerson = dto.contactPerson,
             chek = dto.chek,
             warnInfo = idles[dto.id]?.firstOrNull(),
             group = dto.group,
-            beerPrices = dto.prices.map(::mapBeerPrice),
+            beerPrices = dto.beerPrices.map(::mapBeerPrice),
             bottlePrices = dto.bottlePrices
         )
     }
@@ -35,4 +35,26 @@ class CustomerMapper @Inject constructor() {
             price = priceDto.fasi.toDouble(),
         )
     }
+
+    fun toDto(customer: Customer): CustomerDTO {
+        return CustomerDTO(
+            id = customer.id,
+            name = customer.name,
+            group = customer.group,
+            address = customer.address,
+            tel = customer.tel,
+            comment = customer.comment,
+            identifyCode = customer.identifyCode,
+            contactPerson = customer.contactPerson,
+            chek = customer.chek,
+            beerPrices = customer.beerPrices.map(::mapBeerPriceToDto),
+            bottlePrices = customer.bottlePrices
+        )
+    }
+
+    private fun mapBeerPriceToDto(clientBeerPrice: ClientBeerPrice): ObjToBeerPrice = ObjToBeerPrice(
+        objID = clientBeerPrice.clientID,
+        beerID = clientBeerPrice.beerID,
+        fasi = clientBeerPrice.price.toFloat()
+    )
 }

@@ -19,7 +19,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_homeFragment_to_objListFragment"
-            app:destination="@id/objListFragment" />
+            app:destination="@id/customersFragment" />
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment"
@@ -41,7 +41,7 @@
         tools:layout="@layout/orders_fragment">
         <action
             android:id="@+id/action_ordersFragment_to_objListFragment"
-            app:destination="@id/objListFragment" />
+            app:destination="@id/customersFragment" />
         <action
             android:id="@+id/action_ordersFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
@@ -66,10 +66,10 @@
         tools:layout="@layout/sys_clear_fragment">
         <action
             android:id="@+id/action_sysClearFragment_to_objListFragment"
-            app:destination="@id/objListFragment" />
+            app:destination="@id/customersFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addObjectFragment"
+        android:id="@+id/addCustomerFragment"
         android:name="com.example.beerdistrkt.fragPages.customer.presentation.AddCustomerFragment"
         android:label="@string/create_client"
         tools:layout="@layout/add_customer_fragment">
@@ -112,7 +112,7 @@
         android:label="@string/store_house_io_title"
         tools:layout="@layout/sawyobi_list_fragment" />
     <fragment
-        android:id="@+id/objListFragment"
+        android:id="@+id/customersFragment"
         android:name="com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment"
         android:label="@string/choose_client"
         tools:layout="@layout/fragment_customers">
@@ -130,8 +130,8 @@
             android:name="directionTo"
             app:argType="string" />
         <action
-            android:id="@+id/action_objListFragment_to_addObjectFragment"
-            app:destination="@id/addObjectFragment" />
+            android:id="@+id/action_customersFragment_to_addCustomerFragment"
+            app:destination="@id/addCustomerFragment" />
     </fragment>
     <fragment
         android:id="@+id/salesFragment"

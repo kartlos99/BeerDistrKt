@@ -12,10 +12,12 @@ import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.utils.Session
 
-class ClientsListAdapter :
+class ClientsListAdapter(
+    val onItemClick: (clientID: Int) -> Unit
+) :
     ListAdapter<Customer, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
 
-    var onItemClick: (clientID: Int) -> Unit = {}
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientViewHolder {
         val binding = ObjListRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)

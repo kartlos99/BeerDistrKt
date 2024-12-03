@@ -18,6 +18,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.AddCustomerFragmentBinding
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
 import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
@@ -25,7 +26,6 @@ import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
-import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.round
@@ -75,7 +75,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         setupCustomerGroupDropDown()
         addEditClientDoneBtn.setOnClickListener {
             val customer = Customer(
-                id = viewModel.clientID,
+                id = if (viewModel.clientID == 0) null else viewModel.clientID,
                 name = addEditClientName.editText?.text.toString().trim(),
                 address = addEditClientAdress.editText?.text.toString().trim(),
                 tel = addEditClientPhone.editText?.text.toString().trim(),
@@ -84,17 +84,11 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
                 contactPerson = addEditClientPerson.editText?.text.toString().trim(),
                 chek = if (addEditClientCheck.isChecked) "1" else "0",
                 group = CustomerGroup.from(requireContext(), clientGroupInput.text.toString()),
-                beerPrices = emptyList(),
-                bottlePrices = emptyList(),
+                beerPrices = getEditedBeerPrices(),
+                bottlePrices = getEditedBottlePrices(),
             )
 
-            viewModel.addClient(
-                CustomerWithPrices(
-                    customer,
-                    getEditedBeerPrices(),
-                    getEditedBottlePrices()
-                )
-            )
+            viewModel.putCustomer(customer)
         }
 
         addEditClientRegionBtn.setOnClickListener {
@@ -115,8 +109,8 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         binding.clientGroupInput.setAdapter(adapter)
     }
 
-    private fun getEditedBeerPrices(): List<ObjToBeerPrice> {
-        val priceList = mutableListOf<ObjToBeerPrice>()
+    private fun getEditedBeerPrices(): List<ClientBeerPrice> {
+        val priceList = mutableListOf<ClientBeerPrice>()
 
         for (i in 0 until binding.addEditClientPricesContainer.childCount) {
             val priceRow = binding.addEditClientPricesContainer.getChildAt(i) as LinearLayout
@@ -126,10 +120,10 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             val beerID = eText.tag as Int
 
             priceList.add(
-                ObjToBeerPrice(
+                ClientBeerPrice(
                     viewModel.clientID,
                     beerID,
-                    price.toString().toFloat()
+                    price.toString().toDouble()
                 )
             )
         }

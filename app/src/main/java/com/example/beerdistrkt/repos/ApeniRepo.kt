@@ -40,19 +40,19 @@ class ApeniRepo {
 
             val customer = Customer(
                 id = id,
-                name = dasaxeleba,
+                name = name,
                 address = address,
                 tel = tel,
                 comment = comment,
-                identifyCode = sk,
-                contactPerson = sakpiri,
+                identifyCode = identifyCode,
+                contactPerson = contactPerson,
                 chek = chek,
                 group = group,
             )
 
             return CustomerWithPrices(
                 customer = customer,
-                beerPrices = prices,
+                beerPrices = beerPrices,
                 bottlePrices = bottlePrices
             )
         }
@@ -62,7 +62,7 @@ class ApeniRepo {
         ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
             successWithData = { customerData ->
                 ioScope.launch {
-                    database.insertBeerPrices(customerData.prices)
+                    database.insertBeerPrices(customerData.beerPrices)
                 }
                 CoroutineScope(Dispatchers.Main).launch {
                     clientDataFlow.emit(mapCustomerDtoToPm(customerData))
@@ -82,7 +82,7 @@ class ApeniRepo {
         ApeniApiService.getInstance().getCustomerData(customerID).sendRequest(
             successWithData = { customerData ->
                 ioScope.launch {
-                    database.insertBeerPrices(customerData.prices)
+                    database.insertBeerPrices(customerData.beerPrices)
                 }
             },
             failure = {},
