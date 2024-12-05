@@ -231,15 +231,15 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
     }
 
-    private fun fillForm(clientData: CustomerWithPrices) = with(binding) {
-        addEditClientName.editText?.setText(clientData.customer.name)
-        addEditClientSK.editText?.setText(clientData.customer.identifyCode ?: "")
-        addEditClientPerson.editText?.setText(clientData.customer.contactPerson ?: "")
-        addEditClientAdress.editText?.setText(clientData.customer.address ?: "")
-        addEditClientPhone.editText?.setText(clientData.customer.tel ?: "")
-        addEditComment.editText?.setText(clientData.customer.comment ?: "")
-        addEditClientCheck.isChecked = clientData.customer.chek == "1"
-        clientGroupInput.setText(getString(clientData.customer.group.displayName), false)
+    private fun fillForm(customer: Customer) = with(binding) {
+        addEditClientName.editText?.setText(customer.name)
+        addEditClientSK.editText?.setText(customer.identifyCode ?: "")
+        addEditClientPerson.editText?.setText(customer.contactPerson ?: "")
+        addEditClientAdress.editText?.setText(customer.address ?: "")
+        addEditClientPhone.editText?.setText(customer.tel ?: "")
+        addEditComment.editText?.setText(customer.comment ?: "")
+        addEditClientCheck.isChecked = customer.chek == "1"
+        clientGroupInput.setText(getString(customer.group.displayName), false)
     }
 
     private fun drawPriceInputFields(

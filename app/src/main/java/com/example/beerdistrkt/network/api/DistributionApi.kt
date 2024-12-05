@@ -112,6 +112,9 @@ interface DistributionApi {
     @POST("customer/add.php")
     suspend fun addCustomer(@Body customerDTO: CustomerDTO): String
 
+    @POST("customer/update.php")
+    suspend fun updateCustomer(@Body customerDTO: CustomerDTO): String
+
     /* general */
     @GET("general/getBaseData.php")
     suspend fun getBaseData(): BaseDataDto

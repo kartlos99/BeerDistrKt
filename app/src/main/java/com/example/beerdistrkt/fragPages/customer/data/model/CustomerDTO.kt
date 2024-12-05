@@ -7,15 +7,15 @@ import com.example.beerdistrkt.models.ObjToBeerPrice
 
 @Keep
 data class CustomerDTO(
-    var id: Int? = null,
-    var name: String,
-    var group: CustomerGroup = CustomerGroup.BASE,
-    var address: String? = null,
-    var tel: String? = null,
-    var comment: String? = null,
-    var identifyCode: String? = null,
-    var contactPerson: String? = null,
-    var chek: String? = null,
-    var beerPrices: List<ObjToBeerPrice>,
-    var bottlePrices: List<ClientBottlePrice>,
+    val id: Int? = null,
+    val name: String,
+    val group: CustomerGroup = CustomerGroup.BASE,
+    val address: String? = null,
+    val tel: String? = null,
+    val comment: String? = null,
+    val identifyCode: String? = null,
+    val contactPerson: String? = null,
+    val chek: String? = null,
+    val beerPrices: List<ObjToBeerPrice>,
+    val bottlePrices: List<ClientBottlePrice>,
 )

@@ -6,126 +6,58 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.mapper.PriceMapper
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.PutCustomersUseCase
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.CustomerWithPrices
-import com.example.beerdistrkt.models.ObiectWithPrices
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddCustomerViewModel.Factory::class)
 class AddCustomerViewModel @AssistedInject constructor(
     private val priceMapper: PriceMapper,
     private val putCustomersUseCase: PutCustomersUseCase,
+    private val getCustomerUseCase: GetCustomerUseCase,
     @Assisted val clientID: Int,
 ) : BaseViewModel() {
 
-    val clientObjectLiveData = MutableLiveData<Triple<CustomerWithPrices?, List<PriceEditModel>, List<PriceEditModel>>>()
+    val clientObjectLiveData = MutableLiveData<Triple<Customer?, List<PriceEditModel>, List<PriceEditModel>>>()
     val clientSaveMutableLiveData = MutableLiveData<ApiResponseState<CustomerWithPrices?>>()
     val clientRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
     val regions = mutableListOf<AttachedRegion>()
     val selectedRegions = mutableListOf<AttachedRegion>()
 
-    private val repository = ApeniRepo()
+    private var customer: Customer? = null
 
     init {
         viewModelScope.launch {
             if (clientID > 0) {
-                repository.getCustomerDataFlow(clientID)
-                    .onEach {
-                        it?.let { customerData ->
-                            uiScope.launch {
-//                                delay(50)
-                                proceedCustomer(customerData)
-                            }
-                        }
-                    }
-                    .collect()
+                customer = getCustomerUseCase(clientID)
+                proceedCustomer(customer)
             } else {
                 proceedCustomer(null)
             }
         }
     }
 
-    private suspend fun proceedCustomer(customerData: CustomerWithPrices?) {
+    private suspend fun proceedCustomer(customerData: Customer?) {
 
         clientObjectLiveData.value = Triple(
             customerData,
-            priceMapper.getBeerPrices(customerData),
-            priceMapper.getBottlePrices(customerData)
+            priceMapper.getBeerPrices(customerData?.beerPrices),
+            priceMapper.getBottlePrices(customerData?.bottlePrices)
         )
     }
 
     fun putCustomer(customer: Customer) {
         viewModelScope.launch {
             putCustomersUseCase(customer)
-        }
-    }
-
-    fun addClient(clientData: CustomerWithPrices) {
-        if (callIsBlocked) return
-        callIsBlocked = true
-
-        if (clientID == 0) {
-            clientSaveMutableLiveData.value = ApiResponseState.Loading(true)
-            sendRequest(
-                ApeniApiService.getInstance().addClient(clientData),
-                successWithData = {
-                    val insertedClientID = it.toInt()
-                    clientData.customer.id = insertedClientID
-                    val prices = clientData.beerPrices.map { prItem ->
-                        prItem.copy(objID = insertedClientID)
-                    }
-                    saveToLocalDB(ObiectWithPrices(clientData.customer.toObieqti(), prices))
-                    clientSaveMutableLiveData.value = ApiResponseState.Success(clientData)
-                },
-                responseFailure = { code, error ->
-                    clientSaveMutableLiveData.value = ApiResponseState.ApiError(code, error)
-                },
-                finally = {
-                    clientSaveMutableLiveData.value = ApiResponseState.Loading(false)
-                }
-            )
-        } else updateClient(clientData)
-    }
-
-    private fun updateClient(clientData: CustomerWithPrices) {
-        clientSaveMutableLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().updateClient(clientData),
-            successWithData = {
-                saveToLocalDB(
-                    ObiectWithPrices(
-                        clientData.customer.toObieqti(),
-                        clientData.beerPrices
-                    )
-                )
-                clientSaveMutableLiveData.value = ApiResponseState.Success(clientData)
-            },
-            responseFailure = { code, error ->
-                clientSaveMutableLiveData.value = ApiResponseState.ApiError(code, error)
-            },
-            finally = {
-                clientSaveMutableLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
-    }
-
-    private fun saveToLocalDB(clientData: ObiectWithPrices) {
-        ioScope.launch {
-            database.insertObiecti(clientData.obieqti)
-            clientData.prices.forEach { beerPrice ->
-                database.insertBeerPrice(beerPrice)
-            }
         }
     }
 

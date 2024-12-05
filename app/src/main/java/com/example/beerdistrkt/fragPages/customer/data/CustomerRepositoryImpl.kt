@@ -30,6 +30,8 @@ class CustomerRepositoryImpl @Inject constructor(
         apiCall {
             if (customer.id == null)
                 api.addCustomer(customerMapper.toDto(customer))
+            else
+                api.updateCustomer(customerMapper.toDto(customer))
         }
         fetchCustomers()
         return customers
