@@ -97,7 +97,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         layoutManager = LinearLayoutManager(context)
         touchHelper.attachToRecyclerView(this)
 
-        viewModel.beersFlow.collectLatest(viewLifecycleOwner) {result ->
+        viewModel.beersFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
             binding.beerRefresh.isRefreshing = result.isLoading()
             result.onError { error ->

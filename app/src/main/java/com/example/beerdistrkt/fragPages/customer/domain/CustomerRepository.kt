@@ -1,13 +1,14 @@
 package com.example.beerdistrkt.fragPages.customer.domain
 
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.network.api.ApiResponse
 import kotlinx.coroutines.flow.StateFlow
 
 interface CustomerRepository {
 
     suspend fun refreshCustomers()
 
-    suspend fun putCustomer(customer: Customer): List<Customer>
+    suspend fun putCustomer(customer: Customer): ApiResponse<List<Customer>>
 
     suspend fun deleteCustomer(customerID: Int): List<Customer>
 

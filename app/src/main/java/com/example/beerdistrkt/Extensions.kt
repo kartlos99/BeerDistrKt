@@ -238,6 +238,7 @@ fun Context.showInfoDialog(
     text: Int,
     buttonText: Int,
     theme: Int? = null,
+    cancelable: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
     val builder = if (theme == null)
@@ -247,6 +248,7 @@ fun Context.showInfoDialog(
     if (title != null)
         builder.setTitle(title)
     builder
+        .setCancelable(cancelable)
         .setMessage(text)
         .setNeutralButton(buttonText) { dialog, _ ->
             onClick?.invoke()

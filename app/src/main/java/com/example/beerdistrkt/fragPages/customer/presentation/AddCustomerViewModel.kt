@@ -12,11 +12,17 @@ import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.api.toResultState
+import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddCustomerViewModel.Factory::class)
@@ -27,11 +33,16 @@ class AddCustomerViewModel @AssistedInject constructor(
     @Assisted val clientID: Int,
 ) : BaseViewModel() {
 
-    val clientObjectLiveData = MutableLiveData<Triple<Customer?, List<PriceEditModel>, List<PriceEditModel>>>()
+    val clientObjectLiveData =
+        MutableLiveData<Triple<Customer?, List<PriceEditModel>, List<PriceEditModel>>>()
     val clientSaveMutableLiveData = MutableLiveData<ApiResponseState<CustomerWithPrices?>>()
     val clientRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
     val regions = mutableListOf<AttachedRegion>()
     val selectedRegions = mutableListOf<AttachedRegion>()
+
+    private val _customerFlow: MutableStateFlow<ResultState<Customer?>> =
+        MutableStateFlow(ResultState.Success(null))
+    val customerFlow: StateFlow<ResultState<Customer?>> = _customerFlow.asStateFlow()
 
     private var customer: Customer? = null
 
@@ -57,7 +68,13 @@ class AddCustomerViewModel @AssistedInject constructor(
 
     fun putCustomer(customer: Customer) {
         viewModelScope.launch {
-            putCustomersUseCase(customer)
+            _customerFlow.emit(ResultState.Loading)
+            when (val result = putCustomersUseCase(customer)) {
+                is ApiResponse.Error -> _customerFlow.emit(result.toResultState())
+                is ApiResponse.Success -> {
+                    _customerFlow.emit(ResultState.Success(customer))
+                }
+            }
         }
     }
 

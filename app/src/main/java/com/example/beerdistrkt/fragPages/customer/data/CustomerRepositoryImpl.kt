@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.customer.data
 
 import com.example.beerdistrkt.fragPages.customer.domain.CustomerRepository
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -26,15 +27,20 @@ class CustomerRepositoryImpl @Inject constructor(
         fetchCustomers()
     }
 
-    override suspend fun putCustomer(customer: Customer): List<Customer> {
-        apiCall {
+    override suspend fun putCustomer(customer: Customer): ApiResponse<List<Customer>> {
+        val result = apiCall {
             if (customer.id == null)
                 api.addCustomer(customerMapper.toDto(customer))
             else
                 api.updateCustomer(customerMapper.toDto(customer))
         }
-        fetchCustomers()
-        return customers
+        if (result is ApiResponse.Success)
+            fetchCustomers()
+
+        return when(result) {
+            is ApiResponse.Error -> result
+            is ApiResponse.Success -> ApiResponse.Success(customers)
+        }
     }
 
     override suspend fun deleteCustomer(customerID: Int): List<Customer> {

@@ -242,6 +242,17 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEditClientBottlePricesTitle" />
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/addEditClientDoneBtn"
+            app:indicatorColor="@color/colorAccent_33"
+            app:trackColor="@color/gray_transparent_20"
+            tools:visibility="visible" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addEditClientDoneBtn"
             style="@style/mainBtnStyle"

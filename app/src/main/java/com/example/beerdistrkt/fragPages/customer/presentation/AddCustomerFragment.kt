@@ -13,20 +13,24 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddCustomerFragmentBinding
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
 import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
-import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
-import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
+import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.showInfoDialog
@@ -66,6 +70,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
                 resources.getString(R.string.create_client)
 
         binding.initView()
+        observeViewModel()
 
         if (Session.get().hasPermission(Permission.ManageRegion) && clientID > 0)
             viewModel.getRegionForClient()
@@ -149,6 +154,28 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             )
         }
         return priceList
+    }
+
+    private fun observeViewModel() {
+        viewModel.customerFlow.collectLatest(viewLifecycleOwner) { result ->
+            binding.progressIndicator.isVisible = result.isLoading()
+            result.onError { code, message ->
+                showToast(message)
+            }
+            result.onSuccess {
+                if (it != null) showDataSavedInfo()
+            }
+        }
+    }
+
+    private fun showDataSavedInfo() = requireContext().showInfoDialog(
+        null,
+        R.string.data_saved,
+        R.string.ok,
+        R.style.ThemeOverlay_MaterialComponents_Dialog,
+        false
+    ) {
+        findNavController().navigateUp()
     }
 
     private fun initViewModel() {
