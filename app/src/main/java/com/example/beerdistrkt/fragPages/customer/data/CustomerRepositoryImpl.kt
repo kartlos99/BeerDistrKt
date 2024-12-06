@@ -5,6 +5,8 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
+import com.example.beerdistrkt.network.api.toResultState
+import com.example.beerdistrkt.network.model.ResultState
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
@@ -21,7 +23,8 @@ class CustomerRepositoryImpl @Inject constructor(
 
     private var customers: List<Customer> = emptyList()
 
-    override val customersFlow: MutableStateFlow<List<Customer>?> = MutableStateFlow(null)
+    override val customersFlow: MutableStateFlow<ResultState<List<Customer>>> =
+        MutableStateFlow(ResultState.Loading)
 
     override suspend fun refreshCustomers() {
         fetchCustomers()
@@ -37,7 +40,7 @@ class CustomerRepositoryImpl @Inject constructor(
         if (result is ApiResponse.Success)
             fetchCustomers()
 
-        return when(result) {
+        return when (result) {
             is ApiResponse.Error -> result
             is ApiResponse.Success -> ApiResponse.Success(customers)
         }
@@ -56,6 +59,7 @@ class CustomerRepositoryImpl @Inject constructor(
     }
 
     private suspend fun fetchCustomers() {
+        customersFlow.emit(ResultState.Loading)
         apiCall {
             withContext(ioDispatcher) {
                 val idleResult = async { api.getIdleInfo() }
@@ -65,9 +69,10 @@ class CustomerRepositoryImpl @Inject constructor(
                     customerMapper.toDomain(it, idlesMap)
                 }.also {
                     customers = it
-                    customersFlow.emit(customers)
                 }
             }
+        }.also {
+            customersFlow.emit(it.toResultState())
         }
     }
 }

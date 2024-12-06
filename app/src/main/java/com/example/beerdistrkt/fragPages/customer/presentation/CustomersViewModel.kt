@@ -1,15 +1,20 @@
 package com.example.beerdistrkt.fragPages.customer.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.models.ClientDeactivateModel
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.asSuccessState
+import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,12 +22,14 @@ import javax.inject.Inject
 @HiltViewModel
 class CustomersViewModel @Inject constructor(
     private val getCustomersUseCase: GetCustomersUseCase,
+    private val refreshCustomersUseCase: RefreshCustomersUseCase,
 ) : BaseViewModel() {
 
     private var customers: List<Customer> = listOf()
-    private val _customersLiveData = MutableLiveData<List<Customer>>()
-    val customersLiveData: LiveData<List<Customer>>
-        get() = _customersLiveData
+
+    private val _customersFlow: MutableStateFlow<ResultState<List<Customer>?>> =
+        MutableStateFlow(ResultState.Loading)
+    val customersFlow: StateFlow<ResultState<List<Customer>?>> = _customersFlow.asStateFlow()
 
     private val state = SavedStateHandle()
 
@@ -30,9 +37,11 @@ class CustomersViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getCustomersUseCase.customersAsFlow().collectLatest {
-                customers = it ?: emptyList()
-                _customersLiveData.value = it
+            getCustomersUseCase.customersAsFlow().collectLatest { customersResult ->
+                customersResult.onSuccess {
+                    customers = it
+                }
+                _customersFlow.emit(customersResult)
             }
         }
     }
@@ -55,16 +64,23 @@ class CustomersViewModel @Inject constructor(
         )
     }
 
-    fun onNewQuery(query: String) {
-        _customersLiveData.value = customers.filter {
-            it.name.contains(query)
-        }
+    fun onNewQuery(query: String) = viewModelScope.launch {
+        _customersFlow.emit(
+            customers
+                .filter { it.name.contains(query) }
+                .asSuccessState()
+        )
     }
 
-    fun filterNotableItems(filtering: Boolean) {
-        _customersLiveData.value =
-            if (filtering) customers.filter { it.warnInfo != null }
-            else customers
+    fun filterNotableItems(filtering: Boolean) = viewModelScope.launch {
+        _customersFlow.emit(
+            (if (filtering) customers.filter { it.warnInfo != null }
+            else customers).asSuccessState()
+        )
+    }
+
+    fun onRefresh() = viewModelScope.launch {
+        refreshCustomersUseCase()
     }
 
     companion object {

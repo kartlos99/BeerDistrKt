@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.customer.domain.usecase
 
 import com.example.beerdistrkt.fragPages.customer.domain.CustomerRepository
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.network.model.ResultState
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
@@ -10,5 +11,5 @@ class GetCustomersUseCase @Inject constructor(
 ) {
     suspend operator fun invoke() = customerRepository.getCustomers()
 
-    fun customersAsFlow(): StateFlow<List<Customer>?> = customerRepository.customersFlow
+    fun customersAsFlow(): StateFlow<ResultState<List<Customer>>> = customerRepository.customersFlow
 }

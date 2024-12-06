@@ -15,16 +15,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentCustomersBinding
 import com.example.beerdistrkt.fragPages.customer.presentation.adapters.ClientsListAdapter
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
+import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showListDialog
 import com.example.beerdistrkt.utils.ADD_ORDER
@@ -63,12 +67,23 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
         setHasOptionsMenu(true)
         initClientsRecycler()
         setupObservers()
+        initView()
+    }
+
+    private fun initView() = with(vBinding) {
+        swipeRefresh.setOnRefreshListener {
+            searchItem.collapseActionView()
+            viewModel.onRefresh()
+        }
     }
 
     private fun setupObservers() {
-
-        viewModel.customersLiveData.observe(viewLifecycleOwner) {
-            clientListAdapter.submitList(it)
+        viewModel.customersFlow.collectLatest(viewLifecycleOwner) { result ->
+            vBinding.swipeRefresh.isRefreshing = result.isLoading()
+            vBinding.progressIndicator.isVisible = result.isLoading()
+            result.onSuccess {
+                clientListAdapter.submitList(it)
+            }
         }
     }
 
@@ -107,30 +122,30 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = clientListAdapter
 
-/*
-        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
-        ) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                val sourcePosition = viewHolder.adapterPosition
-                val targetPosition = target.adapterPosition
-                Log.d("drag size2", "${list.size}")
-                Collections.swap(clientListAdapter.showingList, sourcePosition, targetPosition)
-                clientListAdapter.notifyItemMoved(sourcePosition, targetPosition)
-                Log.d("drag", "$sourcePosition to $targetPosition")
-                return true
-            }
+        /*
+                val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+                    ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+                ) {
+                    override fun onMove(
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder
+                    ): Boolean {
+                        val sourcePosition = viewHolder.adapterPosition
+                        val targetPosition = target.adapterPosition
+                        Log.d("drag size2", "${list.size}")
+                        Collections.swap(clientListAdapter.showingList, sourcePosition, targetPosition)
+                        clientListAdapter.notifyItemMoved(sourcePosition, targetPosition)
+                        Log.d("drag", "$sourcePosition to $targetPosition")
+                        return true
+                    }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
-            }
+                    }
 
-        })
-*/
+                })
+        */
 
 //        touchHelper.attachToRecyclerView(vBinding.clientsRecycler)
     }
