@@ -28,6 +28,7 @@ import com.example.beerdistrkt.fragPages.customer.presentation.adapters.ClientsL
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
 import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showListDialog
@@ -83,6 +84,16 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
             vBinding.progressIndicator.isVisible = result.isLoading()
             result.onSuccess {
                 clientListAdapter.submitList(it)
+            }
+        }
+        viewModel.deactivateFlow.collectLatest(viewLifecycleOwner) { result ->
+            vBinding.swipeRefresh.isRefreshing = result.isLoading()
+            vBinding.progressIndicator.isVisible = result.isLoading()
+            result.onSuccess {
+                showToast(it)
+            }
+            result.onError { code, message ->
+                showToast("err# $code: $message")
             }
         }
     }

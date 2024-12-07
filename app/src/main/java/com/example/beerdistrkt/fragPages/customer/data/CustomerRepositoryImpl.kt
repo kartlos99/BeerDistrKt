@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.customer.data
 
+import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDeactivationDto
 import com.example.beerdistrkt.fragPages.customer.domain.CustomerRepository
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.network.api.ApiResponse
@@ -46,8 +47,13 @@ class CustomerRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteCustomer(customerID: Int): List<Customer> {
-        TODO("Not yet implemented")
+    override suspend fun deleteCustomer(customerID: Int): ApiResponse<String> {
+        return apiCall {
+            api.deactivateCustomer(CustomerDeactivationDto(customerID))
+        }.also {
+            if (it is ApiResponse.Success)
+                fetchCustomers()
+        }
     }
 
     override suspend fun getCustomers(): List<Customer> {

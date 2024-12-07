@@ -4,6 +4,7 @@ import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
+import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDeactivationDto
 import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
@@ -114,6 +115,9 @@ interface DistributionApi {
 
     @POST("customer/update.php")
     suspend fun updateCustomer(@Body customerDTO: CustomerDTO): String
+
+    @POST("customer/deactivate.php")
+    suspend fun deactivateCustomer(@Body model: CustomerDeactivationDto): String
 
     /* general */
     @GET("general/getBaseData.php")

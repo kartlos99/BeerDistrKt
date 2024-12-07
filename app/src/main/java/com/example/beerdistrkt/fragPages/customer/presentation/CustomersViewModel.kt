@@ -4,15 +4,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.DeactivateCustomerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
-import com.example.beerdistrkt.models.ClientDeactivateModel
-import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,6 +25,7 @@ import javax.inject.Inject
 class CustomersViewModel @Inject constructor(
     private val getCustomersUseCase: GetCustomersUseCase,
     private val refreshCustomersUseCase: RefreshCustomersUseCase,
+    private val deactivateCustomerUseCase: DeactivateCustomerUseCase,
 ) : BaseViewModel() {
 
     private var customers: List<Customer> = listOf()
@@ -29,6 +33,9 @@ class CustomersViewModel @Inject constructor(
     private val _customersFlow: MutableStateFlow<ResultState<List<Customer>?>> =
         MutableStateFlow(ResultState.Loading)
     val customersFlow: StateFlow<ResultState<List<Customer>?>> = _customersFlow.asStateFlow()
+
+    private val _deactivateFlow: MutableSharedFlow<ResultState<String>> = MutableSharedFlow()
+    val deactivateFlow: SharedFlow<ResultState<String>> = _deactivateFlow.asSharedFlow()
 
     private val state = SavedStateHandle()
 
@@ -56,16 +63,14 @@ class CustomersViewModel @Inject constructor(
     }
 
     fun deactivateClient(clientID: Int?) {
-        if (clientID == null)
-            return
-        sendRequest(
-            ApeniApiService.getInstance().deactivateClient(ClientDeactivateModel(clientID)),
-            success = {
-                ioScope.launch {
-                    database.deleteClient(clientID)
-                }
+        clientID?.let { id ->
+            viewModelScope.launch {
+                _customersFlow.emit(ResultState.Loading)
+                _deactivateFlow.emit(
+                    deactivateCustomerUseCase(id).toResultState()
+                )
             }
-        )
+        }
     }
 
     fun onNewQuery(query: String) = viewModelScope.launch {

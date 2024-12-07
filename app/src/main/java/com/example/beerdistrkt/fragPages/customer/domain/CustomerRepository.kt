@@ -11,7 +11,7 @@ interface CustomerRepository {
 
     suspend fun putCustomer(customer: Customer): ApiResponse<List<Customer>>
 
-    suspend fun deleteCustomer(customerID: Int): List<Customer>
+    suspend fun deleteCustomer(customerID: Int): ApiResponse<String>
 
     suspend fun getCustomers(): List<Customer>
 
