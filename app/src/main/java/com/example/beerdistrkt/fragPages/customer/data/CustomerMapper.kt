@@ -19,7 +19,8 @@ class CustomerMapper @Inject constructor() {
             comment = dto.comment,
             identifyCode = dto.identifyCode,
             contactPerson = dto.contactPerson,
-            chek = dto.chek,
+            status = dto.status,
+            hasCheck = dto.chek == "1",
             warnInfo = idles[dto.id]?.firstOrNull(),
             group = dto.group,
             beerPrices = dto.beerPrices.map(::mapBeerPrice),
@@ -46,15 +47,17 @@ class CustomerMapper @Inject constructor() {
             comment = customer.comment,
             identifyCode = customer.identifyCode,
             contactPerson = customer.contactPerson,
-            chek = customer.chek,
+            status = customer.status,
+            chek = if (customer.hasCheck) "1" else "0",
             beerPrices = customer.beerPrices.map(::mapBeerPriceToDto),
             bottlePrices = customer.bottlePrices
         )
     }
 
-    private fun mapBeerPriceToDto(clientBeerPrice: ClientBeerPrice): ObjToBeerPrice = ObjToBeerPrice(
-        objID = clientBeerPrice.clientID,
-        beerID = clientBeerPrice.beerID,
-        fasi = clientBeerPrice.price.toFloat()
-    )
+    private fun mapBeerPriceToDto(clientBeerPrice: ClientBeerPrice): ObjToBeerPrice =
+        ObjToBeerPrice(
+            objID = clientBeerPrice.clientID,
+            beerID = clientBeerPrice.beerID,
+            fasi = clientBeerPrice.price.toFloat()
+        )
 }

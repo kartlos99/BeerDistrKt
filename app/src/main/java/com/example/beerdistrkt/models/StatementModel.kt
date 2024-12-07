@@ -43,18 +43,18 @@ data class Obieqti(
         return dasaxeleba
     }
 
-    fun toCustomer() = Customer(
-        id,
-        dasaxeleba,
-        adress,
-        tel,
-        comment,
-        sk,
-        sakpiri,
-        chek,
-        beerPrices = emptyList(),
-        bottlePrices = emptyList(),
-    )
+//    fun toCustomer() = Customer(
+//        id,
+//        dasaxeleba,
+//        adress,
+//        tel,
+//        comment,
+//        sk,
+//        sakpiri,
+//        chek,
+//        beerPrices = emptyList(),
+//        bottlePrices = emptyList(),
+//    )
 
     companion object {
         val emptyModel = Obieqti(

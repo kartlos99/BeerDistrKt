@@ -10,7 +10,6 @@ import com.example.beerdistrkt.models.ClientDeactivateModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
-import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,10 +37,15 @@ class CustomersViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCustomersUseCase.customersAsFlow().collectLatest { customersResult ->
-                customersResult.onSuccess {
-                    customers = it
+                when (customersResult) {
+                    ResultState.Loading -> _customersFlow.emit(customersResult)
+                    is ResultState.Error -> _customersFlow.emit(customersResult)
+                    is ResultState.Success -> {
+                        customers = customersResult.data
+                            .filter { it.isActive() }
+                        _customersFlow.emit(customers.asSuccessState())
+                    }
                 }
-                _customersFlow.emit(customersResult)
             }
         }
     }

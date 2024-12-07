@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.customer.data.model
 
 import androidx.annotation.Keep
+import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
 import com.example.beerdistrkt.models.ObjToBeerPrice
@@ -15,6 +16,7 @@ data class CustomerDTO(
     val comment: String? = null,
     val identifyCode: String? = null,
     val contactPerson: String? = null,
+    val status: EntityStatus,
     val chek: String? = null,
     val beerPrices: List<ObjToBeerPrice>,
     val bottlePrices: List<ClientBottlePrice>,

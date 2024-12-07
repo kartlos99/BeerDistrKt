@@ -19,6 +19,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
+import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.databinding.AddCustomerFragmentBinding
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
@@ -87,7 +88,8 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
                 comment = addEditComment.editText?.text.toString().trim(),
                 identifyCode = addEditClientSK.editText?.text.toString().trim(),
                 contactPerson = addEditClientPerson.editText?.text.toString().trim(),
-                chek = if (addEditClientCheck.isChecked) "1" else "0",
+                status = EntityStatus.ACTIVE,
+                hasCheck = addEditClientCheck.isChecked,
                 group = CustomerGroup.from(requireContext(), clientGroupInput.text.toString()),
                 beerPrices = getEditedBeerPrices(),
                 bottlePrices = getEditedBottlePrices(),
@@ -265,7 +267,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         addEditClientAdress.editText?.setText(customer.address ?: "")
         addEditClientPhone.editText?.setText(customer.tel ?: "")
         addEditComment.editText?.setText(customer.comment ?: "")
-        addEditClientCheck.isChecked = customer.chek == "1"
+        addEditClientCheck.isChecked = customer.hasCheck
         clientGroupInput.setText(getString(customer.group.displayName), false)
     }
 

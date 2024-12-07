@@ -46,7 +46,7 @@ class ApeniRepo {
                 comment = comment,
                 identifyCode = identifyCode,
                 contactPerson = contactPerson,
-                chek = chek,
+                hasCheck = chek == "1",
                 group = group,
             )
 
