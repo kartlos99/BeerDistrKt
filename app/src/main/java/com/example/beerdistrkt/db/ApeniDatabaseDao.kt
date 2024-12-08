@@ -1,8 +1,16 @@
 package com.example.beerdistrkt.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
-import com.example.beerdistrkt.models.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.ObjToBeerPrice
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,13 +31,13 @@ interface ApeniDatabaseDao {
     @Query("Select * from obieqts_table order by dasaxeleba")
     fun getCustomers(): Flow<List<Obieqti>>
 
-    @Transaction
-    @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
-    fun getCustomerWithPrices(customerID: Int): ObiectWithPrices
+//    @Transaction
+//    @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
+//    fun getCustomerWithPrices(customerID: Int): ObiectWithPrices
 
-    @Transaction
-    @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
-    fun getCustomerWithPricesLiveData(customerID: Int): LiveData<ObiectWithPrices?>
+//    @Transaction
+//    @Query("SELECT * FROM obieqts_table WHERE id = :customerID")
+//    fun getCustomerWithPricesLiveData(customerID: Int): LiveData<ObiectWithPrices?>
 
     @Query("DELETE FROM obieqts_table WHERE id = :clientID")
     fun deleteClient(clientID: Int)

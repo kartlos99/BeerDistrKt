@@ -8,6 +8,8 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
@@ -15,8 +17,6 @@ import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.models.MappedUser
-import com.example.beerdistrkt.models.ObiectWithPrices
-import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus.ACTIVE
 import com.example.beerdistrkt.models.OrderStatus.CANCELED
@@ -45,12 +45,13 @@ import java.util.Date
 class AddOrdersViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
+    private val getCustomerUseCase: GetCustomerUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(EDIT_ORDER_ID_KEY) var editingOrderID: Int
 ) : BaseViewModel() {
 
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
-    val clientLiveData = MutableLiveData<ObiectWithPrices>()
+    val clientLiveData = MutableLiveData<Customer>()
 
     val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
         ?: listOf()
@@ -86,8 +87,6 @@ class AddOrdersViewModel @AssistedInject constructor(
         get() = _addOrderLiveData
 
     val getOrderLiveData = MutableLiveData<Order?>()
-    private val clientsLiveData = database.getAllObieqts()
-    private lateinit var clients: List<Obieqti>
 
     val orderItemEditLiveData = MutableLiveData<TempBeerItemModel?>()
     val bottleOrderItemEditLiveData = MutableLiveData<TempBottleItemModel?>()
@@ -108,16 +107,17 @@ class AddOrdersViewModel @AssistedInject constructor(
     init {
         Log.d("addOrderVM", clientID.toString())
 
-        getBeers()
-        clientsLiveData.observeForever { clients = it }
-        getClient()
+        viewModelScope.launch {
+            initData()
+            getCustomer()
+        }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
         selectedDistributorRegionID = Session.get().region?.regionID?.toInt() ?: 0
         getDebt()
         getAllUsers()
     }
 
-    private fun getBeers() = viewModelScope.launch {
+    private suspend fun initData() {
         beers = getBeerUseCase()
         bottleList = getBottleUseCase()
     }
@@ -143,12 +143,9 @@ class AddOrdersViewModel @AssistedInject constructor(
         )
     }
 
-    private fun getClient() {
-        ioScope.launch {
-            val clientData = database.getCustomerWithPrices(clientID)
-            uiScope.launch {
-                clientLiveData.value = clientData
-            }
+    private suspend fun getCustomer() {
+        getCustomerUseCase.invoke(clientID)?.let { customer ->
+            clientLiveData.value = customer
         }
     }
 
@@ -319,7 +316,9 @@ class AddOrdersViewModel @AssistedInject constructor(
                     Log.d("editingOrder", it.toString())
                     if (it.isNotEmpty()) {
 
-                        val order = it[0].toPm(clients, beers, bottleList, {}, {})
+                        val order = it[0].toPm(emptyList(), beers, bottleList, {}, {}).copy(
+                            customer = clientLiveData.value
+                        )
 
                         getOrderLiveData.value = order
                         addOrderItemsToList(order)

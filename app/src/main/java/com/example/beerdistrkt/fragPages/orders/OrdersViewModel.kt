@@ -10,6 +10,8 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
@@ -17,7 +19,6 @@ import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorReq
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.MappedUser
-import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.User
@@ -38,6 +39,7 @@ import kotlin.math.sign
 class OrdersViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
+    private val getCustomersUseCase: GetCustomersUseCase,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : BaseViewModel() {
 
@@ -45,12 +47,11 @@ class OrdersViewModel @Inject constructor(
 
     val searchQuery = state.getLiveData("searchQuery", "")
 
-    private val clientsLiveData = database.getAllObieqts()
     private val userLiveData = database.getUsers()
     private val barrelsLiveData = database.getCansList()
     val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
-    private lateinit var clients: List<Obieqti>
+    private lateinit var customers: List<Customer>
     private lateinit var beers: List<Beer>
     private lateinit var bottleList: List<BaseBottleModel>
     private lateinit var usersList: List<User>
@@ -81,8 +82,7 @@ class OrdersViewModel @Inject constructor(
     private val foldsLiveData = userPreferencesRepository.userPreferencesFlow.asLiveData()
 
     init {
-        getBeers()
-        clientsLiveData.observeForever { clients = it }
+        initializeData()
         userLiveData.observeForever { usersList = it }
         barrelsLiveData.observeForever { barrelsList = it }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
@@ -94,9 +94,10 @@ class OrdersViewModel @Inject constructor(
         getAllUsers()
     }
 
-    private fun getBeers() = viewModelScope.launch {
+    private fun initializeData() = viewModelScope.launch {
         beers = getBeerUseCase()
         bottleList = getBottleUseCase()
+        customers = getCustomersUseCase()
     }
 
     private fun getAllUsers() {
@@ -127,7 +128,7 @@ class OrdersViewModel @Inject constructor(
                 allOrders.clear()
                 allOrders.addAll(ordersDto.map { orderDTO ->
                     orderDTO.toPm(
-                        clients,
+                        customers,
                         beers,
                         bottleList,
                         onDeleteClick = { order ->
@@ -164,7 +165,7 @@ class OrdersViewModel @Inject constructor(
         listOfGroupedOrders.addAll(
             groupOrderByDistributor(
                 allOrders.filter {
-                    it.client.dasaxeleba.contains(searchQuery.value ?: "")
+                    it.customer?.name?.contains(searchQuery.value.orEmpty()) ?: false
                 }
             )
         )

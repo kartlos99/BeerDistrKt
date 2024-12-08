@@ -167,9 +167,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     private fun initViewModel() {
-        viewModel.clientLiveData.observe(viewLifecycleOwner) {
-            vBinding.addOrderClientInfo.text = it.obieqti.dasaxeleba
-            vBinding.addOrderCheckBox.isChecked = it.obieqti.chek == "1"
+        viewModel.clientLiveData.observe(viewLifecycleOwner) { customer ->
+            vBinding.addOrderClientInfo.text = customer.name
+            vBinding.addOrderCheckBox.isChecked = customer.hasCheck
         }
         viewModel.tempOrderLiveData.observe(viewLifecycleOwner) {
             vBinding.beerSelector.resetForm()
@@ -263,7 +263,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     private fun fillOrderForm(order: Order) = with(vBinding) {
-        addOrderClientInfo.text = order.client.dasaxeleba
+        addOrderClientInfo.text = order.customer?.name
         addOrderWarning.text = getString(R.string.need_cleaning, order.passDays)
         addOrderWarning.isVisible = order.needCleaning == 1
         addOrderCheckBox.isChecked = order.isChecked()

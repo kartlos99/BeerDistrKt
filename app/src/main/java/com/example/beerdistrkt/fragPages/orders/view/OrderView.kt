@@ -73,7 +73,7 @@ class OrderView @JvmOverloads constructor(
     private fun fillData(order: Order) {
         resetForm()
         with(binding) {
-            orderUnitClientNameTv.text = order.client.dasaxeleba.uppercase()
+            orderUnitClientNameTv.text = order.customer?.name?.uppercase()
             orderUnitHistoryImg.isVisible = order.isEdited > 0
             orderUnitCommentImg.isVisible = !order.comment.isNullOrEmpty()
             orderUnitCheckImg.isVisible = order.items.any { it.check == 1 }

@@ -2,6 +2,7 @@ package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.squareup.moshi.Json
@@ -12,7 +13,7 @@ data class Order(
     var orderStatus: OrderStatus,
     val distributorID: Int,
     val clientID: Int,
-    val client: Obieqti,
+    val customer: Customer?,
     val comment: String?,
     val isEdited: Int,
     var sortValue: Double,
