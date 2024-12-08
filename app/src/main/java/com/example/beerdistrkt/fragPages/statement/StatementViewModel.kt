@@ -1,8 +1,10 @@
 package com.example.beerdistrkt.fragPages.statement
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.ObiectWithPrices
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -11,20 +13,20 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = StatementViewModel.Factory::class)
 class StatementViewModel @AssistedInject constructor(
+    private val getCustomerUseCase: GetCustomerUseCase,
     @Assisted val clientID: Int
 ) : BaseViewModel() {
 
-    val clientLiveData = MutableLiveData<ObiectWithPrices>()
+    val clientLiveData = MutableLiveData<Customer>()
 
     init {
-        getClient()
+        getCustomer()
     }
 
-    private fun getClient() {
-        ioScope.launch {
-            val clientData = database.getCustomerWithPrices(clientID)
-            uiScope.launch {
-                clientLiveData.value = clientData
+    private fun getCustomer() {
+        viewModelScope.launch {
+            getCustomerUseCase.invoke(clientID)?.let { customer: Customer ->
+                clientLiveData.value = customer
             }
         }
     }
