@@ -214,10 +214,13 @@
     <fragment
         android:id="@+id/salesHistoryFragment"
         android:name="com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment"
-        android:label="fragment_sales_history"
+        android:label="@string/history"
         tools:layout="@layout/fragment_sales_history">
         <argument
             android:name="recordID"
+            app:argType="integer" />
+        <argument
+            android:name="historyOf"
             app:argType="string" />
     </fragment>
     <fragment

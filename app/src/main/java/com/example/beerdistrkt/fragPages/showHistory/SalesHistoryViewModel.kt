@@ -7,24 +7,32 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
-import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SalesHistoryViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = SalesHistoryViewModel.Factory::class)
+class SalesHistoryViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
+    private val getCustomersUseCase: GetCustomersUseCase,
+    @Assisted private val recordID: Int,
+    @Assisted val historyOf: String,
 ) : BaseViewModel() {
     private val userLiveData = database.getUsers()
 
-    private var clients: List<Obieqti> = listOf()
+    private lateinit var clients: List<Customer>
     private lateinit var usersList: List<User>
     private lateinit var beerList: List<Beer>
     private lateinit var bottleList: List<BaseBottleModel>
@@ -33,7 +41,8 @@ class SalesHistoryViewModel @Inject constructor(
     val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>
         get() = _saleHistoryLiveData
 
-    private val _bottleSaleHistoryLiveData = MutableLiveData<ApiResponseState<List<BottleSaleHistory>>>()
+    private val _bottleSaleHistoryLiveData =
+        MutableLiveData<ApiResponseState<List<BottleSaleHistory>>>()
     val bottleSaleHistoryLiveData: LiveData<ApiResponseState<List<BottleSaleHistory>>>
         get() = _bottleSaleHistoryLiveData
 
@@ -46,13 +55,19 @@ class SalesHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             beerList = getBeerUseCase()
             bottleList = getBottleUseCase()
-            database.getCustomers().collectLatest {
-                clients = it
-            }
+            clients = getCustomersUseCase()
+            switchHistory()
         }
     }
 
-    fun getData(saleID: Int) {
+    private fun switchHistory() = when (historyOf) {
+        BARREL_DELIVERY -> getData(recordID)
+        BOTTLE_DELIVERY -> requestBottleSaleHistory(recordID)
+        MONEY -> getMoneyData(recordID)
+        else -> _saleHistoryLiveData.value = ApiResponseState.ApiError(1, "unknown history object")
+    }
+
+    private fun getData(saleID: Int) {
         sendRequest(
             ApeniApiService.getInstance().getSalesHistory(saleID),
             successWithData = { historyData ->
@@ -69,7 +84,7 @@ class SalesHistoryViewModel @Inject constructor(
         )
     }
 
-    fun requestBottleSaleHistory(saleID: Int) {
+    private fun requestBottleSaleHistory(saleID: Int) {
         sendRequest(
             ApeniApiService.getInstance().getBottleSalesHistory(saleID),
             successWithData = { historyData ->
@@ -86,7 +101,7 @@ class SalesHistoryViewModel @Inject constructor(
         )
     }
 
-    fun getMoneyData(recordID: Int) {
+    private fun getMoneyData(recordID: Int) {
         sendRequest(
             ApeniApiService.getInstance().getMoneyHistory(recordID),
             successWithData = { historyData ->
@@ -101,5 +116,13 @@ class SalesHistoryViewModel @Inject constructor(
                 _moneyHistoryLiveData.value = ApiResponseState.Success(pmModel)
             }
         )
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            recordID: Int,
+            historyOf: String
+        ): SalesHistoryViewModel
     }
 }

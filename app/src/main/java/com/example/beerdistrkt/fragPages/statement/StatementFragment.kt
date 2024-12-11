@@ -11,8 +11,6 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.databinding.StatementFragmentBinding
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_HISTORY_OF
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
 import com.example.beerdistrkt.paramViewModels
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -79,12 +77,12 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
     }
 
     private fun showHistory(recordID: Int, historyOf: String) {
-        val args = Bundle().apply {
-            putInt(KEY_RECORD_ID, recordID)
-            putString(KEY_HISTORY_OF, historyOf)
-        }
-        this.findNavController()
-            .navigate(R.id.action_statementFragment_to_salesHistoryFragment, args)
+        this.findNavController().navigate(
+            StatementFragmentDirections.actionStatementFragmentToSalesHistoryFragment(
+                recordID,
+                historyOf,
+            )
+        )
     }
 
     private fun goEditing(operation: String, recordID: Int) {
