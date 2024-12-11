@@ -7,18 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.SysClearFragmentBinding
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.sysClear.adapter.SysClearAdapter
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
-import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.SYS_CLEAR
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SysClearFragment : BaseFragment<SysClearViewModel>() {
@@ -55,36 +59,35 @@ class SysClearFragment : BaseFragment<SysClearViewModel>() {
 
     private fun onResultReceived(requestKey: String, bundle: Bundle) {
         if (requestKey == SYS_CLEAR_REQUEST_KEY)
-            viewModel.findClient(bundle.getInt(CLIENT_ID_KEY))?.let {
-                showConfirmDialog(it)
-            } ?: showToast(R.string.some_error)
+            lifecycleScope.launch {
+                viewModel.findClient(bundle.getInt(CLIENT_ID_KEY))?.let {
+                    showConfirmDialog(it)
+                } ?: showToast(R.string.some_error)
+            }
     }
 
     private fun initViewModel() {
-        viewModel.sysClearLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.sysClearLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Loading -> {
-                }
                 is ApiResponseState.Success -> initRecycler(it.data)
                 else -> {}
             }
-        })
+        }
         viewModel.addClearFlow.collectLatest(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Loading -> {
-                }
                 is ApiResponseState.Success -> {
                     showToast(it.data)
                 }
+
                 else -> {}
             }
         }
     }
 
-    private fun showConfirmDialog(client: Obieqti) =
+    private fun showConfirmDialog(client: Customer) =
         requireContext().showAskingDialog(
             getString(R.string.sys_clean),
-            getString(R.string.confirm_sys_clear_on, client.dasaxeleba),
+            getString(R.string.confirm_sys_clear_on, client.name),
             R.string.yes,
             R.string.no,
             R.style.ThemeOverlay_MaterialComponents_Dialog

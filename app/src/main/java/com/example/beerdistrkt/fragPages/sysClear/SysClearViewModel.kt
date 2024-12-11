@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.models.Obieqti
@@ -17,13 +18,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SysClearViewModel @Inject constructor() : BaseViewModel() {
+class SysClearViewModel @Inject constructor(
+    private val getCustomerUseCase: GetCustomerUseCase,
+) : BaseViewModel() {
 
     private val clientListLiveData = database.getAllObieqts()
 
     private val _sysClearLiveData = MutableLiveData<ApiResponseState<List<SysClearModel>>>()
-    val sysClearLiveData: LiveData<ApiResponseState<List<SysClearModel>>>
-        get() = _sysClearLiveData
+    val sysClearLiveData: LiveData<ApiResponseState<List<SysClearModel>>> by ::_sysClearLiveData
 
     private val _addClearFlow = MutableSharedFlow<ApiResponseState<String>>()
     val addClearFlow: SharedFlow<ApiResponseState<String>> = _addClearFlow
@@ -71,5 +73,6 @@ class SysClearViewModel @Inject constructor() : BaseViewModel() {
         }
     }
 
-    fun findClient(clientID: Int) = customers.firstOrNull { it.id == clientID }
+    suspend fun findClient(clientID: Int) =
+        getCustomerUseCase(clientID)
 }
