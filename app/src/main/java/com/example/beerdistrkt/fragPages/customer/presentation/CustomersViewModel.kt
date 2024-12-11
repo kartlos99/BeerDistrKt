@@ -30,9 +30,9 @@ class CustomersViewModel @Inject constructor(
 
     private var customers: List<Customer> = listOf()
 
-    private val _customersFlow: MutableStateFlow<ResultState<List<Customer>?>> =
+    private val _customersFlow: MutableStateFlow<ResultState<List<Customer>>> =
         MutableStateFlow(ResultState.Loading)
-    val customersFlow: StateFlow<ResultState<List<Customer>?>> = _customersFlow.asStateFlow()
+    val customersFlow: StateFlow<ResultState<List<Customer>>> = _customersFlow.asStateFlow()
 
     private val _deactivateFlow: MutableSharedFlow<ResultState<String>> = MutableSharedFlow()
     val deactivateFlow: SharedFlow<ResultState<String>> = _deactivateFlow.asSharedFlow()

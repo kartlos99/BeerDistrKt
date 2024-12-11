@@ -76,14 +76,18 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
             searchItem.collapseActionView()
             viewModel.onRefresh()
         }
+        emptyStateButton.setOnClickListener {
+            viewModel.onRefresh()
+        }
     }
 
     private fun setupObservers() {
         viewModel.customersFlow.collectLatest(viewLifecycleOwner) { result ->
             vBinding.swipeRefresh.isRefreshing = result.isLoading()
             vBinding.progressIndicator.isVisible = result.isLoading()
-            result.onSuccess {
-                clientListAdapter.submitList(it)
+            result.onSuccess { customers ->
+                clientListAdapter.submitList(customers)
+                vBinding.emptyState.isVisible = customers.isEmpty()
             }
         }
         viewModel.deactivateFlow.collectLatest(viewLifecycleOwner) { result ->

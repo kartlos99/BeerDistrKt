@@ -293,6 +293,8 @@
     <string name="customer_base">საბაზისო</string>
     <string name="customer_restaurant">რესტორანი</string>
     <string name="missed_barrel_or_beer">კასრი ან ლუდი ვერ მოიძებნა</string>
+    <string name="empty_customers_title">ობიექტების სია ცარიელია, სცადეთ გვერდის განახლება!</string>
+    <string name="refresh">განახლება</string>
 
 
 </resources>
