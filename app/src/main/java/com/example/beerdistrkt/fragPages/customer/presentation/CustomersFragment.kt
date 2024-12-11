@@ -85,9 +85,9 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
         viewModel.customersFlow.collectLatest(viewLifecycleOwner) { result ->
             vBinding.swipeRefresh.isRefreshing = result.isLoading()
             vBinding.progressIndicator.isVisible = result.isLoading()
-            result.onSuccess { customers ->
-                clientListAdapter.submitList(customers)
-                vBinding.emptyState.isVisible = customers.isEmpty()
+            result.onSuccess { uiModel ->
+                clientListAdapter.submitList(uiModel.customers)
+                vBinding.emptyState.isVisible = uiModel.customers.isEmpty() && !uiModel.isFiltered
             }
         }
         viewModel.deactivateFlow.collectLatest(viewLifecycleOwner) { result ->

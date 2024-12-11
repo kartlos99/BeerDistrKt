@@ -7,6 +7,7 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.DeactivateCustomerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
+import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerListUiState
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
@@ -30,9 +31,9 @@ class CustomersViewModel @Inject constructor(
 
     private var customers: List<Customer> = listOf()
 
-    private val _customersFlow: MutableStateFlow<ResultState<List<Customer>>> =
+    private val _customersFlow: MutableStateFlow<ResultState<CustomerListUiState>> =
         MutableStateFlow(ResultState.Loading)
-    val customersFlow: StateFlow<ResultState<List<Customer>>> = _customersFlow.asStateFlow()
+    val customersFlow: StateFlow<ResultState<CustomerListUiState>> = _customersFlow.asStateFlow()
 
     private val _deactivateFlow: MutableSharedFlow<ResultState<String>> = MutableSharedFlow()
     val deactivateFlow: SharedFlow<ResultState<String>> = _deactivateFlow.asSharedFlow()
@@ -45,12 +46,12 @@ class CustomersViewModel @Inject constructor(
         viewModelScope.launch {
             getCustomersUseCase.customersAsFlow().collectLatest { customersResult ->
                 when (customersResult) {
-                    ResultState.Loading -> _customersFlow.emit(customersResult)
+                    ResultState.Loading -> _customersFlow.emit(ResultState.Loading)
                     is ResultState.Error -> _customersFlow.emit(customersResult)
                     is ResultState.Success -> {
                         customers = customersResult.data
                             .filter { it.isActive() }
-                        _customersFlow.emit(customers.asSuccessState())
+                        _customersFlow.emit(CustomerListUiState(customers).asSuccessState())
                     }
                 }
             }
@@ -75,16 +76,24 @@ class CustomersViewModel @Inject constructor(
 
     fun onNewQuery(query: String) = viewModelScope.launch {
         _customersFlow.emit(
-            customers
-                .filter { it.name.contains(query) }
+            CustomerListUiState(
+                customers.filter { it.name.contains(query) },
+                true
+            )
                 .asSuccessState()
         )
     }
 
     fun filterNotableItems(filtering: Boolean) = viewModelScope.launch {
         _customersFlow.emit(
-            (if (filtering) customers.filter { it.warnInfo != null }
-            else customers).asSuccessState()
+            CustomerListUiState(
+                if (filtering)
+                    customers.filter { it.warnInfo != null }
+                else
+                    customers,
+                true
+            )
+                .asSuccessState()
         )
     }
 
