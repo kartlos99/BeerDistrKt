@@ -61,7 +61,13 @@ class CustomerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCustomer(customerID: Int): Customer? {
-        return customers.firstOrNull { it.id == customerID }
+        val customer = customers.firstOrNull { it.id == customerID }
+        return if (customer == null) {
+            fetchCustomers()
+            customers.firstOrNull { it.id == customerID }
+        } else {
+            customer
+        }
     }
 
     private suspend fun fetchCustomers() {

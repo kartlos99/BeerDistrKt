@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.customer.presentation
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
@@ -44,6 +45,10 @@ class CustomersViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            Log.d(TAG, "custInit: ${getCustomersUseCase.customersAsFlow().value}")
+            if (getCustomersUseCase.customersAsFlow().value is ResultState.Loading) {
+                refreshCustomersUseCase()
+            }
             getCustomersUseCase.customersAsFlow().collectLatest { customersResult ->
                 when (customersResult) {
                     ResultState.Loading -> _customersFlow.emit(ResultState.Loading)
