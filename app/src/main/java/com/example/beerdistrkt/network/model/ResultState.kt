@@ -37,6 +37,12 @@ fun <T> ResultState<T>.onError(onError: (error: ResultState.Error) -> Unit): Res
     return this
 }
 
+fun <T> ResultState<T>.onLoading(onLoading: () -> Unit): ResultState<T> {
+    if (this is ResultState.Loading)
+        onLoading()
+    return this
+}
+
 fun <T> ResultState<T>.isLoading() = this == ResultState.Loading
 
 fun <T> ResultState<T>.isSuccess() = this is ResultState.Success<T>

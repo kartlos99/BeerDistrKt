@@ -24,6 +24,7 @@ import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
 import com.example.beerdistrkt.hideKeyboard
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onLoading
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showAskingDialog
@@ -100,6 +101,9 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
         viewModel.beersFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
             binding.beerRefresh.isRefreshing = result.isLoading()
+            result.onLoading {
+                beerListAdapter.submitList(emptyList())
+            }
             result.onError { error ->
                 showToast(error.formatedMessage)
             }
@@ -112,7 +116,7 @@ class AddBeerFragment : BaseFragment<AddBeerViewModel>() {
     private fun showInfoAlertDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext()).apply {
             setMessage(R.string.fields_request2)
-            setPositiveButton("OK") { dialogInterface, i -> }
+            setPositiveButton("OK") { _, _ -> }
         }
         val alertDialog: AlertDialog = builder.create()
         alertDialog.setTitle(getString(R.string.feel_empty_fields))
