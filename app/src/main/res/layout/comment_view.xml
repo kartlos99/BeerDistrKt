@@ -21,9 +21,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/gr_size_24"
-        android:background="#fff"
+        android:background="?attr/viewBackground"
         android:paddingHorizontal="@dimen/gr_size_4"
         android:textSize="13sp"
+        android:textColor="?attr/strokeColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2023/07/12" />
