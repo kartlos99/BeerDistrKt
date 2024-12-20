@@ -46,16 +46,22 @@ import java.util.Calendar
 class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickListener {
 
     override val viewModel by paramViewModels<AddDeliveryViewModel, AddDeliveryViewModel.Factory> {
-        it.create(clientID, orderID)
+        it.create(clientID, orderID, recordID, operation)
     }
 
     private val clientID by lazy {
-        val args = AddDeliveryFragmentArgs.fromBundle(arguments ?: Bundle())
+        val args = AddDeliveryFragmentArgs.fromBundle(requireArguments())
         args.clientObjectID
     }
     private val orderID by lazy {
-        val args = AddDeliveryFragmentArgs.fromBundle(arguments ?: Bundle())
+        val args = AddDeliveryFragmentArgs.fromBundle(requireArguments())
         args.orderID
+    }
+    private val recordID by lazy {
+        AddDeliveryFragmentArgs.fromBundle(requireArguments()).recordID
+    }
+    private val operation by lazy {
+        AddDeliveryFragmentArgs.fromBundle(requireArguments()).operacia
     }
 
     private var dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
@@ -89,10 +95,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = AddDeliveryFragmentArgs.fromBundle(arguments ?: Bundle())
-        viewModel.recordID = args.recordID
-        viewModel.operation = args.operacia
-
         vBinding.addDeliveryDoneBtn.setOnClickListener(this)
         vBinding.addDeliveryDateBtn.setOnClickListener(this)
         vBinding.addDeliveryAddSaleItemBtn.setOnClickListener(this)
@@ -108,14 +110,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun AddDeliveryFragmentBinding.initView() {
-        if (viewModel.operation != null) {
+        if (operation != null) {
             addDeliveryBarrelGr.isVisible = false
             realisationTypeSelector.isVisible = false
         }
-        addDeliveryhideOnEditGroup.isVisible = viewModel.operation == null
-        beerSelector.beerGroupVisibleIf(viewModel.operation != K_OUT)
+        addDeliveryhideOnEditGroup.isVisible = operation == null
+        beerSelector.beerGroupVisibleIf(operation != K_OUT)
 
-        when (viewModel.operation) {
+        when (operation) {
             MITANA -> {
                 addDeliveryMoneyGr.isVisible = false
                 addDeliveryCheckReplace.isVisible = false
@@ -337,7 +339,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.addDeliveryDoneBtn -> {
-                when (viewModel.operation) {
+                when (operation) {
                     MITANA_BOTTLE,
                     MITANA -> {
                         viewModel.barrelOutItems.clear()
@@ -354,7 +356,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                         viewModel.barrelOutItems.clear()
                     }
                 }
-                if (viewModel.hasAnySaleItem().not() && viewModel.operation != K_OUT)
+                if (viewModel.hasAnySaleItem().not() && operation != K_OUT)
                     tryCollectSaleItem()
 
                 collectEmptyBarrels()
@@ -387,7 +389,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
 
             R.id.addDeliveryMoneyCashImg -> {
-                if (viewModel.operation == M_OUT) {
+                if (operation == M_OUT) {
                     vBinding.addDeliveryMoneyEt.goAway()
                     vBinding.addDeliveryMoneyCashImg.goAway()
                     vBinding.addDeliveryLariSign.goAway()
@@ -401,7 +403,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
 
             R.id.addDeliveryMoneyTransferImg -> {
-                if (viewModel.operation == M_OUT) {
+                if (operation == M_OUT) {
                     vBinding.addDeliveryMoneyTransferEt.goAway()
                     vBinding.addDeliveryMoneyTransferImg.goAway()
                     vBinding.addDeliveryTransferLariSign.goAway()
@@ -430,7 +432,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
     private fun collectEmptyBarrels() {
         viewModel.barrelOutItems.clear()
-        if (viewModel.operation == null) {
+        if (operation == null) {
             if (vBinding.addDeliveryBarrelOutputCount1.amount > 0)
                 viewModel.addBarrelToList(1, vBinding.addDeliveryBarrelOutputCount1.amount)
             if (vBinding.addDeliveryBarrelOutputCount2.amount > 0)
@@ -439,7 +441,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                 viewModel.addBarrelToList(3, vBinding.addDeliveryBarrelOutputCount3.amount)
             if (vBinding.addDeliveryBarrelOutputCount4.amount > 0)
                 viewModel.addBarrelToList(4, vBinding.addDeliveryBarrelOutputCount4.amount)
-        } else if (viewModel.operation == K_OUT) {
+        } else if (operation == K_OUT) {
             viewModel.addBarrelToList(
                 vBinding.beerSelector.getBarrelID(),
                 vBinding.beerSelector.getBarrelsCount()

@@ -48,6 +48,8 @@ class AddDeliveryViewModel @AssistedInject constructor(
     private val getCustomerUseCase: GetCustomerUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(ORDER_ID_KEY) private val orderID: Int,
+    @Assisted(RECORD_ID_KEY) private val recordID: Int,
+    @Assisted(OPERATION_KEY) private val operation: String?,
 ) : BaseViewModel() {
 
     val clientLiveData = MutableLiveData<Customer>()
@@ -79,9 +81,6 @@ class AddDeliveryViewModel @AssistedInject constructor(
     var moneyOut: MutableList<SaleRequestModel.MoneyOutItem> = mutableListOf()
     var isGift = false
     var isReplace = false
-
-    var operation: String? = null
-    var recordID = 0
 
     val eventsFlow = MutableSharedFlow<Event>()
 
@@ -335,7 +334,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
     private fun getRecordData() {
         sendRequest(
             ApeniApiService.getInstance().getRecord(
-                RecordRequestModel(operation ?: "", recordID)
+                RecordRequestModel(operation.orEmpty(), recordID)
             ),
             successWithData = {
                 var date: Date? = null
@@ -404,13 +403,17 @@ class AddDeliveryViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted(CLIENT_ID_KEY) clientID: Int,
-            @Assisted(ORDER_ID_KEY) orderID: Int
+            @Assisted(ORDER_ID_KEY) orderID: Int,
+            @Assisted(RECORD_ID_KEY) recordID: Int,
+            @Assisted(OPERATION_KEY) operation: String?,
         ): AddDeliveryViewModel
     }
 
     companion object {
         private const val CLIENT_ID_KEY = "clientID"
         private const val ORDER_ID_KEY = "orderID"
+        private const val RECORD_ID_KEY = "RECORD_ID"
+        private const val OPERATION_KEY = "OPERATION"
         const val TAG = "TAG AddDelivery-----"
     }
 }
