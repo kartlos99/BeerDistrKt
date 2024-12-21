@@ -5,16 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.models.MappedUser
 import com.example.beerdistrkt.models.Order
@@ -27,7 +28,6 @@ import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -46,6 +46,7 @@ class AddOrdersViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
     private val getCustomerUseCase: GetCustomerUseCase,
+    private val getBarrelsUseCase: GetBarrelsUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(EDIT_ORDER_ID_KEY) var editingOrderID: Int
 ) : BaseViewModel() {
@@ -53,8 +54,6 @@ class AddOrdersViewModel @AssistedInject constructor(
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<Customer>()
 
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
-        ?: listOf()
     private var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
         ?.sortedBy { it.username }
         ?: mutableListOf()
@@ -64,6 +63,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             it.isActive
         }
 
+    var barrels = emptyList<Barrel>()
     var beers: List<Beer> = listOf()
     var bottleList: List<BaseBottleModel> = listOf()
 
@@ -120,6 +120,7 @@ class AddOrdersViewModel @AssistedInject constructor(
     private suspend fun initData() {
         beers = getBeerUseCase()
         bottleList = getBottleUseCase()
+        barrels = getBarrelsUseCase()
     }
 
     private fun getAllUsers() {
@@ -152,7 +153,7 @@ class AddOrdersViewModel @AssistedInject constructor(
     private fun addOrderItemsToList(order: Order) {
         order.items.forEach { orderItem ->
             orderItem.toTempBeerItemModel(
-                cansList,
+                barrels,
                 onRemove = ::removeOrderItemFromList,
                 onEdit = ::editOrderItemFromList
             )?.let {

@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.BottleIoModel
@@ -16,13 +18,10 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,6 +36,7 @@ import javax.inject.Inject
 class StoreHouseViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
+    private val getBarrelsUseCase: GetBarrelsUseCase,
 ) : BaseViewModel() {
 
     var selectedDate: Calendar = Calendar.getInstance()
@@ -74,10 +74,8 @@ class StoreHouseViewModel @Inject constructor(
         get() = _editDataReceiveLiveData
 
     var beerList: List<Beer> = listOf()
-
+    var barrels: List<Barrel> = listOf()
     var bottleList: List<BaseBottleModel> = listOf()
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
-        ?: listOf()
 
     private val receivedItemsList = mutableListOf<TempBeerItemModel>()
     private val receivedBottleItemsList = mutableListOf<TempBottleItemModel>()
@@ -101,6 +99,7 @@ class StoreHouseViewModel @Inject constructor(
     private fun getBeers() = viewModelScope.launch {
         beerList = getBeerUseCase()
         bottleList = getBottleUseCase()
+        barrels = getBarrelsUseCase()
     }
 
     fun setCurrentTime() {
@@ -366,7 +365,7 @@ class StoreHouseViewModel @Inject constructor(
             .forEach { ioModel ->
                 addBeerReceiveItemToList(
                     ioModel.toTempBeerItemModel(
-                        cansList,
+                        barrels,
                         beerList,
                         onRemove = { tbm ->
                             Log.d("itmDel", tbm.toString())

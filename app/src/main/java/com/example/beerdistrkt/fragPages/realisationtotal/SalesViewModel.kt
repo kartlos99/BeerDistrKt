@@ -5,16 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.usecase.GetRealizationDayUseCase
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,10 +28,10 @@ import javax.inject.Inject
 class SalesViewModel @Inject constructor(
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val getRealizationDayUseCase: GetRealizationDayUseCase,
+    private val getBarrelsUseCase: GetBarrelsUseCase,
 ) : BaseViewModel() {
 
-    private val barrelsList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
-        ?: listOf()
+    private var barrelsList: List<Barrel> = emptyList()
     val visibleDistributors = mutableListOf<User>()
 
     private val _selectedDayLiveData = MutableLiveData<String>()
@@ -77,6 +77,9 @@ class SalesViewModel @Inject constructor(
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         refreshCategories()
         getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
+        viewModelScope.launch {
+            barrelsList = getBarrelsUseCase()
+        }
     }
 
     fun formUsersList() {
@@ -99,7 +102,7 @@ class SalesViewModel @Inject constructor(
         getRealizationDayUseCase.invoke(date, distributorID)
             .onSuccess { dayData ->
                 dayData.barrels.forEach { bIO ->
-                    bIO.barrelName = barrelsList.find { can -> can.id == bIO.canTypeID }?.name
+                    bIO.barrelName = barrelsList.find { it.id == bIO.canTypeID }?.name
                 }
                 _dayStateFlow.value = ResultState.Success(dayData)
             }.onError { error ->

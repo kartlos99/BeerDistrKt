@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.models
 
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
@@ -7,7 +8,7 @@ import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestMode
 data class TempBeerItemModel(
     val ID: Int = 0,
     val beer: Beer,
-    val canType: CanModel,
+    val canType: Barrel,
     val count: Int,
     val onRemoveClick: (beerItem: TempBeerItemModel) -> Unit,
     val orderItemID: Int = 0,

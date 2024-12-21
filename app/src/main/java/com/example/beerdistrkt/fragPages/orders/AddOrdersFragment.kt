@@ -89,7 +89,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
         beerSelector.initView(
             viewModel.beers,
-            viewModel.cansList,
+            viewModel.barrels,
             ::checkForm
         )
         beerSelector.onDeleteClick = {

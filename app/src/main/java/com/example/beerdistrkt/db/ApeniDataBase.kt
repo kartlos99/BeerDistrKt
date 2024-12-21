@@ -4,15 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.beerdistrkt.common.model.BarrelDto
 import com.example.beerdistrkt.models.*
 
-@Database(entities = [
-    Obieqti::class,
-    ObjToBeerPrice::class,
-    User::class,
-    BeerModelBase::class,
-    CanModel::class
-], version = 18, exportSchema = false)
+@Database(
+    entities = [
+        Obieqti::class,
+        ObjToBeerPrice::class,
+        User::class,
+        BeerModelBase::class,
+        CanModel::class,
+        BarrelDto::class
+    ],
+    version = 19,
+    exportSchema = false
+)
 abstract class ApeniDataBase : RoomDatabase() {
 
     abstract val apeniDataBaseDao: ApeniDatabaseDao
@@ -22,7 +28,7 @@ abstract class ApeniDataBase : RoomDatabase() {
         @Volatile
         private var INSTANCE: ApeniDataBase? = null
 
-        fun initialize(context: Context){
+        fun initialize(context: Context) {
             synchronized(this) {
                 var instance = INSTANCE
 

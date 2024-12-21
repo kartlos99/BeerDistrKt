@@ -163,7 +163,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         beerSelector.withPrices = true
         beerSelector.initView(
             viewModel.beerList,
-            viewModel.cansList,
+            viewModel.barrels,
             ::checkForm
         )
         beerSelector.onDeleteClick = {
@@ -319,7 +319,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun fillSale(saleData: SaleRowModel) = with(vBinding) {
-        saleData.toTempBeerItemModel(viewModel.cansList, viewModel.beerList)?.let { data ->
+        saleData.toTempBeerItemModel(viewModel.barrels, viewModel.beerList)?.let { data ->
             beerSelector.fillBeerItemForm(data)
             addDeliveryCheckGift.isChecked = saleData.unitPrice == 0.0
             addDeliveryComment.editText?.setText(saleData.comment.orEmpty())

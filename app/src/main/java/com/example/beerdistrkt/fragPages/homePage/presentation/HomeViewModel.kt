@@ -14,8 +14,6 @@ import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
-import com.example.beerdistrkt.models.CanModel
-import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.models.bottle.BottleDtoMapper
@@ -27,7 +25,6 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.waitFor
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -94,9 +91,6 @@ class HomeViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
 
-        cansLiveData.observeForever {
-            ObjectCache.getInstance().putList(CanModel::class, ObjectCache.BARREL_LIST_ID, it)
-        }
         usersLiveData.observeForever { userList ->
             ObjectCache.getInstance()
                 .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.username })
@@ -148,21 +142,21 @@ class HomeViewModel @Inject constructor(
                         getUsers()
                         numberOfUpdatingTables++
                     }
-                    if (it.barrel > localVersionState!!.barrel) {
-                        getCanTypes()
-                        numberOfUpdatingTables++
-                    }
+//                    if (it.barrel > localVersionState!!.barrel) {
+//                        getCanTypes()
+//                        numberOfUpdatingTables++
+//                    }
 //                    if (it.price > localVersionState!!.price) {
 //                        getPrices()
 //                        numberOfUpdatingTables++
 //                    }
                 } else {
-                    numberOfUpdatingTables = 2
+                    numberOfUpdatingTables = 1
 //                    getObjects()
 //                    getPrices()
                     getUsers()
 //                    getBeerList()
-                    getCanTypes()
+//                    getCanTypes()
                 }
                 mainLoaderLiveData.value = numberOfUpdatingTables > 0
 //                localVersionState = it
@@ -198,105 +192,6 @@ class HomeViewModel @Inject constructor(
                 }
             }
         )
-    }
-
-    private fun getBeerList() {
-        sendRequest(
-            ApeniApiService.getInstance().getBaseData(),
-            successWithData = {
-                saveVersion()
-                Log.d(TAG, "getBeerList_respOK")
-//                if (it.beers.isNotEmpty()) {
-//                    ioScope.launch {
-//                        database.clearBeerTable()
-//                        it.beers.forEach { beer ->
-//                            insertBeerToDB(beer)
-//                        }
-//                    }
-//                }
-
-//                val bottleMapper = DefaultBottleDtoMapper(listOf())
-                viewModelScope.launch {
-                    val bottles = it.bottles.map { dto ->
-                        bottleMapper.map(dto)
-                    }
-
-//                    ObjectCache.getInstance()
-//                        .putList(BaseBottleModel::class, ObjectCache.BOTTLE_LIST_ID, bottles)
-                }
-            }
-        )
-    }
-
-    private fun getPrices() {
-        sendRequest(
-            ApeniApiService.getInstance().getPrices(),
-            successWithData = {
-                Log.d(TAG, "price_respOK")
-                saveVersion()
-                clearPrices()
-                if (it.isNotEmpty()) {
-                    ioScope.launch {
-                        it.forEach { bPrice ->
-                            insertBeetPrice(bPrice)
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-    private fun getObjects() {
-        sendRequest(
-            ApeniApiService.getInstance().getObieqts(),
-            successWithData = {
-                Log.d(TAG, "clients_respOK")
-                saveVersion()
-                clearObieqtsList()
-                if (it.isNotEmpty()) {
-                    ioScope.launch {
-                        delay(100)
-                        database.insertCustomers(it)
-                    }
-                }
-            }
-        )
-    }
-
-    private fun getCanTypes() {
-        sendRequest(
-            ApeniApiService.getInstance().getCanList(),
-            successWithData = {
-                saveVersion()
-                Log.d(TAG, "Cans_respOK")
-                if (it.isNotEmpty()) {
-                    ioScope.launch {
-                        database.clearCansTable()
-                        it.forEach { can ->
-                            insertCanToDB(can)
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-    private suspend fun insertBeetPrice(bPrice: ObjToBeerPrice) {
-        if (bPrice.objID < 50) {
-//            Log.d("obj_prIns", bPrice.toString())
-            delay(50)
-        }
-        database.insertBeerPrice(bPrice)
-    }
-
-    private fun insertCanToDB(canModel: CanModel) {
-        database.insertCan(canModel)
-    }
-
-    private fun clearPrices() {
-        ioScope.launch {
-            database.clearPricesTable()
-        }
     }
 
     fun getStoreBalance() = viewModelScope.launch {

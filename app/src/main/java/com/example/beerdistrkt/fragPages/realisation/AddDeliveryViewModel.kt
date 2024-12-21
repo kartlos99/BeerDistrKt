@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
@@ -17,17 +18,15 @@ import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.round
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import dagger.assisted.Assisted
@@ -46,6 +45,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
     private val getCustomerUseCase: GetCustomerUseCase,
+    private val getBarrelsUseCase: GetBarrelsUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(ORDER_ID_KEY) private val orderID: Int,
     @Assisted(RECORD_ID_KEY) private val recordID: Int,
@@ -58,9 +58,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
 
     var beerList: List<Beer> = listOf()
     var bottleList: List<BaseBottleModel> = listOf()
-
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
-        ?: listOf()
+    var barrels: List<Barrel> = listOf()
 
     val bottleListLiveData = MutableLiveData<List<BaseBottleModel>>()
 
@@ -97,7 +95,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
         viewModelScope.launch {
-            getBeers()
+            initData()
             getCustomer()
         }
     }
@@ -115,9 +113,10 @@ class AddDeliveryViewModel @AssistedInject constructor(
     }
 
 
-    private suspend fun getBeers() {
+    private suspend fun initData() {
         beerList = getBeerUseCase()
         bottleList = getBottleUseCase()
+        barrels = getBarrelsUseCase()
     }
 
     /**

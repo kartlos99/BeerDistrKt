@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.beerdistrkt.common.model.BarrelDto
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.Obieqti
@@ -100,4 +101,16 @@ interface ApeniDatabaseDao {
     @Query("Select * from can_table order by sortValue")
     fun getCansList(): LiveData<List<CanModel>>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertBarrels(barrels: List<BarrelDto>)
+
+    @Query("DELETE FROM $BARREL_TB_NAME")
+    fun clearBarrelsTable()
+
+    @Query("Select * from $BARREL_TB_NAME order by sortValue")
+    fun getBarrels(): LiveData<List<BarrelDto>>
+
+    companion object {
+        const val BARREL_TB_NAME = "barrels"
+    }
 }

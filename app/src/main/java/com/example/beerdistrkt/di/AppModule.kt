@@ -8,7 +8,10 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
 import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.db.ApeniDataBase
+import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.example.beerdistrkt.network.api.DistributionApi
 import com.squareup.moshi.Moshi
@@ -29,6 +32,8 @@ import javax.inject.Singleton
 
 // value may be changed late
 private const val PREFERENCE_FILE = "order_folds_store"
+
+private const val DB_NAME = "apeni_db"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -81,4 +86,19 @@ object AppModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext appContext: Context
+    ): ApeniDatabaseDao {
+        val db = Room.databaseBuilder(
+            appContext.applicationContext,
+            ApeniDataBase::class.java,
+            DB_NAME
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
+        return db.apeniDataBaseDao
+    }
 }

@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.databinding.ViewBeerSelectorBinding
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.getSnapPosition
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
@@ -38,7 +38,7 @@ class BeerSelectorView @JvmOverloads constructor(
 
     private lateinit var allBeers: List<Beer>
     private lateinit var visibleBeers: List<Beer>
-    private lateinit var cansList: List<CanModel>
+    private lateinit var cansList: List<Barrel>
 
     var onFormUpdate: (() -> Unit)? = null
 
@@ -83,7 +83,7 @@ class BeerSelectorView @JvmOverloads constructor(
     // mandatory
     fun initView(
         beerList: List<Beer>,
-        barrelsList: List<CanModel>,
+        barrelsList: List<Barrel>,
         onFormUpdate: () -> Unit
     ) {
         selectedBeer = null
@@ -93,7 +93,7 @@ class BeerSelectorView @JvmOverloads constructor(
         fillBarrels()
     }
 
-    private fun createChipView(barrel: CanModel): Chip =
+    private fun createChipView(barrel: Barrel): Chip =
         Chip(context, null, R.style.Widget_MaterialComponents_Chip_Choice).apply {
             id = barrel.id
             text = barrel.name

@@ -131,7 +131,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         }
         binding.beerSelector.initView(
             viewModel.beerList,
-            viewModel.cansList,
+            viewModel.barrels,
             ::onFormUpdate
         )
         binding.bottleSelector.onDeleteClick = {

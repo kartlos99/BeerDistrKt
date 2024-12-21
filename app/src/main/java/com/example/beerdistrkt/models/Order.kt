@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
@@ -64,22 +65,20 @@ data class Order(
     ) {
 
         fun toTempBeerItemModel(
-            barrels: List<CanModel>,
+            barrels: List<Barrel>,
             onRemove: (beerItem: TempBeerItemModel) -> Unit,
             onEdit: (beerItem: TempBeerItemModel) -> Unit
         ): TempBeerItemModel? {
-            val canType = barrels.find { it.id == canTypeID }
-            return takeUnless { canType == null }?.let {
-                TempBeerItemModel(
-                    ID = orderID,
-                    beer = beer,
-                    canType = canType!!,
-                    count = count,
-                    orderItemID = ID,
-                    onRemoveClick = onRemove,
-                    onEditClick = onEdit
-                )
-            }
+            val barrel = barrels.find { it.id == canTypeID } ?: return null
+            return TempBeerItemModel(
+                ID = orderID,
+                beer = beer,
+                canType = barrel,
+                count = count,
+                orderItemID = ID,
+                onRemoveClick = onRemove,
+                onEditClick = onEdit
+            )
         }
     }
 
