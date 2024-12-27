@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@drawable/bkg_underline"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_underline"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/userRowUserName"
@@ -13,7 +14,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="0dp"
-        android:textSize="@dimen/textSize_4" />
+        android:textSize="@dimen/textSize_4"
+        tools:text="username" />
 
     <TextView
         android:id="@+id/userRowDisplayName"
@@ -21,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:textAlignment="textEnd"
-        android:textSize="@dimen/textSize_2" />
+        android:textSize="@dimen/textSize_2"
+        tools:text="name" />
 
 </LinearLayout>

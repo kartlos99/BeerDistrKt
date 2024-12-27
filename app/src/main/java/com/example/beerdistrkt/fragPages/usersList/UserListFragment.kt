@@ -1,12 +1,8 @@
 package com.example.beerdistrkt.fragPages.usersList
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +13,8 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.UserListFragmentBinding
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,54 +30,49 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
 
     override val viewModel by viewModels<UserListViewModel>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.user_list_fragment, container, false)
-    }
+    override var frLayout: Int? = R.layout.user_list_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initViewModel()
     }
 
+    private fun initView() = with(binding) {
+        addBtn.setOnClickListener {
+            openDetailsPage()
+        }
+        swipeRefresh.setOnRefreshListener {
+            viewModel.refreshUsers()
+        }
+    }
+
     private fun initViewModel() {
-        viewModel.usersStateFlow.collectLatest(viewLifecycleOwner) { result ->
-            result.onSuccess { users ->
-                initUsersRecycler(users)
-            }
-            result.onError { code, message ->
-                showToast(message)
-            }
+        viewModel.usersStateFlow.collectLatest(viewLifecycleOwner, action = ::handleUsers)
+    }
+
+    private fun handleUsers(result: ResultState<List<User>>) = with(binding) {
+        progressIndicator.isVisible = result.isLoading()
+        result.onSuccess { users ->
+            initUsersRecycler(users)
+            binding.swipeRefresh.isRefreshing = false
+        }
+        result.onError { code, message ->
+            showToast(message)
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 
     private fun initUsersRecycler(users: List<User>) {
         binding.usersRecycler.layoutManager = LinearLayoutManager(context)
         val adapter = UserAdapter(users)
-        adapter.onClick = {
-            findNavController().navigate(
-                UserListFragmentDirections.actionUserListFragmentToAddUserFragment(it)
-            )
-        }
+        adapter.onClick = ::openDetailsPage
         binding.usersRecycler.adapter = adapter
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.user_list_manu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.mAddUser -> {
-                val direction = UserListFragmentDirections.actionUserListFragmentToAddUserFragment()
-                findNavController().navigate(direction)
-                return true
-            }
-        }
-        return false
+    private fun openDetailsPage(userID: String? = null) {
+        findNavController().navigate(
+            UserListFragmentDirections.actionUserListFragmentToAddUserFragment(userID.orEmpty())
+        )
     }
 }
