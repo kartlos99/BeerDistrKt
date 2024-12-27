@@ -67,6 +67,7 @@ class SalesViewModel @Inject constructor(
     }
 
     lateinit var userMap: Map<String, List<User>>
+
     fun formUserMap(userList: List<User>) {
         userMap = userList.groupBy { it.id }
         Log.d(TAG, userMap.toString())

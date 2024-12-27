@@ -30,7 +30,9 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.show
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
     companion object {
@@ -44,8 +46,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     }
 
     val userID by lazy {
-        val args = AddUserFragmentArgs.fromBundle(arguments ?: Bundle())
-        args.userID
+        AddUserFragmentArgs.fromBundle(requireArguments()).userID
     }
 
     override fun onCreateView(
@@ -207,16 +208,14 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
     }
 
-    private fun fillForm(user: User) {
-        with(binding) {
-            addUserUsername.setText(user.username)
-            addUserName.setText(user.name)
-            addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
-            addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
-            addUserPhone.setText(user.tel)
-            addUserAddress.setText(user.adress)
-            addUserComment.setText(user.comment)
-        }
+    private fun fillForm(user: User) = with(binding) {
+        addUserUsername.setText(user.username)
+        addUserName.setText(user.name)
+        addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
+        addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
+        addUserPhone.setText(user.tel)
+        addUserAddress.setText(user.adress)
+        addUserComment.setText(user.comment)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

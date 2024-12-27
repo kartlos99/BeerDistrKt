@@ -14,6 +14,7 @@ import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
+import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.models.bottle.BottleDtoMapper
@@ -38,6 +39,7 @@ class HomeViewModel @Inject constructor(
     private val bottleMapper: BottleDtoMapper,
     private val getBeerUseCase: GetBeerUseCase,
     private val refreshCustomers: RefreshCustomersUseCase,
+    private val refreshUsersUseCase: RefreshUsersUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : BaseViewModel() {
 
@@ -110,6 +112,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.saveRegion(selectedRegion)
             refreshCustomers()
+            refreshUsersUseCase()
         }
         SharedPreferenceDataSource.getInstance().clearVersions()
         localVersionState = null

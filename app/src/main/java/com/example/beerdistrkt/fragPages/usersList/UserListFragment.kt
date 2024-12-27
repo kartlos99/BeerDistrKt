@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.UserListFragmentBinding
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,8 +46,13 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
     }
 
     private fun initViewModel() {
-        viewModel.usersLiveData.observe(viewLifecycleOwner) { users ->
-            initUsersRecycler(users)
+        viewModel.usersStateFlow.collectLatest(viewLifecycleOwner) { result ->
+            result.onSuccess { users ->
+                initUsersRecycler(users)
+            }
+            result.onError { code, message ->
+                showToast(message)
+            }
         }
     }
 

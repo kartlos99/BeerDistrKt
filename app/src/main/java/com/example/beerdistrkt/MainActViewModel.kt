@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +19,7 @@ class MainActViewModel @Inject constructor(
     private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val refreshCustomers: RefreshCustomersUseCase,
+    private val refreshUsersUseCase: RefreshUsersUseCase,
 ) : BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()
@@ -36,7 +37,10 @@ class MainActViewModel @Inject constructor(
         }
         userPreferencesRepository.readRegion().also { region ->
             Session.get().restoreLastRegion(region)
-            region?.let { refreshCustomers() }
+            region?.let {
+                refreshCustomers()
+                refreshUsersUseCase()
+            }
         }
         refreshBaseDataUseCase()
         showContentFlow.emit(true)

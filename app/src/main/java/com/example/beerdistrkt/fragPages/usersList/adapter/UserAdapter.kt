@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.databinding.UserRowBinding
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 
 class UserAdapter(
 private val dataList: List<User>

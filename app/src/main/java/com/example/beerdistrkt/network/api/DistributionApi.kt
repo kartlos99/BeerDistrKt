@@ -11,6 +11,7 @@ import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
+import com.example.beerdistrkt.fragPages.user.data.model.UserApiModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.network.AuthInterceptor
 import com.squareup.moshi.Moshi
@@ -122,4 +123,8 @@ interface DistributionApi {
     /* general */
     @GET("general/getBaseData.php")
     suspend fun getBaseData(): BaseDataDto
+
+    /* users */
+    @GET("listing/users.php")
+    suspend fun getUsers(): UserApiModel
 }
