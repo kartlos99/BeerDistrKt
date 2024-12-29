@@ -1,27 +1,35 @@
 package com.example.beerdistrkt.fragPages.addEditUser
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
+import com.example.beerdistrkt.fragPages.user.domain.usecase.PutUserUseCase
 import com.example.beerdistrkt.models.DeleteRequest
-import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.UserAttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.transform
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddUserViewModel.Factory::class)
 class AddUserViewModel @AssistedInject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val getUserUseCase: GetUserUseCase,
+    private val putUserUseCase: PutUserUseCase,
     @Assisted private val userID: String,
 ) : BaseViewModel() {
 
@@ -30,18 +38,15 @@ class AddUserViewModel @AssistedInject constructor(
     }
 
     private var shouldSave: Boolean = false
-    private val _addUserLiveData = MutableLiveData<ApiResponseState<String>>()
-    val addUserLiveData: LiveData<ApiResponseState<String>>
-        get() = _addUserLiveData
+
+    private val _apiState = MutableStateFlow<ResultState<Unit?>>(ResultState.Success(null))
+    val apiState: StateFlow<ResultState<Unit?>> = _apiState.asStateFlow()
 
     val deleteUserLiveData = MutableLiveData<ApiResponseState<String>>()
 
     val userValidatorLiveData = MutableLiveData<UserValidationResult>()
 
-    val usersLiveData = database.getUsers()
-
     val userLiveData = MutableLiveData<User?>()
-    var user: User? = null
 
     val userRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
     val regions = mutableListOf<AttachedRegion>()
@@ -49,11 +54,8 @@ class AddUserViewModel @AssistedInject constructor(
 
     init {
         if (userID.isNotEmpty()) {
-            usersLiveData.observeForever {
-                user = it.find { u ->
-                    u.id == userID
-                }
-                userLiveData.value = user
+            viewModelScope.launch {
+                userLiveData.value = getUserUseCase(userID)
             }
         }
     }
@@ -73,26 +75,13 @@ class AddUserViewModel @AssistedInject constructor(
             UserValidator(userData, isChangingPassword, password, confirmPassword).validate()
         userValidatorLiveData.value = userValidatorResult
         if (userValidatorResult is UserValidationResult.Success)
-            addOrUpdateUser(requestModel)
+            putUser(requestModel)
     }
 
-    private fun addOrUpdateUser(model: AddUserRequestModel) {
-        _addUserLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().addUpdateUser(model),
-            successWithData = {
-                _addUserLiveData.value = ApiResponseState.Success(it)
-                saveLocally(model.user.copy(id = it))
-            },
-            finally = {
-                _addUserLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
-    }
-
-    private fun saveLocally(user: User) {
-        ioScope.launch {
-            database.insertUser(user)
+    private fun putUser(model: AddUserRequestModel) {
+        viewModelScope.launch {
+            _apiState.emit(ResultState.Loading)
+            _apiState.emit(putUserUseCase(model).transform {})
         }
     }
 

@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.fragPages.addEditUser
 
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 
 class UserValidator(
     private val userData: User,

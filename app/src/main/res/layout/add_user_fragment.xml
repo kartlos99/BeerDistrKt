@@ -11,6 +11,19 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:indicatorColor="@color/colorAccent_33"
+            app:trackColor="@color/gray_transparent_20"
+            tools:visibility="visible" />
+
+
         <TextView
             android:id="@+id/addUserRegionsTv"
             android:layout_width="0dp"

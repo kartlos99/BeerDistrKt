@@ -1,10 +1,9 @@
 package com.example.beerdistrkt.fragPages.addEditUser.models
 
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 
 data class AddUserRequestModel(
     val user: User,
     val password: String = "",
     val changePass: Boolean = false
-) {
-}
+)

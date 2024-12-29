@@ -16,12 +16,16 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddUserFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.models.UserStatus
+import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.showAskingDialog
@@ -104,35 +108,35 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     }
 
     private fun readUser() = User(
-        userID,
-        binding.addUserUsername.text(),
-        binding.addUserName.text(),
+        id = userID,
+        username = binding.addUserUsername.text(),
+        name = binding.addUserName.text(),
         getUserType(),
-        binding.addUserPhone.text(),
-        binding.addUserAddress.text(),
-        Session.get().userID ?: "0",
-        binding.addUserComment.text(),
-        UserStatus.ACTIVE
+        tel = binding.addUserPhone.text(),
+        address = binding.addUserAddress.text(),
+        maker = Session.get().userID ?: "0",
+        comment = binding.addUserComment.text(),
+        userStatus = UserStatus.ACTIVE,
+        regions = listOf()
     )
 
-    private fun getUserType(): String = when {
-        binding.addUserAdminBox.isChecked -> UserType.ADMIN.value
-        binding.addUserManagerBox.isChecked -> UserType.MANAGER.value
-        else -> UserType.DISTRIBUTOR.value
+    private fun getUserType(): UserType = when {
+        binding.addUserAdminBox.isChecked -> UserType.ADMIN
+        binding.addUserManagerBox.isChecked -> UserType.MANAGER
+        else -> UserType.DISTRIBUTOR
     }
 
     private fun initViewModel() {
-        viewModel.addUserLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Loading -> {
-                }
-
-                is ApiResponseState.Success -> {
-                    showToast(it.data)
+        viewModel.apiState.collectLatest(viewLifecycleOwner) { apiResult ->
+            binding.progressIndicator.isVisible = apiResult.isLoading()
+            apiResult.onSuccess {
+                it?.let {
+                    showToast(R.string.data_saved)
                     findNavController().navigateUp()
                 }
-
-                else -> {}
+            }
+            apiResult.onError { code, message ->
+                showToast(message)
             }
         }
         viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
@@ -211,10 +215,10 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     private fun fillForm(user: User) = with(binding) {
         addUserUsername.setText(user.username)
         addUserName.setText(user.name)
-        addUserAdminBox.isChecked = user.type == UserType.ADMIN.value
-        addUserManagerBox.isChecked = user.type == UserType.MANAGER.value
+        addUserAdminBox.isChecked = user.type == UserType.ADMIN
+        addUserManagerBox.isChecked = user.type == UserType.MANAGER
         addUserPhone.setText(user.tel)
-        addUserAddress.setText(user.adress)
+        addUserAddress.setText(user.address)
         addUserComment.setText(user.comment)
     }
 

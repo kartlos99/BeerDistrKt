@@ -1,11 +1,14 @@
 package com.example.beerdistrkt.fragPages.user.data
 
+import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
 import com.example.beerdistrkt.fragPages.user.domain.UserRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.isSuccess
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +33,14 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUser(): User {
-        TODO("Not yet implemented")
+    override suspend fun getUser(userID: String): User? {
+        val user = users.find { it.id == userID }
+        return if (user == null) {
+            fetchUsers()
+            users.find { it.id == userID }
+        } else {
+            user
+        }
     }
 
     override suspend fun refreshUsers() {
@@ -46,6 +55,16 @@ class UserRepositoryImpl @Inject constructor(
                 .also { users = it }
         }.also {
             usersFlow.emit(it.toResultState())
+        }
+    }
+
+    override suspend fun putUser(model: AddUserRequestModel): ResultState<BaseInsertApiModel> {
+        return apiCall {
+            api.putUser(model)
+        }.toResultState().also {
+            if (it.isSuccess()) {
+                fetchUsers()
+            }
         }
     }
 }
