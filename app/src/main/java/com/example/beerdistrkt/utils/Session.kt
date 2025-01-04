@@ -2,7 +2,7 @@ package com.example.beerdistrkt.utils
 
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 
@@ -36,7 +36,7 @@ class Session {
 
     fun getUserID(): Int = userID?.toInt() ?: 0
 
-    fun getRegionID(): String = region?.regionID ?: "0"
+    fun getRegionID(): String = (region?.id ?: 0).toString()
 
     fun justLoggedIn(userdata: LoginResponse) {
         userID = userdata.id.toString()

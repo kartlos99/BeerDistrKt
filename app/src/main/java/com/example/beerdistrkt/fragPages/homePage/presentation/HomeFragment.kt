@@ -23,7 +23,7 @@ import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.homePage.presentation.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.notifyNewComment
@@ -85,8 +85,9 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     onRegionChange(it)
                 }
 
-        binding.btnOrder.text =
-            getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text = getString(
+            if (Session.get().region?.id == 3) R.string.delivery else R.string.orders
+        )
         viewModel.getStoreBalance()
     }
 
@@ -138,7 +139,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnOrder -> {
-                if (Session.get().region?.regionID?.toInt() == 3)
+                if (Session.get().region?.id == 3)
                     view.findNavController().navigate(
                         HomeFragmentDirections.actionHomeFragmentToObjListFragment(MITANA)
                     )
@@ -181,8 +182,9 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         viewModel.setRegion(region)
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
-        binding.btnOrder.text =
-            getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text = getString(
+            if (Session.get().region?.id == 3) R.string.delivery else R.string.orders
+        )
         actViewModel.updateNavHeader()
     }
 

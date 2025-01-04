@@ -2,15 +2,14 @@ package com.example.beerdistrkt.network
 
 import android.content.Context
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
-import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
+import com.example.beerdistrkt.fragPages.login.data.model.LoginApiModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.LoginRequest
-import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
@@ -31,9 +30,26 @@ import com.example.beerdistrkt.fragPages.showHistory.BottleSaleHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.MoneyHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
+import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
-import com.example.beerdistrkt.models.*
+import com.example.beerdistrkt.models.AttachRegionsRequest
+import com.example.beerdistrkt.models.BeerModelBase
+import com.example.beerdistrkt.models.CanModel
+import com.example.beerdistrkt.models.ChangePassRequestModel
+import com.example.beerdistrkt.models.ClientDeactivateModel
+import com.example.beerdistrkt.models.CustomerIdlInfo
+import com.example.beerdistrkt.models.CustomerWithPrices
+import com.example.beerdistrkt.models.DataResponse
+import com.example.beerdistrkt.models.DebtResponse
+import com.example.beerdistrkt.models.DeleteRequest
+import com.example.beerdistrkt.models.MappedUser
+import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.models.ObjToBeerPrice
+import com.example.beerdistrkt.models.OrderDTO
+import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.models.UserAttachRegionsRequest
+import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
 import com.example.beerdistrkt.network.model.BaseDataResponse
 import com.example.beerdistrkt.utils.Session
@@ -252,7 +268,7 @@ interface ApeniApiService {
     fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
 
     @POST("user/login.php")
-    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginResponse>>
+    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginApiModel>>
 
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>

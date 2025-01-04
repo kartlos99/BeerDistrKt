@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
             getItem(0).isEnabled = Session.get().hasPermission(Permission.AddEditClient)
             getItem(1).isEnabled = Session.get().hasPermission(Permission.AddEditUser)
             getItem(2).isEnabled = Session.get().userType == UserType.ADMIN
-            getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
+            getItem(3).isEnabled = Session.get().region?.hasOwnStorage == true
             findItem(R.id.settingsFragment).isEnabled = Session.get().userType == UserType.ADMIN
             findItem(R.id.mInfo).title = BuildConfig.VERSION_NAME
         }

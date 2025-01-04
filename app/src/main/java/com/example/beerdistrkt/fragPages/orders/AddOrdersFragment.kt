@@ -150,7 +150,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             setSelection(
                 viewModel.availableRegions
                     .map { it.regionID }
-                    .indexOf(Session.get().region?.regionID)
+                    .indexOf(Session.get().region?.id.toString())
             )
         }
     }

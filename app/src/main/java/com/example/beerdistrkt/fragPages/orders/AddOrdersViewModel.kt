@@ -112,7 +112,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             getCustomer()
         }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
-        selectedDistributorRegionID = Session.get().region?.regionID?.toInt() ?: 0
+        selectedDistributorRegionID = Session.get().region?.id ?: 0
         getDebt()
         getAllUsers()
     }

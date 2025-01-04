@@ -6,16 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.MainActViewModel
+import com.example.beerdistrkt.MainActivity
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.LoginFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -93,7 +97,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     }
 
     private fun initViewModel() {
-        viewModel.loginResponseLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.loginResponseLiveData.observe(viewLifecycleOwner) {
             with(binding) {
                 when (it) {
                     is ApiResponseState.Success -> {
@@ -104,7 +108,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                             )
                         }
                         viewLoginLoginBtn.isEnabled = false
-                        viewLoginProgress.visibleIf(true)
+                        viewLoginProgress.show()
                         afterSuccessResponse(it.data)
                         viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                     }
@@ -122,7 +126,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     else -> {}
                 }
             }
-        })
+        }
     }
 
     private fun afterSuccessResponse(data: LoginResponse) {

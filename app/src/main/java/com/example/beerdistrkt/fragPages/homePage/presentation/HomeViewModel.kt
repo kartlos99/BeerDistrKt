@@ -10,7 +10,7 @@ import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -199,7 +199,7 @@ class HomeViewModel @Inject constructor(
 
     fun getStoreBalance() = viewModelScope.launch {
         _storeHouseDataFlow.value = ResultState.Loading
-        if (Session.get().region?.hasOwnStorage() == true)
+        if (Session.get().region?.hasOwnStorage == true)
             getRegionBalance()
         else
             getGlobalBalance()

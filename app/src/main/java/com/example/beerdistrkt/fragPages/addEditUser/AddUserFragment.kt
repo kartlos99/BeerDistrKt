@@ -67,8 +67,6 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         initViewModel()
         binding.initView()
 
-        if (Session.get().hasPermission(Permission.ManageRegion) && userID.isNotBlank())
-            viewModel.getRegionForUser()
     }
 
     private fun AddUserFragmentBinding.initView() {
@@ -220,6 +218,12 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         addUserPhone.setText(user.tel)
         addUserAddress.setText(user.address)
         addUserComment.setText(user.comment)
+        if (Session.get().hasPermission(Permission.ManageRegion)) {
+            addUserRegionsTv.text = user.regions
+                .joinToString(", ", getString(R.string.regions) + " ") { it.name }
+            addUserRegionsTv.show()
+            addUserRegionBtn.show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -256,11 +260,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             .setMultiChoiceItems(
                 viewModel.getAllRegionNames(),
                 viewModel.getSelectedRegions()
-            ) { dialogInterface: DialogInterface?, i: Int, b: Boolean ->
-                if (b)
-                    viewModel.selectedRegions.add(viewModel.regions[i])
-                else
-                    viewModel.selectedRegions.remove(viewModel.regions[i])
+            ) { _: DialogInterface?, index: Int, checked: Boolean ->
+                viewModel.updateRegionSelection(index, checked)
             }
             .setPositiveButton(R.string.common_save) { _, _ ->
                 viewModel.setNewRegions()

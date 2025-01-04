@@ -7,8 +7,11 @@ import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetRegionsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.PutUserUseCase
+import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.UserAttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
@@ -30,6 +33,8 @@ class AddUserViewModel @AssistedInject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val getUserUseCase: GetUserUseCase,
     private val putUserUseCase: PutUserUseCase,
+    private val getRegionsUseCase: GetRegionsUseCase,
+    private val refreshUsersUseCase: RefreshUsersUseCase,
     @Assisted private val userID: String,
 ) : BaseViewModel() {
 
@@ -49,14 +54,19 @@ class AddUserViewModel @AssistedInject constructor(
     val userLiveData = MutableLiveData<User?>()
 
     val userRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
-    val regions = mutableListOf<AttachedRegion>()
-    val selectedRegions = mutableListOf<AttachedRegion>()
+    private val regions = mutableListOf<WorkRegion>()
+
+    private val attachedRegionIds = mutableSetOf<Int>()
 
     init {
-        if (userID.isNotEmpty()) {
-            viewModelScope.launch {
-                userLiveData.value = getUserUseCase(userID)
+        viewModelScope.launch {
+            if (userID.isNotEmpty()) {
+                val user = getUserUseCase(userID)
+                userLiveData.value = user
+                attachedRegionIds.addAll(user?.regions?.map { it.id }.orEmpty())
             }
+            regions.clear()
+            regions.addAll(getRegionsUseCase())
         }
     }
 
@@ -102,39 +112,21 @@ class AddUserViewModel @AssistedInject constructor(
             )
     }
 
-    fun getRegionForUser() {
-        sendRequest(
-            ApeniApiService.getInstance().getAttachedRegions(userID),
-            successWithData = { regions ->
-                this.regions.clear()
-                this.regions.addAll(regions)
-                userRegionsLiveData.value =
-                    ApiResponseState.Success(this.regions.filter { it.isAttached })
-
-                if (Session.get().userID == userID) {
-                    Session.get().regions.clear()
-                    Session.get().regions.addAll(
-                        regions
-                            .filter { it.isAttached }
-                            .map { it.toWorkRegion() }
-                    )
-                    if (shouldSave) {
-                        shouldSave = false
-                        saveSession()
-                    }
-                    if (!this.regions
-                            .filter { it.isAttached }
-                            .map { it.ID }
-                            .contains(Session.get().region?.regionID ?: -1)
-                    ) {
-                        userRegionsLiveData.value =
-                            ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
-                        clearSavedRegion()
-                    }
-
-                }
-            }
+    private fun updateLocalSession() {
+        Session.get().regions.clear()
+        Session.get().regions.addAll(
+            regions.filter { attachedRegionIds.contains(it.id) }
         )
+        if (shouldSave) {
+            shouldSave = false
+            saveSession()
+        }
+        if (!attachedRegionIds.contains(Session.get().region?.id ?: -1)) {
+            userRegionsLiveData.value =
+                ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
+            clearSavedRegion()
+        }
+
     }
 
     private fun clearSavedRegion() = viewModelScope.launch {
@@ -150,21 +142,32 @@ class AddUserViewModel @AssistedInject constructor(
     }
 
     fun getSelectedRegions(): BooleanArray {
-        selectedRegions.clear()
-        selectedRegions.addAll(regions.filter { r -> r.isAttached })
-        return regions.map { it.isAttached }.toBooleanArray()
+        return regions.map { attachedRegionIds.contains(it.id) }.toBooleanArray()
+    }
+
+    fun updateRegionSelection(index: Int, isChecked: Boolean) {
+        if (isChecked)
+            attachedRegionIds.add(regions[index].id)
+        else
+            attachedRegionIds.remove(regions[index].id)
     }
 
     fun setNewRegions() {
         val request = UserAttachRegionsRequest(
             userID,
-            selectedRegions.map { it.ID }
+            attachedRegionIds,
         )
         sendRequest(
             ApeniApiService.getInstance().setRegions(request),
             successWithData = {
                 shouldSave = true
-                getRegionForUser()
+                viewModelScope.launch {
+                    refreshUsersUseCase()
+                    userLiveData.value = getUserUseCase(userID)
+                    if (Session.get().userID == userID) {
+                        updateLocalSession()
+                    }
+                }
             }
         )
     }
