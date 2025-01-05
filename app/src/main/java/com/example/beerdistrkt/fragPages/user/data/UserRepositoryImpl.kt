@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.fragPages.user.data
 
-import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
 import com.example.beerdistrkt.fragPages.user.domain.UserRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User

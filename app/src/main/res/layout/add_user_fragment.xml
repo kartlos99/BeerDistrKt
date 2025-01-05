@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragPages.addEditUser.AddUserFragment">
+    tools:context=".fragPages.user.presentation.modify.AddUserFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -46,6 +46,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/addUserRegionsTv" />
 
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/user_region_chips_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gr_size_8"
+            app:layout_constraintTop_toBottomOf="@id/addUserRegionsTv"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:singleLine="true"
+            app:singleSelection="false"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/addUserUsername"
             android:layout_width="0dp"
@@ -54,7 +65,7 @@
             app:errorEnabled="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addUserRegionsTv">
+            app:layout_constraintTop_toBottomOf="@id/user_region_chips_group">
 
             <EditText
                 android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.usersList
+package com.example.beerdistrkt.fragPages.user.presentation.list
 
 import android.os.Bundle
 import android.view.View
@@ -12,7 +12,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.UserListFragmentBinding
 import com.example.beerdistrkt.fragPages.user.domain.model.User
-import com.example.beerdistrkt.fragPages.usersList.adapter.UserAdapter
+import com.example.beerdistrkt.fragPages.user.presentation.list.adapter.UserAdapter
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError

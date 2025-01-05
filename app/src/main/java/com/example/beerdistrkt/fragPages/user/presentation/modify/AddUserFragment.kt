@@ -1,7 +1,9 @@
-package com.example.beerdistrkt.fragPages.addEditUser
+package com.example.beerdistrkt.fragPages.user.presentation.modify
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -21,7 +24,9 @@ import com.example.beerdistrkt.databinding.AddUserFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
 import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.presentation.model.RegionChipItem
 import com.example.beerdistrkt.models.UserStatus
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
@@ -34,6 +39,7 @@ import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.show
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -137,9 +143,11 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 showToast(message)
             }
         }
-        viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                fillForm(user)
+        viewModel.uiState.collectLatest(viewLifecycleOwner) { userData ->
+            fillForm(userData.user)
+            binding.userRegionChipsGroup.isVisible = userData.canModifyRegion
+            if (userData.canModifyRegion) {
+                drawRegions(userData.regionChips)
             }
         }
         viewModel.deleteUserLiveData.observe(viewLifecycleOwner) {
@@ -210,7 +218,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
     }
 
-    private fun fillForm(user: User) = with(binding) {
+    private fun fillForm(user: User?) = with(binding) {
+        if (user == null) return
         addUserUsername.setText(user.username)
         addUserName.setText(user.name)
         addUserAdminBox.isChecked = user.type == UserType.ADMIN
@@ -272,4 +281,21 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         alertDialog.show()
 
     }
+
+    private fun drawRegions(regionItems: List<RegionChipItem>) {
+        binding.userRegionChipsGroup.removeAllViews()
+        regionItems.forEach { item ->
+            val chip = Chip(context).apply {
+                id = item.id
+                text = item.name
+                checkedIcon = ResourcesCompat.getDrawable(resources, R.drawable.check_24, null)
+                isCheckable = true
+                isChecked = item.isAttached
+                chipStrokeWidth = 4f
+                chipStrokeColor = ColorStateList.valueOf(Color.GREEN)
+            }
+            binding.userRegionChipsGroup.addView(chip)
+        }
+    }
+
 }

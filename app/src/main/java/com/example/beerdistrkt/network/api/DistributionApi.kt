@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO

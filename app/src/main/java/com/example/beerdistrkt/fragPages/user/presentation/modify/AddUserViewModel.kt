@@ -1,10 +1,13 @@
-package com.example.beerdistrkt.fragPages.addEditUser
+package com.example.beerdistrkt.fragPages.user.presentation.modify
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.addEditUser.models.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
+import com.example.beerdistrkt.fragPages.user.domain.UserValidator
+import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
@@ -12,6 +15,8 @@ import com.example.beerdistrkt.fragPages.user.domain.usecase.GetRegionsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.PutUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
+import com.example.beerdistrkt.fragPages.user.presentation.model.ModifyUserData
+import com.example.beerdistrkt.fragPages.user.presentation.model.RegionChipItem
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.UserAttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
@@ -26,6 +31,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddUserViewModel.Factory::class)
@@ -38,35 +44,49 @@ class AddUserViewModel @AssistedInject constructor(
     @Assisted private val userID: String,
 ) : BaseViewModel() {
 
-    companion object {
-        const val REGION_RESTRICTION_KAY: Int = 234
-    }
-
     private var shouldSave: Boolean = false
 
     private val _apiState = MutableStateFlow<ResultState<Unit?>>(ResultState.Success(null))
     val apiState: StateFlow<ResultState<Unit?>> = _apiState.asStateFlow()
 
+    private val _uiState: MutableStateFlow<ModifyUserData> = MutableStateFlow(ModifyUserData())
+    val uiState: StateFlow<ModifyUserData> = _uiState.asStateFlow()
+
     val deleteUserLiveData = MutableLiveData<ApiResponseState<String>>()
 
     val userValidatorLiveData = MutableLiveData<UserValidationResult>()
 
-    val userLiveData = MutableLiveData<User?>()
-
     val userRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
-    private val regions = mutableListOf<WorkRegion>()
+    private val allRegions = mutableListOf<WorkRegion>()
 
     private val attachedRegionIds = mutableSetOf<Int>()
 
     init {
         viewModelScope.launch {
+            allRegions.clear()
+            allRegions.addAll(getRegionsUseCase())
             if (userID.isNotEmpty()) {
                 val user = getUserUseCase(userID)
-                userLiveData.value = user
                 attachedRegionIds.addAll(user?.regions?.map { it.id }.orEmpty())
+                _uiState.emit(
+                    ModifyUserData(
+                        user,
+                        Session.get().hasPermission(Permission.ManageRegion),
+                        generateRegionChipsData()
+                    )
+                )
             }
-            regions.clear()
-            regions.addAll(getRegionsUseCase())
+        }
+    }
+
+    private fun generateRegionChipsData(): List<RegionChipItem> {
+        return allRegions.map { workRegion ->
+            RegionChipItem(
+                id = workRegion.id,
+                name = workRegion.name,
+                code = workRegion.code,
+                isAttached = attachedRegionIds.contains(workRegion.id)
+            )
         }
     }
 
@@ -115,7 +135,7 @@ class AddUserViewModel @AssistedInject constructor(
     private fun updateLocalSession() {
         Session.get().regions.clear()
         Session.get().regions.addAll(
-            regions.filter { attachedRegionIds.contains(it.id) }
+            allRegions.filter { attachedRegionIds.contains(it.id) }
         )
         if (shouldSave) {
             shouldSave = false
@@ -138,18 +158,18 @@ class AddUserViewModel @AssistedInject constructor(
     }
 
     fun getAllRegionNames(): Array<String> {
-        return regions.map { it.name }.toTypedArray()
+        return allRegions.map { it.name }.toTypedArray()
     }
 
     fun getSelectedRegions(): BooleanArray {
-        return regions.map { attachedRegionIds.contains(it.id) }.toBooleanArray()
+        return allRegions.map { attachedRegionIds.contains(it.id) }.toBooleanArray()
     }
 
     fun updateRegionSelection(index: Int, isChecked: Boolean) {
         if (isChecked)
-            attachedRegionIds.add(regions[index].id)
+            attachedRegionIds.add(allRegions[index].id)
         else
-            attachedRegionIds.remove(regions[index].id)
+            attachedRegionIds.remove(allRegions[index].id)
     }
 
     fun setNewRegions() {
@@ -163,7 +183,12 @@ class AddUserViewModel @AssistedInject constructor(
                 shouldSave = true
                 viewModelScope.launch {
                     refreshUsersUseCase()
-                    userLiveData.value = getUserUseCase(userID)
+                    _uiState.update {
+                        it.copy(
+                            user = getUserUseCase(userID),
+                            regionChips = generateRegionChipsData()
+                        )
+                    }
                     if (Session.get().userID == userID) {
                         updateLocalSession()
                     }
@@ -175,5 +200,9 @@ class AddUserViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(userID: String): AddUserViewModel
+    }
+
+    companion object {
+        const val REGION_RESTRICTION_KAY: Int = 234
     }
 }

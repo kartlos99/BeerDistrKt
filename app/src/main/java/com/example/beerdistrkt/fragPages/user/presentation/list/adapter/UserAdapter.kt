@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.usersList.adapter
+package com.example.beerdistrkt.fragPages.user.presentation.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

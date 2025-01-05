@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.addEditUser
+package com.example.beerdistrkt.fragPages.user.domain
 
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 

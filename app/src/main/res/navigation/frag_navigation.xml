@@ -80,7 +80,7 @@
     </fragment>
     <fragment
         android:id="@+id/addUserFragment"
-        android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
+        android:name="com.example.beerdistrkt.fragPages.user.presentation.modify.AddUserFragment"
         android:label="@string/add_user"
         tools:layout="@layout/add_user_fragment">
         <argument
@@ -90,7 +90,7 @@
     </fragment>
     <fragment
         android:id="@+id/userListFragment"
-        android:name="com.example.beerdistrkt.fragPages.usersList.UserListFragment"
+        android:name="com.example.beerdistrkt.fragPages.user.presentation.list.UserListFragment"
         android:label="@string/title_users_list"
         tools:layout="@layout/user_list_fragment">
         <action

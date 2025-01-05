@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.usersList
+package com.example.beerdistrkt.fragPages.user.presentation.list
 
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
