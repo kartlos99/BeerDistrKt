@@ -1,7 +1,5 @@
 package com.example.beerdistrkt.fragPages.user.presentation.modify
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -12,17 +10,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddUserFragmentBinding
-import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
-import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
 import com.example.beerdistrkt.fragPages.user.domain.model.User
@@ -38,7 +34,6 @@ import com.example.beerdistrkt.text
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
-import com.example.beerdistrkt.utils.show
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -99,15 +94,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
 
         addUserDoneBtn.setOnClickListener {
-            viewModel.onDoneClick(
-                readUser(),
-                addUserChangePassBox.isChecked,
-                addUserPass.text(),
-                addUserPassConfirm.text()
-            )
-        }
-        addUserRegionBtn.setOnClickListener {
-            showRegionChooser()
+            saveFormState()
+            viewModel.saveUserData()
         }
     }
 
@@ -123,6 +111,21 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         userStatus = UserStatus.ACTIVE,
         regions = listOf()
     )
+
+    override fun onPause() {
+        super.onPause()
+        saveFormState()
+    }
+
+    private fun saveFormState() {
+        viewModel.saveFormState(
+            readUser(),
+            binding.userRegionChipsGroup.checkedChipIds,
+            binding.addUserChangePassBox.isChecked,
+            binding.addUserPass.text(),
+            binding.addUserPassConfirm.text()
+        )
+    }
 
     private fun getUserType(): UserType = when {
         binding.addUserAdminBox.isChecked -> UserType.ADMIN
@@ -144,8 +147,14 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
             }
         }
         viewModel.uiState.collectLatest(viewLifecycleOwner) { userData ->
-            fillForm(userData.user)
+            fillForm(
+                userData.user,
+                userData.isChangingPassword,
+                userData.password,
+                userData.confirmPassword,
+            )
             binding.userRegionChipsGroup.isVisible = userData.canModifyRegion
+            binding.addUserRegionsTitle.isVisible = userData.canModifyRegion
             if (userData.canModifyRegion) {
                 drawRegions(userData.regionChips)
             }
@@ -155,16 +164,6 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 is ApiResponseState.Success -> {
                     showToast(R.string.is_deleted)
                     findNavController().navigateUp()
-                }
-
-                else -> {}
-            }
-        }
-        viewModel.userRegionsLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> showRegions(it.data)
-                is ApiResponseState.ApiError -> {
-                    (activity as MainActivity).logOut()
                 }
 
                 else -> {}
@@ -195,6 +194,8 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
                 UserValidationResult.ErrorType.PasswordNotMatch -> binding.addUserPassConfirm.error =
                     resources.getString(R.string.password_confirm_error_text)
+
+                UserValidationResult.ErrorType.NoRegionSet -> showToast(R.string.no_region_set_error)
             }
         }
     }
@@ -208,17 +209,12 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         }
     }
 
-    private fun showRegions(data: List<AttachedRegion>) {
-        val regionsString = data
-            .joinToString(", ", getString(R.string.regions) + " ") { it.name }
-        with(binding) {
-            addUserRegionsTv.text = regionsString
-            addUserRegionsTv.show()
-            addUserRegionBtn.show()
-        }
-    }
-
-    private fun fillForm(user: User?) = with(binding) {
+    private fun fillForm(
+        user: User?,
+        isChangingPassword: Boolean,
+        password: String,
+        confirmPassword: String,
+    ) = with(binding) {
         if (user == null) return
         addUserUsername.setText(user.username)
         addUserName.setText(user.name)
@@ -227,12 +223,10 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         addUserPhone.setText(user.tel)
         addUserAddress.setText(user.address)
         addUserComment.setText(user.comment)
-        if (Session.get().hasPermission(Permission.ManageRegion)) {
-            addUserRegionsTv.text = user.regions
-                .joinToString(", ", getString(R.string.regions) + " ") { it.name }
-            addUserRegionsTv.show()
-            addUserRegionBtn.show()
-        }
+
+        addUserPass.setText(password)
+        addUserPassConfirm.setText(confirmPassword)
+        addUserChangePassBox.isChecked = isChangingPassword
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -261,27 +255,6 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         viewModel.deleteUser()
     }
 
-    private fun showRegionChooser() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder
-            .setTitle(getString(R.string.associated_regions))
-            .setCancelable(true)
-            .setMultiChoiceItems(
-                viewModel.getAllRegionNames(),
-                viewModel.getSelectedRegions()
-            ) { _: DialogInterface?, index: Int, checked: Boolean ->
-                viewModel.updateRegionSelection(index, checked)
-            }
-            .setPositiveButton(R.string.common_save) { _, _ ->
-                viewModel.setNewRegions()
-            }
-            .setNegativeButton(R.string.cancel) { dialogInterface, i -> }
-
-        val alertDialog = builder.create()
-        alertDialog.show()
-
-    }
-
     private fun drawRegions(regionItems: List<RegionChipItem>) {
         binding.userRegionChipsGroup.removeAllViews()
         regionItems.forEach { item ->
@@ -292,7 +265,9 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
                 isCheckable = true
                 isChecked = item.isAttached
                 chipStrokeWidth = 4f
-                chipStrokeColor = ColorStateList.valueOf(Color.GREEN)
+                setChipStrokeColorResource(R.color.region_chip_color)
+                chipBackgroundColor =
+                    AppCompatResources.getColorStateList(context, R.color.barrel_chip_color)
             }
             binding.userRegionChipsGroup.addView(chip)
         }

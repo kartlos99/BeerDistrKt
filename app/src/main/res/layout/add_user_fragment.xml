@@ -23,15 +23,14 @@
             app:trackColor="@color/gray_transparent_20"
             tools:visibility="visible" />
 
-
         <TextView
-            android:id="@+id/addUserRegionsTv"
+            android:id="@+id/addUserRegionsTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/gr_size_6"
-            android:minHeight="@dimen/gr_size_48"
             android:visibility="gone"
+            android:text="@string/regions"
             app:layout_constraintEnd_toStartOf="@id/addUserRegionBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,16 +41,16 @@
             android:layout_height="wrap_content"
             android:text="@string/change_region"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/addUserRegionsTv"
+            app:layout_constraintBottom_toBottomOf="@id/addUserRegionsTitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/addUserRegionsTv" />
+            app:layout_constraintTop_toTopOf="@id/addUserRegionsTitle" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/user_region_chips_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gr_size_8"
-            app:layout_constraintTop_toBottomOf="@id/addUserRegionsTv"
+            android:layout_marginTop="@dimen/gr_size_4"
+            app:layout_constraintTop_toBottomOf="@id/addUserRegionsTitle"
             android:visibility="gone"
             tools:visibility="visible"
             app:singleLine="true"

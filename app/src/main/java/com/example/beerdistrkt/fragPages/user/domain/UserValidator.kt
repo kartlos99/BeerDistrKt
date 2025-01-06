@@ -6,7 +6,8 @@ class UserValidator(
     private val userData: User,
     private val isChangingPassword: Boolean,
     private val password: String,
-    private val confirmPassword: String
+    private val confirmPassword: String,
+    private val regions: Set<Int>,
 ) {
 
     companion object {
@@ -18,6 +19,7 @@ class UserValidator(
 
     fun validate(): UserValidationResult {
         errors.clear()
+        checkRegions()
         checkUsername()
         checkName()
         if (userData.id.isEmpty() || isChangingPassword) {
@@ -28,6 +30,11 @@ class UserValidator(
             UserValidationResult.Success
         else
             UserValidationResult.Error(errors)
+    }
+
+    private fun checkRegions() {
+        if (regions.isEmpty())
+            errors.add(UserValidationResult.ErrorType.NoRegionSet)
     }
 
     private fun checkUsername() {
@@ -61,5 +68,6 @@ sealed class UserValidationResult {
         object InvalidName : ErrorType()
         object InvalidPassword : ErrorType()
         object PasswordNotMatch : ErrorType()
+        object NoRegionSet : ErrorType()
     }
 }

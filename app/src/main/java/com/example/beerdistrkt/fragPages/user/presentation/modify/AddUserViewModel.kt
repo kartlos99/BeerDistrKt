@@ -3,12 +3,11 @@ package com.example.beerdistrkt.fragPages.user.presentation.modify
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
-import com.example.beerdistrkt.fragPages.user.domain.UserValidator
-import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
-import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
+import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
+import com.example.beerdistrkt.fragPages.user.domain.UserValidator
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetRegionsUseCase
@@ -56,7 +55,6 @@ class AddUserViewModel @AssistedInject constructor(
 
     val userValidatorLiveData = MutableLiveData<UserValidationResult>()
 
-    val userRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
     private val allRegions = mutableListOf<WorkRegion>()
 
     private val attachedRegionIds = mutableSetOf<Int>()
@@ -65,17 +63,20 @@ class AddUserViewModel @AssistedInject constructor(
         viewModelScope.launch {
             allRegions.clear()
             allRegions.addAll(getRegionsUseCase())
+            var user: User? = null
             if (userID.isNotEmpty()) {
-                val user = getUserUseCase(userID)
+                user = getUserUseCase(userID)
                 attachedRegionIds.addAll(user?.regions?.map { it.id }.orEmpty())
-                _uiState.emit(
-                    ModifyUserData(
-                        user,
-                        Session.get().hasPermission(Permission.ManageRegion),
-                        generateRegionChipsData()
-                    )
-                )
+            } else {
+                attachedRegionIds.add(Session.get().region?.id ?: -1)
             }
+            _uiState.emit(
+                ModifyUserData(
+                    user,
+                    Session.get().hasPermission(Permission.ManageRegion),
+                    generateRegionChipsData()
+                )
+            )
         }
     }
 
@@ -90,19 +91,25 @@ class AddUserViewModel @AssistedInject constructor(
         }
     }
 
-    fun onDoneClick(
-        userData: User,
-        isChangingPassword: Boolean,
-        password: String,
-        confirmPassword: String
-    ) {
+    fun saveUserData() {
+        val userData = _uiState.value
+        if (userData.user == null) return
+
+        val userValidatorResult = UserValidator(
+            userData.user,
+            userData.isChangingPassword,
+            userData.password,
+            userData.confirmPassword,
+            attachedRegionIds,
+        ).validate()
+
         val requestModel = AddUserRequestModel(
-            userData,
-            password,
-            isChangingPassword
+            userData.user,
+            userData.password,
+            userData.isChangingPassword,
+            attachedRegionIds
         )
-        val userValidatorResult =
-            UserValidator(userData, isChangingPassword, password, confirmPassword).validate()
+
         userValidatorLiveData.value = userValidatorResult
         if (userValidatorResult is UserValidationResult.Success)
             putUser(requestModel)
@@ -142,8 +149,8 @@ class AddUserViewModel @AssistedInject constructor(
             saveSession()
         }
         if (!attachedRegionIds.contains(Session.get().region?.id ?: -1)) {
-            userRegionsLiveData.value =
-                ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
+//            userRegionsLiveData.value =
+//                ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
             clearSavedRegion()
         }
 
@@ -163,13 +170,6 @@ class AddUserViewModel @AssistedInject constructor(
 
     fun getSelectedRegions(): BooleanArray {
         return allRegions.map { attachedRegionIds.contains(it.id) }.toBooleanArray()
-    }
-
-    fun updateRegionSelection(index: Int, isChecked: Boolean) {
-        if (isChecked)
-            attachedRegionIds.add(allRegions[index].id)
-        else
-            attachedRegionIds.remove(allRegions[index].id)
     }
 
     fun setNewRegions() {
@@ -195,6 +195,30 @@ class AddUserViewModel @AssistedInject constructor(
                 }
             }
         )
+    }
+
+    fun saveFormState(
+        readUser: User,
+        regionIds: MutableList<Int>,
+        isChangingPassword: Boolean,
+        password: String,
+        confirmPassword: String,
+    ) {
+        if (Session.get().hasPermission(Permission.ManageRegion)) {
+            attachedRegionIds.clear()
+            attachedRegionIds.addAll(regionIds)
+        }
+        _uiState.update { userData ->
+            userData.copy(
+                user = readUser.copy(
+                    regions = allRegions.filter { region -> attachedRegionIds.contains(region.id) }
+                ),
+                regionChips = generateRegionChipsData(),
+                isChangingPassword = isChangingPassword,
+                password = password,
+                confirmPassword = confirmPassword,
+            )
+        }
     }
 
     @AssistedFactory
