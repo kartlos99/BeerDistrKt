@@ -17,6 +17,8 @@ import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
+import com.example.beerdistrkt.utils.hide
+import com.example.beerdistrkt.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,19 +55,25 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
 
     private fun handleUsers(result: ResultState<List<User>>) = with(binding) {
         progressIndicator.isVisible = result.isLoading()
+        infoField.hide()
         result.onSuccess { users ->
             initUsersRecycler(users)
             binding.swipeRefresh.isRefreshing = false
+            if (users.isEmpty()) {
+                infoField.show()
+                infoField.text = getString(R.string.no_users_to_show_try_refresh)
+            }
         }
-        result.onError { code, message ->
-            showToast(message)
-            binding.swipeRefresh.isRefreshing = false
+        result.onError { _, message ->
+            infoField.show()
+            infoField.text = message
+            swipeRefresh.isRefreshing = false
         }
     }
 
     private fun initUsersRecycler(users: List<User>) {
         binding.usersRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = UserAdapter(users)
+        val adapter = UserAdapter(users.filter { it.isActive })
         adapter.onClick = ::openDetailsPage
         binding.usersRecycler.adapter = adapter
     }

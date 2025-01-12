@@ -10,13 +10,13 @@ import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
 import com.example.beerdistrkt.fragPages.user.domain.UserValidator
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.usecase.DeleteUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetRegionsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.PutUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.fragPages.user.presentation.model.ModifyUserData
 import com.example.beerdistrkt.fragPages.user.presentation.model.RegionChipItem
-import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.UserAttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.model.ResultState
@@ -40,6 +40,7 @@ class AddUserViewModel @AssistedInject constructor(
     private val putUserUseCase: PutUserUseCase,
     private val getRegionsUseCase: GetRegionsUseCase,
     private val refreshUsersUseCase: RefreshUsersUseCase,
+    private val deleteUserUseCase: DeleteUserUseCase,
     @Assisted private val userID: String,
 ) : BaseViewModel() {
 
@@ -124,19 +125,10 @@ class AddUserViewModel @AssistedInject constructor(
 
     fun deleteUser() {
         if (userID.isNotEmpty())
-            sendRequest(
-                ApeniApiService.getInstance().deleteRecord(
-                    DeleteRequest(
-                        userID, "users", Session.get().userID ?: ""
-                    )
-                ),
-                success = {
-                    ioScope.launch {
-                        database.deleteUser(userID)
-                    }
-                    deleteUserLiveData.value = ApiResponseState.Success("")
-                }
-            )
+            viewModelScope.launch {
+                _apiState.emit(ResultState.Loading)
+                _apiState.emit(deleteUserUseCase(userID))
+            }
     }
 
     private fun updateLocalSession() {

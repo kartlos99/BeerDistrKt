@@ -14,4 +14,7 @@ data class User(
     val comment: String,
     val userStatus: UserStatus,
     val regions: List<WorkRegion>,
-)
+) {
+    val isActive: Boolean
+        get() = userStatus == UserStatus.ACTIVE
+}

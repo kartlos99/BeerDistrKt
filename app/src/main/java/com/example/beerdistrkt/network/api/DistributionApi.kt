@@ -13,6 +13,7 @@ import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
+import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.UserApiModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.network.AuthInterceptor
@@ -132,4 +133,8 @@ interface DistributionApi {
 
     @POST("user/put.php")
     suspend fun putUser(@Body model: AddUserRequestModel): BaseInsertApiModel
+
+    @POST("general/deleteRecord.php")
+    suspend fun deleteRecord(@Body deleteModel: DeleteRecordApiModel)
+
 }

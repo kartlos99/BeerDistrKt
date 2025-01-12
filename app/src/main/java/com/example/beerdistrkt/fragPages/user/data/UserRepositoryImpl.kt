@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.user.data
 
 import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
+import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.domain.UserRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
@@ -73,5 +74,22 @@ class UserRepositoryImpl @Inject constructor(
                 fetchUsers()
             }
         }
+    }
+
+    override suspend fun deleteUser(userID: String): ResultState<Unit> {
+        return apiCall {
+            api.deleteRecord(
+                DeleteRecordApiModel(
+                    recordID = userID,
+                    table = USERS_TABLE
+                )
+            )
+        }.also {
+            fetchUsers()
+        }.toResultState()
+    }
+
+    companion object {
+        private const val USERS_TABLE = "users"
     }
 }

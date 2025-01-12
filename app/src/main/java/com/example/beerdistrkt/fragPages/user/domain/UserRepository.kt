@@ -15,4 +15,5 @@ interface UserRepository {
     suspend fun getRegions(): List<WorkRegion>
     val usersFlow: MutableStateFlow<ResultState<List<User>>>
     suspend fun putUser(model: AddUserRequestModel): ResultState<BaseInsertApiModel>
+    suspend fun deleteUser(userID: String): ResultState<Unit>
 }
