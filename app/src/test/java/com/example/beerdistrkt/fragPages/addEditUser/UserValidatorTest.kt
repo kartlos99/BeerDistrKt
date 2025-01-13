@@ -23,7 +23,7 @@ class UserValidatorTest {
         val user = User(
             "2", "username", "name", UserType.DISTRIBUTOR, "", "", "", "", UserStatus.ACTIVE, listOf()
         )
-        val validator = UserValidator(user, false, "", "")
+        val validator = UserValidator(user, false, "", "", setOf(1,2))
 
         assertEquals(UserValidationResult.Success, validator.validate())
     }
@@ -33,7 +33,7 @@ class UserValidatorTest {
         val user = User(
             "", "username", "name", UserType.DISTRIBUTOR, "", "", "", "", UserStatus.ACTIVE, listOf()
         )
-        val validator = UserValidator(user, false, "", "")
+        val validator = UserValidator(user, false, "", "", setOf(1,2))
 
         assert(validator.validate() is UserValidationResult.Error)
         assert((validator.validate() as UserValidationResult.Error).errors.contains(
@@ -45,7 +45,7 @@ class UserValidatorTest {
         val user = User(
             "2", "username", "name", UserType.DISTRIBUTOR, "", "", "", "", UserStatus.ACTIVE, listOf()
         )
-        val validator = UserValidator(user, true, "456", "678")
+        val validator = UserValidator(user, true, "456", "678", setOf(1,2))
 
         assert(validator.validate() is UserValidationResult.Error)
         assert((validator.validate() as UserValidationResult.Error).errors.contains(
@@ -56,7 +56,7 @@ class UserValidatorTest {
     fun `invalid user name returns invalid username included error list result`() {
         val user = mockk<User>(relaxed = true)
         every { user.username }.returns("ab")
-        val validator = UserValidator(user, false, "456", "678")
+        val validator = UserValidator(user, false, "456", "678", setOf(1,2))
 
         assert(validator.validate() is UserValidationResult.Error)
         assert((validator.validate() as UserValidationResult.Error).errors.contains(

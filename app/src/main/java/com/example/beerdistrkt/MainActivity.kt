@@ -147,14 +147,6 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
         }
     }
 
-    fun logOut() {
-        Session.get().clearSession()
-        Session.get().loggedIn = false
-        val navController = this.findNavController(R.id.mainNavHostFragment)
-        navController.navigate(R.id.action_global_loginFragment)
-        navController.clearBackStack(R.id.loginFragment)
-    }
-
     private fun changePass() {
         val chPassView = ChangePassDialogBinding.inflate(layoutInflater)
 

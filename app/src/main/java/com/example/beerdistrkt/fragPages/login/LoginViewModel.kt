@@ -53,7 +53,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun setUserData(data: LoginResponse) {
-        Session.get().justLoggedIn(data)
+        session.justLoggedIn(data)
         viewModelScope.launch {
             userPreferencesRepository.saveUserSession(Session.get().getUserInfo())
         }

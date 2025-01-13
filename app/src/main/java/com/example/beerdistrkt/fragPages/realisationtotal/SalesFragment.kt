@@ -102,7 +102,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             if (currentUserIndexInSpinner >= 0) {
                 salesDistributorsSpinner.setSelection(currentUserIndexInSpinner)
             } else {
-                (activity as MainActivity).logOut()
+                viewModel.forceLogout()
             }
             salesDistributorsSpinner.isEnabled = false
         }

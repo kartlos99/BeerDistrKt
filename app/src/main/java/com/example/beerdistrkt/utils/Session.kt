@@ -1,32 +1,25 @@
 package com.example.beerdistrkt.utils
 
+import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
-data class UserInfo(
-    val userID: String,
-    val userType: UserType,
-    val permissions: List<Permission>,
-    val userName: String,
-    val displayName: String,
-    val accessToken: String,
-    val accessTokenCreateTime: Long,
-    val regions: List<WorkRegion>
-)
-
-class Session {
+@Singleton
+class Session @Inject constructor() {
 
     var userID: String? = null
     var userType: UserType = UserType.DISTRIBUTOR
-    var permissions = mutableListOf<Permission>()
+    private var permissions = mutableListOf<Permission>()
     var userName: String? = null
     var displayName: String? = null
     var accessToken: String? = null
-    var accessTokenCreateTime = 0L
+    private var accessTokenCreateTime = 0L
     var region: WorkRegion? = null
     var regions: MutableList<WorkRegion> = mutableListOf()
 

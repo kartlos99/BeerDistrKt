@@ -29,10 +29,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<LoginViewModel>() {
 
-    companion object {
-        fun newInstance() = LoginFragment()
-    }
-
     private val binding by viewBinding(LoginFragmentBinding::bind)
 
     override val viewModel: LoginViewModel by viewModels()
@@ -69,7 +65,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             }
         }
 
-        if (Session.get().isUserLogged())
+        if (viewModel.session.isUserLogged())
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         else
             checkSavedPass()
@@ -112,17 +108,20 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                         afterSuccessResponse(it.data)
                         viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                     }
+
                     is ApiResponseState.ApiError -> {
                         viewLoginLoginBtn.isEnabled = true
                         viewLoginProgress.goAway()
                         showToast(it.errorText)
                     }
+
                     is ApiResponseState.Loading -> {
                         if (!it.showLoading) {
                             viewLoginLoginBtn.isEnabled = true
                             viewLoginProgress.goAway()
                         }
                     }
+
                     else -> {}
                 }
             }

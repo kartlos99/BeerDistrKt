@@ -3,8 +3,8 @@ package com.example.beerdistrkt.fragPages.orders.repository
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
-import com.example.beerdistrkt.utils.UserInfo
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow

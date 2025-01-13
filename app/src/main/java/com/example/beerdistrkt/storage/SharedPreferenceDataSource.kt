@@ -1,9 +1,9 @@
 package com.example.beerdistrkt.storage
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.models.VcsResponse
-import com.example.beerdistrkt.utils.UserInfo
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
