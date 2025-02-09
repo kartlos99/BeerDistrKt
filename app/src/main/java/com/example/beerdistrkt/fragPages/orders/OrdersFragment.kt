@@ -149,7 +149,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     orderListSize = it.data.size
                     ordersAdapter = ParentOrderAdapter(
                         it.data,
-                        viewModel.barrelsList,
+                        viewModel.barrels,
                         viewModel::saveDistributorGroupState
                     )
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag

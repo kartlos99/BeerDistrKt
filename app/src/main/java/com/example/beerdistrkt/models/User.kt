@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.squareup.moshi.Json
-import java.io.Serializable
 
+@Deprecated("Don't use this")
 @Entity(tableName = "user_table")
 data class User(
     @PrimaryKey

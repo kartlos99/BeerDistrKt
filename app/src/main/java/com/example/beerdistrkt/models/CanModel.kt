@@ -3,6 +3,7 @@ package com.example.beerdistrkt.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Deprecated("use Barrel class")
 @Entity(tableName = "can_table")
 data class CanModel(
     @PrimaryKey

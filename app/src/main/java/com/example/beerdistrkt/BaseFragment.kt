@@ -21,11 +21,12 @@ import com.example.beerdistrkt.fragPages.login.LoginFragment
 import com.example.beerdistrkt.fragPages.statement.StatementSubPageFragment
 import com.example.beerdistrkt.utils.ApiResponseState
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
 
     protected abstract val viewModel: VM
-    protected val dateFormatDash = SimpleDateFormat(SIMPLE_DATE_PATTERN)
+    protected val dateFormatDash = SimpleDateFormat(SIMPLE_DATE_PATTERN, Locale.getDefault())
 
     fun showToast(message: String?) {
         if (!message.isNullOrEmpty())
