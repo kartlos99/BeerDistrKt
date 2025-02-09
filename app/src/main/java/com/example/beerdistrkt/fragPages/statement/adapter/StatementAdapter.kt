@@ -12,18 +12,22 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.StatementListRowBinding
 import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
-import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
-import com.example.beerdistrkt.utils.*
+import com.example.beerdistrkt.utils.K_PAGE
+import com.example.beerdistrkt.utils.M_PAGE
+import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.orEmpty
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import kotlin.math.roundToInt
 
 class StatementAdapter(
     private val statementList: MutableList<StatementModel>,
-    private val location: Int
+    private val location: Int,
+    private val editOldSalePermission: Boolean,
+    private val editSalePermission: Boolean,
 ) : RecyclerView.Adapter<StatementAdapter.StatementViewHolder>() {
 
     var isGrouped = true
@@ -40,6 +44,8 @@ class StatementAdapter(
         return StatementViewHolder(
             StatementListRowBinding.inflate(LayoutInflater.from(parent.context)),
             location,
+            editOldSalePermission,
+            editSalePermission,
             checkGrouped
         )
     }
@@ -72,6 +78,8 @@ class StatementAdapter(
     class StatementViewHolder(
         private val binding: StatementListRowBinding,
         private val location: Int,
+        private val editOldSalePermission: Boolean,
+        private val editSalePermission: Boolean,
         private val isGrouped: () -> Boolean
     ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
@@ -163,9 +171,9 @@ class StatementAdapter(
 
                     val dateFormat = SimpleDateFormat(ctx.getString(R.string.patern_date))
 
-                    if (Session.get().hasPermission(Permission.EditOldSale) ||
+                    if (editOldSalePermission ||
                         (dateFormat.format(selectedItemDate) == dateFormat.format(Date())
-                                && Session.get().hasPermission(Permission.EditSale))
+                                && editSalePermission)
                     ) {
                         if (location == M_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.finance_menu_title))

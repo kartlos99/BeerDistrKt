@@ -58,7 +58,7 @@ class SysClearViewModel @Inject constructor(
     fun addClearingData(clientID: Int, deleteRecordID: Int = 0) {
         viewModelScope.launch {
             _addClearFlow.emit(ApiResponseState.Loading(true))
-            val requestData = AddClearingModel(deleteRecordID, clientID, Session.get().getUserID())
+            val requestData = AddClearingModel(deleteRecordID, clientID, session.getUserID())
             sendRequest(
                 ApeniApiService.getInstance().addDeleteClearing(requestData),
                 successWithData = {

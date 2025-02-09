@@ -112,7 +112,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             getCustomer()
         }
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
-        selectedDistributorRegionID = Session.get().region?.id ?: 0
+
         getDebt()
         getAllUsers()
     }
@@ -138,6 +138,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             ApeniApiService.getInstance().getDebt(clientID),
             successWithData = {
                 availableRegions = it.availableRegions
+                selectedDistributorRegionID = session.region?.id ?: 0
                 getDebtLiveData.value = ApiResponseState.Success(it)
                 getOrder(editingOrderID)
             }
@@ -253,7 +254,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             clientID,
             selectedDistributorRegionID,
             comment,
-            Session.get().userID ?: "0",
+            session.userID ?: "0",
             orderItemsList.map { it.toRequestOrderItem(isChecked) },
             bottleOrderItemsList.map {
                 it.toRequestOrderItem(isChecked)
@@ -283,7 +284,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             clientID,
             selectedDistributorRegionID,
             comment,
-            Session.get().userID ?: "0",
+            session.userID ?: "0",
             orderItemsList.map { it.toRequestOrderItem(isChecked) },
             bottleOrderItemsList.map {
                 it.toRequestOrderItem(isChecked)
@@ -363,7 +364,7 @@ class AddOrdersViewModel @AssistedInject constructor(
         return if (userIds.indexOf(distributorID) >= 0)
             userIds.indexOf(distributorID)
         else
-            userIds.indexOf(Session.get().userID ?: return 0)
+            userIds.indexOf(session.userID ?: return 0)
     }
 
     fun switchToBarrel() {

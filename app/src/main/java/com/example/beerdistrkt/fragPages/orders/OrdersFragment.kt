@@ -169,7 +169,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         }
         viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (Session.get().hasPermission(Permission.EditOrder)) {
+                if (viewModel.session.hasPermission(Permission.EditOrder)) {
                     context?.showAskingDialog(
                         null,
                         R.string.confirm_delete_order,
@@ -196,7 +196,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.editOrderLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
-                    if (Session.get().hasPermission(Permission.EditOrder)) {
+                    if (viewModel.session.hasPermission(Permission.EditOrder)) {
                         vBinding.root.findNavController().navigate(
                             OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(
                                 it.clientID,

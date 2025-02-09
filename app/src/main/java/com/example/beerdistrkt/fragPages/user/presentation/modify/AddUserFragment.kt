@@ -106,7 +106,7 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         getUserType(),
         tel = binding.addUserPhone.text(),
         address = binding.addUserAddress.text(),
-        maker = Session.get().userID ?: "0",
+        maker = viewModel.session.userID ?: "0",
         comment = binding.addUserComment.text(),
         userStatus = UserStatus.ACTIVE,
         regions = listOf()

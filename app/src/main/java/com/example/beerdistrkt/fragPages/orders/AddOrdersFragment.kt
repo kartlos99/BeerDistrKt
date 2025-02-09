@@ -134,7 +134,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         vBinding.addOrderDistributorSpinner.adapter = userAdapter
         vBinding.addOrderDistributorSpinner.onItemSelectedListener = this
         vBinding.addOrderDistributorSpinner.setSelection(
-            viewModel.getDistributorIndex(Session.get().userID ?: return)
+            viewModel.getDistributorIndex(viewModel.session.userID ?: return)
         )
     }
 
@@ -150,7 +150,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             setSelection(
                 viewModel.availableRegions
                     .map { it.regionID }
-                    .indexOf(Session.get().region?.id.toString())
+                    .indexOf(viewModel.session.region?.id.toString())
             )
         }
     }

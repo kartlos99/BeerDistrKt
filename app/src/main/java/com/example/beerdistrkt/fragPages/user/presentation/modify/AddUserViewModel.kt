@@ -14,11 +14,10 @@ import com.example.beerdistrkt.fragPages.user.domain.usecase.DeleteUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetRegionsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.PutUserUseCase
-import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.fragPages.user.presentation.model.ModifyUserData
 import com.example.beerdistrkt.fragPages.user.presentation.model.RegionChipItem
-import com.example.beerdistrkt.models.UserAttachRegionsRequest
-import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.transform
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -39,12 +38,10 @@ class AddUserViewModel @AssistedInject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val putUserUseCase: PutUserUseCase,
     private val getRegionsUseCase: GetRegionsUseCase,
-    private val refreshUsersUseCase: RefreshUsersUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
+    override var session: Session,
     @Assisted private val userID: String,
 ) : BaseViewModel() {
-
-    private var shouldSave: Boolean = false
 
     private val _apiState = MutableStateFlow<ResultState<Unit?>>(ResultState.Success(null))
     val apiState: StateFlow<ResultState<Unit?>> = _apiState.asStateFlow()
@@ -69,12 +66,12 @@ class AddUserViewModel @AssistedInject constructor(
                 user = getUserUseCase(userID)
                 attachedRegionIds.addAll(user?.regions?.map { it.id }.orEmpty())
             } else {
-                attachedRegionIds.add(Session.get().region?.id ?: -1)
+                attachedRegionIds.add(session.region?.id ?: -1)
             }
             _uiState.emit(
                 ModifyUserData(
                     user,
-                    Session.get().hasPermission(Permission.ManageRegion),
+                    session.hasPermission(Permission.ManageRegion),
                     generateRegionChipsData()
                 )
             )
@@ -119,7 +116,18 @@ class AddUserViewModel @AssistedInject constructor(
     private fun putUser(model: AddUserRequestModel) {
         viewModelScope.launch {
             _apiState.emit(ResultState.Loading)
-            _apiState.emit(putUserUseCase(model).transform {})
+            when (val result = putUserUseCase(model)) {
+                is ApiResponse.Error -> {
+                    _apiState.emit(result.toResultState())
+                }
+
+                is ApiResponse.Success -> {
+                    _apiState.emit(result.toResultState().transform { })
+                    if (session.userID == userID) {
+                        updateLocalSession()
+                    }
+                }
+            }
         }
     }
 
@@ -132,20 +140,17 @@ class AddUserViewModel @AssistedInject constructor(
     }
 
     private fun updateLocalSession() {
-        Session.get().regions.clear()
-        Session.get().regions.addAll(
+        session.regions.clear()
+        session.regions.addAll(
             allRegions.filter { attachedRegionIds.contains(it.id) }
         )
-        if (shouldSave) {
-            shouldSave = false
-            saveSession()
-        }
-        if (!attachedRegionIds.contains(Session.get().region?.id ?: -1)) {
+        saveSession()
+        if (!attachedRegionIds.contains(session.region?.id ?: -1)) {
 //            userRegionsLiveData.value =
 //                ApiResponseState.ApiError(REGION_RESTRICTION_KAY, "")
             clearSavedRegion()
+            forceLogout()
         }
-
     }
 
     private fun clearSavedRegion() = viewModelScope.launch {
@@ -153,40 +158,7 @@ class AddUserViewModel @AssistedInject constructor(
     }
 
     private fun saveSession() = viewModelScope.launch {
-        userPreferencesRepository.saveUserSession(Session.get().getUserInfo())
-    }
-
-    fun getAllRegionNames(): Array<String> {
-        return allRegions.map { it.name }.toTypedArray()
-    }
-
-    fun getSelectedRegions(): BooleanArray {
-        return allRegions.map { attachedRegionIds.contains(it.id) }.toBooleanArray()
-    }
-
-    fun setNewRegions() {
-        val request = UserAttachRegionsRequest(
-            userID,
-            attachedRegionIds,
-        )
-        sendRequest(
-            ApeniApiService.getInstance().setRegions(request),
-            successWithData = {
-                shouldSave = true
-                viewModelScope.launch {
-                    refreshUsersUseCase()
-                    _uiState.update {
-                        it.copy(
-                            user = getUserUseCase(userID),
-                            regionChips = generateRegionChipsData()
-                        )
-                    }
-                    if (Session.get().userID == userID) {
-                        updateLocalSession()
-                    }
-                }
-            }
-        )
+        userPreferencesRepository.saveUserSession(session.getUserInfo())
     }
 
     fun saveFormState(
@@ -196,7 +168,7 @@ class AddUserViewModel @AssistedInject constructor(
         password: String,
         confirmPassword: String,
     ) {
-        if (Session.get().hasPermission(Permission.ManageRegion)) {
+        if (session.hasPermission(Permission.ManageRegion)) {
             attachedRegionIds.clear()
             attachedRegionIds.addAll(regionIds)
         }
@@ -216,9 +188,5 @@ class AddUserViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(userID: String): AddUserViewModel
-    }
-
-    companion object {
-        const val REGION_RESTRICTION_KAY: Int = 234
     }
 }

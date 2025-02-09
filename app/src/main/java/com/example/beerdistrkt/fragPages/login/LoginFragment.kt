@@ -162,7 +162,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     } else {
                         showToast(R.string.auth_fail_firebase)
                         Log.d("auth", "exp_MEssage: " + task.exception?.message)
-                        Session.get().clearSession()
+                        viewModel.session.clearSession()
                     }
                 }
             }
@@ -178,7 +178,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 } else {
                     Log.d("auth", task.exception?.message ?: "")
                     showToast(R.string.registration_fail_firebase)
-                    Session.get().clearSession()
+                    viewModel.session.clearSession()
                 }
             }
     }

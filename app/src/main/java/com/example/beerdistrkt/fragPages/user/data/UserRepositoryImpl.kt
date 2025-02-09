@@ -6,11 +6,11 @@ import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.domain.UserRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
+import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
-import com.example.beerdistrkt.network.model.isSuccess
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,11 +66,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun putUser(model: AddUserRequestModel): ResultState<BaseInsertApiModel> {
+    override suspend fun putUser(model: AddUserRequestModel): ApiResponse<BaseInsertApiModel> {
         return apiCall {
             api.putUser(model)
-        }.toResultState().also {
-            if (it.isSuccess()) {
+        }.also {
+            if (it is ApiResponse.Success) {
                 fetchUsers()
             }
         }

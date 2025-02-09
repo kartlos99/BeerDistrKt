@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.models.DataResponse
+import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import kotlinx.coroutines.CoroutineScope
@@ -27,11 +28,11 @@ abstract class BaseViewModel : ViewModel() {
     protected val ioScope = CoroutineScope(Dispatchers.IO + job)
     protected val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    private val _uiEventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow()
+    private val _uiEventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow(1,1)
     val uiEventFlow: SharedFlow<UiEvent> = _uiEventFlow.asSharedFlow()
 
     @Inject
-    lateinit var session: Session
+    open lateinit var session: Session
 
     protected var loadingCounter = 0
     val isLoading get() = loadingCounter != 0
@@ -76,6 +77,7 @@ abstract class BaseViewModel : ViewModel() {
         session.clearSession()
         session.loggedIn = false
         viewModelScope.launch {
+            session.clearUserPreference()
             _uiEventFlow.emit(UiEvent.LogOut)
         }
     }

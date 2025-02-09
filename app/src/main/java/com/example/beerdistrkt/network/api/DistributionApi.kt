@@ -1,7 +1,5 @@
 package com.example.beerdistrkt.network.api
 
-import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
@@ -12,57 +10,17 @@ import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
+import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.UserApiModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
-import com.example.beerdistrkt.network.AuthInterceptor
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
-import java.util.concurrent.TimeUnit
 
 interface DistributionApi {
-
-    companion object {
-        private var instance: DistributionApi? = null
-
-        fun getApi(): DistributionApi {
-            return instance ?: create().also {
-                instance = it
-            }
-        }
-
-        private fun create(): DistributionApi {
-
-            val moshi = Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
-
-            val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(AuthInterceptor())
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .build()
-
-            val retrofit = Retrofit.Builder()
-                .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl(BuildConfig.MOBILE_API_URL)
-                .build()
-
-            return retrofit.create(DistributionApi::class.java)
-        }
-    }
 
     @GET("storeHouse/getIoListPaged.php")
     suspend fun getStoreHouseIoPagedList(

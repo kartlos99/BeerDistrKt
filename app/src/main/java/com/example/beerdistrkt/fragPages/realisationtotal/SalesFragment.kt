@@ -96,9 +96,9 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         )
         salesDistributorsSpinner.onItemSelectedListener = this@SalesFragment
 
-        if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
+        if (!viewModel.session.hasPermission(Permission.SeeOthersRealization)) {
             val currentUserIndexInSpinner =
-                viewModel.visibleDistributors.map { it.id }.indexOf(Session.get().userID)
+                viewModel.visibleDistributors.map { it.id }.indexOf(viewModel.session.userID)
             if (currentUserIndexInSpinner >= 0) {
                 salesDistributorsSpinner.setSelection(currentUserIndexInSpinner)
             } else {
@@ -106,7 +106,7 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
             }
             salesDistributorsSpinner.isEnabled = false
         }
-        if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
+        if (!viewModel.session.hasPermission(Permission.SeeOldRealization)) {
             viewModel.setCurrentDate()
             salesSetDateBtn.isEnabled = false
             salesDayBackBtn.isEnabled = false

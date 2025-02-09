@@ -170,9 +170,9 @@ class AddDeliveryViewModel @AssistedInject constructor(
 
         val saleRequestModel = SaleRequestModel(
             clientID,
-            Session.get().getUserID(),
+            session.getUserID(),
             deliveryDataComment,
-            Session.get().getUserID(),
+            session.getUserID(),
             isReplace = if (isReplace) "1" else "0",
             operationDate = dateTimeFormat.format(saleDateCalendar.time),
             orderID = orderID,

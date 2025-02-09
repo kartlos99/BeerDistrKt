@@ -3,16 +3,14 @@ package com.example.beerdistrkt.utils
 import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 
 
-@Singleton
-class Session @Inject constructor() {
-
+class Session(
+    private val userPreferencesRepository: UserPreferencesRepository,
+) {
     var userID: String? = null
     var userType: UserType = UserType.DISTRIBUTOR
     private var permissions = mutableListOf<Permission>()
@@ -25,7 +23,7 @@ class Session @Inject constructor() {
 
     var loggedIn = false
 
-    fun isUserLogged() = loggedIn
+    fun isUserLogged() = loggedIn && accessToken != null
 
     fun getUserID(): Int = userID?.toInt() ?: 0
 
@@ -51,7 +49,11 @@ class Session @Inject constructor() {
         userName = null
         displayName = null
         accessToken = null
-        SharedPreferenceDataSource.getInstance().clearSession()
+        permissions.clear()
+    }
+
+    suspend fun clearUserPreference() {
+        userPreferencesRepository.clearSession()
     }
 
     fun isAccessTokenValid(): Boolean {
@@ -59,8 +61,6 @@ class Session @Inject constructor() {
             return System.currentTimeMillis() - accessTokenCreateTime < SESSION_DURATION
         return false
     }
-
-    fun isLogOutDone(): Boolean = userName.isNullOrEmpty()
 
     fun getUserInfo(): UserInfo {
         return UserInfo(
@@ -97,20 +97,7 @@ class Session @Inject constructor() {
         return permissions.contains(permission)
     }
 
-    fun saveSession() {
-//        SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
-    }
-
     companion object {
-        private var session: Session? = null
         const val SESSION_DURATION: Long = 60 * 60 * 1000
-
-        @JvmStatic
-        fun get(): Session {
-            if (session == null) {
-                session = Session()
-            }
-            return session!!
-        }
     }
 }

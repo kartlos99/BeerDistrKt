@@ -1,8 +1,6 @@
 package com.example.beerdistrkt.network
 
-import android.content.Context
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
@@ -33,6 +31,7 @@ import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
+import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.models.BeerModelBase
 import com.example.beerdistrkt.models.CanModel
@@ -55,9 +54,7 @@ import com.example.beerdistrkt.network.model.BaseDataResponse
 import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -68,29 +65,6 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-class AuthInterceptor : Interceptor {
-
-    private fun getHeadersMap(): Map<String, String> {
-        val session = Session.get()
-        return if (session.isUserLogged())
-            mapOf(
-                "Authorization" to "Bearer ${session.accessToken}",
-                "Client" to "Android",
-                "Region" to session.getRegionID()
-            )
-        else mapOf("Client" to "Android")
-    }
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val newRequest = chain.request().newBuilder()
-        getHeadersMap().entries.forEach {
-            newRequest.addHeader(it.key, it.value)
-        }
-        return chain.proceed(newRequest.build())
-    }
-
-}
-
 interface ApeniApiService {
 
     companion object {
@@ -100,9 +74,9 @@ interface ApeniApiService {
 //        private const val BASE_URL = "http://192.168.0.102/apeni.localhost.com/tbilisi/mobile/"
 //        private const val BASE_URL = "http://172.20.20.137/apeni.localhost.com/tbilisi/mobile/"
 
-        fun initialize(context: Context) {
+        fun initialize(session: Session) {
             if (instance == null) {
-                instance = create(context)
+                instance = create(session)
             }
         }
 
@@ -110,14 +84,14 @@ interface ApeniApiService {
             return instance!!
         }
 
-        private fun create(context: Context?): ApeniApiService {
+        private fun create(session: Session): ApeniApiService {
 
             val moshi = Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
             val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(AuthInterceptor())
+                .addInterceptor(SessionInterceptor(session))
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)

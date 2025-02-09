@@ -9,7 +9,6 @@ import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesReposi
 import com.example.beerdistrkt.fragPages.user.data.UserMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,6 +17,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val userMapper: UserMapper,
+    private val apeniApi: ApeniApiService,
 ) : BaseViewModel() {
 
     val loginResponseLiveData = MutableLiveData<ApiResponseState<LoginResponse>>()
@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(
     fun logIn(username: String, password: String) {
         loginResponseLiveData.value = ApiResponseState.Loading(true)
         sendRequest(
-            ApeniApiService.getInstance().logIn(LoginRequest(username, password)),
+            apeniApi.logIn(LoginRequest(username, password)),
             successWithData = {
                 val loginResp = LoginResponse(
                     id = it.id,
@@ -39,8 +39,8 @@ class LoginViewModel @Inject constructor(
                     token = it.token
                 )
                 loginResponseLiveData.value = ApiResponseState.Success(loginResp)
-                Session.get().regions.clear()
-                Session.get().regions.addAll(loginResp.regions)
+                session.regions.clear()
+                session.regions.addAll(loginResp.regions)
             },
             responseFailure = { code, error ->
                 loginResponseLiveData.value = ApiResponseState.ApiError(code, error)
@@ -55,7 +55,7 @@ class LoginViewModel @Inject constructor(
     fun setUserData(data: LoginResponse) {
         session.justLoggedIn(data)
         viewModelScope.launch {
-            userPreferencesRepository.saveUserSession(Session.get().getUserInfo())
+            userPreferencesRepository.saveUserSession(session.getUserInfo())
         }
     }
 }

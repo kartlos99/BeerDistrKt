@@ -2,7 +2,10 @@ package com.example.beerdistrkt.fragPages.orders.repository
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.squareup.moshi.JsonAdapter
@@ -12,9 +15,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import javax.inject.Inject
 
-class UserPreferencesRepository @Inject constructor(
+class UserPreferencesRepository(
     private val dataStore: DataStore<Preferences>,
     private val moshi: Moshi,
 ) {
@@ -54,7 +56,9 @@ class UserPreferencesRepository @Inject constructor(
         }
     }
 
-    suspend fun saveUserSession(info: UserInfo) {
+    suspend fun clearSession() = saveUserSession(null)
+
+    suspend fun saveUserSession(info: UserInfo?) {
         val dataStoreKey = stringPreferencesKey(SESSION_KEY)
         dataStore.edit { preferences ->
             preferences[dataStoreKey] = moshiSessionAdapter.toJson(info)

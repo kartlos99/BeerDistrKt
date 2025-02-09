@@ -98,7 +98,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
         }
     }
 
-    private fun canDeleteExpense() = Session.get().hasPermission(Permission.DeleteExpense) ||
+    private fun canDeleteExpense() = viewModel.session.hasPermission(Permission.DeleteExpense) ||
             viewModel.selectedDayLiveData.value == dateFormatDash.format(Date())
 
     override fun onClick(v: View?) {
@@ -110,7 +110,7 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
     }
 
     private fun openExpenseDetails(expense: Expense? = null) {
-        if (Session.get().hasPermission(Permission.AddExpenseInPast) || viewModel.isToday())
+        if (viewModel.session.hasPermission(Permission.AddExpenseInPast) || viewModel.isToday())
             findNavController().navigate(
                 SalesFragmentDirections
                     .actionSalesFragmentToAddEditExpenseFragment(expense)

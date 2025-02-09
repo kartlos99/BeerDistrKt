@@ -75,7 +75,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
 
     private fun createExpense(): Expense = Expense(
         null,
-        Session.get().userID!!,
+        session.userID!!,
         .0,
         String.empty(),
         dateTimeFormat.format(Calendar.getInstance().time),
@@ -96,7 +96,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             }?.let { category ->
                 val expense = Expense(
                     expense?.id,
-                    Session.get().userID!!,
+                    session.userID!!,
                     parseDouble(amountStr),
                     comment,
                     dateTimeFormat.format(Calendar.getInstance().time),
@@ -161,7 +161,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
                 DeleteRequest(
                     id,
                     EXPENSE_TABLE_NAME,
-                    Session.get().userID!!
+                    session.userID!!
                 )
             ),
             success = {

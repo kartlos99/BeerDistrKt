@@ -3,9 +3,11 @@ package com.example.beerdistrkt.fragPages.sawyobi.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.beerdistrkt.network.api.ApiResponse
-import com.example.beerdistrkt.network.api.DefaultApiClient
+import com.example.beerdistrkt.network.api.StorehouseIoRepository
 
-class StorehousePagingSource : PagingSource<Int, StorehouseIoDto>() {
+class StorehousePagingSource(
+    private val repo: StorehouseIoRepository
+) : PagingSource<Int, StorehouseIoDto>() {
 
     companion object {
         const val STARTING_KEY = 0
@@ -19,7 +21,7 @@ class StorehousePagingSource : PagingSource<Int, StorehouseIoDto>() {
 
         val pageKey = params.key ?: STARTING_KEY
 
-        return when (val apiResult = DefaultApiClient.getApi().getStorehouseIoPaged(pageKey)) {
+        return when (val apiResult = repo.getStorehouseIoPaged(pageKey)) {
             is ApiResponse.Error -> {
                 LoadResult.Error(Exception(apiResult.message))
             }

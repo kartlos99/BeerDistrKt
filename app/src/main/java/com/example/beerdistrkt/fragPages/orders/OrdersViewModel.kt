@@ -207,7 +207,7 @@ class OrdersViewModel @Inject constructor(
 
     fun deleteOrder(order: Order) {
         Log.d("onDelete", order.toString())
-        val userID = Session.get().userID ?: return
+        val userID = session.userID ?: return
         sendRequest(
             ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID, userID)),
             success = {
@@ -253,7 +253,7 @@ class OrdersViewModel @Inject constructor(
         val distributorID = selectedUser.userID
         val regionID = selectedUser.regionID
 
-        val userID = Session.get().userID ?: return
+        val userID = session.userID ?: return
         val orderChangeDistributor =
             OrderUpdateDistributorRequestModel(orderID, distributorID, regionID, userID)
         sendRequest(

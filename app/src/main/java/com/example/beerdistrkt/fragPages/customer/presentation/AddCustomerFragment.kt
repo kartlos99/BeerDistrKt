@@ -73,7 +73,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         binding.initView()
         observeViewModel()
 
-        if (Session.get().hasPermission(Permission.ManageRegion) && clientID > 0)
+        if (viewModel.session.hasPermission(Permission.ManageRegion) && clientID > 0)
             viewModel.getRegionForClient()
     }
 
