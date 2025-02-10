@@ -9,6 +9,7 @@ import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ class MainActViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val refreshCustomers: RefreshCustomersUseCase,
     private val refreshUsersUseCase: RefreshUsersUseCase,
+    override var session: Session
 ) : BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()

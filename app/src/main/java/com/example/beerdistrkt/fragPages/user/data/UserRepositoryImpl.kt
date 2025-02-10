@@ -6,6 +6,7 @@ import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.domain.UserRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.usecase.filterByRegion
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
@@ -29,11 +30,16 @@ class UserRepositoryImpl @Inject constructor(
     override val usersFlow: MutableStateFlow<ResultState<List<User>>> =
         MutableStateFlow(ResultState.Success(emptyList()))
 
-    override suspend fun getUsers(): List<User> {
-        return users.ifEmpty {
-            fetchUsers()
-            users
-        }
+    private fun userFilterByRegion(user: User, regionId: Int): Boolean =
+        user.regions.map { it.id }.contains(regionId)
+
+    override suspend fun getUsers(regionId: Int): List<User> {
+        return users
+            .filterByRegion(regionId)
+            .ifEmpty {
+                fetchUsers()
+                users.filterByRegion(regionId)
+            }
     }
 
     override suspend fun getRegions(): List<WorkRegion> {

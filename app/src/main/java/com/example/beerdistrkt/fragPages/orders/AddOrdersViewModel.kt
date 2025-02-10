@@ -16,6 +16,8 @@ import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
+import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
 import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.models.MappedUser
 import com.example.beerdistrkt.models.Order
@@ -23,14 +25,10 @@ import com.example.beerdistrkt.models.OrderStatus.ACTIVE
 import com.example.beerdistrkt.models.OrderStatus.CANCELED
 import com.example.beerdistrkt.models.OrderStatus.COMPLETED
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -47,6 +45,7 @@ class AddOrdersViewModel @AssistedInject constructor(
     private val getBottleUseCase: GetBottleUseCase,
     private val getCustomerUseCase: GetCustomerUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(EDIT_ORDER_ID_KEY) var editingOrderID: Int
 ) : BaseViewModel() {
@@ -54,18 +53,15 @@ class AddOrdersViewModel @AssistedInject constructor(
     val getDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse>>()
     val clientLiveData = MutableLiveData<Customer>()
 
-    private var usersList = ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
-        ?.sortedBy { it.username }
-        ?: mutableListOf()
-
     val visibleDistributors
-        get() = usersList.filter {
+        get() = users.filter {
             it.isActive
         }
 
     var barrels = emptyList<Barrel>()
     var beers: List<Beer> = listOf()
     var bottleList: List<BaseBottleModel> = listOf()
+    var users: List<User> = listOf()
 
     lateinit var selectedDistributor: User
     private var selectedDistributorRegionID: Int = 0
@@ -121,6 +117,7 @@ class AddOrdersViewModel @AssistedInject constructor(
         beers = getBeerUseCase()
         bottleList = getBottleUseCase()
         barrels = getBarrelsUseCase()
+        users = getUsersUseCase()
     }
 
     private fun getAllUsers() {
@@ -250,7 +247,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             0,
             dateFormatDash.format(orderDateCalendar.time),
             ACTIVE.data,
-            selectedDistributor.getIntID(),
+            selectedDistributor.id.toInt(),
             clientID,
             selectedDistributorRegionID,
             comment,
@@ -280,7 +277,7 @@ class AddOrdersViewModel @AssistedInject constructor(
             editingOrderID,
             dateFormatDash.format(orderDateCalendar.time),
             selectedStatus.data,
-            selectedDistributor.getIntID(),
+            selectedDistributor.id.toInt(),
             clientID,
             selectedDistributorRegionID,
             comment,
@@ -344,12 +341,10 @@ class AddOrdersViewModel @AssistedInject constructor(
     }
 
     fun updateDistributorList(selectedRegionID: Int) {
-        selectedDistributorRegionID = selectedRegionID
-        usersList = allMappedUsers
-            .filter { it.regionID == selectedRegionID && it.isActive }
-            .map { it.toUser() }
-            .sortedBy { it.username }
-
+        viewModelScope.launch {
+            selectedDistributorRegionID = selectedRegionID
+            users = getUsersUseCase(selectedRegionID)
+        }
     }
 
     fun getDistributorNamesList(): List<String> {

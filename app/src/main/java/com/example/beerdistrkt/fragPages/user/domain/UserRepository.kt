@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 interface UserRepository {
     suspend fun refreshUsers()
     suspend fun getUser(userID: String): User?
-    suspend fun getUsers(): List<User>
+    suspend fun getUsers(regionId: Int): List<User>
     suspend fun getRegions(): List<WorkRegion>
     val usersFlow: MutableStateFlow<ResultState<List<User>>>
     suspend fun putUser(model: AddUserRequestModel): ApiResponse<BaseInsertApiModel>

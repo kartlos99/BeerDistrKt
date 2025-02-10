@@ -12,6 +12,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.UserListFragmentBinding
 import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.usecase.filterByRegion
 import com.example.beerdistrkt.fragPages.user.presentation.list.adapter.UserAdapter
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.isLoading
@@ -57,9 +58,10 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
         progressIndicator.isVisible = result.isLoading()
         infoField.hide()
         result.onSuccess { users ->
-            initUsersRecycler(users)
+            val usersForTheRegion = users.filterByRegion(viewModel.session.region?.id ?: -1)
+            initUsersRecycler(usersForTheRegion)
             binding.swipeRefresh.isRefreshing = false
-            if (users.isEmpty()) {
+            if (usersForTheRegion.isEmpty()) {
                 infoField.show()
                 infoField.text = getString(R.string.no_users_to_show_try_refresh)
             }
