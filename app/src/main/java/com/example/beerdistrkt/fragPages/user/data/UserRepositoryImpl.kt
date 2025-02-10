@@ -30,9 +30,6 @@ class UserRepositoryImpl @Inject constructor(
     override val usersFlow: MutableStateFlow<ResultState<List<User>>> =
         MutableStateFlow(ResultState.Success(emptyList()))
 
-    private fun userFilterByRegion(user: User, regionId: Int): Boolean =
-        user.regions.map { it.id }.contains(regionId)
-
     override suspend fun getUsers(regionId: Int): List<User> {
         return users
             .filterByRegion(regionId)
