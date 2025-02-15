@@ -15,8 +15,6 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
-import com.example.beerdistrkt.models.VcsResponse
-import com.example.beerdistrkt.models.bottle.BottleDtoMapper
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
@@ -34,7 +32,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val bottleMapper: BottleDtoMapper,
     private val getBeerUseCase: GetBeerUseCase,
     private val refreshCustomers: RefreshCustomersUseCase,
     private val refreshUsersUseCase: RefreshUsersUseCase,
@@ -42,14 +39,6 @@ class HomeViewModel @Inject constructor(
     override var session: Session,
     private val apeniApi: ApeniApiService,
 ) : BaseViewModel() {
-
-    private val usersLiveData = database.getUsers()
-
-    //    private val beerLiveData = database.getBeerList()
-    private val cansLiveData = database.getCansList()
-
-    private var localVersionState: VcsResponse? = null
-    private var numberOfUpdatingTables = 0
 
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
@@ -109,7 +98,6 @@ class HomeViewModel @Inject constructor(
             refreshUsersUseCase()
         }
         SharedPreferenceDataSource.getInstance().clearVersions()
-        localVersionState = null
         getStoreBalance()
         getComments()
     }

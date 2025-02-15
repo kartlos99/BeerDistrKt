@@ -8,6 +8,8 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.PutExpenseUseCase
+import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
 import com.example.beerdistrkt.mapToString
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
@@ -34,6 +36,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     private val expense: Expense?,
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val putExpenseUseCase: PutExpenseUseCase,
+    private val getUserUseCase: GetUserUseCase,
+    override var session: Session,
 ) : BaseViewModel() {
 
     private val _categoriesStateFlow = MutableStateFlow<List<ExpenseCategory>>(listOf())
@@ -45,7 +49,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     private val _uiEventsFlow = MutableSharedFlow<AddExpenseUiEvent>()
     val uiEventsFlow = _uiEventsFlow.asSharedFlow()
 
-    private val _expenseState = MutableStateFlow(expense ?: createExpense())
+    private val _expenseState = MutableStateFlow(expense)
     val expenseState = _expenseState.asStateFlow()
 
     private val _expenseAmountState = MutableStateFlow(expense?.amount.mapToString())
@@ -73,21 +77,15 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         }
     }
 
-    private fun createExpense(): Expense = Expense(
-        null,
-        session.userID!!,
-        .0,
-        String.empty(),
-        dateTimeFormat.format(Calendar.getInstance().time),
-        ExpenseCategory.newInstance()
-    )
-
     fun onDoneClick(
         amountStr: String,
         comment: String,
         categoryID: Int
     ) = viewModelScope.launch {
         _errorStateFlow.value = String.empty()
+        val currentUser: User = getUserUseCase(session.userID!!)
+            ?: throw NoSuchElementException("can't find user!")
+
         when {
             comment.length < 3 -> _errorStateFlow.emit(ERROR_TEXT_NO_COMMENT)
             parseDouble(amountStr) <= .0 -> _errorStateFlow.emit(ERROR_TEXT_NO_AMOUNT)
@@ -96,7 +94,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             }?.let { category ->
                 val expense = Expense(
                     expense?.id,
-                    session.userID!!,
+                    currentUser,
                     parseDouble(amountStr),
                     comment,
                     dateTimeFormat.format(Calendar.getInstance().time),
@@ -115,7 +113,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     }
 
     fun setComment(comment: String) = _expenseState.update {
-        it.copy(comment = comment)
+        it?.copy(comment = comment)
     }
 
     fun setAmount(amountStr: String) {
@@ -126,7 +124,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         it.id == categoryID
     }?.let { category ->
         _expenseState.update {
-            it.copy(category = category)
+            it?.copy(category = category)
         }
     }.also {
         _errorStateFlow.value = String.empty()

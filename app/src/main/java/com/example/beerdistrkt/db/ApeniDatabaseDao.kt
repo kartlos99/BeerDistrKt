@@ -60,12 +60,12 @@ interface ApeniDatabaseDao {
     fun getPricesForClient(clientID: Int): List<ObjToBeerPrice>
 
     // users operation
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: User)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUsers(users: List<User>)
-
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertUser(user: User)
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertUsers(users: List<User>)
+//
     @Query("DELETE FROM user_table")
     fun clearUserTable()
 

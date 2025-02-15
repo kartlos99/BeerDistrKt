@@ -8,17 +8,20 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.usecase.GetRealizationDayUseCase
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.realisationtotal.presentation.model.SpinnerStateModel
+import com.example.beerdistrkt.fragPages.realisationtotal.presentation.model.UserSpinner
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.USERS_LIST_ID
+import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -29,10 +32,11 @@ class SalesViewModel @Inject constructor(
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val getRealizationDayUseCase: GetRealizationDayUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
+    override var session: Session,
 ) : BaseViewModel() {
 
     private var barrelsList: List<Barrel> = emptyList()
-    val visibleDistributors = mutableListOf<User>()
 
     private val _selectedDayLiveData = MutableLiveData<String>()
     val selectedDayLiveData: LiveData<String>
@@ -42,9 +46,10 @@ class SalesViewModel @Inject constructor(
         MutableStateFlow(ResultState.Loading)
     val dayStateFlow = _dayStateFlow.asStateFlow()
 
-    val usersLiveData = database.getUsers()
+    private val _distributorSelectorState = MutableStateFlow(SpinnerStateModel())
+    val distributorSelectorState = _distributorSelectorState.asStateFlow()
 
-    var selectedDistributorID = 0
+    private var selectedDistributorID = 0
 
     var calendar: Calendar = Calendar.getInstance()
 
@@ -60,41 +65,51 @@ class SalesViewModel @Inject constructor(
         prepareData()
     }
 
-    fun prepareData() {
+    private fun prepareData() {
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         Log.d(TAG, selectedDayLiveData.value!!)
         getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
     }
 
-    lateinit var userMap: Map<String, List<User>>
-
-    fun formUserMap(userList: List<User>) {
-        userMap = userList.groupBy { it.id }
-        Log.d(TAG, userMap.toString())
-    }
-
-
     init {
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
-        refreshCategories()
-        getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
         viewModelScope.launch {
+            refreshCategories()
+            getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
             barrelsList = getBarrelsUseCase()
+            initDistributorsList()
         }
     }
 
-    fun formUsersList() {
-        visibleDistributors.clear()
-        visibleDistributors.add(User.getBaseUser())
-        visibleDistributors.addAll(
-            ObjectCache.getInstance().getList(User::class, USERS_LIST_ID)
-                ?.filter { it.isActive }
-                ?.sortedBy { it.username }
-                ?: listOf()
+    private suspend fun initDistributorsList() {
+        val distributors = getUsersUseCase(session.regionId)
+            .filter { it.isActive }
+            .sortedBy { it.username }
+            .map { UserSpinner(it.id, "${it.username} (${it.name})") }
+            .toMutableList()
+        distributors.add(0, UserSpinner.baseItem)
+
+        val shouldBlockDistributors = !session.hasPermission(Permission.SeeOthersRealization)
+        val position: Int = if (shouldBlockDistributors) {
+            val currentUserIndexInSpinner = distributors.map { it.id }.indexOf(session.userID)
+            if (currentUserIndexInSpinner >= 0) {
+                selectedDistributorID = currentUserIndexInSpinner
+                currentUserIndexInSpinner
+            } else {
+                forceLogout()
+                0
+            }
+        } else 0
+
+        val spinnerModel = SpinnerStateModel(
+            items = distributors,
+            selectedPosition = position,
+            isBlocked = shouldBlockDistributors
         )
+        _distributorSelectorState.emit(spinnerModel)
     }
 
-    private fun refreshCategories() = viewModelScope.launch {
+    private suspend fun refreshCategories() {
         getExpenseCategoriesUseCase.refresh()
     }
 
@@ -116,8 +131,16 @@ class SalesViewModel @Inject constructor(
         prepareData()
     }
 
-    fun getDistributorNamesList(): List<String> = visibleDistributors
-        .map { "${it.username} (${it.name})" }
+    fun onDistributorSelected(position: Int) {
+        selectedDistributorID = _distributorSelectorState.value.items[position].id.toInt()
+        prepareData()
+    }
+
+    fun saveDistributorSpinnerPosition(position: Int) {
+        _distributorSelectorState.update {
+            it.copy(selectedPosition = position)
+        }
+    }
 
 
     companion object {

@@ -276,8 +276,8 @@
         android:label="@string/add_expense"
         tools:layout="@layout/add_edit_expense_fragment" >
         <argument
-            android:name="expense"
-            app:argType="com.example.beerdistrkt.fragPages.expense.domain.model.Expense"
+            android:name="expenseId"
+            app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

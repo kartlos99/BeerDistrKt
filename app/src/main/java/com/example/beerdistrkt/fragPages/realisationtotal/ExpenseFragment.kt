@@ -19,7 +19,7 @@ import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.presentation.view.ExpenseItemView
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.network.model.onSuccess
-import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.storage.ObjectCache
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
@@ -44,7 +44,6 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        initViewModel()
     }
 
     fun initView() = with(binding) {
@@ -63,7 +62,6 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
                 (view as? ExpenseItemView)?.let { itemView ->
                     itemView.setData(
                         expense = item,
-                        author = viewModel.userMap[item.distributorID]?.get(0)?.username.orEmpty(),
                         canDelete = canDeleteExpense()
                     )
                     itemView.onOptionClick = {
@@ -85,16 +83,10 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
             )
         )
 
-        viewModel.dayStateFlow.collectLatest(viewLifecycleOwner) {result ->
+        viewModel.dayStateFlow.collectLatest(viewLifecycleOwner) { result ->
             result.onSuccess {
                 expenseSimpleDataAdapter.submitList(it.expenses)
             }
-        }
-    }
-
-    private fun initViewModel() {
-        viewModel.usersLiveData.observe(viewLifecycleOwner) {
-            viewModel.formUserMap(it)
         }
     }
 
@@ -110,13 +102,19 @@ class ExpenseFragment : BaseFragment<SalesViewModel>(), View.OnClickListener {
     }
 
     private fun openExpenseDetails(expense: Expense? = null) {
+        expense?.let {
+            ObjectCache.getInstance().put(clazz = Expense::class, EXPENSE_KEY, it)
+        }
         if (viewModel.session.hasPermission(Permission.AddExpenseInPast) || viewModel.isToday())
             findNavController().navigate(
                 SalesFragmentDirections
-                    .actionSalesFragmentToAddEditExpenseFragment(expense)
+                    .actionSalesFragmentToAddEditExpenseFragment(expense?.id)
             )
         else
             showToast(R.string.cant_add_xarji)
     }
 
+    companion object {
+        const val EXPENSE_KEY = "EXPENSE_KEY"
+    }
 }

@@ -20,6 +20,8 @@ class Session(
     private var accessTokenCreateTime = 0L
     var region: WorkRegion? = null
     var regions: MutableList<WorkRegion> = mutableListOf()
+    val regionId: Int
+        get() = region?.id ?: 0
 
     var loggedIn = false
 
