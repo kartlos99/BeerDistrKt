@@ -75,7 +75,6 @@ class SalesViewModel @Inject constructor(
         _selectedDayLiveData.value = dateFormatDash.format(calendar.time)
         viewModelScope.launch {
             refreshCategories()
-            getDayInfo(selectedDayLiveData.value!!, selectedDistributorID)
             barrelsList = getBarrelsUseCase()
             initDistributorsList()
         }
