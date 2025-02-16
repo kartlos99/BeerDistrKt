@@ -3,9 +3,8 @@ package com.example.beerdistrkt.fragPages.showHistory
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.models.User
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.squareup.moshi.Json
 
@@ -35,16 +34,16 @@ data class OrderHistoryDTO(
     )
 
     fun toOrderHistory(
-        clients: List<Obieqti>,
+        clients: List<Customer>,
         usersList: List<User>
-    ): OrderHistory {
+    ): OrderHistory? {
 
         val client = clients.find {
             (it.id ?: 0) == clientID
-        } ?: Obieqti.emptyModel
+        } ?: return null
 
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
 
         return OrderHistory(
             hID,
@@ -52,7 +51,7 @@ data class OrderHistoryDTO(
             orderDate.split(" ")[0],
             orderStatus,
             distributor.username,
-            client.dasaxeleba,
+            client.name,
             comment,
             modifyDate,
             modifyUser.username,
@@ -95,8 +94,8 @@ data class SaleHistoryDTO(
         val client = clients.find {
             it.id == clientID
         } ?: return null
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
         val beer = beerList.find { it.id == beerID } ?: return null
 
         return SaleHistory(
@@ -150,8 +149,8 @@ data class MoneyHistoryDTO(
         val client = clients.find {
             it.id == clientID
         } ?: return null
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
 
         return MoneyHistory(
             operationDate,
@@ -174,7 +173,7 @@ data class MoneyHistory(
     val paymentType: PaymentType,
     val comment: String?,
     val modifyDate: String,
-    val modifyUser: User
+    val modifyUser: User,
 )
 
 
@@ -197,8 +196,8 @@ data class BottleSaleHistoryDTO(
         val client = clients.find {
             it.id == clientID
         } ?: return null
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
         val bottle = bottles.find { it.id == bottleID } ?: return null
 
         return BottleSaleHistory(
@@ -224,5 +223,5 @@ data class BottleSaleHistory(
     val count: Int,
     val comment: String?,
     val modifyDate: String,
-    val modifyUser: User
+    val modifyUser: User,
 )
