@@ -6,9 +6,12 @@ import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryUnitModel
 import com.example.beerdistrkt.fragPages.reporting.repo.ChangesRepository
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
-class DetailedChangeHistoryViewModel : BaseViewModel() {
+@HiltViewModel
+class DetailedChangeHistoryViewModel @Inject constructor() : BaseViewModel() {
 
     private val changesRepository = ChangesRepository()
 
