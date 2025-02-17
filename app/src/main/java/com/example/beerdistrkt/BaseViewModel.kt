@@ -4,21 +4,25 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.db.ApeniDatabaseDao
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.utils.ApiResponseState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.example.beerdistrkt.utils.Session
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import java.text.SimpleDateFormat
+import javax.inject.Inject
 
 abstract class BaseViewModel : ViewModel() {
-    protected val database: ApeniDatabaseDao = ApeniDataBase.getInstance().apeniDataBaseDao
-    protected val job = Job()
-    protected val ioScope = CoroutineScope(Dispatchers.IO + job)
-    protected val uiScope = CoroutineScope(Dispatchers.Main + job)
+
+    private val _uiEventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow(1, 1)
+    val uiEventFlow: SharedFlow<UiEvent> = _uiEventFlow.asSharedFlow()
+
+    @Inject
+    open lateinit var session: Session
 
     protected var loadingCounter = 0
     val isLoading get() = loadingCounter != 0
@@ -59,6 +63,20 @@ abstract class BaseViewModel : ViewModel() {
         Log.d("onServer_response_Fail", "Code: $code - Text: $error")
     }
 
+    fun forceLogout() {
+        session.clearSession()
+        session.loggedIn = false
+        viewModelScope.launch {
+            session.clearUserPreference()
+            _uiEventFlow.emit(UiEvent.LogOut)
+        }
+    }
+
+    fun checkToken() {
+        if (!session.isAccessTokenValid())
+            forceLogout()
+    }
+
     protected fun <F : Any, T : DataResponse<F>, ApiResponse : Call<T>> sendRequest(
         apiRequest: ApiResponse,
         success: (() -> Unit)? = null,
@@ -88,5 +106,9 @@ abstract class BaseViewModel : ViewModel() {
 
     companion object {
         const val TAG = "TAG_VM"
+    }
+
+    sealed interface UiEvent {
+        data object LogOut : UiEvent
     }
 }

@@ -6,16 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.beerdistrkt.*
+import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.MainActViewModel
+import com.example.beerdistrkt.MainActivity
+import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.LoginFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -24,10 +28,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<LoginViewModel>() {
-
-    companion object {
-        fun newInstance() = LoginFragment()
-    }
 
     private val binding by viewBinding(LoginFragmentBinding::bind)
 
@@ -65,7 +65,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             }
         }
 
-        if (Session.get().isUserLogged())
+        if (viewModel.session.isUserLogged())
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         else
             checkSavedPass()
@@ -93,7 +93,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     }
 
     private fun initViewModel() {
-        viewModel.loginResponseLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.loginResponseLiveData.observe(viewLifecycleOwner) {
             with(binding) {
                 when (it) {
                     is ApiResponseState.Success -> {
@@ -104,25 +104,28 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                             )
                         }
                         viewLoginLoginBtn.isEnabled = false
-                        viewLoginProgress.visibleIf(true)
+                        viewLoginProgress.show()
                         afterSuccessResponse(it.data)
                         viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
                     }
+
                     is ApiResponseState.ApiError -> {
                         viewLoginLoginBtn.isEnabled = true
                         viewLoginProgress.goAway()
                         showToast(it.errorText)
                     }
+
                     is ApiResponseState.Loading -> {
                         if (!it.showLoading) {
                             viewLoginLoginBtn.isEnabled = true
                             viewLoginProgress.goAway()
                         }
                     }
+
                     else -> {}
                 }
             }
-        })
+        }
     }
 
     private fun afterSuccessResponse(data: LoginResponse) {
@@ -159,7 +162,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     } else {
                         showToast(R.string.auth_fail_firebase)
                         Log.d("auth", "exp_MEssage: " + task.exception?.message)
-                        Session.get().clearSession()
+                        viewModel.session.clearSession()
                     }
                 }
             }
@@ -175,7 +178,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 } else {
                     Log.d("auth", task.exception?.message ?: "")
                     showToast(R.string.registration_fail_firebase)
-                    Session.get().clearSession()
+                    viewModel.session.clearSession()
                 }
             }
     }

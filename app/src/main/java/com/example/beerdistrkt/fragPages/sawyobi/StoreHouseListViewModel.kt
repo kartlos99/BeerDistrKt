@@ -10,7 +10,7 @@ import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseIO
-import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseRepository
+import com.example.beerdistrkt.fragPages.sawyobi.domain.GetStorehouseIoPagingSourceUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.models.StorehouseIoPm
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,6 +24,7 @@ private const val ITEMS_PER_PAGE = 20
 class StoreHouseListViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
+    private val getStorehouseIoPagingSourceUseCase: GetStorehouseIoPagingSourceUseCase,
 ) : BaseViewModel() {
 
     private var beerList: List<Beer> = listOf()
@@ -32,7 +33,7 @@ class StoreHouseListViewModel @Inject constructor(
 
     val items = Pager(
         config = PagingConfig(pageSize = ITEMS_PER_PAGE, enablePlaceholders = false),
-        pagingSourceFactory = { StorehouseRepository().getPagingSource() }
+        pagingSourceFactory = { getStorehouseIoPagingSourceUseCase() }
     )
         .flow
         .map { pagingData ->

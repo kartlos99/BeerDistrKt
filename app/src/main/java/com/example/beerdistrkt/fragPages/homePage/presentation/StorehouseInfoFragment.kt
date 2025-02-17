@@ -70,7 +70,7 @@ class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
             isHomePage = true
         )
         adapter.onClick = View.OnClickListener {
-            if (Session.get().region?.hasOwnStorage() == true)
+            if (viewModel.session.region?.hasOwnStorage == true)
                 findNavController().navigate(R.id.action_homeFragment_to_sawyobiFragment)
         }
         binding.homeStoreHouseRecycler.adapter = adapter

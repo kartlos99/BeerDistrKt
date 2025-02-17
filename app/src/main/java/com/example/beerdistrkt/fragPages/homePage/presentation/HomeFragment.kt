@@ -23,7 +23,7 @@ import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.homePage.presentation.adapter.CommentsAdapter
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.notifyNewComment
@@ -72,26 +72,26 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.checkVersionUpdates()
-        setHasOptionsMenu(Session.get().regions.size > 1)
-        if (Session.get().isAccessTokenValid() && Session.get().region == null)
-            if (Session.get().regions.size == 1)
-                onRegionChange(Session.get().regions.first())
+        setHasOptionsMenu(viewModel.session.regions.size > 1)
+        if (viewModel.session.isAccessTokenValid() && viewModel.session.region == null)
+            if (viewModel.session.regions.size == 1)
+                onRegionChange(viewModel.session.regions.first())
             else
                 showRegionSelectorDialog(
-                    Session.get().regions,
+                    viewModel.session.regions,
                     null
                 ) {
                     onRegionChange(it)
                 }
 
-        binding.btnOrder.text =
-            getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text = getString(
+            if (viewModel.session.region?.id == 3) R.string.delivery else R.string.orders
+        )
         viewModel.getStoreBalance()
     }
 
     private fun showStoreHouseData() {
-        if (Session.get().userType == UserType.ADMIN) {
+        if (viewModel.session.userType == UserType.ADMIN) {
             createInfoFragment()
             initBottomSheet()
         } else
@@ -107,7 +107,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         viewModel.commentsListLiveData.observe(viewLifecycleOwner, Observer { comments ->
             initCommentsRecycler(comments)
             updateCommentsState(comments.isEmpty().not())
-            setPageTitle(Session.get().region?.name)
+            setPageTitle(viewModel.session.region?.name)
         })
         viewModel.addCommentLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -138,7 +138,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnOrder -> {
-                if (Session.get().region?.regionID?.toInt() == 3)
+                if (viewModel.session.region?.id == 3)
                     view.findNavController().navigate(
                         HomeFragmentDirections.actionHomeFragmentToObjListFragment(MITANA)
                     )
@@ -162,7 +162,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                     R.style.ThemeOverlay_MaterialComponents_Dialog
                 ) {
                     if (it.isNotEmpty())
-                        viewModel.addComment(AddCommentModel(it, Session.get().userID!!))
+                        viewModel.addComment(AddCommentModel(it, viewModel.session.userID!!))
                     else
                         showToast(R.string.msg_empty_not_saved)
                 }
@@ -171,18 +171,19 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     }
 
     fun getComments() {
-        if (Session.get().isAccessTokenValid())
+        if (viewModel.session.isAccessTokenValid())
             viewModel.getComments()
     }
 
     private fun onRegionChange(region: WorkRegion) {
-        if (Session.get().region == region) return
-        Session.get().region = region
+        if (viewModel.session.region == region) return
+        viewModel.session.region = region
         viewModel.setRegion(region)
         StoreHouseListFragment.editingGroupID = ""
         setPageTitle(region.name)
-        binding.btnOrder.text =
-            getString(if (Session.get().region?.regionID?.toInt() == 3) R.string.delivery else R.string.orders)
+        binding.btnOrder.text = getString(
+            if (viewModel.session.region?.id == 3) R.string.delivery else R.string.orders
+        )
         actViewModel.updateNavHeader()
     }
 
@@ -195,8 +196,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
         when (item.itemId) {
             R.id.mHomeSwitchRegion -> {
                 showRegionSelectorDialog(
-                    Session.get().regions,
-                    Session.get().region,
+                    viewModel.session.regions,
+                    viewModel.session.region,
                     true
                 ) {
                     onRegionChange(it)
@@ -241,8 +242,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     private fun initBottomSheet() {
         storeHouseBottomSheet = BottomSheetBehavior.from(binding.storeHouseInfoContainer).apply {
             peekHeight = context?.getDimenPixelOffset(R.dimen.gr_size_48) ?: 0
-            isHideable = Session.get().userType != UserType.ADMIN
-            state = if (Session.get().userType == UserType.ADMIN)
+            isHideable = viewModel.session.userType != UserType.ADMIN
+            state = if (viewModel.session.userType == UserType.ADMIN)
                 BottomSheetBehavior.STATE_EXPANDED
             else
                 BottomSheetBehavior.STATE_HIDDEN

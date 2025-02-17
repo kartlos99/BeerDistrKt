@@ -1,26 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@drawable/bkg_underline"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_underline"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/userRowUserName"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="0dp"
-        android:textSize="@dimen/textSize_4" />
+        android:padding="@dimen/gr_size_8"
+        android:textSize="@dimen/textSize_4"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/userType"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="username" />
+
+    <TextView
+        android:id="@+id/userType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/gr_size_6"
+        android:layout_marginEnd="@dimen/gr_size_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/userRowUserName"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/sp14"
+        android:textStyle="italic"
+        tools:text="TypeT" />
 
     <TextView
         android:id="@+id/userRowDisplayName"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:paddingBottom="@dimen/gr_size_2"
         android:textAlignment="textEnd"
-        android:textSize="@dimen/textSize_2" />
+        android:textSize="@dimen/textSize_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userType"
+        tools:text="name" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

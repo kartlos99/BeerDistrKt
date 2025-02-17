@@ -7,26 +7,26 @@ import com.example.beerdistrkt.databinding.SysClearRowBinding
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 
 class SysClearAdapter(
-    private val dataList: List<SysClearModel>
-): RecyclerView.Adapter<SysClearAdapter.ViewHolder>() {
-//    var onClick: View.OnClickListener? = null
-    var onLongPress: ((name: String, id: Int) -> Unit)? = null
+    private val dataList: List<SysClearModel>,
+    private val onLongPress: ((name: String, id: Int) -> Unit)? = null
+) : RecyclerView.Adapter<SysClearAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(SysClearRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ViewHolder(
+            SysClearRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
     }
 
     override fun getItemCount(): Int = dataList.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(holder.binding) {
-            sysClearItemName.text = dataList[position].dasaxeleba
-            sysClearItemDate.text = dataList[position].clearDate
-            sysClearItemDays.text = dataList[position].passDays.toString()
-            root.setOnLongClickListener {
-                onLongPress?.invoke(dataList[position].dasaxeleba, dataList[position].id)
-                return@setOnLongClickListener true
-            }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = with(holder.binding) {
+        val item = dataList[position]
+        sysClearItemName.text = item.dasaxeleba
+        sysClearItemDate.text = item.clearDate
+        sysClearItemDays.text = item.passDays.toString()
+        root.setOnLongClickListener {
+            onLongPress?.invoke(item.dasaxeleba, item.id)
+            return@setOnLongClickListener true
         }
     }
 

@@ -61,11 +61,6 @@ class CustomersViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
-
     fun deactivateClient(clientID: Int?) {
         clientID?.let { id ->
             viewModelScope.launch {

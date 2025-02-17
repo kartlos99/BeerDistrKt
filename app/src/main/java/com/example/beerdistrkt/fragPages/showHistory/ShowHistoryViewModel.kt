@@ -7,27 +7,21 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ShowHistoryViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
+    private val getCustomersUseCase: GetCustomersUseCase,
 ) : BaseViewModel() {
-
-    private val TAG = "ShowHistoryViewModel"
-
-    private val clientsLiveData = database.getAllObieqts()
-    private val userLiveData = database.getUsers()
-
-    private lateinit var clients: List<Obieqti>
-    private lateinit var usersList: List<User>
-
 
     lateinit var beerMap: Map<Int, Beer>
 
@@ -35,24 +29,31 @@ class ShowHistoryViewModel @Inject constructor(
     val orderHistoryLiveData: LiveData<ApiResponseState<List<OrderHistory>>>
         get() = _orderHistoryLiveData
 
+    val infoEventsFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
     init {
         viewModelScope.launch {
             beerMap = getBeerUseCase()
                 .groupBy { it.id }
                 .mapValues { it.value[0] }
         }
-        clientsLiveData.observeForever { clients = it }
-        userLiveData.observeForever { usersList = it }
     }
 
     fun getData(recordID: String) {
         sendRequest(
             ApeniApiService.getInstance().getOrderHistory(recordID),
             successWithData = {
-                val pmHistory = it.map { dtoHistoryModel ->
-                    dtoHistoryModel.toOrderHistory(clients, usersList)
+                viewModelScope.launch {
+                    val pmHistory = it.mapNotNull { dtoHistoryModel ->
+                        dtoHistoryModel.toOrderHistory(
+                            getCustomersUseCase(),
+                            getUsersUseCase()
+                        )
+                    }
+                    _orderHistoryLiveData.value = ApiResponseState.Success(pmHistory)
+                    if (it.size != pmHistory.size)
+                        infoEventsFlow.emit("incorrect mapping, some records are missed!")
                 }
-                _orderHistoryLiveData.value = ApiResponseState.Success(pmHistory)
             },
             finally = {
                 Log.d(TAG, "getData: finaly = $it")
@@ -60,4 +61,7 @@ class ShowHistoryViewModel @Inject constructor(
         )
     }
 
+    companion object {
+        private const val TAG = "ShowHistoryViewModel"
+    }
 }

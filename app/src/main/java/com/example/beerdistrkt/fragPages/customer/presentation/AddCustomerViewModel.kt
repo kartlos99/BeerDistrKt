@@ -10,7 +10,6 @@ import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseC
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.PutCustomersUseCase
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.models.AttachRegionsRequest
-import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.toResultState
@@ -35,7 +34,6 @@ class AddCustomerViewModel @AssistedInject constructor(
 
     val clientObjectLiveData =
         MutableLiveData<Triple<Customer?, List<PriceEditModel>, List<PriceEditModel>>>()
-    val clientSaveMutableLiveData = MutableLiveData<ApiResponseState<CustomerWithPrices?>>()
     val clientRegionsLiveData = MutableLiveData<ApiResponseState<List<AttachedRegion>>>()
     val regions = mutableListOf<AttachedRegion>()
     val selectedRegions = mutableListOf<AttachedRegion>()

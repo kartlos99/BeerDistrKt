@@ -5,12 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,11 +23,15 @@ class MainActViewModel @Inject constructor(
     private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val refreshCustomers: RefreshCustomersUseCase,
+    private val refreshUsersUseCase: RefreshUsersUseCase,
+    override var session: Session
 ) : BaseViewModel() {
 
     val headerUpdateLiveData = MutableLiveData<Int>()
 
     val showContentFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _eventsFlow: MutableSharedFlow<ActUiEvent> = MutableSharedFlow()
+    val eventsFlow: SharedFlow<ActUiEvent> = _eventsFlow.asSharedFlow()
 
     init {
         updateInitialData()
@@ -32,11 +40,14 @@ class MainActViewModel @Inject constructor(
     private fun updateInitialData() = viewModelScope.launch {
         showContentFlow.emit(false)
         userPreferencesRepository.readUserSession().also { userInfo ->
-            Session.get().restoreFromSavedInfo(userInfo)
+            session.restoreFromSavedInfo(userInfo)
         }
         userPreferencesRepository.readRegion().also { region ->
-            Session.get().restoreLastRegion(region)
-            region?.let { refreshCustomers() }
+            session.restoreLastRegion(region)
+            region?.let {
+                refreshCustomers()
+                refreshUsersUseCase()
+            }
         }
         refreshBaseDataUseCase()
         showContentFlow.emit(true)
@@ -46,7 +57,7 @@ class MainActViewModel @Inject constructor(
         sendRequest(
             ApeniApiService.getInstance().changePassword(
                 ChangePassRequestModel(
-                    Session.get().userID ?: "",
+                    session.userID.orEmpty(),
                     oldPass,
                     newPass
                 )
@@ -64,4 +75,18 @@ class MainActViewModel @Inject constructor(
         headerUpdateLiveData.value = 1
     }
 
+    fun performUserLogout() {
+        viewModelScope.launch {
+            session.clearSession()
+            session.clearUserPreference()
+            session.loggedIn = false
+            SharedPreferenceDataSource.getInstance().saveUserName("")
+            SharedPreferenceDataSource.getInstance().savePassword("")
+            _eventsFlow.emit(ActUiEvent.GoToLoginPage)
+        }
+    }
+
+    sealed interface ActUiEvent {
+        data object GoToLoginPage: ActUiEvent
+    }
 }

@@ -1,42 +1,35 @@
 package com.example.beerdistrkt.utils
 
+import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 
 
-data class UserInfo(
-    val userID: String,
-    val userType: UserType,
-    val permissions: List<Permission>,
-    val userName: String,
-    val displayName: String,
-    val accessToken: String,
-    val accessTokenCreateTime: Long,
-    val regions: List<WorkRegion>
-)
-
-class Session {
-
+class Session(
+    private val userPreferencesRepository: UserPreferencesRepository,
+) {
     var userID: String? = null
     var userType: UserType = UserType.DISTRIBUTOR
-    var permissions = mutableListOf<Permission>()
+    private var permissions = mutableListOf<Permission>()
     var userName: String? = null
     var displayName: String? = null
     var accessToken: String? = null
-    var accessTokenCreateTime = 0L
+    private var accessTokenCreateTime = 0L
     var region: WorkRegion? = null
     var regions: MutableList<WorkRegion> = mutableListOf()
+    val regionId: Int
+        get() = region?.id ?: 0
 
     var loggedIn = false
 
-    fun isUserLogged() = loggedIn
+    fun isUserLogged() = loggedIn && accessToken != null
 
     fun getUserID(): Int = userID?.toInt() ?: 0
 
-    fun getRegionID(): String = region?.regionID ?: "0"
+    fun getRegionID(): String = (region?.id ?: 0).toString()
 
     fun justLoggedIn(userdata: LoginResponse) {
         userID = userdata.id.toString()
@@ -58,7 +51,11 @@ class Session {
         userName = null
         displayName = null
         accessToken = null
-        SharedPreferenceDataSource.getInstance().clearSession()
+        permissions.clear()
+    }
+
+    suspend fun clearUserPreference() {
+        userPreferencesRepository.clearSession()
     }
 
     fun isAccessTokenValid(): Boolean {
@@ -66,8 +63,6 @@ class Session {
             return System.currentTimeMillis() - accessTokenCreateTime < SESSION_DURATION
         return false
     }
-
-    fun isLogOutDone(): Boolean = userName.isNullOrEmpty()
 
     fun getUserInfo(): UserInfo {
         return UserInfo(
@@ -104,20 +99,7 @@ class Session {
         return permissions.contains(permission)
     }
 
-    fun saveSession() {
-//        SharedPreferenceDataSource.getInstance().saveSession(getUserInfo())
-    }
-
     companion object {
-        private var session: Session? = null
         const val SESSION_DURATION: Long = 60 * 60 * 1000
-
-        @JvmStatic
-        fun get(): Session {
-            if (session == null) {
-                session = Session()
-            }
-            return session!!
-        }
     }
 }

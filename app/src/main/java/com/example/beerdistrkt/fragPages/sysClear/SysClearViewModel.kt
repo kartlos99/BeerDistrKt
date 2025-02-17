@@ -7,10 +7,8 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
-import com.example.beerdistrkt.models.Obieqti
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,24 +20,14 @@ class SysClearViewModel @Inject constructor(
     private val getCustomerUseCase: GetCustomerUseCase,
 ) : BaseViewModel() {
 
-    private val clientListLiveData = database.getAllObieqts()
-
     private val _sysClearLiveData = MutableLiveData<ApiResponseState<List<SysClearModel>>>()
     val sysClearLiveData: LiveData<ApiResponseState<List<SysClearModel>>> by ::_sysClearLiveData
 
     private val _addClearFlow = MutableSharedFlow<ApiResponseState<String>>()
     val addClearFlow: SharedFlow<ApiResponseState<String>> = _addClearFlow
 
-    private val customers = mutableListOf<Obieqti>()
-
     init {
         getSysCleanList()
-        viewModelScope.launch {
-            clientListLiveData.observeForever {
-                customers.clear()
-                customers.addAll(it)
-            }
-        }
     }
 
     private fun getSysCleanList() {
@@ -58,16 +46,18 @@ class SysClearViewModel @Inject constructor(
     fun addClearingData(clientID: Int, deleteRecordID: Int = 0) {
         viewModelScope.launch {
             _addClearFlow.emit(ApiResponseState.Loading(true))
-            val requestData = AddClearingModel(deleteRecordID, clientID, Session.get().getUserID())
+            val requestData = AddClearingModel(deleteRecordID, clientID, session.getUserID())
             sendRequest(
                 ApeniApiService.getInstance().addDeleteClearing(requestData),
                 successWithData = {
 //                    Log.d(TAG, "addClearingData: req2")
-                    uiScope.launch { _addClearFlow.emit(ApiResponseState.Success(it)) }
+                    viewModelScope.launch {
+                        _addClearFlow.emit(ApiResponseState.Success(it))
+                    }
                     getSysCleanList()
                 },
                 finally = {
-                    uiScope.launch { _addClearFlow.emit(ApiResponseState.Loading(false)) }
+                    viewModelScope.launch { _addClearFlow.emit(ApiResponseState.Loading(false)) }
                 }
             )
         }

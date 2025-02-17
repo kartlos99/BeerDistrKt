@@ -1,23 +1,24 @@
 package com.example.beerdistrkt.fragPages.customer.presentation.adapters
 
 import android.content.Context
-import android.view.*
+import android.view.ContextMenu
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ObjListRowBinding
-import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
-import com.example.beerdistrkt.utils.Session
 
 class ClientsListAdapter(
+    private val addClientPermission: Boolean,
+    private val deleteClientPermission: Boolean,
     val onItemClick: (clientID: Int) -> Unit
 ) :
     ListAdapter<Customer, ClientsListAdapter.ClientViewHolder>(ClientListDiffUtilCallBack()) {
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientViewHolder {
         val binding = ObjListRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -64,9 +65,9 @@ class ClientsListAdapter(
             menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
             menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
             menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
-                ?.isEnabled = Session.get().hasPermission(Permission.AddEditClient)
+                ?.isEnabled = addClientPermission
             menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
-                ?.isEnabled = Session.get().hasPermission(Permission.DeleteClient)
+                ?.isEnabled = deleteClientPermission
         }
     }
 

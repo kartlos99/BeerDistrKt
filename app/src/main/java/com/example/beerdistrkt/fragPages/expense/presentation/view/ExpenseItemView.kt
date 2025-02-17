@@ -27,11 +27,10 @@ class ExpenseItemView @JvmOverloads constructor(
 
     fun setData(
         expense: Expense,
-        author: String,
         canDelete: Boolean = false
     ) = with(binding) {
         comment.text = expense.comment
-        expenseAuthor.text = author
+        expenseAuthor.text = expense.distributor.username
         expenseAmount.text = context.getString(R.string.format_gel, expense.amount)
         optionsBtn.isVisible = canDelete && expense.id != null
         categoryIndicator.setBackgroundColor(expense.category.color)

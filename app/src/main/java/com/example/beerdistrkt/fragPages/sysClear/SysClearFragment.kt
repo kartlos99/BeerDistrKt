@@ -96,10 +96,9 @@ class SysClearFragment : BaseFragment<SysClearViewModel>() {
         }
 
 
-    private fun initRecycler(data: List<SysClearModel>) {
-        binding.sysClearRecycler.layoutManager = LinearLayoutManager(context)
-        val adapter = SysClearAdapter(data)
-        adapter.onLongPress = { _, id ->
+    private fun initRecycler(data: List<SysClearModel>) = with(binding.sysClearRecycler) {
+        layoutManager = LinearLayoutManager(context)
+        adapter = SysClearAdapter(data) { _, id ->
             requireContext().showAskingDialog(
                 R.string.delete,
                 R.string.confirm_delete_text,
@@ -110,7 +109,6 @@ class SysClearFragment : BaseFragment<SysClearViewModel>() {
                 viewModel.addClearingData(id, id)
             }
         }
-        binding.sysClearRecycler.adapter = adapter
     }
 
     companion object {

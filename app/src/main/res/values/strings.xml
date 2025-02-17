@@ -295,6 +295,8 @@
     <string name="missed_barrel_or_beer">კასრი ან ლუდი ვერ მოიძებნა</string>
     <string name="empty_customers_title">ობიექტების სია ცარიელია, სცადეთ გვერდის განახლება!</string>
     <string name="refresh">განახლება</string>
+    <string name="no_region_set_error">რეგიონი არ არის არჩეული!</string>
+    <string name="no_users_to_show_try_refresh">მომხმარებლების სია ცარიელია. სცადე გვერდის განახლება</string>
 
 
 </resources>

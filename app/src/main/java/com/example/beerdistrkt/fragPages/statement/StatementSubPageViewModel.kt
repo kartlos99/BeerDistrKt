@@ -175,7 +175,7 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
                 DeleteRequest(
                     id.toString(),
                     table,
-                    Session.get().userID ?: return
+                    session.userID ?: return
                 )
             ),
             success = {

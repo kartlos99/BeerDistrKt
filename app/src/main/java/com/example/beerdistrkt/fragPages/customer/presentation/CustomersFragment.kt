@@ -25,6 +25,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentCustomersBinding
 import com.example.beerdistrkt.fragPages.customer.presentation.adapters.ClientsListAdapter
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
 import com.example.beerdistrkt.network.model.isLoading
@@ -46,9 +47,9 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
 
     private lateinit var vBinding: FragmentCustomersBinding
 
-    private var clientListAdapter = ClientsListAdapter(::navigateTo)
+    private lateinit var clientListAdapter : ClientsListAdapter
 
-    var clientPhone: String? = null
+    private var clientPhone: String? = null
 
     private lateinit var searchView: SearchView
     private lateinit var searchItem: MenuItem
@@ -134,6 +135,11 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
     }
 
     private fun initClientsRecycler() = with(vBinding.clientsRecycler) {
+        clientListAdapter = ClientsListAdapter(
+            viewModel.session.hasPermission(Permission.AddEditClient),
+            viewModel.session.hasPermission(Permission.DeleteClient),
+            ::navigateTo
+        )
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = clientListAdapter
 

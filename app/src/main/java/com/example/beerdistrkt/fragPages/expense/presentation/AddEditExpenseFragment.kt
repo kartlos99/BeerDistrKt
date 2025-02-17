@@ -15,9 +15,11 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddEditExpenseFragmentBinding
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
+import com.example.beerdistrkt.fragPages.realisationtotal.ExpenseFragment.Companion.EXPENSE_KEY
 import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.simpleTextChangeListener
+import com.example.beerdistrkt.storage.ObjectCache
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
@@ -37,9 +39,15 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
 
     private val binding by viewBinding(AddEditExpenseFragmentBinding::bind)
 
-    private val expense by lazy {
+    private val expenseId by lazy {
         val args = AddEditExpenseFragmentArgs.fromBundle(arguments ?: Bundle())
-        args.expense
+        args.expenseId
+    }
+
+    private val expense by lazy {
+        ObjectCache.getInstance().get(Expense::class, EXPENSE_KEY).also {
+            ObjectCache.getInstance().clear(Expense::class, EXPENSE_KEY)
+        }
     }
 
     override val titleRes: Int
@@ -73,10 +81,10 @@ class AddEditExpenseFragment : BaseFragment<AddEditExpenseViewModel>() {
         }
     }
 
-    private fun fillForm(expense: Expense) = with(binding) {
-        expenseCommentInput.setDifferText(expense.comment)
+    private fun fillForm(expense: Expense?) = with(binding) {
+        expenseCommentInput.setDifferText(expense?.comment.orEmpty())
         categoryChipsGroup.children.forEach { view ->
-            if (view.id == expense.category.id)
+            if (view.id == expense?.category?.id)
                 (view as Chip).isChecked = true
         }
     }

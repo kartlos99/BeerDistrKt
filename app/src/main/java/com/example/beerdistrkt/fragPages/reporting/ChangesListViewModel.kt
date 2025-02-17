@@ -5,9 +5,12 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.repo.ChangesRepository
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
-class ChangesListViewModel : BaseViewModel() {
+@HiltViewModel
+class ChangesListViewModel @Inject constructor() : BaseViewModel() {
 
     private val changesRepository = ChangesRepository()
 

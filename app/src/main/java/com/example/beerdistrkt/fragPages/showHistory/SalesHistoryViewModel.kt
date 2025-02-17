@@ -12,7 +12,8 @@ import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUse
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
 import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -27,10 +28,10 @@ class SalesHistoryViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
     private val getCustomersUseCase: GetCustomersUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
     @Assisted private val recordID: Int,
     @Assisted val historyOf: String,
 ) : BaseViewModel() {
-    private val userLiveData = database.getUsers()
 
     private lateinit var clients: List<Customer>
     private lateinit var usersList: List<User>
@@ -51,11 +52,11 @@ class SalesHistoryViewModel @AssistedInject constructor(
         get() = _moneyHistoryLiveData
 
     init {
-        userLiveData.observeForever { usersList = it }
         viewModelScope.launch {
             beerList = getBeerUseCase()
             bottleList = getBottleUseCase()
             clients = getCustomersUseCase()
+            usersList = getUsersUseCase()
             switchHistory()
         }
     }

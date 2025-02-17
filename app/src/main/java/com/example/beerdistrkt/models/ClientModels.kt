@@ -12,5 +12,5 @@ data class AttachRegionsRequest(
 
 data class UserAttachRegionsRequest(
     val userID: String,
-    val regionIDs: List<String>
+    val regionIDs: Set<Int>
 )

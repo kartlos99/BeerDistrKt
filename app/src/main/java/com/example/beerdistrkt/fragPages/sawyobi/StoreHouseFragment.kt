@@ -37,7 +37,6 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.models.bottle.TempBottleItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -89,9 +88,9 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             storeHouseAddBeerItemBtn.setOnClickListener(this@StoreHouseFragment)
             storeHouseDoneBtn.setOnClickListener(this@StoreHouseFragment)
 
-            storeHouseDoneBtn.isEnabled = Session.get().hasPermission(Permission.AddEditStoreHouse)
+            storeHouseDoneBtn.isEnabled = viewModel.session.hasPermission(Permission.AddEditStoreHouse)
             storeHouseAddBeerItemBtn.isVisible =
-                Session.get().hasPermission(Permission.AddEditStoreHouse)
+                viewModel.session.hasPermission(Permission.AddEditStoreHouse)
 
             realisationTypeSelector.check(R.id.realizationByBarrel)
             realisationTypeSelector.addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -284,7 +283,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sawyobiDetail -> {
-                if (Session.get().hasPermission(Permission.AddEditStoreHouse))
+                if (viewModel.session.hasPermission(Permission.AddEditStoreHouse))
                     requireView().findNavController()
                         .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
                 else
@@ -321,14 +320,14 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             }
 
             R.id.storeHouseAddBeerItemBtn -> {
-                if (Session.get().hasPermission(Permission.AddEditStoreHouse)) {
+                if (viewModel.session.hasPermission(Permission.AddEditStoreHouse)) {
                     tryCollectInputItem()
                 } else
                     showToast(R.string.no_permission_common)
             }
 
             R.id.storeHouseDoneBtn -> {
-                if (Session.get().hasPermission(Permission.AddEditStoreHouse))
+                if (viewModel.session.hasPermission(Permission.AddEditStoreHouse))
                     viewModel.onDoneClick(
                         binding.storeHouseComment.editText?.text.toString(),
                         collectEmptyBarrels(),

@@ -73,7 +73,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         binding.initView()
         observeViewModel()
 
-        if (Session.get().hasPermission(Permission.ManageRegion) && clientID > 0)
+        if (viewModel.session.hasPermission(Permission.ManageRegion) && clientID > 0)
             viewModel.getRegionForClient()
     }
 
@@ -186,36 +186,6 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
                 it.first?.let(::fillForm)
                 drawPriceInputFields(it.second, it.third)
                 viewModel.clientObjectLiveData.value = null
-            }
-        }
-        viewModel.clientSaveMutableLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Loading -> {
-                }
-
-                is ApiResponseState.ApiError -> {
-                    if (it.errorCode == DataResponse.mySqlDuplicateError)
-                        context?.showInfoDialog(
-                            null,
-                            R.string.duplicate_client,
-                            R.string.ok,
-                            R.style.ThemeOverlay_MaterialComponents_Dialog
-                        )
-                    else
-                        context?.showInfoDialog(
-                            R.string.server_error,
-                            it.errorText,
-                            R.string.ok,
-                            R.style.ThemeOverlay_MaterialComponents_Dialog
-                        )
-                }
-
-                is ApiResponseState.Success -> {
-                    showToast(R.string.data_saved)
-                    findNavController().navigateUp()
-                }
-
-                else -> {}
             }
         }
         viewModel.clientRegionsLiveData.observe(viewLifecycleOwner) {

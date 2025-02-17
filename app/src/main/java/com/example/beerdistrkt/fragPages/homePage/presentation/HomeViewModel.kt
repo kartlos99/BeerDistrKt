@@ -10,16 +10,13 @@ import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
-import com.example.beerdistrkt.models.User
-import com.example.beerdistrkt.models.VcsResponse
-import com.example.beerdistrkt.models.bottle.BottleDtoMapper
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
+import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.model.ResultState
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -35,19 +32,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val bottleMapper: BottleDtoMapper,
     private val getBeerUseCase: GetBeerUseCase,
     private val refreshCustomers: RefreshCustomersUseCase,
+    private val refreshUsersUseCase: RefreshUsersUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
+    override var session: Session,
+    private val apeniApi: ApeniApiService,
 ) : BaseViewModel() {
-
-    private val usersLiveData = database.getUsers()
-
-    //    private val beerLiveData = database.getBeerList()
-    private val cansLiveData = database.getCansList()
-
-    private var localVersionState: VcsResponse? = null
-    private var numberOfUpdatingTables = 0
 
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
@@ -73,10 +64,7 @@ class HomeViewModel @Inject constructor(
 //    val storeHouseDataFlow: StateFlow<StoreHouseResponse?> = _storeHouseDataFlow.asStateFlow()
 
     init {
-//        if (Session.get().isUserLogged())
-//            getTableVersionsFromServer()
-//        localVersionState = SharedPreferenceDataSource.getInstance().getVersions()
-        Log.d("homeVM localVers", localVersionState.toString())
+        Log.d("homeVM", "init")
 
         getBeerUseCase.beerAsFlow().combine(_storeHouseDataFlow.asStateFlow()) { beer, data ->
             when (data) {
@@ -91,13 +79,10 @@ class HomeViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
 
-        usersLiveData.observeForever { userList ->
-            ObjectCache.getInstance()
-                .putList(User::class, ObjectCache.USERS_LIST_ID, userList.sortedBy { it.username })
-        }
         viewModelScope.launch {
             val userInfo = userPreferencesRepository.readUserSession()
-            Session.get().restoreFromSavedInfo(userInfo)
+            session.restoreFromSavedInfo(userInfo)
+            checkToken()
             getComments()
         }
     }
@@ -110,93 +95,17 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.saveRegion(selectedRegion)
             refreshCustomers()
+            refreshUsersUseCase()
         }
         SharedPreferenceDataSource.getInstance().clearVersions()
-        localVersionState = null
-        getTableVersionsFromServer()
         getStoreBalance()
         getComments()
     }
 
-    fun checkVersionUpdates() = getTableVersionsFromServer()
-
-    private fun getTableVersionsFromServer() {
-        Log.d("homeVM getTableVersionsFromServer", localVersionState.toString())
-        if (!Session.get().isUserLogged()) return
-        sendRequest(
-            ApeniApiService.getInstance().getTableVersions(),
-            successWithData = {
-                if (localVersionState != null) {
-                    /**
-                     * till better solution, I always need to receive beer & bottles list
-                     */
-//                    if (it.beer > localVersionState!!.beer) {
-//                    getBeerList()
-//                    numberOfUpdatingTables++
-//                    }
-//                    if (it.client > localVersionState!!.client) {
-//                        getObjects()
-//                        numberOfUpdatingTables++
-//                    }
-                    if (it.user > localVersionState!!.user) {
-                        getUsers()
-                        numberOfUpdatingTables++
-                    }
-//                    if (it.barrel > localVersionState!!.barrel) {
-//                        getCanTypes()
-//                        numberOfUpdatingTables++
-//                    }
-//                    if (it.price > localVersionState!!.price) {
-//                        getPrices()
-//                        numberOfUpdatingTables++
-//                    }
-                } else {
-                    numberOfUpdatingTables = 1
-//                    getObjects()
-//                    getPrices()
-                    getUsers()
-//                    getBeerList()
-//                    getCanTypes()
-                }
-                mainLoaderLiveData.value = numberOfUpdatingTables > 0
-//                localVersionState = it
-            }
-        )
-    }
-
-    private fun saveVersion() {
-        numberOfUpdatingTables--
-        if (numberOfUpdatingTables == 0 /*&& localVersionState != null*/) {
-            mainLoaderLiveData.value = false
-//            SharedPreferenceDataSource.getInstance().saveVersions(localVersionState!!)
-        }
-    }
-
-    private fun clearObieqtsList() {
-        ioScope.launch {
-            database.clearObiectsTable()
-        }
-    }
-
-    private fun getUsers() {
-        sendRequest(
-            ApeniApiService.getInstance().getUsersList(),
-            successWithData = {
-                saveVersion()
-                Log.d(TAG, "Users_respOK. size: ${it.size}")
-                if (it.isNotEmpty()) {
-                    ioScope.launch {
-                        database.clearUserTable()
-                        database.insertUsers(it)
-                    }
-                }
-            }
-        )
-    }
 
     fun getStoreBalance() = viewModelScope.launch {
         _storeHouseDataFlow.value = ResultState.Loading
-        if (Session.get().region?.hasOwnStorage() == true)
+        if (session.region?.hasOwnStorage == true)
             getRegionBalance()
         else
             getGlobalBalance()
@@ -267,15 +176,9 @@ class HomeViewModel @Inject constructor(
         return result
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "onCleared job is Canceled")
-        job.cancel()
-    }
-
     fun getComments() {
         sendRequest(
-            ApeniApiService.getInstance().getComments(),
+            apeniApi.getComments(),
             successWithData = {
                 _commentsListLiveData.value = it
             }
