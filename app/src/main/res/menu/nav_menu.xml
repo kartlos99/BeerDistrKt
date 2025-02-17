@@ -16,7 +16,7 @@
         <item
             android:id="@+id/addBeerFragment"
             android:icon="@drawable/beer_icon"
-            android:title="@string/add_beer" />
+            android:title="@string/beer" />
 
         <item
             android:id="@+id/bottleListFragment"
