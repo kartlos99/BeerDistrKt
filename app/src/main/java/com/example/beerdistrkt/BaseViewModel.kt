@@ -5,15 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.models.DataResponse
-import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,12 +17,8 @@ import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 abstract class BaseViewModel : ViewModel() {
-    protected val database: ApeniDatabaseDao = ApeniDataBase.getInstance().apeniDataBaseDao
-    protected val job = Job()
-    protected val ioScope = CoroutineScope(Dispatchers.IO + job)
-    protected val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    private val _uiEventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow(1,1)
+    private val _uiEventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow(1, 1)
     val uiEventFlow: SharedFlow<UiEvent> = _uiEventFlow.asSharedFlow()
 
     @Inject

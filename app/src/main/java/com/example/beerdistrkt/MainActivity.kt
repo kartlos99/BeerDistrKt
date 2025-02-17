@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ApeniDataBase.initialize(this)
         ApeniApiService.initialize(viewModel.session)
         SharedPreferenceDataSource.initialize(this)
         setContentView(R.layout.activity_main)

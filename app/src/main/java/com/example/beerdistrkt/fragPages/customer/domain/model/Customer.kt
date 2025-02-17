@@ -2,7 +2,6 @@ package com.example.beerdistrkt.fragPages.customer.domain.model
 
 import com.example.beerdistrkt.common.domain.model.EntityStatus
 import com.example.beerdistrkt.models.CustomerIdlInfo
-import com.example.beerdistrkt.models.Obieqti
 
 data class Customer(
     var id: Int? = null,
@@ -22,16 +21,4 @@ data class Customer(
 
     fun isActive(): Boolean = status == EntityStatus.ACTIVE
 
-    fun toObieqti(): Obieqti {
-        val ob = Obieqti(name)
-        ob.group = group
-        ob.id = id
-        ob.adress = address
-        ob.tel = tel
-        ob.comment = comment
-        ob.sk = identifyCode
-        ob.sakpiri = contactPerson
-        ob.chek = hasCheck.toString()
-        return ob
-    }
 }

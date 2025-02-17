@@ -176,12 +176,6 @@ class HomeViewModel @Inject constructor(
         return result
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "onCleared job is Canceled")
-        job.cancel()
-    }
-
     fun getComments() {
         sendRequest(
             apeniApi.getComments(),

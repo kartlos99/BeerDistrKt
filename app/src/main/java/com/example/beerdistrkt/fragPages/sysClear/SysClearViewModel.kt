@@ -51,11 +51,13 @@ class SysClearViewModel @Inject constructor(
                 ApeniApiService.getInstance().addDeleteClearing(requestData),
                 successWithData = {
 //                    Log.d(TAG, "addClearingData: req2")
-                    uiScope.launch { _addClearFlow.emit(ApiResponseState.Success(it)) }
+                    viewModelScope.launch {
+                        _addClearFlow.emit(ApiResponseState.Success(it))
+                    }
                     getSysCleanList()
                 },
                 finally = {
-                    uiScope.launch { _addClearFlow.emit(ApiResponseState.Loading(false)) }
+                    viewModelScope.launch { _addClearFlow.emit(ApiResponseState.Loading(false)) }
                 }
             )
         }

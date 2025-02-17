@@ -1,8 +1,6 @@
 package com.example.beerdistrkt.network
 
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.fragPages.beer.presentation.DeleteBeerModel
-import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.login.data.model.LoginApiModel
@@ -18,7 +16,6 @@ import com.example.beerdistrkt.fragPages.realisationtotal.models.AddXarjiRequest
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.model.HistoryDto
-import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -31,26 +28,14 @@ import com.example.beerdistrkt.fragPages.showHistory.SaleHistoryDTO
 import com.example.beerdistrkt.fragPages.statement.model.StatementResponse
 import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
-import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.models.AttachRegionsRequest
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.ChangePassRequestModel
-import com.example.beerdistrkt.models.ClientDeactivateModel
-import com.example.beerdistrkt.models.CustomerIdlInfo
-import com.example.beerdistrkt.models.CustomerWithPrices
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.MappedUser
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.OrderDTO
-import com.example.beerdistrkt.models.User
-import com.example.beerdistrkt.models.UserAttachRegionsRequest
-import com.example.beerdistrkt.models.VcsResponse
 import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
-import com.example.beerdistrkt.network.model.BaseDataResponse
 import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -109,17 +94,17 @@ interface ApeniApiService {
         }
     }
 
-    @GET("getVersions.php")
-    fun getTableVersions(): Call<DataResponse<VcsResponse>>
+//    @GET("getVersions.php")
+//    fun getTableVersions(): Call<DataResponse<VcsResponse>>
 
-    @GET("get_users.php")
-    fun getUsersList(): Call<DataResponse<List<User>>>
+//    @GET("get_users.php")
+//    fun getUsersList(): Call<DataResponse<List<User>>>
 
-    @GET("get_obieqts.php")
-    fun getObieqts(): Call<DataResponse<List<Obieqti>>>
+//    @GET("get_obieqts.php")
+//    fun getObieqts(): Call<DataResponse<List<Obieqti>>>
 
-    @GET("get_fasebi.php")
-    fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
+//    @GET("get_fasebi.php")
+//    fun getPrices(): Call<DataResponse<List<ObjToBeerPrice>>>
 
     @GET("statement/getCombinedFinancial.php")
     fun getFinancialStatement(
@@ -133,11 +118,11 @@ interface ApeniApiService {
         @Query("clientID") clientID: Int
     ): Call<DataResponse<StatementResponse>>
 
-    @GET("general/baseData.php")
-    fun getBaseData(): Call<DataResponse<BaseDataResponse>>
+//    @GET("general/baseData.php")
+//    fun getBaseData(): Call<DataResponse<BaseDataResponse>>
 
-    @GET("get_kasri_list.php")
-    fun getCanList(): Call<DataResponse<List<CanModel>>>
+//    @GET("get_kasri_list.php")
+//    fun getCanList(): Call<DataResponse<List<CanModel>>>
 
     // general
     @GET("general/getComments.php")
@@ -187,14 +172,14 @@ interface ApeniApiService {
     @GET("client/getDebtByID.php")
     fun getDebt(@Query("clientID") clientID: Int): Call<DataResponse<DebtResponse>>
 
-    @POST("client/addWithPrices.php")
-    fun addClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
+//    @POST("client/addWithPrices.php")
+//    fun addClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
+//
+//    @POST("client/updateWithPrices.php")
+//    fun updateClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
 
-    @POST("client/updateWithPrices.php")
-    fun updateClient(@Body customer: CustomerWithPrices): Call<DataResponse<String>>
-
-    @POST("client/deactivate.php")
-    fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>
+//    @POST("client/deactivate.php")
+//    fun deactivateClient(@Body model: ClientDeactivateModel): Call<DataResponse<String>>
 
     @POST("client/attachTo.php")
     fun setRegions(@Body model: AttachRegionsRequest): Call<DataResponse<String>>
@@ -202,11 +187,11 @@ interface ApeniApiService {
     @GET("client/getAttachedRegions.php")
     fun getAttachedRegions(@Query("clientID") clientID: Int): Call<DataResponse<List<AttachedRegion>>>
 
-    @GET("client/getAllData.php")
-    fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDTO>>
+//    @GET("client/getAllData.php")
+//    fun getCustomerData(@Query("clientID") clientID: Int): Call<DataResponse<CustomerDTO>>
 
-    @GET("client/getIdleInfo.php")
-    fun getCustomersIdleInfo(): Call<DataResponse<List<CustomerIdlInfo>>>
+//    @GET("client/getIdleInfo.php")
+//    fun getCustomersIdleInfo(): Call<DataResponse<List<CustomerIdlInfo>>>
 
     // storeHouse
     @GET("storeHouse/getBalance.php")
@@ -221,11 +206,11 @@ interface ApeniApiService {
     @GET("storeHouse/getIoList.php")
     fun getStoreHouseIoList(@Query("groupID") groupID: String): Call<DataResponse<StoreHouseListResponse>>
 
-    @GET("storeHouse/getIoListPaged.php")
-    fun getStoreHouseIoPagedList(
-        @Query("pageIndex") pageIndex: Int,
+//    @GET("storeHouse/getIoListPaged.php")
+//    fun getStoreHouseIoPagedList(
+//        @Query("pageIndex") pageIndex: Int,
 //        @Query("groupID") groupID: String = ""
-    ): Call<DataResponse<List<StorehouseIoDto>>>
+//    ): Call<DataResponse<List<StorehouseIoDto>>>
 
     @GET("storeHouse/getGlobalBalance.php")
     fun getGlobalBalance(@Query("date") date: String): Call<DataResponse<List<GlobalStorageModel>>>
@@ -238,8 +223,8 @@ interface ApeniApiService {
     fun addDeleteClearing(@Body data: AddClearingModel): Call<DataResponse<String>>
 
     // user
-    @POST("user/add.php")
-    fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
+//    @POST("user/add.php")
+//    fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
 
     @POST("user/login.php")
     fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginApiModel>>
@@ -247,11 +232,11 @@ interface ApeniApiService {
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>
 
-    @POST("user/attachTo.php")
-    fun setRegions(@Body model: UserAttachRegionsRequest): Call<DataResponse<String>>
-
-    @GET("user/getAttachedRegions.php")
-    fun getAttachedRegions(@Query("userID") userID: String): Call<DataResponse<List<AttachedRegion>>>
+//    @POST("user/attachTo.php")
+//    fun setRegions(@Body model: UserAttachRegionsRequest): Call<DataResponse<String>>
+//
+//    @GET("user/getAttachedRegions.php")
+//    fun getAttachedRegions(@Query("userID") userID: String): Call<DataResponse<List<AttachedRegion>>>
 
     @GET("user/getAllUsers.php")
     fun getAllUsers(): Call<DataResponse<List<MappedUser>>>
@@ -273,11 +258,11 @@ interface ApeniApiService {
     fun getMoneyHistory(@Query("recordID") recordID: Int): Call<DataResponse<List<MoneyHistoryDTO>>>
 
     // Beer
-    @POST("beer/add.php")
-    fun addBeer(@Body beer: BeerModelBase): Call<DataResponse<String>>
+//    @POST("beer/add.php")
+//    fun addBeer(@Body beer: BeerModelBase): Call<DataResponse<String>>
 
-    @POST("beer/delete.php")
-    fun deleteBeer(@Body deleteBeerModel: DeleteBeerModel): Call<DataResponse<String>>
+//    @POST("beer/delete.php")
+//    fun deleteBeer(@Body deleteBeerModel: DeleteBeerModel): Call<DataResponse<String>>
 
     // Bottle
     @POST("bottle/save.php")

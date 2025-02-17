@@ -19,7 +19,6 @@ import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
 import com.example.beerdistrkt.models.DebtResponse
-import com.example.beerdistrkt.models.MappedUser
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus.ACTIVE
 import com.example.beerdistrkt.models.OrderStatus.CANCELED
@@ -89,7 +88,6 @@ class AddOrdersViewModel @AssistedInject constructor(
     private var editingOrderItemID = -1
 
     lateinit var availableRegions: List<WorkRegion>
-    private val allMappedUsers = mutableListOf<MappedUser>()
 
     val eventsFlow = MutableSharedFlow<Event>()
 
@@ -110,7 +108,6 @@ class AddOrdersViewModel @AssistedInject constructor(
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
 
         getDebt()
-        getAllUsers()
     }
 
     private suspend fun initData() {
@@ -118,16 +115,6 @@ class AddOrdersViewModel @AssistedInject constructor(
         bottleList = getBottleUseCase()
         barrels = getBarrelsUseCase()
         users = getUsersUseCase()
-    }
-
-    private fun getAllUsers() {
-        sendRequest(
-            ApeniApiService.getInstance().getAllUsers(),
-            successWithData = {
-                allMappedUsers.clear()
-                allMappedUsers.addAll(it)
-            }
-        )
     }
 
     private fun getDebt() {
