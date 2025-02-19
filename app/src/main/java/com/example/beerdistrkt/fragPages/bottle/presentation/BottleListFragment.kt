@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement
+package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +13,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SimpleListAdapter
 import com.example.beerdistrkt.databinding.BottleRowBinding
 import com.example.beerdistrkt.databinding.FragmentBottleListBinding
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -46,7 +46,7 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
         )
     }
 
-    private fun initRecycler(bottles: List<BaseBottleModel>) = with(binding.bottlesRv) {
+    private fun initRecycler(bottles: List<Bottle>) = with(binding.bottlesRv) {
         layoutManager = LinearLayoutManager(requireContext())
         adapter = SimpleListAdapter(
             data = bottles,

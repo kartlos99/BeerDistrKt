@@ -1,12 +1,12 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement.data
+package com.example.beerdistrkt.fragPages.bottle.data
 
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
 import javax.inject.Inject
 
 class BottleMapper @Inject constructor() {
 
-    fun toDto(bottle: BaseBottleModel) = BaseBottleModelDto(
+    fun toDto(bottle: Bottle) = BottleDto(
         id = bottle.id,
         name = bottle.name,
         volume = bottle.volume,

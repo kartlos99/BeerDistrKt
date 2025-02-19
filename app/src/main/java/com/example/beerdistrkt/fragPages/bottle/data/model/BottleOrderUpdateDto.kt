@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement.data.model
+package com.example.beerdistrkt.fragPages.bottle.data.model
 
 import androidx.annotation.Keep
 

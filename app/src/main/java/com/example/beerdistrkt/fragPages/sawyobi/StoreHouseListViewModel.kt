@@ -8,7 +8,7 @@ import androidx.paging.map
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseIO
 import com.example.beerdistrkt.fragPages.sawyobi.domain.GetStorehouseIoPagingSourceUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.models.StorehouseIoPm

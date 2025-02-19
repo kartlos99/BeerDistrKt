@@ -10,7 +10,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
@@ -25,7 +25,7 @@ import com.example.beerdistrkt.models.MappedUser
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.models.UserStatus
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
@@ -54,7 +54,7 @@ class OrdersViewModel @Inject constructor(
 
     private lateinit var customers: List<Customer>
     private lateinit var beers: List<Beer>
-    private lateinit var bottleList: List<BaseBottleModel>
+    private lateinit var bottleList: List<Bottle>
     private lateinit var usersList: List<User>
     lateinit var barrels: List<Barrel>
 

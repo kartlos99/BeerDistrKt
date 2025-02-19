@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.fragPages.sawyobi.models
 
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 
 data class BottleIoModel(
     val id: Int,
@@ -14,10 +14,10 @@ data class BottleIoModel(
     val chek: Int,
     val comment: String?,
 ) {
-    var bottle: BaseBottleModel? = null
+    var bottle: Bottle? = null
 
     fun toTempBottleItemModel(
-        bottles: List<BaseBottleModel>,
+        bottles: List<Bottle>,
         onRemove: (beerItem: TempBottleItemModel) -> Unit,
         onEdit: (beerItem: TempBottleItemModel) -> Unit
     ): TempBottleItemModel {

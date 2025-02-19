@@ -1,7 +1,7 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement
+package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import androidx.annotation.StringRes
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 
 sealed class Event {
     data class IncorrectDataEntered(@StringRes val msgID: Int) : Event()
@@ -12,5 +12,5 @@ sealed class Event {
         val error: String
     ) : Event()
 
-    data class EditBottle(val bottle: BaseBottleModel) : Event()
+    data class EditBottle(val bottle: Bottle) : Event()
 }

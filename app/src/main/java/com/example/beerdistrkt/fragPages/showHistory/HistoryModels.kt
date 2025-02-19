@@ -5,7 +5,7 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.squareup.moshi.Json
 
 data class OrderHistoryDTO(
@@ -191,7 +191,7 @@ data class BottleSaleHistoryDTO(
     fun toPm(
         clients: List<Customer>,
         usersList: List<User>,
-        bottles: List<BaseBottleModel>
+        bottles: List<Bottle>
     ): BottleSaleHistory? {
         val client = clients.find {
             it.id == clientID
@@ -218,7 +218,7 @@ data class BottleSaleHistory(
     val saleDate: String,
     val client: Customer,
     val distributor: User,
-    val bottle: BaseBottleModel,
+    val bottle: Bottle,
     val unitPrice: Double,
     val count: Int,
     val comment: String?,

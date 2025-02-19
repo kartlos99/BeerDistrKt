@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement
+package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
@@ -6,9 +6,9 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
-import com.example.beerdistrkt.models.bottle.BottleStatus
-import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.model.BottleStatus
+import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
 import com.example.beerdistrkt.network.ApeniApiService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -51,7 +51,7 @@ class BottleDetailViewModel @AssistedInject constructor(
             return
         }
         saveBottle(
-            BaseBottleModelDto(
+            BottleDto(
                 bottleID,
                 isNameValid(name) ?: return,
                 isVolumeValid(volume) ?: return,
@@ -113,7 +113,7 @@ class BottleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private fun saveBottle(bottleModel: BaseBottleModelDto) {
+    private fun saveBottle(bottleModel: BottleDto) {
         viewModelScope.launch {
             eventsFlow.emit(Event.ShowLoading(true))
         }

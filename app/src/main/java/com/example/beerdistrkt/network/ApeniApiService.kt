@@ -35,7 +35,7 @@ import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.models.MappedUser
 import com.example.beerdistrkt.models.OrderDTO
-import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
+import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
 import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -266,7 +266,7 @@ interface ApeniApiService {
 
     // Bottle
     @POST("bottle/save.php")
-    fun saveBottle(@Body bottle: BaseBottleModelDto): Call<DataResponse<List<BaseBottleModelDto>>>
+    fun saveBottle(@Body bottle: BottleDto): Call<DataResponse<List<BottleDto>>>
 
     // Settings
     @GET("settings/getSettingsValue.php")

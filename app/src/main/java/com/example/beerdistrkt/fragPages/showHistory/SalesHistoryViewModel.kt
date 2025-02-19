@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
@@ -14,7 +14,7 @@ import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Compan
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.assisted.Assisted
@@ -36,7 +36,7 @@ class SalesHistoryViewModel @AssistedInject constructor(
     private lateinit var clients: List<Customer>
     private lateinit var usersList: List<User>
     private lateinit var beerList: List<Beer>
-    private lateinit var bottleList: List<BaseBottleModel>
+    private lateinit var bottleList: List<Bottle>
 
     private val _saleHistoryLiveData = MutableLiveData<ApiResponseState<List<SaleHistory>>>()
     val saleHistoryLiveData: LiveData<ApiResponseState<List<SaleHistory>>>

@@ -1,9 +1,9 @@
-package com.example.beerdistrkt.models.bottle
+package com.example.beerdistrkt.fragPages.bottle.domain.model
 
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 
-data class BaseBottleModel(
+data class Bottle(
     val id: Int,
     val name: String,
     val volume: Double,

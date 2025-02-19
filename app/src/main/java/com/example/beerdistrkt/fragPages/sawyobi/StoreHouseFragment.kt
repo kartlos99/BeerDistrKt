@@ -35,7 +35,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.goAway
 import dagger.hilt.android.AndroidEntryPoint

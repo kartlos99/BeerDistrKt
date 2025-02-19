@@ -4,8 +4,8 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.squareup.moshi.Json
 
 data class Order(
@@ -94,7 +94,7 @@ data class Order(
     data class BottleItem(
         val id: Int,
         val orderID: Int,
-        val bottle: BaseBottleModel,
+        val bottle: Bottle,
         val count: Int,
     ) {
         fun toTempBottleItemModel(
@@ -115,7 +115,7 @@ data class Order(
 
     data class BottleSaleItem(
         val orderID: Int,
-        val bottle: BaseBottleModel,
+        val bottle: Bottle,
         val count: Int,
     )
 

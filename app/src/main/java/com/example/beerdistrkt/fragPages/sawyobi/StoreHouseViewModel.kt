@@ -8,7 +8,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
@@ -19,8 +19,8 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,7 +75,7 @@ class StoreHouseViewModel @Inject constructor(
 
     var beerList: List<Beer> = listOf()
     var barrels: List<Barrel> = listOf()
-    var bottleList: List<BaseBottleModel> = listOf()
+    var bottleList: List<Bottle> = listOf()
 
     private val receivedItemsList = mutableListOf<TempBeerItemModel>()
     private val receivedBottleItemsList = mutableListOf<TempBottleItemModel>()

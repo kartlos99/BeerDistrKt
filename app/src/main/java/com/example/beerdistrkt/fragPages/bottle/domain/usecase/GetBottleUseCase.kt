@@ -1,6 +1,6 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase
+package com.example.beerdistrkt.fragPages.bottle.domain.usecase
 
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.BottleRepository
+import com.example.beerdistrkt.fragPages.bottle.domain.BottleRepository
 import javax.inject.Inject
 
 class GetBottleUseCase @Inject constructor(

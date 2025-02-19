@@ -2,7 +2,7 @@ package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.squareup.moshi.Json
 
 data class OrderDTO(
@@ -78,7 +78,7 @@ data class OrderDTO(
         val bottleID: Int,
         val count: Int,
     ) {
-        fun toPm(bottles: List<BaseBottleModel>): Order.BottleItem {
+        fun toPm(bottles: List<Bottle>): Order.BottleItem {
             val bottle = bottles.firstOrNull { it.id == bottleID }
                 ?: throw NoSuchElementException("OrderDTO: can't match bottle for order item!")
             return Order.BottleItem(
@@ -95,7 +95,7 @@ data class OrderDTO(
         val bottleID: Int,
         val count: Int,
     ) {
-        fun toPm(bottles: List<BaseBottleModel>): Order.BottleSaleItem {
+        fun toPm(bottles: List<Bottle>): Order.BottleSaleItem {
             val bottle = bottles.firstOrNull { it.id == bottleID }
                 ?: throw NoSuchElementException("OrderDTO: can't match bottle for sale item!")
             return Order.BottleSaleItem(
@@ -109,7 +109,7 @@ data class OrderDTO(
     fun toPm(
         customers: List<Customer>,
         beerList: List<Beer>,
-        bottles: List<BaseBottleModel>,
+        bottles: List<Bottle>,
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,
         onChangeDistributorClick: ((Order) -> Unit)? = null,

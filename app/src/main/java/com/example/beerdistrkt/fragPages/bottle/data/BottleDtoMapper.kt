@@ -1,20 +1,21 @@
-package com.example.beerdistrkt.models.bottle
+package com.example.beerdistrkt.fragPages.bottle.data
 
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
 import javax.inject.Inject
 
 interface BottleDtoMapper {
-    suspend fun map(dto: BaseBottleModelDto): BaseBottleModel
+    suspend fun map(dto: BottleDto): Bottle
 }
 
 class DefaultBottleDtoMapper @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
 ) : BottleDtoMapper {
 
-    override suspend fun map(dto: BaseBottleModelDto): BaseBottleModel = with(dto) {
+    override suspend fun map(dto: BottleDto): Bottle = with(dto) {
         val beers = getBeerUseCase()
-        return BaseBottleModel(
+        return Bottle(
             id = id,
             name = name,
             volume = volume,

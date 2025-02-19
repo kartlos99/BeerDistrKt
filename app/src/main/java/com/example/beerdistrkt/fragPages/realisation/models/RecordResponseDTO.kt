@@ -5,8 +5,8 @@ import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.squareup.moshi.Json
 
 data class RecordResponseDTO(
@@ -62,7 +62,7 @@ data class SaleBottleRowModel(
     val orderID: Int,
     val comment: String?
 ) {
-    fun toTempBottleItemModel(bottles: List<BaseBottleModel>): TempBottleItemModel? {
+    fun toTempBottleItemModel(bottles: List<Bottle>): TempBottleItemModel? {
         bottles
             .firstOrNull { it.id == bottleID }
             ?.let { bottle ->

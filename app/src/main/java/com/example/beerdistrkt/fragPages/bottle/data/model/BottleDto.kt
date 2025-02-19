@@ -1,11 +1,11 @@
-package com.example.beerdistrkt.models.bottle.dto
+package com.example.beerdistrkt.fragPages.bottle.data.model
 
 import androidx.annotation.Keep
-import com.example.beerdistrkt.models.bottle.BottleStatus
+import com.example.beerdistrkt.fragPages.bottle.domain.model.BottleStatus
 import com.squareup.moshi.Json
 
 @Keep
-data class BaseBottleModelDto(
+data class BottleDto(
     val id: Int,
     val name: String,
     val volume: Double,

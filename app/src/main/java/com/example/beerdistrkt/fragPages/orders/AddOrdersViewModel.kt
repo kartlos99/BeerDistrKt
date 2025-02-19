@@ -8,7 +8,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
@@ -24,8 +24,8 @@ import com.example.beerdistrkt.models.OrderStatus.ACTIVE
 import com.example.beerdistrkt.models.OrderStatus.CANCELED
 import com.example.beerdistrkt.models.OrderStatus.COMPLETED
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.assisted.Assisted
@@ -59,7 +59,7 @@ class AddOrdersViewModel @AssistedInject constructor(
 
     var barrels = emptyList<Barrel>()
     var beers: List<Beer> = listOf()
-    var bottleList: List<BaseBottleModel> = listOf()
+    var bottleList: List<Bottle> = listOf()
     var users: List<User> = listOf()
 
     lateinit var selectedDistributor: User

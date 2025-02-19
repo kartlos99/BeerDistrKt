@@ -3,7 +3,7 @@ package com.example.beerdistrkt.fragPages.sawyobi.domain
 import android.util.Log
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 
 data class StorehouseIO(
     val groupID: String,
@@ -21,7 +21,7 @@ data class StorehouseIO(
         fun fromDto(
             dto: StorehouseIoDto,
             beerList: List<Beer>,
-            bottleList: List<BaseBottleModel>
+            bottleList: List<Bottle>
         ): StorehouseIO {
 
             return StorehouseIO(
@@ -86,6 +86,6 @@ data class BarrelOutput(
 
 data class BottleInput(
     val id: Int,
-    val bottle: BaseBottleModel,
+    val bottle: Bottle,
     val count: Int,
 )

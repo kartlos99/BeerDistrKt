@@ -16,8 +16,8 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.BottleItemViewBinding
 import com.example.beerdistrkt.databinding.ViewBottleSelectorBinding
 import com.example.beerdistrkt.getSnapPosition
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
 import com.example.beerdistrkt.utils.SnapOnScrollListener
 import com.tbuonomo.viewpagerdotsindicator.BaseDotsIndicator
@@ -30,8 +30,8 @@ class BottleSelectorView @JvmOverloads constructor(
     private var bottleIndex = 0
     private val snapHelper = PagerSnapHelper()
 
-    private lateinit var allBottles: List<BaseBottleModel>
-    private lateinit var visibleBottles: List<BaseBottleModel>
+    private lateinit var allBottles: List<Bottle>
+    private lateinit var visibleBottles: List<Bottle>
     var onFormUpdate: (() -> Unit)? = null
 
     var onDeleteClick: ((bottleItem: TempBottleItemModel) -> Unit)? = null
@@ -40,7 +40,7 @@ class BottleSelectorView @JvmOverloads constructor(
     private var itemID = 0
     var withPrices = false
 
-    private var selectedBottle: BaseBottleModel? = null
+    private var selectedBottle: Bottle? = null
 
     private val binding =
         ViewBottleSelectorBinding.bind(inflate(context, R.layout.view_bottle_selector, this))
@@ -89,7 +89,7 @@ class BottleSelectorView @JvmOverloads constructor(
 
     // mandatory
     fun initView(
-        bottles: List<BaseBottleModel>,
+        bottles: List<Bottle>,
         onFormUpdate: () -> Unit
     ) {
         selectedBottle = null
@@ -97,7 +97,7 @@ class BottleSelectorView @JvmOverloads constructor(
         updateBottles(bottles)
     }
 
-    fun updateBottles(bottles: List<BaseBottleModel>) {
+    fun updateBottles(bottles: List<Bottle>) {
         allBottles = bottles
         visibleBottles = bottles.getVisibleBeers(selectedBottle)
         initBottleRecycler()
@@ -105,9 +105,9 @@ class BottleSelectorView @JvmOverloads constructor(
         checkForm()
     }
 
-    private fun List<BaseBottleModel>.getVisibleBeers(
-        currentBottleItem: BaseBottleModel? = null
-    ): List<BaseBottleModel> = this.filter {
+    private fun List<Bottle>.getVisibleBeers(
+        currentBottleItem: Bottle? = null
+    ): List<Bottle> = this.filter {
         it.isActive || (currentBottleItem?.id == it.id)
     }
 

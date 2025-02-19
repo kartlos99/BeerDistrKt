@@ -1,11 +1,12 @@
-package com.example.beerdistrkt.models.bottle
+package com.example.beerdistrkt.fragPages.bottle.presentation.model
 
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
 
 data class TempBottleItemModel(
     val id: Int = 0,
-    val bottle: BaseBottleModel,
+    val bottle: Bottle,
     val count: Int,
     val onRemoveClick: (bottleItem: TempBottleItemModel) -> Unit,
     val orderItemID: Int = 0,

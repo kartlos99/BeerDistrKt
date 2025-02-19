@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.models.bottle
+package com.example.beerdistrkt.fragPages.bottle.domain.model
 
 import android.content.Context
 import androidx.annotation.StringRes

@@ -1,7 +1,7 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement.di
+package com.example.beerdistrkt.fragPages.bottle.di
 
-import com.example.beerdistrkt.fragPages.bottlemanagement.data.BottleRepositoryImpl
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.BottleRepository
+import com.example.beerdistrkt.fragPages.bottle.data.BottleRepositoryImpl
+import com.example.beerdistrkt.fragPages.bottle.domain.BottleRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

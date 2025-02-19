@@ -5,9 +5,9 @@ import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.db.ApeniDatabaseDao
 import com.example.beerdistrkt.fragPages.beer.data.BeerMapper
 import com.example.beerdistrkt.fragPages.beer.domain.BeerRepository
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.BottleRepository
+import com.example.beerdistrkt.fragPages.bottle.domain.BottleRepository
 import com.example.beerdistrkt.fragPages.homePage.domain.HomeRepository
-import com.example.beerdistrkt.models.bottle.BottleDtoMapper
+import com.example.beerdistrkt.fragPages.bottle.data.BottleDtoMapper
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
 import dagger.hilt.android.scopes.ActivityRetainedScoped

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement
+package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import android.os.Bundle
 import android.view.View
@@ -10,12 +10,12 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.FragmentBottleDetailBinding
-import com.example.beerdistrkt.fragPages.bottlemanagement.Event.DataSaved
-import com.example.beerdistrkt.fragPages.bottlemanagement.Event.Error
-import com.example.beerdistrkt.fragPages.bottlemanagement.Event.IncorrectDataEntered
-import com.example.beerdistrkt.fragPages.bottlemanagement.Event.ShowLoading
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.BottleStatus
+import com.example.beerdistrkt.fragPages.bottle.presentation.Event.DataSaved
+import com.example.beerdistrkt.fragPages.bottle.presentation.Event.Error
+import com.example.beerdistrkt.fragPages.bottle.presentation.Event.IncorrectDataEntered
+import com.example.beerdistrkt.fragPages.bottle.presentation.Event.ShowLoading
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.domain.model.BottleStatus
 import com.example.beerdistrkt.paramViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -92,7 +92,7 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
         }
     }
 
-    private fun fillForm(bottle: BaseBottleModel) = with(binding) {
+    private fun fillForm(bottle: Bottle) = with(binding) {
         setPageTitle(R.string.m_edit)
         bottleNameInput.setText(bottle.name)
         bottleVolumeInput.setText(bottle.volume.toString())

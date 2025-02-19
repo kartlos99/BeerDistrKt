@@ -1,9 +1,8 @@
-package com.example.beerdistrkt.fragPages.bottlemanagement.data
+package com.example.beerdistrkt.fragPages.bottle.data
 
-import com.example.beerdistrkt.fragPages.bottlemanagement.data.model.BottleOrderUpdateDto
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.BottleRepository
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.BottleDtoMapper
+import com.example.beerdistrkt.fragPages.bottle.data.model.BottleOrderUpdateDto
+import com.example.beerdistrkt.fragPages.bottle.domain.BottleRepository
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
@@ -20,17 +19,17 @@ class BottleRepositoryImpl @Inject constructor(
     ioDispatcher: CoroutineDispatcher
 ) : BaseRepository(ioDispatcher), BottleRepository {
 
-    private var bottles: List<BaseBottleModel> = emptyList()
+    private var bottles: List<Bottle> = emptyList()
 
-    override val bottleFlow: MutableStateFlow<List<BaseBottleModel>?> = MutableStateFlow(null)
+    override val bottleFlow: MutableStateFlow<List<Bottle>?> = MutableStateFlow(null)
 
-    override suspend fun getBottles(): List<BaseBottleModel> {
+    override suspend fun getBottles(): List<Bottle> {
         if (bottles.isEmpty())
             fetchBottles()
         return bottles
     }
 
-    override suspend fun getBottle(bottleId: Int): BaseBottleModel? {
+    override suspend fun getBottle(bottleId: Int): Bottle? {
         val bottle = bottles.find { it.id == bottleId }
         return if (bottle == null) {
             fetchBottles()
@@ -44,7 +43,7 @@ class BottleRepositoryImpl @Inject constructor(
         fetchBottles()
     }
 
-    override suspend fun putBottle(bottle: BaseBottleModel): ApiResponse<List<BaseBottleModel>> {
+    override suspend fun putBottle(bottle: Bottle): ApiResponse<List<Bottle>> {
         return apiCall {
             api.putBottle(bottleMapper.toDto(bottle))
                 .map { bottleDtoMapper.map(it) }
@@ -55,7 +54,7 @@ class BottleRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteBottle(bottleId: Int): ApiResponse<List<BaseBottleModel>> {
+    override suspend fun deleteBottle(bottleId: Int): ApiResponse<List<Bottle>> {
         return apiCall {
             api.deleteBottle(bottleId)
                 .map { bottleDtoMapper.map(it) }
@@ -69,7 +68,7 @@ class BottleRepositoryImpl @Inject constructor(
     override suspend fun updateBottleSortValue(
         bottleId: Int,
         sortValue: Double
-    ): ApiResponse<List<BaseBottleModel>> {
+    ): ApiResponse<List<Bottle>> {
         return apiCall {
             api.updateBottleSortValue(BottleOrderUpdateDto(bottleId, sortValue))
                 .map { bottleDtoMapper.map(it) }
@@ -93,7 +92,7 @@ class BottleRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setBottles(bottles: List<BaseBottleModel>) {
+    override suspend fun setBottles(bottles: List<Bottle>) {
         this.bottles = bottles
         bottleFlow.emit(bottles)
     }

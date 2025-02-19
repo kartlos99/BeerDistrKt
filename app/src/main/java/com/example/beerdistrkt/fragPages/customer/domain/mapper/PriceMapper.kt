@@ -2,7 +2,7 @@ package com.example.beerdistrkt.fragPages.customer.domain.mapper
 
 import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import javax.inject.Inject
