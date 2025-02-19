@@ -1,6 +1,5 @@
 package com.example.beerdistrkt.models.bottle
 
-import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
 import javax.inject.Inject
@@ -26,7 +25,7 @@ class DefaultBottleDtoMapper @Inject constructor(
             price = price,
             status = status,
             sortValue = sortValue,
-            imageLink = BuildConfig.SERVER_URL + "images/" + imageFileName
+            imageFileName = imageFileName
         )
     }
 }

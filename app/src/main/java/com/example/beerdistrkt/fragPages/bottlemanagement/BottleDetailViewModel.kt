@@ -33,13 +33,8 @@ class BottleDetailViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             beerList = getBeerUseCase()
-            if (bottleID > 0) {
-                getBottleUseCase().firstOrNull {
-                    it.id == bottleID
-                }?.let {
-
-                    stateFlow.emit(Event.EditBottle(it))
-                }
+            getBottleUseCase(bottleID)?.let {
+                stateFlow.emit(Event.EditBottle(it))
             }
         }
     }

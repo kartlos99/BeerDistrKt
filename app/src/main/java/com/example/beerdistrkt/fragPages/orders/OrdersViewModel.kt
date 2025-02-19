@@ -10,7 +10,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
@@ -39,7 +39,7 @@ import kotlin.math.sign
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val getBottleUseCase: GetBottleUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
     private val getCustomersUseCase: GetCustomersUseCase,
     private val getUsersUseCase: GetUsersUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
@@ -95,7 +95,7 @@ class OrdersViewModel @Inject constructor(
 
     private fun initializeData() = viewModelScope.launch {
         beers = getBeerUseCase()
-        bottleList = getBottleUseCase()
+        bottleList = getBottlesUseCase()
         customers = getCustomersUseCase()
         usersList = getUsersUseCase()
         barrels = getBarrelsUseCase()

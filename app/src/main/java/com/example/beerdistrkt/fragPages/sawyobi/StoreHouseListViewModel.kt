@@ -8,7 +8,7 @@ import androidx.paging.map
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.domain.StorehouseIO
 import com.example.beerdistrkt.fragPages.sawyobi.domain.GetStorehouseIoPagingSourceUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.models.StorehouseIoPm
@@ -23,7 +23,7 @@ private const val ITEMS_PER_PAGE = 20
 @HiltViewModel
 class StoreHouseListViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val getBottleUseCase: GetBottleUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
     private val getStorehouseIoPagingSourceUseCase: GetStorehouseIoPagingSourceUseCase,
 ) : BaseViewModel() {
 
@@ -40,7 +40,7 @@ class StoreHouseListViewModel @Inject constructor(
             pagingData.map { ioDto ->
 
                 StorehouseIoPm.fromDomainIo(
-                    StorehouseIO.fromDto(ioDto, beerList, getBottleUseCase()),
+                    StorehouseIO.fromDto(ioDto, beerList, getBottlesUseCase()),
                     ::onItemClick
                 )
 

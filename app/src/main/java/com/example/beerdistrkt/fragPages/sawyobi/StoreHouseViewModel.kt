@@ -8,7 +8,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
@@ -35,7 +35,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StoreHouseViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val getBottleUseCase: GetBottleUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
 ) : BaseViewModel() {
 
@@ -98,7 +98,7 @@ class StoreHouseViewModel @Inject constructor(
 
     private fun getBeers() = viewModelScope.launch {
         beerList = getBeerUseCase()
-        bottleList = getBottleUseCase()
+        bottleList = getBottlesUseCase()
         barrels = getBarrelsUseCase()
     }
 

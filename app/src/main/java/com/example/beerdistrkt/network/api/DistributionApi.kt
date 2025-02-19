@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
+import com.example.beerdistrkt.fragPages.bottlemanagement.data.model.BottleOrderUpdateDto
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDeactivationDto
 import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategoryRequestDto
@@ -15,6 +16,7 @@ import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.UserApiModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
+import com.example.beerdistrkt.models.bottle.dto.BaseBottleModelDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -64,6 +66,19 @@ interface DistributionApi {
 
     @GET("listing/beers.php")
     suspend fun getBeers(): List<BeerDto>
+
+    /* BOTTLE */
+    @POST("bottle/updateSortValue.php")
+    suspend fun updateBottleSortValue(@Body data: BottleOrderUpdateDto): List<BaseBottleModelDto>
+
+    @POST("bottle/delete.php")
+    suspend fun deleteBottle(@Body bottleId: Int): List<BaseBottleModelDto>
+
+    @POST("bottle/add.php")
+    suspend fun putBottle(@Body baseBottleModelDto: BaseBottleModelDto): List<BaseBottleModelDto>
+
+    @GET("listing/bottles.php")
+    suspend fun getBottles(): List<BaseBottleModelDto>
 
     /* customer */
     @GET("listing/customers.php")

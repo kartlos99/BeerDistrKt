@@ -59,6 +59,7 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
                     dotsImg.setOnClickListener {
                         openDetails(item.id)
                     }
+                    root.alpha = if (item.isActive) 1f else 0.4f
                 }
             }
         )

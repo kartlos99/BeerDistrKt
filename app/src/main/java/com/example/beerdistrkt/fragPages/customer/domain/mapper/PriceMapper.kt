@@ -2,14 +2,14 @@ package com.example.beerdistrkt.fragPages.customer.domain.mapper
 
 import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import javax.inject.Inject
 
 class PriceMapper @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val getBottleUseCase: GetBottleUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
 ) {
 
     suspend fun getBeerPrices(beerPrices: List<ClientBeerPrice>?): List<PriceEditModel> {
@@ -32,7 +32,7 @@ class PriceMapper @Inject constructor(
     }
 
     suspend fun getBottlePrices(bottlePrices: List<ClientBottlePrice>?): List<PriceEditModel> {
-        return getBottleUseCase()
+        return getBottlesUseCase()
             .filter { it.isActive }
             .map { bottle ->
                 val defaultPrice = bottle.price

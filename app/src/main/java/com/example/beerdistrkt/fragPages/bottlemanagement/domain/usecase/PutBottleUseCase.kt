@@ -1,12 +1,13 @@
 package com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase
 
 import com.example.beerdistrkt.fragPages.bottlemanagement.domain.BottleRepository
+import com.example.beerdistrkt.models.bottle.BaseBottleModel
 import javax.inject.Inject
 
-class GetBottleUseCase @Inject constructor(
+class PutBottleUseCase @Inject constructor(
     private val bottleRepository: BottleRepository,
 ) {
     suspend operator fun invoke(
-        bottleId: Int
-    ) = bottleRepository.getBottle(bottleId)
+        bottle: BaseBottleModel
+    ) = bottleRepository.putBottle(bottle)
 }

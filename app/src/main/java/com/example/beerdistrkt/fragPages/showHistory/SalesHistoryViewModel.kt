@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = SalesHistoryViewModel.Factory::class)
 class SalesHistoryViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val getBottleUseCase: GetBottleUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
     private val getCustomersUseCase: GetCustomersUseCase,
     private val getUsersUseCase: GetUsersUseCase,
     @Assisted private val recordID: Int,
@@ -54,7 +54,7 @@ class SalesHistoryViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             beerList = getBeerUseCase()
-            bottleList = getBottleUseCase()
+            bottleList = getBottlesUseCase()
             clients = getCustomersUseCase()
             usersList = getUsersUseCase()
             switchHistory()

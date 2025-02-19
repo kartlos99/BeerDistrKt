@@ -8,7 +8,7 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
-import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottleUseCase
+import com.example.beerdistrkt.fragPages.bottlemanagement.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
@@ -41,7 +41,7 @@ import java.util.Date
 @HiltViewModel(assistedFactory = AddOrdersViewModel.Factory::class)
 class AddOrdersViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
-    private val getBottleUseCase: GetBottleUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
     private val getCustomerUseCase: GetCustomerUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
     private val getUsersUseCase: GetUsersUseCase,
@@ -112,7 +112,7 @@ class AddOrdersViewModel @AssistedInject constructor(
 
     private suspend fun initData() {
         beers = getBeerUseCase()
-        bottleList = getBottleUseCase()
+        bottleList = getBottlesUseCase()
         barrels = getBarrelsUseCase()
         users = getUsersUseCase()
     }
