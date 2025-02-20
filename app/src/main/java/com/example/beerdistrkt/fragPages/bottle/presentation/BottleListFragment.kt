@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import com.example.beerdistrkt.databinding.BottleRowBinding
 import com.example.beerdistrkt.databinding.FragmentBottleListBinding
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.getDimenPixelOffset
+import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onLoading
 import com.example.beerdistrkt.network.model.onSuccess
@@ -40,6 +42,9 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
     private fun setListeners() {
         binding.addBottle.setOnClickListener {
             openDetails(0)
+        }
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.refresh()
         }
     }
 
@@ -80,6 +85,8 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
         adapter = bottlesAdapter
 
         viewModel.bottlesFlow.collectLatest(viewLifecycleOwner) { result ->
+            binding.progressIndicator.isVisible = result.isLoading()
+            binding.swipeRefresh.isRefreshing = result.isLoading()
             result.onLoading {
                 bottlesAdapter.submitList(emptyList())
             }

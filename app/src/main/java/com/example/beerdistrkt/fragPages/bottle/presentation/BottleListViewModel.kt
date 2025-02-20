@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.RefreshBottlesUseCase
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BottleListViewModel @Inject constructor(
     private val getBottlesUseCase: GetBottlesUseCase,
+    private val refreshBottlesUseCase: RefreshBottlesUseCase,
 ) : BaseViewModel() {
 
     private val _bottlesFlow: MutableStateFlow<ResultState<List<Bottle>>> =
@@ -24,11 +26,11 @@ class BottleListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            initBottles()
+            retrieveBottles()
         }
     }
 
-    private suspend fun initBottles() {
+    private suspend fun retrieveBottles() {
         _bottlesFlow.emit(
             getBottlesUseCase()
                 .filter { it.isVisible }
@@ -38,5 +40,13 @@ class BottleListViewModel @Inject constructor(
     }
 
     suspend fun getBottleList(): List<Bottle> = getBottlesUseCase()
+
+    fun refresh() {
+        viewModelScope.launch {
+            _bottlesFlow.emit(ResultState.Loading)
+            refreshBottlesUseCase()
+            retrieveBottles()
+        }
+    }
 
 }
