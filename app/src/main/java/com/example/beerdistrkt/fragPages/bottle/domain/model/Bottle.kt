@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.bottle.domain.model
 
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.utils.DiffItem
 
 data class Bottle(
     val id: Int,
@@ -13,9 +14,16 @@ data class Bottle(
     val status: BottleStatus,
     val sortValue: String,
     val imageFileName: String?
-) {
+): DiffItem {
+
+    override val key: Int
+        get() = id
+
     val isActive: Boolean
         get() = status == BottleStatus.ACTIVE
+
+    val isVisible: Boolean
+        get() = status == BottleStatus.ACTIVE || status == BottleStatus.INACTIVE
 
     val imageLink: String?
         get() = imageFileName?.let { fileName ->
