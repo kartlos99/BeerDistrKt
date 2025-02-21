@@ -6,6 +6,9 @@ import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
+import com.example.beerdistrkt.network.api.toResultState
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.asSuccessState
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +24,8 @@ class BottleRepositoryImpl @Inject constructor(
 
     private var bottles: List<Bottle> = emptyList()
 
-    override val bottleFlow: MutableStateFlow<List<Bottle>?> = MutableStateFlow(null)
+    override val bottleFlow: MutableStateFlow<ResultState<List<Bottle>>> =
+        MutableStateFlow(ResultState.Loading)
 
     override suspend fun getBottles(): List<Bottle> {
         if (bottles.isEmpty())
@@ -49,8 +53,9 @@ class BottleRepositoryImpl @Inject constructor(
                 .map { bottleDtoMapper.map(it) }
                 .also {
                     bottles = it
-                    bottleFlow.emit(it)
                 }
+        }.also {
+            bottleFlow.emit(it.toResultState())
         }
     }
 
@@ -60,8 +65,9 @@ class BottleRepositoryImpl @Inject constructor(
                 .map { bottleDtoMapper.map(it) }
                 .also {
                     bottles = it
-                    bottleFlow.emit(it)
                 }
+        }.also {
+            bottleFlow.emit(it.toResultState())
         }
     }
 
@@ -74,12 +80,14 @@ class BottleRepositoryImpl @Inject constructor(
                 .map { bottleDtoMapper.map(it) }
                 .also {
                     bottles = it
-                    bottleFlow.emit(it)
                 }
+        }.also {
+            bottleFlow.emit(it.toResultState())
         }
     }
 
     private suspend fun fetchBottles() {
+        bottleFlow.emit(ResultState.Loading)
         apiCall {
             api.getBottles()
                 .map {
@@ -87,13 +95,14 @@ class BottleRepositoryImpl @Inject constructor(
                 }
                 .also {
                     bottles = it
-                    bottleFlow.emit(it)
                 }
+        }.also {
+            bottleFlow.emit(it.toResultState())
         }
     }
 
     override suspend fun setBottles(bottles: List<Bottle>) {
         this.bottles = bottles
-        bottleFlow.emit(bottles)
+        bottleFlow.emit(bottles.asSuccessState())
     }
 }

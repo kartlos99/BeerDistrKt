@@ -13,7 +13,7 @@ data class BottleDto(
     val beerID: Int,
     val price: Double,
     val status: BottleStatus,
-    val sortValue: String,
+    val sortValue: Double,
     @Json(name = "image")
     val imageFileName: String?
 ) {
@@ -32,7 +32,7 @@ data class BottleDto(
         beerID,
         price,
         status,
-        "",
+        .0,
         null
     )
 }

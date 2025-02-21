@@ -69,12 +69,7 @@ class AddBeerViewModel @Inject constructor(
 
     fun initNewBeer() {
         viewModelScope.launch {
-            _currentBeerStateFlow.emit(
-                Beer(
-                    name = String.empty(),
-                    sortValue = .0
-                )
-            )
+            _currentBeerStateFlow.emit(Beer.newInstance())
             _priceState.emit(String.empty())
         }
     }

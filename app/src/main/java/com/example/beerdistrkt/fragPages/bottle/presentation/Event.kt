@@ -5,7 +5,7 @@ import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 
 sealed class Event {
     data class IncorrectDataEntered(@StringRes val msgID: Int) : Event()
-    object DataSaved : Event()
+    data object DataSaved : Event()
     data class ShowLoading(val isLoading: Boolean) : Event()
     data class Error(
         val code: Int,

@@ -297,6 +297,7 @@
     <string name="refresh">განახლება</string>
     <string name="no_region_set_error">რეგიონი არ არის არჩეული!</string>
     <string name="no_users_to_show_try_refresh">მომხმარებლების სია ცარიელია. სცადე გვერდის განახლება</string>
+    <string name="cant_set_status">ვერ მოხერხდა სტატუსის დაყენება!</string>
 
 
 </resources>

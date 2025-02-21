@@ -19,7 +19,6 @@ import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
-import com.example.beerdistrkt.network.model.onLoading
 import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,14 +40,14 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
 
     private fun setListeners() {
         binding.addBottle.setOnClickListener {
-            openDetails(0)
+            openDetails()
         }
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.refresh()
         }
     }
 
-    private fun openDetails(bottleID: Int) {
+    private fun openDetails(bottleID: Int = 0) {
         Log.d(TAG, "openDetails: $bottleID")
         findNavController().navigate(
             BottleListFragmentDirections.actionBottleListFragmentToBottleDetailFragment(
@@ -86,15 +85,13 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
 
         viewModel.bottlesFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
-            binding.swipeRefresh.isRefreshing = result.isLoading()
-            result.onLoading {
-                bottlesAdapter.submitList(emptyList())
-            }
             result.onError { error ->
                 showToast(error.formatedMessage)
+                binding.swipeRefresh.isRefreshing = false
             }
             result.onSuccess {
                 bottlesAdapter.submitList(it)
+                binding.swipeRefresh.isRefreshing = false
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.bottle.domain.model
 
 import com.example.beerdistrkt.BuildConfig
+import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.utils.DiffItem
 
@@ -12,9 +13,9 @@ data class Bottle(
     val beer: Beer,
     val price: Double,
     val status: BottleStatus,
-    val sortValue: String,
+    val sortValue: Double,
     val imageFileName: String?
-): DiffItem {
+) : DiffItem {
 
     override val key: Int
         get() = id
@@ -32,5 +33,17 @@ data class Bottle(
 
     companion object {
         const val BOTTLE_IMAGES_FOLDER = "images/"
+
+        fun newInstance() = Bottle(
+            id = 0,
+            name = String.empty(),
+            volume = .0,
+            actualVolume = .0,
+            beer = Beer.newInstance(),
+            price = .0,
+            status = BottleStatus.ACTIVE,
+            sortValue = .0,
+            imageFileName = String.empty()
+        )
     }
 }

@@ -297,7 +297,7 @@ fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text
     val view: View = LayoutInflater.from(this).inflate(R.layout.text_input_layout, null)
     builder
         .setView(view)
-        .setPositiveButton(R.string.text_record) { dialog, which ->
+        .setPositiveButton(R.string.text_record) { dialog, _ /*which*/ ->
             callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
             dialog.dismiss()
         }.show()

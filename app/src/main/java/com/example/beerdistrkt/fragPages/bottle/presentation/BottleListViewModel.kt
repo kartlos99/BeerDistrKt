@@ -11,6 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,21 +33,26 @@ class BottleListViewModel @Inject constructor(
     }
 
     private suspend fun retrieveBottles() {
-        _bottlesFlow.emit(
-            getBottlesUseCase()
-                .filter { it.isVisible }
-                .sortedBy { it.sortValue }
-                .asSuccessState()
-        )
-    }
+        _bottlesFlow.emit(ResultState.Loading)
+        getBottlesUseCase.asFlow()
+            .map { result ->
+                if (result is ResultState.Success)
+                    result.data.filter { it.isVisible }
+                        .sortedBy { it.sortValue }
+                        .asSuccessState()
+                else
+                    result
+            }
+            .collectLatest {
+                _bottlesFlow.emit(it)
+            }
 
-    suspend fun getBottleList(): List<Bottle> = getBottlesUseCase()
+
+    }
 
     fun refresh() {
         viewModelScope.launch {
-            _bottlesFlow.emit(ResultState.Loading)
             refreshBottlesUseCase()
-            retrieveBottles()
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.bottle.domain
 
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.network.api.ApiResponse
+import com.example.beerdistrkt.network.model.ResultState
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface BottleRepository {
@@ -10,7 +11,7 @@ interface BottleRepository {
 
     suspend fun getBottle(bottleId: Int): Bottle?
 
-    val bottleFlow: MutableStateFlow<List<Bottle>?>
+    val bottleFlow: MutableStateFlow<ResultState<List<Bottle>>>
 
     suspend fun refreshBottles()
 
