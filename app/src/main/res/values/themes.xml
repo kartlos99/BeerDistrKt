@@ -15,5 +15,6 @@
 
         <item name="strokeColor">@color/gray_6</item>
         <item name="viewBackground">?android:windowBackground</item>
+        <item name="iconTint">@color/orange_08</item>
     </style>
 </resources>
