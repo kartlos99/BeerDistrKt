@@ -86,6 +86,7 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
         viewModel.bottlesFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
             result.onError { error ->
+                // TODO try again button
                 showToast(error.formatedMessage)
                 binding.swipeRefresh.isRefreshing = false
             }

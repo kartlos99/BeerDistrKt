@@ -263,7 +263,7 @@
     <fragment
         android:id="@+id/bottleDetailFragment"
         android:name="com.example.beerdistrkt.fragPages.bottle.presentation.BottleDetailFragment"
-        android:label="@string/add_bottle"
+        tools:label="@string/add_bottle"
         tools:layout="@layout/fragment_bottle_detail" >
         <argument
             android:name="bottleID"

@@ -8,6 +8,7 @@ import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.domain.model.BottleStatus
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.DeleteBottleUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.PutBottleUseCase
 import com.example.beerdistrkt.network.api.toResultState
@@ -29,6 +30,7 @@ class BottleDetailViewModel @AssistedInject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottleUseCase: GetBottleUseCase,
     private val putBottleUseCase: PutBottleUseCase,
+    private val deleteBottleUseCase: DeleteBottleUseCase,
     @Assisted private val bottleID: Int
 ) : BaseViewModel() {
 
@@ -109,6 +111,20 @@ class BottleDetailViewModel @AssistedInject constructor(
         return beerList
             .filter { it.isActive }
             .map { it.name }
+    }
+
+    fun deleteBottle() {
+        if (bottleID > 0)
+            deleteBottle(bottleID)
+        else
+            throwEvent(R.string.error_cant_delete_unsaved_data)
+    }
+
+    private fun deleteBottle(bottleID: Int) {
+        viewModelScope.launch {
+            _apiStateFlow.emit(ResultState.Loading)
+            _apiStateFlow.emit(deleteBottleUseCase(bottleID).toResultState())
+        }
     }
 
     fun onSaveClicked() {

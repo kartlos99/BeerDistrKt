@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
@@ -23,6 +24,7 @@ import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.setDifferText
+import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.showInfoDialog
 import com.example.beerdistrkt.simpleTextChangeListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,30 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
 
     override var frLayout: Int? = R.layout.fragment_bottle_detail
 
+    override val titleRes: Int
+        get() = if (bottleID > 0) R.string.m_edit else R.string.add_bottle
+
+    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.delete -> {
+                askForRemoving()
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun askForRemoving() {
+        context?.showAskingDialog(
+            R.string.delete_bottle,
+            R.string.recovery_is_impossible_from_app,
+            R.string.yes,
+            R.string.no,
+            R.style.ThemeOverlay_MaterialComponents_Dialog
+        ) {
+            viewModel.deleteBottle()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +77,9 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
         initView()
     }
 
-    private fun initView() = with(binding) {
+    private fun initView() {
+        if (bottleID > 0)
+            setupMenu(R.menu.bottle_detail_manu, ::onMenuItemSelected)
         setupBeerDropDown()
         setupStatusDropDown()
         setListeners()
@@ -109,7 +137,6 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
     }
 
     private fun fillForm(bottle: Bottle) = with(binding) {
-        setPageTitle(R.string.m_edit)
         bottleNameInput.setDifferText(bottle.name)
         bottleVolumeInput.setDifferText(bottle.volume.toString())
         beerInput.setText(bottle.beer.name, false)
