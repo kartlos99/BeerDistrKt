@@ -47,9 +47,9 @@ class BottleValidator {
         }
     }
 
-    private fun isVolumeValid(volume: String): Double? {
+    private fun isVolumeValid(volumeStr: String): Double? {
         return try {
-            volume.toDouble()
+            volumeStr.toDouble().takeIf { it > 0.001 }
         } catch (e: Exception) {
             null
         }
@@ -63,12 +63,7 @@ class BottleValidator {
 
     private fun isPriceValid(priceStr: String): Double? {
         return try {
-            val double = priceStr.toDouble()
-            if (double > 0)
-                double
-            else {
-                null
-            }
+            priceStr.toDouble().takeIf { it >= .0 }
         } catch (e: Exception) {
             null
         }
