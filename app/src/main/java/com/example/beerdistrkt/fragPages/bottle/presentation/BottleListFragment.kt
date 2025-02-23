@@ -7,6 +7,7 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
@@ -15,10 +16,12 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
 import com.example.beerdistrkt.databinding.BottleRowBinding
 import com.example.beerdistrkt.databinding.FragmentBottleListBinding
+import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onLoading
 import com.example.beerdistrkt.network.model.onSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,6 +60,8 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
     }
 
     private fun initRecycler() = with(binding.bottlesRv) {
+        val touchCallback = TouchCallback(viewModel::onItemMove)
+        val touchHelper = ItemTouchHelper(touchCallback)
 
         val bottlesAdapter = SimpleDataAdapter<Bottle>(
             layoutId = R.layout.bottle_row,
@@ -82,9 +87,13 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
 
         layoutManager = LinearLayoutManager(requireContext())
         adapter = bottlesAdapter
+        touchHelper.attachToRecyclerView(this)
 
         viewModel.bottlesFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
+            result.onLoading {
+                bottlesAdapter.submitList(emptyList())
+            }
             result.onError { error ->
                 // TODO try again button
                 showToast(error.formatedMessage)
