@@ -6,121 +6,137 @@
     android:layout_height="match_parent"
     tools:context=".fragPages.bottle.presentation.BottleDetailFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bottleNameField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginTop="@dimen/gr_size_16"
-        android:hint="@string/bottle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/content_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/gr_size_8"
+        app:layout_constraintBottom_toTopOf="@id/saveBtn"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bottleNameInput"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bottleNameField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginTop="@dimen/gr_size_16"
+                android:hint="@string/bottle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bottleVolumeField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginTop="@dimen/gr_size_16"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottleNameField"
-        app:suffixText="@string/litri">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bottleNameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/bottleVolumeInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints="@string/volume"
-            android:hint="@string/volume"
-            android:inputType="numberDecimal"
-            android:maxLength="5"
-            tools:ignore="UnusedAttribute" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bottleVolumeField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginTop="@dimen/gr_size_16"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bottleNameField"
+                app:suffixText="@string/litri">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/beerField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gr_size_8"
-        android:hint="@string/beer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bottleVolumeField">
+                <EditText
+                    android:id="@+id/bottleVolumeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/volume"
+                    android:hint="@string/volume"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    tools:ignore="UnusedAttribute" />
 
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/beerInput"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ellipsize="end"
-            android:inputType="none"
-            android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/beerField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_8"
+                android:hint="@string/beer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bottleVolumeField">
 
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/beerInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:inputType="none"
+                    android:singleLine="true" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bottlePriceField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginTop="@dimen/gr_size_16"
-        android:hint="@string/price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/beerField"
-        app:suffixText="@string/lari">
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bottlePriceInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:maxLength="5" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bottlePriceField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginTop="@dimen/gr_size_16"
+                android:hint="@string/price"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/beerField"
+                app:suffixText="@string/lari">
 
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bottlePriceInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bottleStatusField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gr_size_8"
-        android:hint="@string/status"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bottlePriceField">
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/bottleStatusInput"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ellipsize="end"
-            android:inputType="none"
-            android:singleLine="true" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bottleStatusField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_8"
+                android:hint="@string/status"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bottlePriceField">
 
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/bottleStatusInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:inputType="none"
+                    android:singleLine="true" />
 
-    <TextView
-        android:id="@+id/infoMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gr_size_24"
-        android:textAlignment="center"
-        android:textColor="@color/design_default_color_error"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/bottleStatusField"
-        tools:text="message" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/infoMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_24"
+                android:textAlignment="center"
+                android:textColor="@color/design_default_color_error"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/bottleStatusField"
+                tools:text="message" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveBtn"
