@@ -99,6 +99,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         vBinding.addDeliveryDateBtn.setOnClickListener(this)
         vBinding.addDeliveryAddSaleItemBtn.setOnClickListener(this)
         vBinding.addDeliveryMoneyExpander.setOnClickListener(this)
+        vBinding.optionIcon.setOnClickListener(this)
         vBinding.addDeliveryMoneyCashImg.setOnClickListener(this)
         vBinding.addDeliveryMoneyTransferImg.setOnClickListener(this)
         vBinding.initView()
@@ -194,7 +195,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         with(vBinding.addDeliveryComment) {
             if (text().isEmpty() && isChecked) setText(textRes)
             if (text() == getString(textRes) && !isChecked) setText("")
+            updateOptionsView()
         }
+
+    private fun updateOptionsView(forceDisplay: Boolean = false) = with(vBinding) {
+        optionIcon.isVisible = !addDeliveryCheckGift.isChecked && !addDeliveryCheckReplace.isChecked
+        if (forceDisplay)
+            toggleOptions()
+    }
 
     private fun getColorForValidationIndicator(value: CharSequence): Int {
         return if (value.isNotEmpty() && (value.toString().toDoubleOrNull() ?: .0) > .0)
@@ -310,10 +318,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
 
         vBinding.addDeliveryComment.editText?.setText(moneyRowModel.comment ?: "")
+        vBinding.optionSection.goAway()
     }
 
     private fun fillBarrels(barrelRowModel: BarrelRowModel) {
-
+        vBinding.optionSection.goAway()
         vBinding.beerSelector.fillBarrels(barrelRowModel)
         vBinding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
     }
@@ -325,15 +334,18 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             addDeliveryComment.editText?.setText(saleData.comment.orEmpty())
         }
             ?: showToast(R.string.missed_barrel_or_beer)
+        updateOptionsView(addDeliveryCheckGift.isChecked)
     }
 
-    private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) {
-        vBinding.beerSelector.goAway()
+    private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) = with(vBinding) {
+        beerSelector.goAway()
         saleBottleRowModel.toTempBottleItemModel(viewModel.bottleList)?.let { data ->
-            vBinding.bottleSelector.fillBottleItemForm(data)
-            vBinding.addDeliveryCheckGift.isChecked = saleBottleRowModel.price == 0.0
-            vBinding.addDeliveryComment.editText?.setText(saleBottleRowModel.comment ?: "")
-        } ?: showToast(getString(R.string.bottle_identification_error))
+            bottleSelector.fillBottleItemForm(data)
+            addDeliveryCheckGift.isChecked = saleBottleRowModel.price == 0.0
+            addDeliveryComment.editText?.setText(saleBottleRowModel.comment ?: "")
+        }
+            ?: showToast(getString(R.string.bottle_identification_error))
+        updateOptionsView(addDeliveryCheckGift.isChecked)
     }
 
     override fun onClick(v: View?) {
@@ -415,7 +427,17 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                     vBinding.addDeliveryMoneyTransferEt.setText("")
                 }
             }
+
+            R.id.optionIcon -> {
+                toggleOptions()
+            }
         }
+    }
+
+    private fun toggleOptions() = with(vBinding) {
+        optionIcon.setImageResource(if (addDeliveryCheckGift.isVisible) R.drawable.ic_more_vert else R.drawable.ic_arrow_right)
+        addDeliveryCheckReplace.isVisible = !addDeliveryCheckGift.isVisible
+        addDeliveryCheckGift.isVisible = !addDeliveryCheckGift.isVisible
     }
 
     private fun tryCollectSaleItem() {
