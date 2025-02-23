@@ -80,8 +80,6 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
     private fun initView() {
         if (bottleID > 0)
             setupMenu(R.menu.bottle_detail_manu, ::onMenuItemSelected)
-        setupBeerDropDown()
-        setupStatusDropDown()
         setListeners()
     }
 
@@ -111,8 +109,8 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
     }
 
     private fun observeViewModel() = with(viewModel) {
-        viewModel.eventsFlow.collectLatest(viewLifecycleOwner, action = ::handleEvents)
-        viewModel.currentBottleStateFlow.collectLatest(viewLifecycleOwner, action = ::fillForm)
+        eventsFlow.collectLatest(viewLifecycleOwner, action = ::handleEvents)
+        currentBottleStateFlow.collectLatest(viewLifecycleOwner, action = ::fillForm)
         apiStateFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
             binding.infoMessage.text = String.empty()
@@ -124,6 +122,8 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
                 if (it.isNotEmpty()) showDataSavedInfo()
             }
         }
+        bottleStatusesFlow.collectLatest(viewLifecycleOwner, action = ::setupStatusDropDown)
+        availableBeersFlow.collectLatest(viewLifecycleOwner, action = ::setupBeerDropDown)
     }
 
     private fun showDataSavedInfo() = requireContext().showInfoDialog(
@@ -164,27 +164,20 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
         }
     }
 
-    private fun setupStatusDropDown() {
-        val data = BottleStatus.entries
-            .filter {
-                it == BottleStatus.ACTIVE || it == BottleStatus.INACTIVE
-            }
-            .map {
-                getString(it.displayName)
-            }
+    private fun setupStatusDropDown(stateNamesRes: List<Int>) {
         val adapter = ArrayAdapter(
             requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
-            data
+            stateNamesRes.map(::getString)
         )
         binding.bottleStatusInput.setAdapter(adapter)
     }
 
-    private fun setupBeerDropDown() {
+    private fun setupBeerDropDown(beerNames: List<String>) {
         val adapter = ArrayAdapter(
             requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
-            viewModel.getBeerNames()
+            beerNames
         )
         binding.beerInput.setAdapter(adapter)
     }

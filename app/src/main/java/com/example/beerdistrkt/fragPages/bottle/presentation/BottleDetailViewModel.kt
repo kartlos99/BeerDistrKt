@@ -44,16 +44,29 @@ class BottleDetailViewModel @AssistedInject constructor(
         MutableStateFlow(emptyList<Bottle>().asSuccessState())
     val apiStateFlow: StateFlow<ResultState<List<Bottle>>> = _apiStateFlow.asStateFlow()
 
+    private val _bottleStatusesFlow = MutableStateFlow(listOf<Int>())
+    val bottleStatusesFlow = _bottleStatusesFlow.asStateFlow()
+
+    private val _availableBeersFlow = MutableStateFlow(listOf<String>())
+    val availableBeersFlow = _availableBeersFlow.asStateFlow()
 
     private var beerList: List<Beer> = listOf()
 
     init {
         viewModelScope.launch {
             beerList = getBeerUseCase()
+            _bottleStatusesFlow.emit(
+                BottleStatus.entries
+                    .filter { it == BottleStatus.ACTIVE || it == BottleStatus.INACTIVE }
+                    .map { it.displayName }
+            )
             _currentBottleStateFlow.emit(
                 getBottleUseCase(bottleID)?.let {
                     mapToUiModel(it)
                 } ?: BottleUiModel()
+            )
+            _availableBeersFlow.emit(
+                getAvailableBeers().map { it.name }
             )
         }
     }
@@ -75,10 +88,9 @@ class BottleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun getBeerNames(): List<String> {
+    private fun getAvailableBeers(): List<Beer> {
         return beerList
-            .filter { it.isActive }
-            .map { it.name }
+            .filter { it.isActive || it.id == _currentBottleStateFlow.value.beer?.id }
     }
 
     fun deleteBottle() {
@@ -124,7 +136,7 @@ class BottleDetailViewModel @AssistedInject constructor(
 
     fun setBeer(beerIndexInAdapter: Int) {
         val beer = try {
-            beerList.filter { it.isActive }[beerIndexInAdapter]
+            getAvailableBeers()[beerIndexInAdapter]
         } catch (e: Exception) {
             Beer.newInstance()
         }
