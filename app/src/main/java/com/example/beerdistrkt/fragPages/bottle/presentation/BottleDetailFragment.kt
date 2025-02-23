@@ -13,12 +13,12 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentBottleDetailBinding
 import com.example.beerdistrkt.empty
-import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.domain.model.BottleStatus
 import com.example.beerdistrkt.fragPages.bottle.presentation.Event.DataSaved
 import com.example.beerdistrkt.fragPages.bottle.presentation.Event.Error
 import com.example.beerdistrkt.fragPages.bottle.presentation.Event.IncorrectDataEntered
 import com.example.beerdistrkt.fragPages.bottle.presentation.Event.ShowLoading
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.BottleUiModel
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
@@ -136,11 +136,11 @@ class BottleDetailFragment : BaseFragment<BottleDetailViewModel>() {
         findNavController().navigateUp()
     }
 
-    private fun fillForm(bottle: Bottle) = with(binding) {
+    private fun fillForm(bottle: BottleUiModel) = with(binding) {
         bottleNameInput.setDifferText(bottle.name)
-        bottleVolumeInput.setDifferText(bottle.volume.toString())
-        beerInput.setText(bottle.beer.name, false)
-        bottlePriceInput.setDifferText(bottle.price.toString())
+        bottleVolumeInput.setDifferText(bottle.volume)
+        beerInput.setText(bottle.beer?.name.orEmpty(), false)
+        bottlePriceInput.setDifferText(bottle.price)
         bottleStatusInput.setText(getString(bottle.status.displayName), false)
     }
 

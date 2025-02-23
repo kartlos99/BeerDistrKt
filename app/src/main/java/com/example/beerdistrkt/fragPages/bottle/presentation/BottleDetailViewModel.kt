@@ -11,6 +11,7 @@ import com.example.beerdistrkt.fragPages.bottle.domain.model.BottleStatus
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.DeleteBottleUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottleUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.PutBottleUseCase
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.BottleUiModel
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
@@ -36,8 +37,8 @@ class BottleDetailViewModel @AssistedInject constructor(
 
     val eventsFlow = MutableSharedFlow<Event>()
 
-    private val _currentBottleStateFlow = MutableStateFlow(Bottle.newInstance())
-    val currentBottleStateFlow: StateFlow<Bottle> = _currentBottleStateFlow.asStateFlow()
+    private val _currentBottleStateFlow = MutableStateFlow(BottleUiModel())
+    val currentBottleStateFlow: StateFlow<BottleUiModel> = _currentBottleStateFlow.asStateFlow()
 
     private val _apiStateFlow: MutableStateFlow<ResultState<List<Bottle>>> =
         MutableStateFlow(emptyList<Bottle>().asSuccessState())
@@ -50,62 +51,29 @@ class BottleDetailViewModel @AssistedInject constructor(
         viewModelScope.launch {
             beerList = getBeerUseCase()
             _currentBottleStateFlow.emit(
-                getBottleUseCase(bottleID) ?: Bottle.newInstance()
+                getBottleUseCase(bottleID)?.let {
+                    mapToUiModel(it)
+                } ?: BottleUiModel()
             )
         }
     }
+
+    private fun mapToUiModel(bottle: Bottle): BottleUiModel = BottleUiModel(
+        id = bottle.id,
+        name = bottle.name,
+        volume = bottle.volume.toString(),
+        beer = bottle.beer,
+        price = bottle.price.toString(),
+        status = bottle.status,
+        sortValue = bottle.sortValue,
+        imageFileName = bottle.imageFileName
+    )
 
     private fun throwEvent(@StringRes msgID: Int) {
         viewModelScope.launch {
             eventsFlow.emit(Event.IncorrectDataEntered(msgID))
         }
     }
-
-    private fun isPriceValid(price: String): Double? {
-        return try {
-            val double = price.toDouble()
-            if (double > 0)
-                double
-            else {
-                throwEvent(R.string.incorrect_price)
-                null
-            }
-        } catch (e: Exception) {
-            throwEvent(R.string.incorrect_price)
-            null
-        }
-    }
-
-    private fun isBeerValid(beerName: String): Int? {
-        val ss = beerList.firstOrNull {
-            it.name == beerName
-        }
-        return if (ss == null) {
-            throwEvent(R.string.incorrect_beer)
-            null
-        } else {
-            ss.id
-        }
-    }
-
-    private fun isVolumeValid(volume: String): Double? {
-        return try {
-            volume.toDouble()
-        } catch (e: Exception) {
-            throwEvent(R.string.incorrect_volume)
-            null
-        }
-    }
-
-    private fun isNameValid(name: String): String? {
-        return if (name.trim().length > 3) {
-            name.trim()
-        } else {
-            throwEvent(R.string.incorrect_bottle_name)
-            null
-        }
-    }
-
 
     fun getBeerNames(): List<String> {
         return beerList
@@ -128,7 +96,11 @@ class BottleDetailViewModel @AssistedInject constructor(
     }
 
     fun onSaveClicked() {
-        saveBottle(_currentBottleStateFlow.value)
+        val validator = BottleValidator()
+        when (val result = validator.getBottleStatus(_currentBottleStateFlow.value)) {
+            is ValidationResult.IsValid -> saveBottle(result.bottle)
+            is ValidationResult.NotValid -> throwEvent(result.message)
+        }
     }
 
     private fun saveBottle(bottle: Bottle) {
@@ -145,16 +117,8 @@ class BottleDetailViewModel @AssistedInject constructor(
     }
 
     fun setVolume(volumeStr: String) {
-        val volume = try {
-            volumeStr.toDouble()
-        } catch (e: NumberFormatException) {
-            .0
-        }
         _currentBottleStateFlow.update {
-            it.copy(
-                volume = volume,
-                actualVolume = volume,
-            )
+            it.copy(volume = volumeStr)
         }
     }
 
@@ -170,13 +134,8 @@ class BottleDetailViewModel @AssistedInject constructor(
     }
 
     fun setPrice(priceStr: String) {
-        val price = try {
-            priceStr.toDouble()
-        } catch (e: NumberFormatException) {
-            .0
-        }
         _currentBottleStateFlow.update {
-            it.copy(price = price)
+            it.copy(price = priceStr)
         }
     }
 
