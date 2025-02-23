@@ -45,6 +45,8 @@ fun <T> ResultState<T>.onLoading(onLoading: () -> Unit): ResultState<T> {
 
 fun <T> ResultState<T>.isLoading() = this == ResultState.Loading
 
+fun <T> ResultState<T>.isError() = this is ResultState.Error
+
 fun <T> ResultState<T>.isSuccess() = this is ResultState.Success<T>
 
 fun <T, R> ResultState<T>.transform(convert: (data: T) -> R): ResultState<R> {

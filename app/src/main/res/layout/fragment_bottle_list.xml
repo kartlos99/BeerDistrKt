@@ -24,19 +24,50 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addBottle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/errorView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/gr_size_16"
-            android:backgroundTint="@color/colorPrimary"
-            android:contentDescription="@string/add"
-            android:src="@drawable/ic_add_24dp"
-            app:fabSize="normal"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".35">
+
+            <TextView
+                android:id="@+id/errorMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/gr_size_16"
+                android:textAlignment="center"
+                android:textColor="@color/design_default_color_error"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/bottleStatusField"
+                tools:text="message" />
+
+            <Button
+                android:id="@+id/errorBtn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/try_again" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addBottle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/gr_size_16"
+        android:backgroundTint="@color/colorPrimary"
+        android:contentDescription="@string/add"
+        android:src="@drawable/ic_add_24dp"
+        app:fabSize="normal"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressIndicator"

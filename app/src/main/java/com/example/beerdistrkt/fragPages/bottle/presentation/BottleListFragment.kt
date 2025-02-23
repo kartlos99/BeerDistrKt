@@ -1,7 +1,6 @@
 package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.children
 import androidx.core.view.isVisible
@@ -19,6 +18,7 @@ import com.example.beerdistrkt.databinding.FragmentBottleListBinding
 import com.example.beerdistrkt.fragPages.beer.presentation.adapter.TouchCallback
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.getDimenPixelOffset
+import com.example.beerdistrkt.network.model.isError
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onLoading
@@ -48,10 +48,12 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.refresh()
         }
+        binding.errorBtn.setOnClickListener {
+            viewModel.refresh()
+        }
     }
 
     private fun openDetails(bottleID: Int = 0) {
-        Log.d(TAG, "openDetails: $bottleID")
         findNavController().navigate(
             BottleListFragmentDirections.actionBottleListFragmentToBottleDetailFragment(
                 bottleID
@@ -91,12 +93,12 @@ class BottleListFragment : BaseFragment<BottleListViewModel>() {
 
         viewModel.bottlesFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
+            binding.errorView.isVisible = result.isError()
             result.onLoading {
                 bottlesAdapter.submitList(emptyList())
             }
             result.onError { error ->
-                // TODO try again button
-                showToast(error.formatedMessage)
+                binding.errorMessage.text = error.formatedMessage
                 binding.swipeRefresh.isRefreshing = false
             }
             result.onSuccess {

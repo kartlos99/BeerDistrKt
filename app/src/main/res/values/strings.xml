@@ -300,5 +300,6 @@
     <string name="no_users_to_show_try_refresh">მომხმარებლების სია ცარიელია. სცადე გვერდის განახლება</string>
     <string name="cant_set_status">ვერ მოხერხდა სტატუსის დაყენება!</string>
     <string name="error_cant_delete_unsaved_data">მონაცემები არ არის შენახული!</string>
+    <string name="try_again">თავიდან სცადე</string>
 
 </resources>
