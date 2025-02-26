@@ -34,6 +34,10 @@ import com.example.beerdistrkt.setTint
 import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.text
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.K_OUT
+import com.example.beerdistrkt.utils.MITANA
+import com.example.beerdistrkt.utils.MITANA_BOTTLE
+import com.example.beerdistrkt.utils.M_OUT
 import com.example.beerdistrkt.utils.explodeAnim
 import com.example.beerdistrkt.utils.goAway
 import com.example.beerdistrkt.utils.show
@@ -485,10 +489,4 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         addDeliveryTotalPrice.text = getString(R.string.cost, viewModel.getPrice())
     }
 
-    companion object {
-        const val MITANA = "mitana"
-        const val MITANA_BOTTLE = "mitana_bottle"
-        const val K_OUT = "kout"
-        const val M_OUT = "mout"
-    }
 }

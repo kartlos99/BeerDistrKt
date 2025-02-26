@@ -10,7 +10,6 @@ import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
-import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
@@ -28,6 +27,7 @@ import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleIte
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.M_OUT
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

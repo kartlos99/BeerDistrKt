@@ -9,7 +9,6 @@ import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
-import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.ParseException
 import java.util.Date
@@ -110,6 +109,7 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
             var bal: Float = rowList[0].balance
             var kIn = 0
             var kOut = 0
+            var grGift = if(rowList[0].isGift) 1 else 0
             val totalComment = mutableListOf<String?>()
             totalComment.add(rowList[0].comment)
 
@@ -125,6 +125,7 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
                     kIn += rowList[i].k_in
                     kOut += rowList[i].k_out
                     totalComment.add(rowList[i].comment)
+                    if (rowList[i].isGift) grGift++
                 } else {
                     val currGrRow = StatementModel().apply {
                         tarigi = dateFormatDash.format(grDate)
@@ -137,6 +138,7 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
                             .filter { !it.isNullOrEmpty() }
                             .distinct()
                             .joinToString(COMMENT_SEPARATOR)
+                        groupGift = grGift > 0
                     }
 
                     groupedList.add(currGrRow)
@@ -147,6 +149,9 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
                     bal = rowList[i].balance
                     kIn = rowList[i].k_in
                     kOut = rowList[i].k_out
+                    grGift = 0
+                    if (rowList[i].isGift) grGift++
+
                     totalComment.removeAll { true }
                     if (!rowList[i].comment.isNullOrEmpty())
                         totalComment.add(rowList[i].comment)
@@ -163,6 +168,7 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
                     .filter { !it.isNullOrEmpty() }
                     .distinct()
                     .joinToString(COMMENT_SEPARATOR)
+                groupGift = grGift > 0
             }
             groupedList.add(currGrRow)
         }
