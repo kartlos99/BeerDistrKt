@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderItemBinding
 import com.example.beerdistrkt.models.Order
@@ -15,6 +16,8 @@ class OrderItemView @JvmOverloads constructor(
     private val binding = ViewOrderItemBinding.bind(
         inflate(context, R.layout.view_order_item, this)
     )
+
+    var showVolume: Boolean = false
 
     init {
         layoutParams =
@@ -48,6 +51,20 @@ class OrderItemView @JvmOverloads constructor(
                 if (saleItem != null)
                     salesOfThisBeer.remove(saleItem)
             }
+
+            fun getVolume(barrelType: Int): Int = when(barrelType) {
+                1 -> 50
+                2 -> 30
+                3 -> 20
+                4 -> 10
+                else -> 0
+            }
+
+            totalAmountLT.text = orderItems.sumOf { orderItem ->
+                orderItem.count * getVolume(orderItem.canTypeID)
+            }.toString()
+
+            totalAmountLT.isVisible = showVolume
 
             salesOfThisBeer?.forEach {
                 when (it.canTypeID) {

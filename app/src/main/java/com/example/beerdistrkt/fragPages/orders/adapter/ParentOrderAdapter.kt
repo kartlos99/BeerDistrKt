@@ -259,7 +259,8 @@ class ParentOrderAdapter(
                 LinearLayoutManager(totalSummedOrderRecycler.context)
             totalSummedOrderRecycler.adapter = OrderItemAdapter(
                 orderItems = itemList.toSortedMap(),
-                bottleOrderItems = allOrders.getSummedBottleOrders()
+                bottleOrderItems = allOrders.getSummedBottleOrders(),
+                showVolume = true
             )
 
             totalSummedOrderRecycler.isVisible = !deliveryMode
