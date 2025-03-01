@@ -40,7 +40,7 @@ class ClientsListAdapter(
         init {
             binding.root.setOnCreateContextMenuListener(this)
             binding.root.setOnClickListener {
-                val position = adapterPosition
+                val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onItemClick.invoke(getItem(position).id ?: -1)
                 }
@@ -52,7 +52,7 @@ class ClientsListAdapter(
             tvPassedTime.text = formatPassedTime(root.context, client.warnInfo?.passedDays ?: 0)
             infoIcon.isVisible = client.warnInfo != null
             tvPassedTime.isVisible = client.warnInfo != null
-            itemView.tag = getItem(adapterPosition)
+            itemView.tag = getItem(bindingAdapterPosition)
         }
 
         override fun onCreateContextMenu(
@@ -62,11 +62,11 @@ class ClientsListAdapter(
         ) {
             val title = (itemView.tag as Customer).name
             menu?.setHeaderTitle(title)
-            menu?.add(adapterPosition, R.id.cm_call, 0, R.string.call)
-            menu?.add(adapterPosition, R.id.cm_info, 1, R.string.info)
-            menu?.add(adapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
+            menu?.add(bindingAdapterPosition, R.id.cm_call, 0, R.string.call)
+            menu?.add(bindingAdapterPosition, R.id.cm_info, 1, R.string.info)
+            menu?.add(bindingAdapterPosition, R.id.cm_edit_obj, 2, R.string.m_edit)
                 ?.isEnabled = addClientPermission
-            menu?.add(adapterPosition, R.id.cm_del, 3, R.string.remove)
+            menu?.add(bindingAdapterPosition, R.id.cm_del, 3, R.string.remove)
                 ?.isEnabled = deleteClientPermission
         }
     }
