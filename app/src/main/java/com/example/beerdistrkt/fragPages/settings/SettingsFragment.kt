@@ -6,9 +6,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.SettingsFragmentBinding
-import com.example.beerdistrkt.fragPages.settings.SettingsViewModel.SettingCode.IDLE_WARNING
-import com.example.beerdistrkt.fragPages.settings.model.SettingParam
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingCode
+import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,7 +31,7 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 getString(R.string.new_value),
                 binding.idleSettingsValue.text.toString()
             ) { newValue ->
-                viewModel.setNewValue(IDLE_WARNING, newValue)
+                viewModel.setNewValue(SettingCode.IDLE_WARNING, newValue)
             }
                 .show(childFragmentManager, EditValueDialog.TAG)
 
@@ -37,12 +40,14 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     }
 
     private fun SettingsFragmentBinding.setupObservers() {
-        viewModel.getSettingsLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> proceedData(it.data)
-                is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
-                is ApiResponseState.ApiError -> showToast(it.errorText)
-                else -> {}
+        viewModel.apiStateFlow.collectLatest(viewLifecycleOwner) { result ->
+            progressIndicator.isVisible = result.isLoading()
+            result.onError { code, message ->
+                showToast(message)
+            }
+            result.onSuccess {
+                println(it)
+                showToast(it.toString())
             }
         }
         viewModel.updateValuesLiveData.observe(viewLifecycleOwner) {
@@ -50,17 +55,12 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                 is ApiResponseState.Success -> {
                     idleSettingsValue.text = it.data
                 }
+
                 is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
                 is ApiResponseState.ApiError -> showToast(it.errorText)
                 else -> {}
             }
         }
-    }
-
-    private fun SettingsFragmentBinding.proceedData(data: List<SettingParam>) {
-        idleSettingsValue.text = data.firstOrNull {
-            it.code == IDLE_WARNING.code
-        }?.valueInt.toString()
     }
 
 }

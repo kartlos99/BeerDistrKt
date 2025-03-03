@@ -2,58 +2,48 @@ package com.example.beerdistrkt.fragPages.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.settings.model.SettingParam
-import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingCode
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingParam
+import com.example.beerdistrkt.fragPages.settings.domain.usecase.GetSettingsUseCase
+import com.example.beerdistrkt.fragPages.settings.domain.usecase.UpdateSettingUseCase
+import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor() : BaseViewModel() {
-
-    private val _getSettingsLiveData = MutableLiveData<ApiResponseState<List<SettingParam>>>()
-    val getSettingsLiveData: LiveData<ApiResponseState<List<SettingParam>>>
-        get() = _getSettingsLiveData
+class SettingsViewModel @Inject constructor(
+    private val getSettingsUseCase: GetSettingsUseCase,
+    private val updateSettingUseCase: UpdateSettingUseCase,
+) : BaseViewModel() {
 
     private val _updateValuesLiveData = MutableLiveData<ApiResponseState<String>>()
     val updateValuesLiveData: LiveData<ApiResponseState<String>>
         get() = _updateValuesLiveData
 
-    init {
-        _getSettingsLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().getSettingsValue(),
-            successWithData = {
-                _getSettingsLiveData.value = ApiResponseState.Success(it)
-            },
-            finally = {
-                _getSettingsLiveData.value = ApiResponseState.Loading(false)
-                if (!it)
-                    _getSettingsLiveData.value = ApiResponseState.ApiError(1, "settingsFail")
-            }
-        )
-    }
+    private val _apiStateFlow: MutableStateFlow<ResultState<List<SettingParam>>> =
+        getSettingsUseCase.asFlow()
+    val apiStateFlow: StateFlow<ResultState<List<SettingParam>>> = _apiStateFlow.asStateFlow()
+
 
     fun setNewValue(code: SettingCode, value: String) {
-        _updateValuesLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().updateSettingsValue(
-                SettingParam(code.code, if (value.isBlank()) 0 else value.toInt())
-            ),
-            successWithData = {
-                _updateValuesLiveData.value = ApiResponseState.Success(value)
-            },
-            finally = {
-                _updateValuesLiveData.value = ApiResponseState.Loading(false)
-                if (!it)
-                    _updateValuesLiveData.value = ApiResponseState.ApiError(1, "update Fail")
-            }
-        )
+        viewModelScope.launch {
+            _apiStateFlow.emit(ResultState.Loading)
+            _apiStateFlow.emit(
+                updateSettingUseCase(
+                    SettingParam(
+                        code,
+                        if (value.isBlank()) 0 else value.toInt()
+                    )
+                )
+            )
+        }
     }
 
-    enum class SettingCode(val code: String) {
-        IDLE_WARNING("customer_idle_warning"),
-        CLEANING_WARNING("object_cleaning_warning")
-    }
 }

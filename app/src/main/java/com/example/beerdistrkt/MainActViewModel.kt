@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.settings.domain.usecase.RefreshSettingsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
@@ -24,6 +25,7 @@ class MainActViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val refreshCustomers: RefreshCustomersUseCase,
     private val refreshUsersUseCase: RefreshUsersUseCase,
+    private val refreshSettingsUseCase: RefreshSettingsUseCase,
     override var session: Session
 ) : BaseViewModel() {
 
@@ -50,6 +52,7 @@ class MainActViewModel @Inject constructor(
             }
         }
         refreshBaseDataUseCase()
+        refreshSettingsUseCase()
         showContentFlow.emit(true)
     }
 

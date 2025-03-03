@@ -20,7 +20,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.GlobalStorageModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseListResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
-import com.example.beerdistrkt.fragPages.settings.model.SettingParam
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingParam
 import com.example.beerdistrkt.fragPages.showHistory.BottleSaleHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.MoneyHistoryDTO
 import com.example.beerdistrkt.fragPages.showHistory.OrderHistoryDTO
