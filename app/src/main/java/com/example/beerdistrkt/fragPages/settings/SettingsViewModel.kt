@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.settings.domain.model.SettingParam
 import com.example.beerdistrkt.fragPages.settings.domain.usecase.GetSettingsUseCase
+import com.example.beerdistrkt.fragPages.settings.domain.usecase.RefreshSettingsUseCase
 import com.example.beerdistrkt.fragPages.settings.domain.usecase.UpdateSettingUseCase
 import com.example.beerdistrkt.network.model.ResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val getSettingsUseCase: GetSettingsUseCase,
     private val updateSettingUseCase: UpdateSettingUseCase,
+    private val refreshSettingsUseCase: RefreshSettingsUseCase,
 ) : BaseViewModel() {
 
     private val _apiStateFlow: MutableStateFlow<ResultState<List<SettingParam>>> =
@@ -37,4 +39,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun refresh() {
+        viewModelScope.launch {
+            refreshSettingsUseCase()
+        }
+    }
 }

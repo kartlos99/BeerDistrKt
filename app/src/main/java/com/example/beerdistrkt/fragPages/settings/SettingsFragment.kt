@@ -27,6 +27,9 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         SettingsFragmentBinding.bind(view).apply {
             initRecycler()
+            swipeRefresh.setOnRefreshListener {
+                viewModel.refresh()
+            }
         }
     }
 
@@ -47,12 +50,13 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 
         viewModel.apiStateFlow.collectLatest(viewLifecycleOwner) { result ->
             progressIndicator.isVisible = result.isLoading()
-            result.onError { code, message ->
+            result.onError { _, message ->
                 showToast(message)
+                swipeRefresh.isRefreshing = false
             }
             result.onSuccess {
                 settingsAdapter.submitList(it)
-                println(it)
+                swipeRefresh.isRefreshing = false
             }
         }
     }
