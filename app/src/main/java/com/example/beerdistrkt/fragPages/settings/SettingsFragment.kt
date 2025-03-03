@@ -25,7 +25,6 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setPageTitle(R.string.settings)
         SettingsFragmentBinding.bind(view).apply {
             initRecycler()
         }
@@ -36,8 +35,8 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
             layoutId = R.layout.setting_row_item,
             onBind = { item, view ->
                 SettingRowItemBinding.bind(view).apply {
-                    settingTitle.text = item.code.name
-                    settingValue.text = item.value.toString()
+                    settingTitle.text = getString(item.code.displayName)
+                    item.value.toString().also { settingValue.text = it }
                     settingValue.setOnClickListener {
                         openValueChangeDialog(item)
                     }

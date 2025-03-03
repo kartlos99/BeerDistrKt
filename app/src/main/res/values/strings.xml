@@ -250,6 +250,8 @@
     <string name="settings">პარამეტრები</string>
     <string name="with_brackets">%s ( %s )</string>
     <string name="customer_idle_setting_title">რამდენი დღის უმოქმედობის შემდეგ გაწითლდეს ობიექტი</string>
+    <string name="customer_cleaning_setting_title">საბაზისო ობიექტის სისტემის გაწმენდის ვადა</string>
+    <string name="customer_r_cleaning_setting_title">რესტორნის ობიექტის სისტემის გაწმენდის ვადა</string>
     <string name="new_value">ახალი მნიშვნელობა</string>
     <string name="confirm_sys_clear_on">დავაფიქსირო სისტემის გაწმენდა ობიექტზე - %s ? </string>
 

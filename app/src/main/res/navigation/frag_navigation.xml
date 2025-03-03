@@ -226,7 +226,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.beerdistrkt.fragPages.settings.SettingsFragment"
-        android:label="settings_fragment"
+        android:label="@string/settings"
         tools:layout="@layout/settings_fragment" />
     <fragment
         android:id="@+id/changesListFragment"
