@@ -7,12 +7,13 @@ import androidx.fragment.app.viewModels
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
+import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
+import com.example.beerdistrkt.databinding.SettingRowItemBinding
 import com.example.beerdistrkt.databinding.SettingsFragmentBinding
-import com.example.beerdistrkt.fragPages.settings.domain.model.SettingCode
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingParam
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
-import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,42 +26,46 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setPageTitle(R.string.settings)
-        val binding = SettingsFragmentBinding.bind(view)
-        binding.idleSettingsValue.setOnClickListener {
-            EditValueDialog(
-                getString(R.string.new_value),
-                binding.idleSettingsValue.text.toString()
-            ) { newValue ->
-                viewModel.setNewValue(SettingCode.IDLE_WARNING, newValue)
-            }
-                .show(childFragmentManager, EditValueDialog.TAG)
-
+        SettingsFragmentBinding.bind(view).apply {
+            initRecycler()
         }
-        binding.setupObservers()
     }
 
-    private fun SettingsFragmentBinding.setupObservers() {
+    private fun SettingsFragmentBinding.initRecycler() {
+        val settingsAdapter = SimpleDataAdapter<SettingParam>(
+            layoutId = R.layout.setting_row_item,
+            onBind = { item, view ->
+                SettingRowItemBinding.bind(view).apply {
+                    settingTitle.text = item.code.name
+                    settingValue.text = item.value.toString()
+                    settingValue.setOnClickListener {
+                        openValueChangeDialog(item)
+                    }
+                }
+            }
+        )
+        recycler.adapter = settingsAdapter
+
         viewModel.apiStateFlow.collectLatest(viewLifecycleOwner) { result ->
             progressIndicator.isVisible = result.isLoading()
             result.onError { code, message ->
                 showToast(message)
             }
             result.onSuccess {
+                settingsAdapter.submitList(it)
                 println(it)
-                showToast(it.toString())
             }
         }
-        viewModel.updateValuesLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> {
-                    idleSettingsValue.text = it.data
-                }
+    }
 
-                is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
-                is ApiResponseState.ApiError -> showToast(it.errorText)
-                else -> {}
-            }
+    private fun openValueChangeDialog(item: SettingParam) {
+        EditValueDialog(
+            getString(R.string.new_value),
+            item.value.toString()
+        ) { newValue ->
+            viewModel.setNewValue(item, newValue)
         }
+            .show(childFragmentManager, EditValueDialog.TAG)
     }
 
 }
