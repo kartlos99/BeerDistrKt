@@ -549,6 +549,8 @@ fun Double?.mapToString(): String {
 
 fun Double?.orZero(): Double = this ?: .0
 
+fun Int?.orZero(): Int = this ?: 0
+
 fun String.Companion.empty() = ""
 
 fun areNotNull(vararg objects: Any?): Boolean =

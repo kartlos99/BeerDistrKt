@@ -8,6 +8,8 @@ import com.example.beerdistrkt.fragPages.customer.domain.usecase.DeactivateCusto
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerListUiState
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingCode.IDLE_WARNING
+import com.example.beerdistrkt.fragPages.settings.domain.usecase.GetSettingValueUseCase
 import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
@@ -27,6 +29,7 @@ class CustomersViewModel @Inject constructor(
     private val getCustomersUseCase: GetCustomersUseCase,
     private val refreshCustomersUseCase: RefreshCustomersUseCase,
     private val deactivateCustomerUseCase: DeactivateCustomerUseCase,
+    private val getSettingValueUseCase: GetSettingValueUseCase,
 ) : BaseViewModel() {
 
     private var customers: List<Customer> = listOf()
@@ -54,6 +57,13 @@ class CustomersViewModel @Inject constructor(
                     is ResultState.Success -> {
                         customers = customersResult.data
                             .filter { it.isActive() }
+                            .map { customer ->
+                                customer.copy(
+                                    warnInfo = customer.warnInfo?.takeIf { info ->
+                                        info.passedDays > getSettingValueUseCase(IDLE_WARNING)
+                                    }
+                                )
+                            }
                         _customersFlow.emit(CustomerListUiState(customers).asSuccessState())
                     }
                 }

@@ -32,6 +32,8 @@ class SettingsRepositoryImpl @Inject constructor(
         return settings
     }
 
+    override fun getSettingValue(settingCode: SettingCode): Int? = settingsMap[settingCode]
+
     override suspend fun updateSetting(settingParam: SettingParam): ResultState<List<SettingParam>> {
         return apiCall {
             api.updateSetting(settingMapper.toDto(settingParam))
