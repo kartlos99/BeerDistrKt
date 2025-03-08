@@ -34,7 +34,8 @@
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/addEditClientRegionBtn"
             app:layout_constraintStart_toStartOf="@id/addEditClientLeft"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addEditClientRegionBtn"
@@ -44,7 +45,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/addEditClientRegionsTv"
             app:layout_constraintEnd_toEndOf="@id/addEditClientRight"
-            app:layout_constraintTop_toTopOf="@id/addEditClientRegionsTv" />
+            app:layout_constraintTop_toTopOf="@id/addEditClientRegionsTv"
+            tools:visibility="visible" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/addEditClientName"
@@ -74,7 +76,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gr_size_8"
-            android:hint="@string/customer_group_title"
             app:layout_constraintEnd_toEndOf="@id/addEditClientRight"
             app:layout_constraintStart_toStartOf="@id/addEditClientLeft"
             app:layout_constraintTop_toBottomOf="@id/addEditClientName">
@@ -84,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:ellipsize="end"
+                android:hint="@string/customer_group_title"
                 android:inputType="none"
                 android:singleLine="true" />
 
@@ -194,15 +196,13 @@
 
         <TextView
             android:id="@+id/addEditClientPricesTitle"
+            style="@style/PriceBoxTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gr_size_8"
             android:background="@color/beer_price_bkg"
-            android:elevation="@dimen/gr_size_2"
             android:padding="@dimen/gr_size_4"
             android:text="@string/beer_prices_title"
-            android:textAlignment="center"
-            android:textSize="@dimen/textSize_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEditComment" />
@@ -219,15 +219,13 @@
 
         <TextView
             android:id="@+id/addEditClientBottlePricesTitle"
+            style="@style/PriceBoxTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gr_size_4"
             android:background="@color/bottle_price_bkg"
-            android:elevation="@dimen/gr_size_2"
             android:padding="@dimen/gr_size_4"
             android:text="@string/bottle_prices_title"
-            android:textAlignment="center"
-            android:textSize="@dimen/textSize_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addEditClientPricesContainer" />
@@ -248,8 +246,8 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/addEditClientDoneBtn"
             app:indicatorColor="@color/colorAccent_33"
+            app:layout_constraintBottom_toTopOf="@id/addEditClientDoneBtn"
             app:trackColor="@color/gray_transparent_20"
             tools:visibility="visible" />
 
@@ -269,6 +267,7 @@
             android:id="@+id/addEditClientCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/addEditClientPricesTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/addEditClientPricesTitle" />
