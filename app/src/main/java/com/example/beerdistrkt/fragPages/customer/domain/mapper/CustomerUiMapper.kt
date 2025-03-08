@@ -8,6 +8,7 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
 import com.example.beerdistrkt.orZero
+import com.example.beerdistrkt.toFormatedString
 import javax.inject.Inject
 
 class CustomerUiMapper @Inject constructor(
@@ -29,8 +30,8 @@ class CustomerUiMapper @Inject constructor(
                 PriceEditModel(
                     id = beer.id,
                     displayName = beer.name,
-                    defaultPrice = defaultPrice.toString(),
-                    price = price.toString(),
+                    defaultPrice = defaultPrice.toFormatedString(),
+                    price = price.toFormatedString(),
                 )
             }
     }
@@ -48,8 +49,8 @@ class CustomerUiMapper @Inject constructor(
                 PriceEditModel(
                     id = bottle.id,
                     displayName = bottle.name,
-                    defaultPrice = defaultPrice.toString(),
-                    price = price.toString(),
+                    defaultPrice = defaultPrice.toFormatedString(),
+                    price = price.toFormatedString(),
                 )
             }
     }

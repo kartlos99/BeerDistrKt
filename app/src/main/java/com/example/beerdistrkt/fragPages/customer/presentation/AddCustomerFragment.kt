@@ -218,6 +218,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_CLASS_NUMBER
             tag = item.id
 
+            setSelectAllOnFocus(true)
             simpleTextChangeListener {
                 viewModel.onPriceInput(index, it.toString(), itemType)
             }

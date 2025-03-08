@@ -28,7 +28,7 @@ class CustomerValidator @Inject constructor(
     private fun isPricesValid(prices: List<PriceEditModel>): Boolean {
         return prices.all {
             try {
-                it.price.toDouble() > DOUBLE_PRECISION
+                it.price.toDouble() in DOUBLE_PRECISION..1000.0
             } catch (e: Exception) {
                 false
             }

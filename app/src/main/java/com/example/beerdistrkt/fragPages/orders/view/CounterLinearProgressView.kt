@@ -18,7 +18,7 @@ class CounterLinearProgressView @JvmOverloads constructor(
     private var binding: ViewCounterLinearProgressBinding = ViewCounterLinearProgressBinding.bind(
         inflate(context, R.layout.view_counter_linear_progress, this)
     )
-    var boltStyle = BOLD_STYLE_ALL
+    var boldStyle = BOLD_STYLE_ALL
 
     init {
         binding.viewProgress.progress = 0
@@ -71,8 +71,8 @@ class CounterLinearProgressView @JvmOverloads constructor(
     }
 
     private fun updateBoldStyle(number: Int) {
-        if (boltStyle.sign == number.sign) binding.countTv.setTypeface(null, Typeface.BOLD)
-        when (boltStyle) {
+        if (boldStyle.sign == number.sign) binding.countTv.setTypeface(null, Typeface.BOLD)
+        when (boldStyle) {
             BOLD_STYLE_ALL -> binding.countTv.setTypeface(null, Typeface.BOLD)
             BOLD_STYLE_NON_NEGATIVE,
             BOLD_STYLE_NON_POSITIVE -> {

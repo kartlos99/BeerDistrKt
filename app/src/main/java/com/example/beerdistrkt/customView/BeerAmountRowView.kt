@@ -31,10 +31,10 @@ class BeerAmountRowView @JvmOverloads constructor(
     }
 
     fun setBoldStyle(style: Int) = with(binding) {
-        orderItemCan50.boltStyle = style
-        orderItemCan30.boltStyle = style
-        orderItemCan20.boltStyle = style
-        orderItemCan10.boltStyle = style
+        orderItemCan50.boldStyle = style
+        orderItemCan30.boldStyle = style
+        orderItemCan20.boldStyle = style
+        orderItemCan10.boldStyle = style
     }
 
     fun setData(data: SimpleBeerRowModel) = with(binding) {

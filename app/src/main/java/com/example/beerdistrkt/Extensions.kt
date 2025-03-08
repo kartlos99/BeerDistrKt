@@ -28,12 +28,10 @@ import androidx.annotation.DimenRes
 import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +41,8 @@ import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.DEFAULT_NUMBER_PATTERN
+import com.example.beerdistrkt.utils.DOUBLE_PRECISION
 import com.example.beerdistrkt.utils.RELATIVE_FRICTION_SIZE
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
@@ -59,8 +59,10 @@ import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.Date
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 //learning commit update 22 just count . last bit ...fcce
 
@@ -560,4 +562,12 @@ fun String.parseDouble(defaultValue: Double = -1.0): Double = try {
     this.toDouble()
 } catch (e: NumberFormatException) {
     defaultValue
+}
+
+fun Double.toFormatedString(pattern: String = DEFAULT_NUMBER_PATTERN): String {
+    val decimalFormat = DecimalFormat(pattern)
+    val longNumb = Math.round(this)
+    return if (abs(this - longNumb) < DOUBLE_PRECISION) {
+        longNumb.toString()
+    } else decimalFormat.format(this)
 }
