@@ -57,7 +57,10 @@ class CustomerUiMapper @Inject constructor(
 
     suspend fun mapToUi(customer: Customer?): CustomerUiModel {
         return if (customer == null)
-            CustomerUiModel()
+            CustomerUiModel(
+                beerPrices = getBeerPrices(null),
+                bottlePrices = getBottlePrices(null)
+            )
         else
             CustomerUiModel(
                 id = customer.id,
