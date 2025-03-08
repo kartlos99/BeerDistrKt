@@ -13,30 +13,26 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
-import com.example.beerdistrkt.common.domain.model.EntityStatus
+import com.example.beerdistrkt.common.domain.model.Goods
 import com.example.beerdistrkt.databinding.AddCustomerFragmentBinding
-import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
-import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
-import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
-import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
-import com.example.beerdistrkt.fragPages.customer.domain.model.PriceEditModel
+import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
+import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
-import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.paramViewModels
-import com.example.beerdistrkt.round
+import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showInfoDialog
+import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,102 +59,45 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
         (activity as AppCompatActivity).supportActionBar?.title =
             if (clientID > 0)
                 resources.getString(R.string.edit_client)
             else
                 resources.getString(R.string.create_client)
 
-        binding.initView()
-        observeViewModel()
-
-        if (viewModel.session.hasPermission(Permission.ManageRegion) && clientID > 0)
-            viewModel.getRegionForClient()
+        setListeners()
+        observeData()
     }
 
-    private fun AddCustomerFragmentBinding.initView() {
-        setupCustomerGroupDropDown()
+    private fun setListeners() = with(binding) {
         addEditClientDoneBtn.setOnClickListener {
-            val customer = Customer(
-                id = if (viewModel.clientID == 0) null else viewModel.clientID,
-                name = addEditClientName.editText?.text.toString().trim(),
-                address = addEditClientAdress.editText?.text.toString().trim(),
-                tel = addEditClientPhone.editText?.text.toString().trim(),
-                comment = addEditComment.editText?.text.toString().trim(),
-                identifyCode = addEditClientSK.editText?.text.toString().trim(),
-                contactPerson = addEditClientPerson.editText?.text.toString().trim(),
-                status = EntityStatus.ACTIVE,
-                hasCheck = addEditClientCheck.isChecked,
-                group = CustomerGroup.from(requireContext(), clientGroupInput.text.toString()),
-                beerPrices = getEditedBeerPrices(),
-                bottlePrices = getEditedBottlePrices(),
-            )
-
-            viewModel.putCustomer(customer)
+            viewModel.saveChanges()
         }
-
         addEditClientRegionBtn.setOnClickListener {
             showRegionChooser()
         }
+        addEditClientName.editText?.simpleTextChangeListener(viewModel::onNameChange)
+        addEditClientSK.editText?.simpleTextChangeListener(viewModel::onIdentityCodeChange)
+        addEditClientPerson.editText?.simpleTextChangeListener(viewModel::onContactPersonChange)
+        addEditClientAdress.editText?.simpleTextChangeListener(viewModel::onAddressChange)
+        addEditClientPhone.editText?.simpleTextChangeListener(viewModel::onPhoneChange)
+        addEditComment.editText?.simpleTextChangeListener(viewModel::onCommentChange)
+        clientGroupInput.setOnItemClickListener { parent, view, position, id ->
+            viewModel.onGroupChange(position)
+        }
     }
 
-    private fun setupCustomerGroupDropDown() {
-        val data = CustomerGroup.entries
-            .map {
-                getString(it.displayName)
-            }
+    private fun setupCustomerGroupDropDown(items: List<Int>) {
+
         val adapter = ArrayAdapter(
             requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
-            data
+            items.map { getString(it) }
         )
         binding.clientGroupInput.setAdapter(adapter)
     }
 
-    private fun getEditedBeerPrices(): List<ClientBeerPrice> {
-        val priceList = mutableListOf<ClientBeerPrice>()
-
-        for (i in 0 until binding.addEditClientPricesContainer.childCount) {
-            val priceRow = binding.addEditClientPricesContainer.getChildAt(i) as LinearLayout
-            val eText = priceRow.getChildAt(1) as EditText
-            val price = eText.text.ifEmpty { eText.hint }
-
-            val beerID = eText.tag as Int
-
-            priceList.add(
-                ClientBeerPrice(
-                    viewModel.clientID,
-                    beerID,
-                    price.toString().toDouble()
-                )
-            )
-        }
-        return priceList
-    }
-
-    private fun getEditedBottlePrices(): List<ClientBottlePrice> {
-        val priceList = mutableListOf<ClientBottlePrice>()
-
-        for (i in 0 until binding.addEditClientBottlePricesContainer.childCount) {
-            val priceRow = binding.addEditClientBottlePricesContainer.getChildAt(i) as LinearLayout
-            val eText = priceRow.getChildAt(1) as EditText
-            val price = eText.text.ifEmpty { eText.hint }
-
-            val bottleID = eText.tag as Int
-
-            priceList.add(
-                ClientBottlePrice(
-                    viewModel.clientID,
-                    bottleID,
-                    price.toString().toDouble()
-                )
-            )
-        }
-        return priceList
-    }
-
-    private fun observeViewModel() {
+    private fun observeData() {
         viewModel.customerFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
             result.onError { code, message ->
@@ -168,6 +107,14 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
                 if (it != null) showDataSavedInfo()
             }
         }
+        viewModel.clientRegionsLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResponseState.Success -> showRegions(it.data)
+                else -> {}
+            }
+        }
+        viewModel.customerStateFlow.collectLatest(viewLifecycleOwner, action = ::fillForm)
+        viewModel.availableGroupsFlow.collectLatest(viewLifecycleOwner, action = ::setupCustomerGroupDropDown)
     }
 
     private fun showDataSavedInfo() = requireContext().showInfoDialog(
@@ -178,22 +125,6 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         false
     ) {
         findNavController().navigateUp()
-    }
-
-    private fun initViewModel() {
-        viewModel.clientObjectLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                it.first?.let(::fillForm)
-                drawPriceInputFields(it.second, it.third)
-                viewModel.clientObjectLiveData.value = null
-            }
-        }
-        viewModel.clientRegionsLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> showRegions(it.data)
-                else -> {}
-            }
-        }
     }
 
     private fun showRegions(data: List<AttachedRegion>) {
@@ -230,36 +161,35 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
     }
 
-    private fun fillForm(customer: Customer) = with(binding) {
-        addEditClientName.editText?.setText(customer.name)
-        addEditClientSK.editText?.setText(customer.identifyCode ?: "")
-        addEditClientPerson.editText?.setText(customer.contactPerson ?: "")
-        addEditClientAdress.editText?.setText(customer.address ?: "")
-        addEditClientPhone.editText?.setText(customer.tel ?: "")
-        addEditComment.editText?.setText(customer.comment ?: "")
+    private fun fillForm(customer: CustomerUiModel) = with(binding) {
+        addEditClientName.editText?.setDifferText(customer.name)
+        addEditClientSK.editText?.setDifferText(customer.identifyCode)
+        addEditClientPerson.editText?.setDifferText(customer.contactPerson)
+        addEditClientAdress.editText?.setDifferText(customer.address)
+        addEditClientPhone.editText?.setDifferText(customer.tel)
+        addEditComment.editText?.setDifferText(customer.comment)
         addEditClientCheck.isChecked = customer.hasCheck
         clientGroupInput.setText(getString(customer.group.displayName), false)
+        drawPriceInputFields(customer)
     }
 
-    private fun drawPriceInputFields(
-        beerPrices: List<PriceEditModel>,
-        bottlePrices: List<PriceEditModel>,
-    ) {
-        beerPrices.forEachIndexed { index, priceEditModel ->
-            binding.addEditClientPricesContainer
-                .addView(getFilledPriceView(index, priceEditModel), index)
-        }
-        bottlePrices.forEachIndexed { index, priceEditModel ->
-            binding.addEditClientBottlePricesContainer
-                .addView(getFilledPriceView(index, priceEditModel), index)
-        }
+    private fun drawPriceInputFields(customer: CustomerUiModel) = with(binding) {
+        if (addEditClientPricesContainer.isEmpty())
+            customer.beerPrices.forEachIndexed { index, priceEditModel ->
+                addEditClientPricesContainer
+                    .addView(getFilledPriceView(index, priceEditModel, Goods.BEER), index)
+            }
+        if (addEditClientBottlePricesContainer.isEmpty())
+            customer.bottlePrices.forEachIndexed { index, priceEditModel ->
+                addEditClientBottlePricesContainer
+                    .addView(getFilledPriceView(index, priceEditModel, Goods.BOTTLE), index)
+            }
     }
 
-    private fun getFilledPriceView(index: Int, item: PriceEditModel): LinearLayout {
+    private fun getFilledPriceView(index: Int, item: PriceEditModel, itemType: Goods): LinearLayout {
         val priceItemView = getPriceItemView()
-        val eText = getEditTextForPrice(index, item)
-        if (viewModel.clientID > 0) {
-            eText.setText(item.price.round().toString())
+        val eText = getEditTextForPrice(index, item, itemType).apply {
+            setDifferText(item.price)
         }
         priceItemView.addView(getTitleViewForPrice(index, item), 0)
         priceItemView.addView(eText, 1)
@@ -271,14 +201,18 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         gravity = Gravity.END
     }
 
-    private fun getEditTextForPrice(index: Int, item: PriceEditModel): EditText =
+    private fun getEditTextForPrice(index: Int, item: PriceEditModel, itemType: Goods): EditText =
         EditText(context).apply {
             id = index + 100
             gravity = Gravity.CENTER
             width = 350
-            hint = item.defaultPrice.round().toString()
+            hint = item.defaultPrice
             inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_CLASS_NUMBER
             tag = item.id
+
+            simpleTextChangeListener {
+                viewModel.onPriceInput(index, it.toString(), itemType)
+            }
         }
 
     private fun getTitleViewForPrice(index: Int, item: PriceEditModel) = TextView(context).apply {
