@@ -71,7 +71,7 @@
     <fragment
         android:id="@+id/addCustomerFragment"
         android:name="com.example.beerdistrkt.fragPages.customer.presentation.AddCustomerFragment"
-        android:label="@string/create_client"
+        tools:label="@string/create_client"
         tools:layout="@layout/add_customer_fragment">
         <argument
             android:name="clientID"
@@ -81,7 +81,7 @@
     <fragment
         android:id="@+id/addUserFragment"
         android:name="com.example.beerdistrkt.fragPages.user.presentation.modify.AddUserFragment"
-        android:label="@string/add_user"
+        tools:label="@string/add_user"
         tools:layout="@layout/add_user_fragment">
         <argument
             android:name="userID"

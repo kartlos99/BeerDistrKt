@@ -54,6 +54,9 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
         AddUserFragmentArgs.fromBundle(requireArguments()).userID
     }
 
+    override val titleRes: Int
+        get() = if (userID.isEmpty()) R.string.add_user else R.string.m_edit
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -73,11 +76,9 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
     private fun AddUserFragmentBinding.initView() {
         if (userID.isEmpty()) {
             addUserChangePassBox.goAway()
-            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_user)
         } else {
             addUserPass.goAway()
             addUserPassConfirm.goAway()
-            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.m_edit)
         }
 
         addUserChangePassBox.setOnCheckedChangeListener { _, isChecked ->

@@ -50,6 +50,9 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
     val binding by viewBinding(AddCustomerFragmentBinding::bind)
 
+    override val titleRes: Int
+        get() = if (clientID > 0) R.string.edit_client else R.string.create_client
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,12 +62,6 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title =
-            if (clientID > 0)
-                resources.getString(R.string.edit_client)
-            else
-                resources.getString(R.string.create_client)
-
         setListeners()
         observeData()
     }
