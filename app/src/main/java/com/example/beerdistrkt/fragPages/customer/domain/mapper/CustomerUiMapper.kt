@@ -79,12 +79,12 @@ class CustomerUiMapper @Inject constructor(
     fun toDomain(uiModel: CustomerUiModel): Customer {
         return Customer(
             id = uiModel.id,
-            name = uiModel.name,
-            address = uiModel.address,
-            tel = uiModel.tel,
-            comment = uiModel.comment,
-            identifyCode = uiModel.identifyCode,
-            contactPerson = uiModel.contactPerson,
+            name = uiModel.name.trim(),
+            address = uiModel.address.trim(),
+            tel = uiModel.tel.trim(),
+            comment = uiModel.comment.trim(),
+            identifyCode = uiModel.identifyCode.trim(),
+            contactPerson = uiModel.contactPerson.trim(),
             status = uiModel.status,
             hasCheck = uiModel.hasCheck,
             warnInfo = uiModel.warnInfo,

@@ -24,7 +24,7 @@ class BottleValidator {
             ValidationResult.IsValid(
                 Bottle(
                     id = bottleUiModel.id,
-                    name = bottleUiModel.name,
+                    name = bottleUiModel.name.trim(),
                     volume = isVolumeValid(bottleUiModel.volume)!!,
                     actualVolume = isVolumeValid(bottleUiModel.volume)!!,
                     beer = bottleUiModel.beer!!,
