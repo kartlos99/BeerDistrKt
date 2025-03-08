@@ -77,9 +77,9 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             showRegionChooser()
         }
         addEditClientName.editText?.simpleTextChangeListener(viewModel::onNameChange)
-        addEditClientSK.editText?.simpleTextChangeListener(viewModel::onIdentityCodeChange)
+        addEditClientIdentityCode.editText?.simpleTextChangeListener(viewModel::onIdentityCodeChange)
         addEditClientPerson.editText?.simpleTextChangeListener(viewModel::onContactPersonChange)
-        addEditClientAdress.editText?.simpleTextChangeListener(viewModel::onAddressChange)
+        addEditClientAddress.editText?.simpleTextChangeListener(viewModel::onAddressChange)
         addEditClientPhone.editText?.simpleTextChangeListener(viewModel::onPhoneChange)
         addEditComment.editText?.simpleTextChangeListener(viewModel::onCommentChange)
         clientGroupInput.setOnItemClickListener { _, _, position, _ ->
@@ -88,7 +88,6 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
     }
 
     private fun setupCustomerGroupDropDown(items: List<Int>) {
-
         val adapter = ArrayAdapter(
             requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
@@ -167,9 +166,9 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
 
     private fun fillForm(customer: CustomerUiModel) = with(binding) {
         addEditClientName.editText?.setDifferText(customer.name)
-        addEditClientSK.editText?.setDifferText(customer.identifyCode)
+        addEditClientIdentityCode.editText?.setDifferText(customer.identifyCode)
         addEditClientPerson.editText?.setDifferText(customer.contactPerson)
-        addEditClientAdress.editText?.setDifferText(customer.address)
+        addEditClientAddress.editText?.setDifferText(customer.address)
         addEditClientPhone.editText?.setDifferText(customer.tel)
         addEditComment.editText?.setDifferText(customer.comment)
         addEditClientCheck.isChecked = customer.hasCheck
