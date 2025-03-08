@@ -10,12 +10,12 @@ import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiM
 import com.example.beerdistrkt.orZero
 import javax.inject.Inject
 
-class PriceMapper @Inject constructor(
+class CustomerUiMapper @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottlesUseCase: GetBottlesUseCase,
 ) {
 
-    suspend fun getBeerPrices(beerPrices: List<ClientBeerPrice>?): List<PriceEditModel> {
+    private suspend fun getBeerPrices(beerPrices: List<ClientBeerPrice>?): List<PriceEditModel> {
         return getBeerUseCase()
             .filter { it.isActive }
             .map { beer ->
@@ -35,7 +35,7 @@ class PriceMapper @Inject constructor(
             }
     }
 
-    suspend fun getBottlePrices(bottlePrices: List<ClientBottlePrice>?): List<PriceEditModel> {
+    private suspend fun getBottlePrices(bottlePrices: List<ClientBottlePrice>?): List<PriceEditModel> {
         return getBottlesUseCase()
             .filter { it.isActive }
             .map { bottle ->

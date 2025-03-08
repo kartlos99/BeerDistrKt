@@ -1,13 +1,14 @@
 package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.common.domain.model.ValidationResult
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.presentation.model.BottleUiModel
 
 class BottleValidator {
 
-    fun getBottleStatus(bottleUiModel: BottleUiModel): ValidationResult {
+    fun getBottleStatus(bottleUiModel: BottleUiModel): ValidationResult<Bottle> {
 
         return when {
             isNameValid(bottleUiModel.name) == null -> ValidationResult.NotValid(R.string.incorrect_bottle_name)
@@ -18,7 +19,7 @@ class BottleValidator {
         }
     }
 
-    private fun mapToBottle(bottleUiModel: BottleUiModel): ValidationResult {
+    private fun mapToBottle(bottleUiModel: BottleUiModel): ValidationResult<Bottle> {
         return try {
             ValidationResult.IsValid(
                 Bottle(
@@ -68,9 +69,4 @@ class BottleValidator {
             null
         }
     }
-}
-
-sealed class ValidationResult {
-    data class IsValid(val bottle: Bottle) : ValidationResult()
-    data class NotValid(val message: Int) : ValidationResult()
 }

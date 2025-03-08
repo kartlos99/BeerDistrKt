@@ -82,7 +82,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         addEditClientAdress.editText?.simpleTextChangeListener(viewModel::onAddressChange)
         addEditClientPhone.editText?.simpleTextChangeListener(viewModel::onPhoneChange)
         addEditComment.editText?.simpleTextChangeListener(viewModel::onCommentChange)
-        clientGroupInput.setOnItemClickListener { parent, view, position, id ->
+        clientGroupInput.setOnItemClickListener { _, _, position, _ ->
             viewModel.onGroupChange(position)
         }
     }
@@ -100,7 +100,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
     private fun observeData() {
         viewModel.customerFlow.collectLatest(viewLifecycleOwner) { result ->
             binding.progressIndicator.isVisible = result.isLoading()
-            result.onError { code, message ->
+            result.onError { _, message ->
                 showToast(message)
             }
             result.onSuccess {
@@ -114,7 +114,11 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             }
         }
         viewModel.customerStateFlow.collectLatest(viewLifecycleOwner, action = ::fillForm)
-        viewModel.availableGroupsFlow.collectLatest(viewLifecycleOwner, action = ::setupCustomerGroupDropDown)
+        viewModel.availableGroupsFlow.collectLatest(
+            viewLifecycleOwner,
+            action = ::setupCustomerGroupDropDown
+        )
+        viewModel.eventsFlow.collectLatest(viewLifecycleOwner, action = ::showToast)
     }
 
     private fun showDataSavedInfo() = requireContext().showInfoDialog(
@@ -145,7 +149,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             .setMultiChoiceItems(
                 viewModel.getAllRegionNames(),
                 viewModel.getSelectedRegions()
-            ) { dialogInterface: DialogInterface?, i: Int, b: Boolean ->
+            ) { _: DialogInterface?, i: Int, b: Boolean ->
                 if (b)
                     viewModel.selectedRegions.add(viewModel.regions[i])
                 else
@@ -154,7 +158,7 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.setNewRegions()
             }
-            .setNegativeButton(R.string.cancel) { dialogInterface, i -> }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
 
         val alertDialog = builder.create()
         alertDialog.show()
@@ -186,7 +190,11 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             }
     }
 
-    private fun getFilledPriceView(index: Int, item: PriceEditModel, itemType: Goods): LinearLayout {
+    private fun getFilledPriceView(
+        index: Int,
+        item: PriceEditModel,
+        itemType: Goods
+    ): LinearLayout {
         val priceItemView = getPriceItemView()
         val eText = getEditTextForPrice(index, item, itemType).apply {
             setDifferText(item.price)

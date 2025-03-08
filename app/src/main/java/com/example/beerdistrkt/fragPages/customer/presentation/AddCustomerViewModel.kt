@@ -4,13 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.domain.model.Goods
-import com.example.beerdistrkt.fragPages.customer.domain.mapper.PriceMapper
+import com.example.beerdistrkt.common.domain.model.ValidationResult
+import com.example.beerdistrkt.fragPages.customer.domain.mapper.CustomerUiMapper
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.model.CustomerGroup
-import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.PutCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
+import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.AttachRegionsRequest
@@ -24,6 +25,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,9 +34,10 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddCustomerViewModel.Factory::class)
 class AddCustomerViewModel @AssistedInject constructor(
-    private val priceMapper: PriceMapper,
+    private val customerUiMapper: CustomerUiMapper,
     private val putCustomersUseCase: PutCustomersUseCase,
     private val getCustomerUseCase: GetCustomerUseCase,
+    private val customerValidator: CustomerValidator,
     override var session: Session,
     @Assisted val clientID: Int,
 ) : BaseViewModel() {
@@ -53,6 +56,8 @@ class AddCustomerViewModel @AssistedInject constructor(
     private val _availableGroupsFlow = MutableStateFlow(listOf<Int>())
     val availableGroupsFlow = _availableGroupsFlow.asStateFlow()
 
+    val eventsFlow = MutableSharedFlow<Int>()
+
     init {
         viewModelScope.launch {
             _availableGroupsFlow.emit(
@@ -60,22 +65,18 @@ class AddCustomerViewModel @AssistedInject constructor(
                     .map { it.displayName }
             )
             _customerStateFlow.emit(
-                priceMapper.mapToUi(getCustomerUseCase(clientID))
+                customerUiMapper.mapToUi(getCustomerUseCase(clientID))
             )
         }
         if (session.hasPermission(Permission.ManageRegion) && clientID > 0)
             getRegionForClient()
     }
 
-    private fun putCustomer(customer: Customer) {
-        viewModelScope.launch {
-            _customerFlow.emit(ResultState.Loading)
-            when (val result = putCustomersUseCase(customer)) {
-                is ApiResponse.Error -> _customerFlow.emit(result.toResultState())
-                is ApiResponse.Success -> {
-                    _customerFlow.emit(ResultState.Success(customer))
-                }
-            }
+    private suspend fun putCustomer(customer: Customer) {
+        _customerFlow.emit(ResultState.Loading)
+        when (val result = putCustomersUseCase(customer)) {
+            is ApiResponse.Error -> _customerFlow.emit(result.toResultState())
+            is ApiResponse.Success -> _customerFlow.emit(ResultState.Success(customer))
         }
     }
 
@@ -147,7 +148,12 @@ class AddCustomerViewModel @AssistedInject constructor(
     }
 
     fun saveChanges() {
-        putCustomer(priceMapper.toDomain(_customerStateFlow.value))
+        viewModelScope.launch {
+            when (val result = customerValidator.getCustomerStatus(_customerStateFlow.value)) {
+                is ValidationResult.IsValid<Customer> -> putCustomer(result.item)
+                is ValidationResult.NotValid -> eventsFlow.emit(result.message)
+            }
+        }
     }
 
     fun onNameChange(name: CharSequence) = _customerStateFlow.update {

@@ -303,5 +303,8 @@
     <string name="cant_set_status">ვერ მოხერხდა სტატუსის დაყენება!</string>
     <string name="error_cant_delete_unsaved_data">მონაცემები არ არის შენახული!</string>
     <string name="try_again">თავიდან სცადე</string>
+    <string name="incorrect_customer_name_warning">ობიექტის სახელი: შეიყვანეთ 3 - 100 სიმბოლომდე</string>
+    <string name="incorrect_beer_price_warning">ლუდის ფასი არასწორადაა შეყვანილი, ყველაზე უნდა იყოს ფასი დაფიქსირებული</string>
+    <string name="incorrect_bottle_price_warning">ბოთლის ფასი არასწორადაა შეყვანილი, ყველაზე უნდა იყოს ფასი დაფიქსირებული</string>
 
 </resources>

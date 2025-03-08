@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.common.domain.model.ValidationResult
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
@@ -110,7 +111,7 @@ class BottleDetailViewModel @AssistedInject constructor(
     fun onSaveClicked() {
         val validator = BottleValidator()
         when (val result = validator.getBottleStatus(_currentBottleStateFlow.value)) {
-            is ValidationResult.IsValid -> saveBottle(result.bottle)
+            is ValidationResult.IsValid -> saveBottle(result.item)
             is ValidationResult.NotValid -> throwEvent(result.message)
         }
     }
