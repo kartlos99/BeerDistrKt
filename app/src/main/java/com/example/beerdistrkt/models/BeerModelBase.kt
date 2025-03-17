@@ -15,11 +15,12 @@ enum class BeerStatus(val value: String) {
 }
 
 data class ObjToBeerPrice(
-    @Json(name = "obj_id")
-    val objID: Int,
-    @Json(name = "beer_id")
+    @Json(name = "clientID")
+    val clientID: Int,
+    @Json(name = "beerID")
     val beerID: Int,
-    val fasi: Float
+    @Json(name = "price")
+    val price: Float
 )
 
 data class SaleInfo(

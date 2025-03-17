@@ -31,9 +31,9 @@ class CustomerMapper @Inject constructor() {
     private fun mapBeerPrice(priceDto: ObjToBeerPrice): ClientBeerPrice {
 
         return ClientBeerPrice(
-            clientID = priceDto.objID,
+            clientID = priceDto.clientID,
             beerID = priceDto.beerID,
-            price = priceDto.fasi.toDouble(),
+            price = priceDto.price.toDouble(),
         )
     }
 
@@ -56,8 +56,8 @@ class CustomerMapper @Inject constructor() {
 
     private fun mapBeerPriceToDto(clientBeerPrice: ClientBeerPrice): ObjToBeerPrice =
         ObjToBeerPrice(
-            objID = clientBeerPrice.clientID,
+            clientID = clientBeerPrice.clientID,
             beerID = clientBeerPrice.beerID,
-            fasi = clientBeerPrice.price.toFloat()
+            price = clientBeerPrice.price.toFloat()
         )
 }
