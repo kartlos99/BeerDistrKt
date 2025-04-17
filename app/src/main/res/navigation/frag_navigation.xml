@@ -188,6 +188,9 @@
             android:name="recordID"
             android:defaultValue="0"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_addDeliveryFragment_to_addCustomerFragment"
+            app:destination="@id/addCustomerFragment" />
     </fragment>
     <fragment
         android:id="@+id/addOrdersFragment"

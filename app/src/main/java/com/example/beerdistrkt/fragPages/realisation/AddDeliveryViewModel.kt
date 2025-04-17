@@ -27,6 +27,7 @@ import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleIte
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.DOUBLE_PRECISION
 import com.example.beerdistrkt.utils.M_OUT
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -84,6 +85,9 @@ class AddDeliveryViewModel @AssistedInject constructor(
     private val _editOperationState = MutableStateFlow<Any>(0)
     val editOperationState = _editOperationState.asStateFlow()
 
+    private val _requestPricesFlow = MutableStateFlow<Int?>(null)
+    val requestPricesFlow = _requestPricesFlow.asStateFlow()
+
     val realisationStateFlow = MutableStateFlow(NONE)
 
     val realisationType: RealisationType
@@ -104,6 +108,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
             clientLiveData.value = customer
             attachPrices(customer.beerPrices)
             attachBottlePrices(customer.bottlePrices)
+            checkForPrices(customer)
             if (operation != null)
                 getRecordData()
             else
@@ -130,7 +135,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
     }
 
     /**
-     * if bottle price not defined for customer, takes default price
+     * if bottle price not defined for customer, takes 0 as price
      */
     private fun attachBottlePrices(pricesForClient: List<ClientBottlePrice>) {
         bottleListLiveData.value = bottleList
@@ -140,8 +145,33 @@ class AddDeliveryViewModel @AssistedInject constructor(
                 }?.let {
                     bottleItem.copy(price = it.price)
                 }
-                    ?: bottleItem
+                    ?: bottleItem.copy(price = .0)
             }
+    }
+
+    /**
+     * if no price defined for any actual product,
+     * request to enter the price before delivery
+     * */
+    private fun checkForPrices(customer: Customer) {
+        viewModelScope.launch {
+            if (
+                beerListLiveData.value
+                    ?.filter { it.isActive }
+                    ?.any { beer ->
+                        (beer.price ?: .0) < DOUBLE_PRECISION
+                    } == true
+            )
+                _requestPricesFlow.emit(customer.id)
+
+            if (bottleListLiveData.value
+                    ?.filter { it.isActive }
+                    ?.any { bottle ->
+                        bottle.price < DOUBLE_PRECISION
+                    } == true
+            )
+                _requestPricesFlow.emit(customer.id)
+        }
     }
 
     private fun findBeerPrice(

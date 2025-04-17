@@ -57,6 +57,8 @@ class CustomerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCustomers(): List<Customer> {
+        if (customers.isEmpty())
+            fetchCustomers()
         return customers
     }
 

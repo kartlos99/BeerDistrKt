@@ -307,4 +307,6 @@
     <string name="incorrect_beer_price_warning">ლუდის ფასი არასწორადაა შეყვანილი, ყველაზე უნდა იყოს ფასი დაფიქსირებული</string>
     <string name="incorrect_bottle_price_warning">ბოთლის ფასი არასწორადაა შეყვანილი, ყველაზე უნდა იყოს ფასი დაფიქსირებული</string>
 
+    <string name="attention">ყურადღება</string>
+    <string name="no_price_message">რომელიღაც პროდუქტზე ფასი არაა შეყვანილი, ფასის გარეშე რეალიზაციას ვერ გაატარებთ!</string>
 </resources>

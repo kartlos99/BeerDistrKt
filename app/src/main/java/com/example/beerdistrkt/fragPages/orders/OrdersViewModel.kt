@@ -99,6 +99,7 @@ class OrdersViewModel @Inject constructor(
         customers = getCustomersUseCase()
         usersList = getUsersUseCase()
         barrels = getBarrelsUseCase()
+        getOrders()
     }
 
     private fun getAllUsers() {
@@ -288,7 +289,8 @@ class OrdersViewModel @Inject constructor(
     }
 
     fun filterOrders(query: String) {
-        proceedOrders()
+        if (::barrels.isInitialized)
+            proceedOrders()
     }
 
     companion object {
