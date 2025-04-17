@@ -25,7 +25,7 @@ class CustomerUiMapper @Inject constructor(
                 val price = beerPrices?.firstOrNull {
                     it.beerID == beer.id
                 }?.price
-                    ?: defaultPrice
+                    ?: .0
 
                 PriceEditModel(
                     id = beer.id,
@@ -44,7 +44,7 @@ class CustomerUiMapper @Inject constructor(
                 val price = bottlePrices?.firstOrNull {
                     it.bottleID == bottle.id
                 }?.price
-                    ?: defaultPrice
+                    ?: .0
 
                 PriceEditModel(
                     id = bottle.id,

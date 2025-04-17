@@ -108,7 +108,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
             clientLiveData.value = customer
             attachPrices(customer.beerPrices)
             attachBottlePrices(customer.bottlePrices)
-            checkForPrices(customer)
+            checkForPrices()
             if (operation != null)
                 getRecordData()
             else
@@ -116,6 +116,11 @@ class AddDeliveryViewModel @AssistedInject constructor(
         } ?: eventsFlow.emit(Event.CustomerNotFount)
     }
 
+    fun updateCustomer() {
+        viewModelScope.launch {
+            getCustomer()
+        }
+    }
 
     private suspend fun initData() {
         beerList = getBeerUseCase()
@@ -153,7 +158,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
      * if no price defined for any actual product,
      * request to enter the price before delivery
      * */
-    private fun checkForPrices(customer: Customer) {
+    private fun checkForPrices() {
         viewModelScope.launch {
             if (
                 beerListLiveData.value
@@ -161,16 +166,16 @@ class AddDeliveryViewModel @AssistedInject constructor(
                     ?.any { beer ->
                         (beer.price ?: .0) < DOUBLE_PRECISION
                     } == true
-            )
-                _requestPricesFlow.emit(customer.id)
-
-            if (bottleListLiveData.value
+                ||
+                bottleListLiveData.value
                     ?.filter { it.isActive }
                     ?.any { bottle ->
                         bottle.price < DOUBLE_PRECISION
                     } == true
             )
-                _requestPricesFlow.emit(customer.id)
+                _requestPricesFlow.emit(clientLiveData.value?.id)
+            else
+                _requestPricesFlow.emit(null)
         }
     }
 

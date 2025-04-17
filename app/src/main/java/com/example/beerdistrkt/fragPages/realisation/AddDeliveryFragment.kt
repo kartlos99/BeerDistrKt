@@ -504,4 +504,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         addDeliveryTotalPrice.text = getString(R.string.cost, viewModel.getPrice())
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateCustomer()
+    }
 }
