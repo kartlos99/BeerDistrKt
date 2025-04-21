@@ -63,7 +63,7 @@
 
     <style name="ClientDebt">
         <item name="android:textSize">@dimen/sp16</item>
-        <item name="android:textColor">@color/colorForText_2</item>
+        <item name="android:textColor">?attr/mainTextColor</item>
         <item name="android:lineSpacingExtra">@dimen/gr_size_2</item>
     </style>
 
@@ -89,7 +89,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/bkg_rounded_white_r8</item>
-        <item name="android:backgroundTint">@color/gray_light</item>
+        <item name="android:backgroundTint">?attr/colorSecondaryContainer</item>
         <item name="android:elevation">@dimen/gr_size_2</item>
         <item name="android:minWidth">@dimen/gr_size_48</item>
         <item name="android:minHeight">@dimen/gr_size_36</item>

@@ -115,6 +115,7 @@
         android:layout_width="@dimen/gr_size_16"
         android:layout_height="0dp"
         android:background="@drawable/left_right_gradient"
+        android:backgroundTint="?attr/viewBackground"
         app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
         app:layout_constraintStart_toStartOf="@id/beerSelectorCansScroll"
         app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll" />
@@ -124,6 +125,7 @@
         android:layout_width="@dimen/gr_size_16"
         android:layout_height="0dp"
         android:background="@drawable/right_left_gradient"
+        android:backgroundTint="?attr/viewBackground"
         app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
         app:layout_constraintStart_toEndOf="@id/beerSelectorCansScroll"
         app:layout_constraintTop_toTopOf="@id/beerSelectorCansScroll" />
@@ -132,7 +134,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#FFF"
+        android:background="?attr/viewBackground"
         app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
         app:layout_constraintEnd_toStartOf="@id/beerSelectorCansScroll"
         app:layout_constraintStart_toStartOf="parent"
@@ -141,7 +143,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#FFF"
+        android:background="?attr/viewBackground"
         app:layout_constraintBottom_toBottomOf="@id/beerSelectorCansScroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/endGradiant"

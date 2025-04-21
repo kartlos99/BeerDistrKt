@@ -185,7 +185,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="-4dp"
-                android:backgroundTint="@color/gray_light"
+                android:backgroundTint="?attr/colorSecondaryContainer"
                 android:drawableEnd="@drawable/calendar_icon"
                 app:layout_constraintEnd_toEndOf="@id/endGuideline"
                 app:layout_constraintStart_toEndOf="@id/barrierForSpinner"
