@@ -15,6 +15,12 @@
 
         <item name="strokeColor">@color/gray_6</item>
         <item name="viewBackground">?android:windowBackground</item>
-        <item name="iconTint">@color/green_09</item>
+        <item name="onBackground">#B1B1B1</item>
+        <item name="colorSurface">#292929</item>
+        <item name="mainTextColor">#E0E0E0</item>
+        <item name="secondaryTextColor">#CCCCCC</item>
+
+        <item name="colorSecondaryContainer">#232323</item>
+        <item name="colorOnSecondaryContainer">#B9B9B9</item>
     </style>
 </resources>

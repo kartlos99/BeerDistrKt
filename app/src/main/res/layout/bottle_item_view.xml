@@ -11,7 +11,7 @@
     android:padding="@dimen/gr_size_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="#eee"
+        android:background="?attr/colorSecondaryContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -22,6 +22,7 @@
             android:padding="@dimen/gr_size_4"
             android:contentDescription="@string/bottle"
             android:src="@drawable/beer_bottle"
+            app:tint="?attr/colorOnSecondaryContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

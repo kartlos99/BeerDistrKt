@@ -2,5 +2,8 @@
 <resources>
     <attr name="strokeColor" format="color" />
     <attr name="viewBackground" format="color" />
-    <attr name="iconTint" format="color" />
+    <attr name="onBackground" format="color" />
+
+    <attr name="mainTextColor" format="color" />
+    <attr name="secondaryTextColor" format="color" />
 </resources>
