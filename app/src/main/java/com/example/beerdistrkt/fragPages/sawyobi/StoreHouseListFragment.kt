@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,10 +17,11 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.SawyobiListFragmentBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.StorehousePagedAdapter
-import com.example.beerdistrkt.getViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     companion object {
@@ -29,9 +31,7 @@ class StoreHouseListFragment : BaseFragment<StoreHouseListViewModel>() {
 
     private val binding by viewBinding(SawyobiListFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { StoreHouseListViewModel() }
-    }
+    override val viewModel: StoreHouseListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

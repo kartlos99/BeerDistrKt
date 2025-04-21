@@ -28,12 +28,10 @@ import androidx.annotation.DimenRes
 import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +41,8 @@ import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.DEFAULT_NUMBER_PATTERN
+import com.example.beerdistrkt.utils.DOUBLE_PRECISION
 import com.example.beerdistrkt.utils.RELATIVE_FRICTION_SIZE
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
@@ -59,8 +59,10 @@ import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.Date
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 //learning commit update 22 just count . last bit ...fcce
 
@@ -163,6 +165,7 @@ inline fun <reified VM : ViewModel, VMF> Fragment.paramViewModels(
     )
 }
 
+/*
 class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return creator() as T
@@ -189,6 +192,7 @@ inline fun <reified T : ViewModel> Fragment.getActCtxViewModel(noinline creator:
     else
         ViewModelProvider(requireActivity(), BaseViewModelFactory(creator))[T::class.java]
 }
+*/
 
 fun Context.showAskingDialog(
     title: Int?,
@@ -236,6 +240,7 @@ fun Context.showInfoDialog(
     text: Int,
     buttonText: Int,
     theme: Int? = null,
+    cancelable: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
     val builder = if (theme == null)
@@ -245,6 +250,7 @@ fun Context.showInfoDialog(
     if (title != null)
         builder.setTitle(title)
     builder
+        .setCancelable(cancelable)
         .setMessage(text)
         .setNeutralButton(buttonText) { dialog, _ ->
             onClick?.invoke()
@@ -293,7 +299,7 @@ fun Context.showTextInputDialog(title: Int?, theme: Int? = null, callBack: (text
     val view: View = LayoutInflater.from(this).inflate(R.layout.text_input_layout, null)
     builder
         .setView(view)
-        .setPositiveButton(R.string.text_record) { dialog, which ->
+        .setPositiveButton(R.string.text_record) { dialog, _ /*which*/ ->
             callBack(view.findViewById<EditText>(R.id.inputTextET).text.toString())
             dialog.dismiss()
         }.show()
@@ -304,6 +310,11 @@ fun Context.showSoftKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
+}
+
+fun Context.hideKeyboard(view: View) {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
 fun MutableList<Order>.getSummedBottleOrders(): List<Order.BottleItem> {
@@ -540,7 +551,23 @@ fun Double?.mapToString(): String {
 
 fun Double?.orZero(): Double = this ?: .0
 
+fun Int?.orZero(): Int = this ?: 0
+
 fun String.Companion.empty() = ""
 
 fun areNotNull(vararg objects: Any?): Boolean =
     objects.all { it != null }
+
+fun String.parseDouble(defaultValue: Double = -1.0): Double = try {
+    this.toDouble()
+} catch (e: NumberFormatException) {
+    defaultValue
+}
+
+fun Double.toFormatedString(pattern: String = DEFAULT_NUMBER_PATTERN): String {
+    val decimalFormat = DecimalFormat(pattern)
+    val longNumb = Math.round(this)
+    return if (abs(this - longNumb) < DOUBLE_PRECISION) {
+        longNumb.toString()
+    } else decimalFormat.format(this)
+}

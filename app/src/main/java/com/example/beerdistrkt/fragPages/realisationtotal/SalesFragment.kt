@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.SalesAdapter
 import com.example.beerdistrkt.collectLatest
@@ -23,6 +23,7 @@ import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.realisationtotal.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.BottleSale
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay
+import com.example.beerdistrkt.fragPages.realisationtotal.presentation.model.SpinnerStateModel
 import com.example.beerdistrkt.getDimenPixelOffset
 import com.example.beerdistrkt.models.BarrelIO
 import com.example.beerdistrkt.models.SaleInfo
@@ -31,14 +32,13 @@ import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.setAmount
-import com.example.beerdistrkt.utils.Session
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import java.util.Date
 
 @AndroidEntryPoint
-class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelectedListener {
+class SalesFragment : BaseFragment<SalesViewModel>() {
 
     private lateinit var vBinding: SalesFragmentBinding
     override val viewModel: SalesViewModel by viewModels()
@@ -60,8 +60,6 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.formUsersList()
 
         initView()
         initViewModel()
@@ -89,24 +87,8 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         salesDayForwardBtn.setOnClickListener {
             viewModel.changeDay(1)
         }
-        salesDistributorsSpinner.adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.simple_dropdown_item,
-            viewModel.getDistributorNamesList()
-        )
-        salesDistributorsSpinner.onItemSelectedListener = this@SalesFragment
 
-        if (!Session.get().hasPermission(Permission.SeeOthersRealization)) {
-            val currentUserIndexInSpinner =
-                viewModel.visibleDistributors.map { it.id }.indexOf(Session.get().userID)
-            if (currentUserIndexInSpinner >= 0) {
-                salesDistributorsSpinner.setSelection(currentUserIndexInSpinner)
-            } else {
-                (activity as MainActivity).logOut()
-            }
-            salesDistributorsSpinner.isEnabled = false
-        }
-        if (!Session.get().hasPermission(Permission.SeeOldRealization)) {
+        if (!viewModel.session.hasPermission(Permission.SeeOldRealization)) {
             viewModel.setCurrentDate()
             salesSetDateBtn.isEnabled = false
             salesDayBackBtn.isEnabled = false
@@ -147,9 +129,6 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
     }
 
     fun initViewModel() = with(viewModel) {
-        usersLiveData.observe(viewLifecycleOwner) {
-            formUserMap(it)
-        }
         selectedDayLiveData.observe(viewLifecycleOwner) { dateString ->
             vBinding.salesDayForwardBtn.isEnabled = !isToday()
             vBinding.salesSetDateBtn.text = dateString
@@ -164,6 +143,32 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
                     showToast(error.message)
                 }
         }
+        distributorSelectorState.collectLatest(viewLifecycleOwner, action = ::initDistributorSpinner)
+    }
+
+    private fun initDistributorSpinner(spinnerStateModel: SpinnerStateModel) = with(vBinding) {
+        val itemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                viewModel.onDistributorSelected(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        salesDistributorsSpinner.adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item,
+            spinnerStateModel.names
+        )
+
+        salesDistributorsSpinner.setSelection(spinnerStateModel.selectedPosition)
+        salesDistributorsSpinner.onItemSelectedListener = itemSelectedListener
+
+        salesDistributorsSpinner.isEnabled = spinnerStateModel.isBlocked.not()
     }
 
     private fun setupBottleSalesAdapter() = with(vBinding) {
@@ -200,13 +205,9 @@ class SalesFragment : BaseFragment<SalesViewModel>(), AdapterView.OnItemSelected
         vBinding.salesBarrelRecycler.adapter = BarrelsIOAdapter(data)
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.selectedDistributorID = viewModel.visibleDistributors[position].id.toInt()
-        viewModel.prepareData()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.saveDistributorSpinnerPosition(vBinding.salesDistributorsSpinner.selectedItemPosition)
     }
 
     companion object {

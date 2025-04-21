@@ -23,24 +23,25 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.beerdistrkt.MainActViewModel.ActUiEvent
+import com.example.beerdistrkt.MainActViewModel.ActUiEvent.GoToLoginPage
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.databinding.NavHeaderBinding
 import com.example.beerdistrkt.db.ApeniDataBase
-import com.example.beerdistrkt.fragPages.homePage.HomeFragment
+import com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.login.models.UserType
-import com.example.beerdistrkt.fragPages.objList.ObjListFragment
+import com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import com.example.beerdistrkt.utils.Session
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterface,
+class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterface,
     NotificationService.NotificationInterface {
 
     private val vBinding by viewBinding(ActivityMainBinding::bind)
@@ -51,18 +52,12 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ApeniDataBase.initialize(this)
-        ApeniApiService.initialize(this)
+        ApeniApiService.initialize(viewModel.session)
         SharedPreferenceDataSource.initialize(this)
         setContentView(R.layout.activity_main)
 
-        Session.get().restoreLastRegion(SharedPreferenceDataSource.getInstance().getRegion())
-        Session.get().restoreFromSavedInfo(SharedPreferenceDataSource.getInstance().getUserInfo())
-
         vBinding.toolBar.title = getString(R.string.home_def_title)
         setSupportActionBar(vBinding.toolBar)
-
-        initNavController()
 
         setObservers()
 
@@ -77,7 +72,14 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         }
         viewModel.showContentFlow.collectLatest(this) {
             vBinding.progressIndicator.isVisible = !it
+            if (it) initNavController()
         }
+        viewModel.eventsFlow.collectLatest(this, action = ::handleUiEvents)
+    }
+
+    private fun handleUiEvents(event: ActUiEvent) = when (event) {
+        GoToLoginPage -> this.findNavController(R.id.mainNavHostFragment)
+            .navigate(R.id.action_homeFragment_to_loginFragment)
     }
 
     private fun initNavController() {
@@ -107,15 +109,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         vBinding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.mChangePass -> changePass()
-                R.id.mLogOut -> {
-                    Session.get().clearSession()
-                    Session.get().loggedIn = false
-                    SharedPreferenceDataSource.getInstance().saveUserName("")
-                    SharedPreferenceDataSource.getInstance().savePassword("")
-
-                    navController.navigate(R.id.action_homeFragment_to_loginFragment)
-//                    navController.popBackStack()
-                }
+                R.id.mLogOut -> viewModel.performUserLogout()
             }
             NavigationUI.onNavDestinationSelected(item, navController)
             vBinding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -135,28 +129,20 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
 
     private fun updateNavigationView() {
         NavHeaderBinding.bind(vBinding.navView.getHeaderView(0)).apply {
-            navHeaderName.text = Session.get().displayName
+            navHeaderName.text = viewModel.session.displayName
             navHeaderUsername.text = getString(
-                R.string.with_brackets, Session.get().userName, Session.get().userType.name
+                R.string.with_brackets, viewModel.session.userName, viewModel.session.userType.name
             )
         }
 
         with(vBinding.navView.menu) {
-            getItem(0).isEnabled = Session.get().hasPermission(Permission.AddEditClient)
-            getItem(1).isEnabled = Session.get().hasPermission(Permission.AddEditUser)
-            getItem(2).isEnabled = Session.get().userType == UserType.ADMIN
-            getItem(3).isEnabled = Session.get().region?.hasOwnStorage() == true
-            findItem(R.id.settingsFragment).isEnabled = Session.get().userType == UserType.ADMIN
+            getItem(0).isEnabled = viewModel.session.hasPermission(Permission.AddEditClient)
+            getItem(1).isEnabled = viewModel.session.hasPermission(Permission.AddEditUser)
+            getItem(2).isEnabled = viewModel.session.userType == UserType.ADMIN
+            getItem(3).isEnabled = viewModel.session.region?.hasOwnStorage == true
+            findItem(R.id.settingsFragment).isEnabled = viewModel.session.userType == UserType.ADMIN
             findItem(R.id.mInfo).title = BuildConfig.VERSION_NAME
         }
-    }
-
-    fun logOut() {
-        Session.get().clearSession()
-        Session.get().loggedIn = false
-        val navController = this.findNavController(R.id.mainNavHostFragment)
-        navController.navigate(R.id.action_global_loginFragment)
-        navController.clearBackStack(R.id.loginFragment)
     }
 
     private fun changePass() {
@@ -220,12 +206,12 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == ObjListFragment.CALL_PERMISSION_REQUEST) {
+        if (requestCode == CustomersFragment.CALL_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                findNavController(R.id.mainNavHostFragment).currentDestination?.id = R.id.objListFragment
                 val hostFragment = supportFragmentManager.findFragmentById(R.id.mainNavHostFragment)
                 val activeFragment = hostFragment?.childFragmentManager?.fragments?.get(0)
-                if (activeFragment is ObjListFragment)
+                if (activeFragment is CustomersFragment)
                     activeFragment.dialTo()
             }
 
@@ -236,7 +222,7 @@ class MainActivity : AppCompatActivity(), ObjListFragment.CallPermissionInterfac
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.CALL_PHONE),
-            ObjListFragment.CALL_PERMISSION_REQUEST
+            CustomersFragment.CALL_PERMISSION_REQUEST
         )
     }
 

@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.models
 
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.squareup.moshi.Json
 
 data class OrderDTO(
@@ -33,8 +35,8 @@ data class OrderDTO(
         val modifyDate: String,
         val modifyUserID: Int
     ) {
-        fun toPm(beerList: List<BeerModelBase>): Order.Item {
-            val beer = beerList.find { it.id == beerID } ?: BeerModelBase()
+        fun toPm(beerList: List<Beer>): Order.Item {
+            val beer = beerList.find { it.id == beerID } ?: Beer(name = "")
             return Order.Item(
                 ID,
                 orderID,
@@ -57,8 +59,8 @@ data class OrderDTO(
         val canTypeID: Int,
         val count: Int
     ) {
-        fun toPm(beerList: List<BeerModelBase>): Order.Sales {
-            val beer = beerList.find { it.id == beerID } ?: BeerModelBase()
+        fun toPm(beerList: List<Beer>): Order.Sales {
+            val beer = beerList.find { it.id == beerID } ?: Beer(name = "")
             return Order.Sales(
                 orderID,
                 beerID,
@@ -76,7 +78,7 @@ data class OrderDTO(
         val bottleID: Int,
         val count: Int,
     ) {
-        fun toPm(bottles: List<BaseBottleModel>): Order.BottleItem {
+        fun toPm(bottles: List<Bottle>): Order.BottleItem {
             val bottle = bottles.firstOrNull { it.id == bottleID }
                 ?: throw NoSuchElementException("OrderDTO: can't match bottle for order item!")
             return Order.BottleItem(
@@ -93,7 +95,7 @@ data class OrderDTO(
         val bottleID: Int,
         val count: Int,
     ) {
-        fun toPm(bottles: List<BaseBottleModel>): Order.BottleSaleItem {
+        fun toPm(bottles: List<Bottle>): Order.BottleSaleItem {
             val bottle = bottles.firstOrNull { it.id == bottleID }
                 ?: throw NoSuchElementException("OrderDTO: can't match bottle for sale item!")
             return Order.BottleSaleItem(
@@ -105,9 +107,9 @@ data class OrderDTO(
     }
 
     fun toPm(
-        clients: List<Obieqti>,
-        beerList: List<BeerModelBase>,
-        bottles: List<BaseBottleModel>,
+        customers: List<Customer>,
+        beerList: List<Beer>,
+        bottles: List<Bottle>,
         onDeleteClick: (Order) -> Unit,
         onEditClick: (Order) -> Unit,
         onChangeDistributorClick: ((Order) -> Unit)? = null,
@@ -115,9 +117,9 @@ data class OrderDTO(
         onHistoryClick: ((String) -> Unit)? = null
     ): Order {
 
-        val client = clients.find {
+        val customer = customers.find {
             (it.id ?: 0) == clientID
-        } ?: Obieqti.emptyModel
+        }
 
         return Order(
             ID,
@@ -131,7 +133,7 @@ data class OrderDTO(
             },
             distributorID,
             clientID,
-            client,
+            customer,
             comment,
             isEdited,
             sortValue,

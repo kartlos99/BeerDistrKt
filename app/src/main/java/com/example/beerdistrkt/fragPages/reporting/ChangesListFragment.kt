@@ -21,9 +21,11 @@ import com.example.beerdistrkt.fragPages.reporting.adapter.SimplePaginatedScroll
 import com.example.beerdistrkt.fragPages.reporting.model.ChangesShortDto
 import com.example.beerdistrkt.fragPages.reporting.model.DbTableName
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ChangesListFragment : BaseFragment<ChangesListViewModel>() {
 
     override val viewModel: ChangesListViewModel by viewModels()

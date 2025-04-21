@@ -26,6 +26,13 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="PriceBoxTitle">
+        <item name="android:elevation">@dimen/gr_size_2</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorForText</item>
+        <item name="android:textSize">@dimen/sp18</item>
+    </style>
+
     <style name="SaleSubTitles">
         <item name="android:layout_marginTop">@dimen/gr_size_8</item>
         <item name="android:padding">@dimen/gr_size_6</item>

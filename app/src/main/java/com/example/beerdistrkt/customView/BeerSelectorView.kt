@@ -2,7 +2,6 @@ package com.example.beerdistrkt.customView
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.databinding.BeerItemViewBinding
 import com.example.beerdistrkt.databinding.ViewBeerSelectorBinding
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
 import com.example.beerdistrkt.getSnapPosition
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.utils.OnSnapPositionChangeListener
@@ -37,9 +36,9 @@ class BeerSelectorView @JvmOverloads constructor(
     private var beerPos = 0
     private val snapHelper = PagerSnapHelper()
 
-    private lateinit var allBeers: List<BeerModelBase>
-    private lateinit var visibleBeers: List<BeerModelBase>
-    private lateinit var cansList: List<CanModel>
+    private lateinit var allBeers: List<Beer>
+    private lateinit var visibleBeers: List<Beer>
+    private lateinit var cansList: List<Barrel>
 
     var onFormUpdate: (() -> Unit)? = null
 
@@ -49,7 +48,7 @@ class BeerSelectorView @JvmOverloads constructor(
     private var itemID = 0
     var withPrices = false
 
-    private var selectedBeer: BeerModelBase? = null
+    private var selectedBeer: Beer? = null
 
     private val binding =
         ViewBeerSelectorBinding.bind(inflate(context, R.layout.view_beer_selector, this))
@@ -83,8 +82,8 @@ class BeerSelectorView @JvmOverloads constructor(
 
     // mandatory
     fun initView(
-        beerList: List<BeerModelBase>,
-        barrelsList: List<CanModel>,
+        beerList: List<Beer>,
+        barrelsList: List<Barrel>,
         onFormUpdate: () -> Unit
     ) {
         selectedBeer = null
@@ -94,7 +93,7 @@ class BeerSelectorView @JvmOverloads constructor(
         fillBarrels()
     }
 
-    private fun createChipView(barrel: CanModel): Chip =
+    private fun createChipView(barrel: Barrel): Chip =
         Chip(context, null, R.style.Widget_MaterialComponents_Chip_Choice).apply {
             id = barrel.id
             text = barrel.name
@@ -103,7 +102,8 @@ class BeerSelectorView @JvmOverloads constructor(
                 context,
                 R.drawable.beer_icon
             )
-            chipBackgroundColor = AppCompatResources.getColorStateList(context, R.color.barrel_chip_color)
+            chipBackgroundColor =
+                AppCompatResources.getColorStateList(context, R.color.barrel_chip_color)
             chipStrokeColor = AppCompatResources.getColorStateList(context, R.color.gray_3)
             chipStrokeWidth = resources.getDimensionPixelSize(R.dimen.gr_size_1).toFloat()
             isCheckable = true
@@ -123,7 +123,7 @@ class BeerSelectorView @JvmOverloads constructor(
         }
     }
 
-    fun updateBeers(beerList: List<BeerModelBase>) {
+    fun updateBeers(beerList: List<Beer>) {
         allBeers = beerList
         visibleBeers = beerList.getVisibleBeers(selectedBeer)
         initBeerRecycler()
@@ -131,9 +131,9 @@ class BeerSelectorView @JvmOverloads constructor(
         checkForm()
     }
 
-    private fun List<BeerModelBase>.getVisibleBeers(
-        currentBeerItem: BeerModelBase? = null
-    ): List<BeerModelBase> = this.filter {
+    private fun List<Beer>.getVisibleBeers(
+        currentBeerItem: Beer? = null
+    ): List<Beer> = this.filter {
         it.isActive || (currentBeerItem?.id == it.id)
     }
 
@@ -232,11 +232,11 @@ class BeerSelectorView @JvmOverloads constructor(
         override fun onBindViewHolder(holder: BeerItemViewHolder, position: Int) {
 
             holder.itemBinding.tBeerNameItm.text = if (withPrices)
-                "${visibleBeers[position].dasaxeleba}\n${visibleBeers[position].fasi} ₾"
+                "${visibleBeers[position].name}\n${visibleBeers[position].price} ₾"
             else
-                visibleBeers[position].dasaxeleba
-            holder.itemBinding.tBeerNameItm.backgroundTintList = ColorStateList
-                .valueOf(Color.parseColor(visibleBeers[position].displayColor))
+                visibleBeers[position].name
+            holder.itemBinding.tBeerNameItm.backgroundTintList =
+                ColorStateList.valueOf(visibleBeers[position].displayColor)
         }
     }
 

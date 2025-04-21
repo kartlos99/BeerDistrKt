@@ -11,16 +11,12 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.databinding.StatementFragmentBinding
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_HISTORY_OF
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.KEY_RECORD_ID
 import com.example.beerdistrkt.paramViewModels
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class StatementFragment : BaseFragment<StatementViewModel>() {
-
-    val frag = this
 
     override val viewModel by paramViewModels<StatementViewModel, StatementViewModel.Factory> { factory ->
         factory.create(clientID)
@@ -47,7 +43,7 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
         binding.statementViewpager.adapter = pagesAdapter
         binding.tabsAmonaweri.setupWithViewPager(binding.statementViewpager)
 
-        binding.chkGrAmonaweri.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.chkGrAmonaweri.setOnCheckedChangeListener { _, isChecked ->
             pagesAdapter?.fragmentM?.changeStatementAppearance(isChecked)
             pagesAdapter?.fragmentK?.changeStatementAppearance(isChecked)
             if (pagesAdapter?.fragmentM?.action == null) {
@@ -68,7 +64,7 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
         }
 
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
-            binding.fragStatementClientInfo.text = it.obieqti.dasaxeleba
+            binding.fragStatementClientInfo.text = it.name
         }
         showDebt()
     }
@@ -81,18 +77,18 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
     }
 
     private fun showHistory(recordID: Int, historyOf: String) {
-        val args = Bundle().apply {
-            putInt(KEY_RECORD_ID, recordID)
-            putString(KEY_HISTORY_OF, historyOf)
-        }
-        frag.findNavController()
-            .navigate(R.id.action_statementFragment_to_salesHistoryFragment, args)
+        this.findNavController().navigate(
+            StatementFragmentDirections.actionStatementFragmentToSalesHistoryFragment(
+                recordID,
+                historyOf,
+            )
+        )
     }
 
     private fun goEditing(operation: String, recordID: Int) {
         val action = StatementFragmentDirections
             .actionStatementFragmentToAddDeliveryFragment(clientID, operation, 0, recordID)
-        frag.findNavController().navigate(action)
+        this.findNavController().navigate(action)
     }
 
 }

@@ -13,19 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.databinding.ViewOrderGroupBinding
 import com.example.beerdistrkt.databinding.ViewOrderGroupBottomItemBinding
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.getSummedBottleOrders
 import com.example.beerdistrkt.getSummedRemainingOrder
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.Order
 import java.util.Collections
 
 
 class ParentOrderAdapter(
     private var orderGroups: MutableList<OrderGroupModel>,
-    private val barrelsList: List<CanModel>,
+    private val barrelsList: List<Barrel>,
     private val onGroupExpand: (dID: Int, state: Boolean) -> Unit
 ) : RecyclerView.Adapter<ParentOrderAdapter.ParentItemHolder>() {
 
@@ -259,7 +259,8 @@ class ParentOrderAdapter(
                 LinearLayoutManager(totalSummedOrderRecycler.context)
             totalSummedOrderRecycler.adapter = OrderItemAdapter(
                 orderItems = itemList.toSortedMap(),
-                bottleOrderItems = allOrders.getSummedBottleOrders()
+                bottleOrderItems = allOrders.getSummedBottleOrders(),
+                showVolume = true
             )
 
             totalSummedOrderRecycler.isVisible = !deliveryMode

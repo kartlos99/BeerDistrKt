@@ -42,7 +42,7 @@ data class StorehouseIoPm(
                         input.value.sumOf { it.count }
                     }
 
-                    val title = singleBeerList[0].beer.dasaxeleba ?: "*"
+                    val title = singleBeerList[0].beer.name
                     val icon = R.drawable.ic_beer_input_24
                     val iconColor = R.color.green_09
 

@@ -1,54 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/gr_size_12"
-    android:paddingVertical="@dimen/gr_size_24"
     tools:context=".fragPages.settings.SettingsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/idleSettingsTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:lineSpacingExtra="@dimen/gr_size_2"
-            android:text="@string/customer_idle_setting_title"
-            android:textSize="@dimen/sp18"
-            app:layout_constraintEnd_toStartOf="@id/idleSettingsValue"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/idleSettingsValue"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bkg_underline"
-            android:padding="@dimen/gr_size_8"
-            android:textAlignment="center"
-            android:textSize="@dimen/sp18"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/idleSettingsTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/idleSettingsTitle"
-            tools:text="0" />
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progressIndicator"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/gr_size_4"
-            android:layout_height="wrap_content"
-            app:indicatorColor="@color/colorAccent_33"
-            app:trackColor="@color/gray_transparent_20"
-            android:indeterminate="true"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/idleSettingsTitle" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/setting_row_item"
+            tools:itemCount="4"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/gr_size_4"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/colorAccent_33"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:trackColor="@color/gray_transparent_20"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

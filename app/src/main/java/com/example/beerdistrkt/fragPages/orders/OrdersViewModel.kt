@@ -1,29 +1,48 @@
 package com.example.beerdistrkt.fragPages.orders
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderGroupModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderUpdateDistributorRequestModel
-import com.example.beerdistrkt.models.*
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.storage.ObjectCache
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.user.domain.model.User
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
+import com.example.beerdistrkt.models.MappedUser
+import com.example.beerdistrkt.models.Order
+import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.models.UserStatus
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.SingleMutableLiveDataEvent
 import com.example.beerdistrkt.utils.eventValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import kotlin.math.sign
 
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
+    private val getCustomersUseCase: GetCustomersUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
+    private val getBarrelsUseCase: GetBarrelsUseCase,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : BaseViewModel() {
 
@@ -31,22 +50,13 @@ class OrdersViewModel @Inject constructor(
 
     val searchQuery = state.getLiveData("searchQuery", "")
 
-    private val bottleList = ObjectCache.getInstance().getList(
-        BaseBottleModel::class,
-        ObjectCache.BOTTLE_LIST_ID
-    )
-        ?: mutableListOf()
-
-    private val clientsLiveData = database.getAllObieqts()
-    private val beersLiveData = database.getBeerList()
-    private val userLiveData = database.getUsers()
-    private val barrelsLiveData = database.getCansList()
     val ordersLiveData = MutableLiveData<ApiResponseState<MutableList<OrderGroupModel>>>()
 
-    private lateinit var clients: List<Obieqti>
-    private lateinit var beers: List<BeerModelBase>
+    private lateinit var customers: List<Customer>
+    private lateinit var beers: List<Beer>
+    private lateinit var bottleList: List<Bottle>
     private lateinit var usersList: List<User>
-    lateinit var barrelsList: List<CanModel>
+    lateinit var barrels: List<Barrel>
 
     var orderDateCalendar: Calendar = Calendar.getInstance()
 
@@ -73,10 +83,7 @@ class OrdersViewModel @Inject constructor(
     private val foldsLiveData = userPreferencesRepository.userPreferencesFlow.asLiveData()
 
     init {
-        clientsLiveData.observeForever { clients = it }
-        beersLiveData.observeForever { beers = it }
-        userLiveData.observeForever { usersList = it }
-        barrelsLiveData.observeForever { barrelsList = it }
+        initializeData()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
         foldsLiveData.observeForever {
             it?.let { foldsStateString ->
@@ -84,6 +91,15 @@ class OrdersViewModel @Inject constructor(
             }
         }
         getAllUsers()
+    }
+
+    private fun initializeData() = viewModelScope.launch {
+        beers = getBeerUseCase()
+        bottleList = getBottlesUseCase()
+        customers = getCustomersUseCase()
+        usersList = getUsersUseCase()
+        barrels = getBarrelsUseCase()
+        getOrders()
     }
 
     private fun getAllUsers() {
@@ -114,7 +130,7 @@ class OrdersViewModel @Inject constructor(
                 allOrders.clear()
                 allOrders.addAll(ordersDto.map { orderDTO ->
                     orderDTO.toPm(
-                        clients,
+                        customers,
                         beers,
                         bottleList,
                         onDeleteClick = { order ->
@@ -151,7 +167,7 @@ class OrdersViewModel @Inject constructor(
         listOfGroupedOrders.addAll(
             groupOrderByDistributor(
                 allOrders.filter {
-                    it.client.dasaxeleba.contains(searchQuery.value ?: "")
+                    it.customer?.name?.contains(searchQuery.value.orEmpty()) ?: false
                 }
             )
         )
@@ -193,7 +209,7 @@ class OrdersViewModel @Inject constructor(
 
     fun deleteOrder(order: Order) {
         Log.d("onDelete", order.toString())
-        val userID = Session.get().userID ?: return
+        val userID = session.userID ?: return
         sendRequest(
             ApeniApiService.getInstance().deleteOrder(OrderDeleteRequestModel(order.ID, userID)),
             success = {
@@ -239,7 +255,7 @@ class OrdersViewModel @Inject constructor(
         val distributorID = selectedUser.userID
         val regionID = selectedUser.regionID
 
-        val userID = Session.get().userID ?: return
+        val userID = session.userID ?: return
         val orderChangeDistributor =
             OrderUpdateDistributorRequestModel(orderID, distributorID, regionID, userID)
         sendRequest(
@@ -273,7 +289,8 @@ class OrdersViewModel @Inject constructor(
     }
 
     fun filterOrders(query: String) {
-        proceedOrders()
+        if (::barrels.isInitialized)
+            proceedOrders()
     }
 
     companion object {

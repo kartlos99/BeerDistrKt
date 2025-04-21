@@ -8,9 +8,18 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
 import com.example.beerdistrkt.BuildConfig
-import com.example.beerdistrkt.network.AuthInterceptor
+import com.example.beerdistrkt.db.ApeniDataBase
+import com.example.beerdistrkt.db.ApeniDatabaseDao
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.AuthHelper
+import com.example.beerdistrkt.network.SessionInterceptor
+import com.example.beerdistrkt.network.UserAuthenticator
 import com.example.beerdistrkt.network.api.DistributionApi
+import com.example.beerdistrkt.utils.LogoutUtil
+import com.example.beerdistrkt.utils.Session
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -30,19 +39,66 @@ import javax.inject.Singleton
 // value may be changed late
 private const val PREFERENCE_FILE = "order_folds_store"
 
+private const val DB_NAME = "apeni_db"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @Provides
+    @Singleton
+    fun provideSession(
+        userPreferencesRepository: UserPreferencesRepository,
+    ): Session {
+        return Session(userPreferencesRepository)
+    }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient() = OkHttpClient.Builder()
-        .addInterceptor(AuthInterceptor())
+    fun provideAuthenticator(
+        session: Session
+    ): SessionInterceptor {
+        return SessionInterceptor(session)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLogoutUtil(
+        @ApplicationContext appContext: Context,
+        session: Session,
+    ): LogoutUtil = LogoutUtil(
+        appContext,
+        session,
+    )
+
+    @Singleton
+    @Provides
+    fun provideAuthHelper(
+        logoutUtil: LogoutUtil,
+    ): AuthHelper = AuthHelper(logoutUtil)
+
+    @Singleton
+    @Provides
+    fun provide(
+        authHelper: AuthHelper,
+    ): UserAuthenticator {
+        return UserAuthenticator(authHelper)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        sessionInterceptor: SessionInterceptor,
+        userAuthenticator: UserAuthenticator,
+    ): OkHttpClient = OkHttpClient.Builder()
+        .authenticator(userAuthenticator)
+        .addInterceptor(sessionInterceptor)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addInterceptor(
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        )
         .build()
 
     @Provides
@@ -81,4 +137,60 @@ object AppModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun provideUserPreferencesRepository(
+        dataStore: DataStore<Preferences>,
+        moshi: Moshi,
+    ): UserPreferencesRepository {
+        return UserPreferencesRepository(
+            dataStore = dataStore,
+            moshi = moshi,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext appContext: Context
+    ): ApeniDatabaseDao {
+        val db = Room.databaseBuilder(
+            appContext.applicationContext,
+            ApeniDataBase::class.java,
+            DB_NAME
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
+        return db.apeniDataBaseDao
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideApeniApi(
+        sessionInterceptor: SessionInterceptor,
+    ): ApeniApiService {
+
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(sessionInterceptor)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+//                .addCallAdapterFactory()
+            .baseUrl(BuildConfig.SERVER_URL)
+            .build()
+
+        return retrofit.create(ApeniApiService::class.java)
+    }
 }

@@ -2,6 +2,9 @@ package com.example.beerdistrkt.utils
 
 const val MDEBAREOBA = "mdeb"
 const val MITANA = "mitana"
+const val MITANA_BOTTLE = "mitana_bottle"
+const val K_OUT = "kout"
+const val M_OUT = "mout"
 const val AMONAWERI = "amonaweri"
 const val ADD_ORDER = "add_order"
 const val SYS_CLEAR = "sys_clear"

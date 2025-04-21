@@ -389,32 +389,57 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyOutputCard" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/addDeliveryCheckGift"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="@string/gift"
-                app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/addDeliveryDateBtn" />
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/addDeliveryCheckReplace"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="@string/replace"
-                app:layout_constraintEnd_toStartOf="@id/addDeliveryDateBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addDeliveryCheckGift" />
-
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/addDeliveryBarrierForComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="addDeliveryCheckReplace, addDeliveryDateBtn" />
+                app:constraint_referenced_ids="addDeliveryDateBtn" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/optionSection"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/gr_size_48"
+                android:animateLayoutChanges="true"
+                android:paddingHorizontal="@dimen/gr_size_8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrierForComment">
+
+                <ImageView
+                    android:id="@+id/optionIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/img_description"
+                    android:padding="@dimen/gr_size_8"
+                    android:src="@drawable/ic_more_vert"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/addDeliveryCheckGift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gift"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/optionIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/addDeliveryCheckReplace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/replace"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/addDeliveryCheckGift"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addDeliveryComment"
@@ -427,7 +452,7 @@
                 android:nextFocusUp="@id/addDeliveryMoneyEt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrierForComment"
+                app:layout_constraintTop_toBottomOf="@id/optionSection"
                 tools:layout_editor_absoluteX="8dp">
 
                 <EditText

@@ -3,48 +3,57 @@ package com.example.beerdistrkt.fragPages.showHistory
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.Obieqti
-import com.example.beerdistrkt.models.User
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ShowHistoryViewModel : BaseViewModel() {
-    private val TAG = "ShowHistoryViewModel"
+@HiltViewModel
+class ShowHistoryViewModel @Inject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
+    private val getCustomersUseCase: GetCustomersUseCase,
+) : BaseViewModel() {
 
-    private val clientsLiveData = database.getAllObieqts()
-    private val userLiveData = database.getUsers()
-
-    private lateinit var clients: List<Obieqti>
-    private lateinit var usersList: List<User>
-
-
-    private val beerLiveData = database.getBeerList()
-    lateinit var beerMap: Map<Int, BeerModelBase>
+    lateinit var beerMap: Map<Int, Beer>
 
     private val _orderHistoryLiveData = MutableLiveData<ApiResponseState<List<OrderHistory>>>()
     val orderHistoryLiveData: LiveData<ApiResponseState<List<OrderHistory>>>
         get() = _orderHistoryLiveData
 
+    val infoEventsFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
     init {
-        beerLiveData.observeForever { beerList ->
-            beerMap = beerList.groupBy { it.id }.mapValues {
-                it.value[0]
-            }
+        viewModelScope.launch {
+            beerMap = getBeerUseCase()
+                .groupBy { it.id }
+                .mapValues { it.value[0] }
         }
-        clientsLiveData.observeForever { clients = it }
-        userLiveData.observeForever { usersList = it }
     }
 
     fun getData(recordID: String) {
         sendRequest(
             ApeniApiService.getInstance().getOrderHistory(recordID),
             successWithData = {
-                val pmHistory = it.map { dtoHistoryModel ->
-                    dtoHistoryModel.toOrderHistory(clients, usersList)
+                viewModelScope.launch {
+                    val pmHistory = it.mapNotNull { dtoHistoryModel ->
+                        dtoHistoryModel.toOrderHistory(
+                            getCustomersUseCase(),
+                            getUsersUseCase()
+                        )
+                    }
+                    _orderHistoryLiveData.value = ApiResponseState.Success(pmHistory)
+                    if (it.size != pmHistory.size)
+                        infoEventsFlow.emit("incorrect mapping, some records are missed!")
                 }
-                _orderHistoryLiveData.value = ApiResponseState.Success(pmHistory)
             },
             finally = {
                 Log.d(TAG, "getData: finaly = $it")
@@ -52,4 +61,7 @@ class ShowHistoryViewModel : BaseViewModel() {
         )
     }
 
+    companion object {
+        private const val TAG = "ShowHistoryViewModel"
+    }
 }

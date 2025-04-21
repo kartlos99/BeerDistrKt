@@ -102,11 +102,13 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
 
     private fun showDateDialog() {
         val datePickerDialog = DatePickerDialog(
-            requireContext(),
-            dateSetListener,
-            viewModel.orderDateCalendar.get(Calendar.YEAR),
-            viewModel.orderDateCalendar.get(Calendar.MONTH),
-            viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
+            /* context = */ requireContext(),
+            /* listener = */ OnDateSetListener {  _, year, month, day ->
+                viewModel.onDateSelected(year, month, day)
+            },
+            /* year = */ viewModel.orderDateCalendar.get(Calendar.YEAR),
+            /* month = */ viewModel.orderDateCalendar.get(Calendar.MONTH),
+            /* dayOfMonth = */ viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.setCancelable(false)
         datePickerDialog.show()
@@ -149,7 +151,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
                     orderListSize = it.data.size
                     ordersAdapter = ParentOrderAdapter(
                         it.data,
-                        viewModel.barrelsList,
+                        viewModel.barrels,
                         viewModel::saveDistributorGroupState
                     )
                     ordersAdapter.onOrderDrag = viewModel::onOrderDrag
@@ -169,7 +171,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         }
         viewModel.askForOrderDeleteLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (Session.get().hasPermission(Permission.EditOrder)) {
+                if (viewModel.session.hasPermission(Permission.EditOrder)) {
                     context?.showAskingDialog(
                         null,
                         R.string.confirm_delete_order,
@@ -196,7 +198,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         viewModel.editOrderLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it.orderStatus == OrderStatus.ACTIVE) {
-                    if (Session.get().hasPermission(Permission.EditOrder)) {
+                    if (viewModel.session.hasPermission(Permission.EditOrder)) {
                         vBinding.root.findNavController().navigate(
                             OrdersFragmentDirections.actionOrdersFragmentToAddOrdersFragment(
                                 it.clientID,
@@ -237,12 +239,6 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             )
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getOrders()
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)

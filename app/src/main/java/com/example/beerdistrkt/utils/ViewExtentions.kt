@@ -4,12 +4,12 @@ import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
-import androidx.annotation.CheckResult
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
+import androidx.core.widget.doOnTextChanged
 import com.google.android.gms.common.internal.Preconditions.checkMainThread
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -95,6 +95,21 @@ fun SearchView.changesAsFlow(): Flow<CharSequence?> {
     }.onStart {
         emit("")
     }
+}
+
+/**
+ * usage: editText?.textChangesAsFlow()
+ *             .debounce(333)
+ *             .onEach { viewModel.updateUserName(it) }
+ *             .launchIn(lifecycleScope)
+ * */
+fun EditText.textChangesAsFlow(): Flow<CharSequence?> {
+    return callbackFlow {
+        checkMainThread("")
+
+        val listener = doOnTextChanged { text, _, _, _ -> trySend(text) }
+        awaitClose { removeTextChangedListener(listener) }
+    }.onStart { emit(text) }
 }
 
 fun CharSequence?.orEmpty(): String = this?.toString() ?: ""

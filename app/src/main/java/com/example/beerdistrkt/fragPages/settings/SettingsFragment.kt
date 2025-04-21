@@ -3,63 +3,72 @@ package com.example.beerdistrkt.fragPages.settings
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
+import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
+import com.example.beerdistrkt.databinding.SettingRowItemBinding
 import com.example.beerdistrkt.databinding.SettingsFragmentBinding
-import com.example.beerdistrkt.fragPages.settings.SettingsViewModel.SettingCode.IDLE_WARNING
-import com.example.beerdistrkt.fragPages.settings.model.SettingParam
-import com.example.beerdistrkt.getViewModel
-import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.fragPages.settings.domain.model.SettingParam
+import com.example.beerdistrkt.network.model.isLoading
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment<SettingsViewModel>() {
-    override val viewModel by lazy {
-        getViewModel { SettingsViewModel() }
-    }
+
+    override val viewModel by viewModels<SettingsViewModel>()
 
     override var frLayout: Int? = R.layout.settings_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setPageTitle(R.string.settings)
-        val binding = SettingsFragmentBinding.bind(view)
-        binding.idleSettingsValue.setOnClickListener {
-            EditValueDialog(
-                getString(R.string.new_value),
-                binding.idleSettingsValue.text.toString()
-            ) { newValue ->
-                viewModel.setNewValue(IDLE_WARNING, newValue)
+        SettingsFragmentBinding.bind(view).apply {
+            initRecycler()
+            swipeRefresh.setOnRefreshListener {
+                viewModel.refresh()
             }
-                .show(childFragmentManager, EditValueDialog.TAG)
-
         }
-        binding.setupObservers()
     }
 
-    private fun SettingsFragmentBinding.setupObservers() {
-        viewModel.getSettingsLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> proceedData(it.data)
-                is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
-                is ApiResponseState.ApiError -> showToast(it.errorText)
-                else -> {}
-            }
-        }
-        viewModel.updateValuesLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiResponseState.Success -> {
-                    idleSettingsValue.text = it.data
+    private fun SettingsFragmentBinding.initRecycler() {
+        val settingsAdapter = SimpleDataAdapter<SettingParam>(
+            layoutId = R.layout.setting_row_item,
+            onBind = { item, view ->
+                SettingRowItemBinding.bind(view).apply {
+                    settingTitle.text = getString(item.code.displayName)
+                    item.value.toString().also { settingValue.text = it }
+                    settingValue.setOnClickListener {
+                        openValueChangeDialog(item)
+                    }
                 }
-                is ApiResponseState.Loading -> progressIndicator.isVisible = it.showLoading
-                is ApiResponseState.ApiError -> showToast(it.errorText)
-                else -> {}
+            }
+        )
+        recycler.adapter = settingsAdapter
+
+        viewModel.apiStateFlow.collectLatest(viewLifecycleOwner) { result ->
+            progressIndicator.isVisible = result.isLoading()
+            result.onError { _, message ->
+                showToast(message)
+                swipeRefresh.isRefreshing = false
+            }
+            result.onSuccess {
+                settingsAdapter.submitList(it)
+                swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun SettingsFragmentBinding.proceedData(data: List<SettingParam>) {
-        idleSettingsValue.text = data.firstOrNull {
-            it.code == IDLE_WARNING.code
-        }?.valueInt.toString()
+    private fun openValueChangeDialog(item: SettingParam) {
+        EditValueDialog(
+            getString(R.string.new_value),
+            item.value.toString()
+        ) { newValue ->
+            viewModel.setNewValue(item, newValue)
+        }
+            .show(childFragmentManager, EditValueDialog.TAG)
     }
 
 }

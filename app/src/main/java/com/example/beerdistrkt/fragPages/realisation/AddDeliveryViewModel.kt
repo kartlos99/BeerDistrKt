@@ -5,60 +5,62 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment.Companion.M_OUT
-import com.example.beerdistrkt.fragPages.realisation.RealisationType.*
-import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
-import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
+import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
+import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
 import com.example.beerdistrkt.fragPages.realisation.models.RecordRequestModel
-import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
-import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.fragPages.realisationtotal.models.SaleRequestModel
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.CanModel
-import com.example.beerdistrkt.models.CustomerWithPrices
-import com.example.beerdistrkt.models.ObjToBeerPrice
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.ClientBottlePrice
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
-import com.example.beerdistrkt.repos.ApeniRepo
 import com.example.beerdistrkt.round
-import com.example.beerdistrkt.storage.ObjectCache
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BARREL_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BEER_LIST_ID
-import com.example.beerdistrkt.storage.ObjectCache.Companion.BOTTLE_LIST_ID
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.utils.DOUBLE_PRECISION
+import com.example.beerdistrkt.utils.M_OUT
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class AddDeliveryViewModel(
-    private val clientID: Int,
-    private val orderID: Int = 0
+@HiltViewModel(assistedFactory = AddDeliveryViewModel.Factory::class)
+class AddDeliveryViewModel @AssistedInject constructor(
+    private val getBeerUseCase: GetBeerUseCase,
+    private val getBottlesUseCase: GetBottlesUseCase,
+    private val getCustomerUseCase: GetCustomerUseCase,
+    private val getBarrelsUseCase: GetBarrelsUseCase,
+    @Assisted(CLIENT_ID_KEY) private val clientID: Int,
+    @Assisted(ORDER_ID_KEY) private val orderID: Int,
+    @Assisted(RECORD_ID_KEY) private val recordID: Int,
+    @Assisted(OPERATION_KEY) private val operation: String?,
 ) : BaseViewModel() {
 
-    val clientLiveData = MutableLiveData<CustomerWithPrices>()
+    val clientLiveData = MutableLiveData<Customer>()
 
-    val beerListLiveData = MutableLiveData<List<BeerModelBase>>()
-    val beerList =
-        ObjectCache.getInstance().getList(BeerModelBase::class, BEER_LIST_ID)?.toMutableList()
-            ?: mutableListOf()
+    val beerListLiveData = MutableLiveData<List<Beer>>()
 
-    val cansList = ObjectCache.getInstance().getList(CanModel::class, BARREL_LIST_ID)
-        ?: listOf()
+    var beerList: List<Beer> = listOf()
+    var bottleList: List<Bottle> = listOf()
+    var barrels: List<Barrel> = listOf()
 
-    val bottleListLiveData = MutableLiveData<List<BaseBottleModel>>()
-    val bottleList = ObjectCache.getInstance().getList(BaseBottleModel::class, BOTTLE_LIST_ID)
-        ?: listOf()
+    val bottleListLiveData = MutableLiveData<List<Bottle>>()
 
     var saleDateCalendar: Calendar = Calendar.getInstance()
     private val _saleDayLiveData = MutableLiveData<String>()
@@ -78,15 +80,13 @@ class AddDeliveryViewModel(
     var isGift = false
     var isReplace = false
 
-    var operation: String? = null
-    var recordID = 0
-
-    private val repository = ApeniRepo()
-
     val eventsFlow = MutableSharedFlow<Event>()
 
     private val _editOperationState = MutableStateFlow<Any>(0)
     val editOperationState = _editOperationState.asStateFlow()
+
+    private val _requestPricesFlow = MutableStateFlow<Int?>(null)
+    val requestPricesFlow = _requestPricesFlow.asStateFlow()
 
     val realisationStateFlow = MutableStateFlow(NONE)
 
@@ -98,35 +98,49 @@ class AddDeliveryViewModel(
     init {
         _saleDayLiveData.value = dateTimeFormat.format(saleDateCalendar.time)
         viewModelScope.launch {
-            repository.getCustomerDataFlow(clientID)
-                .onEach {
-                    it?.let { customer ->
-                        clientLiveData.value = customer
-                        attachPrices(customer.beerPrices)
-                        attachBottlePrices(customer.bottlePrices)
-                        if (operation != null)
-                            getRecordData()
-                        else
-                            realisationStateFlow.value = BARREL
-                    } ?: eventsFlow.emit(Event.CustomerNotFount)
-                }
-                .collect()
+            initData()
+            getCustomer()
         }
+    }
+
+    private suspend fun getCustomer() {
+        getCustomerUseCase.invoke(clientID)?.let { customer ->
+            clientLiveData.value = customer
+            attachPrices(customer.beerPrices)
+            attachBottlePrices(customer.bottlePrices)
+            checkForPrices()
+            if (operation != null)
+                getRecordData()
+            else
+                realisationStateFlow.value = BARREL
+        } ?: eventsFlow.emit(Event.CustomerNotFount)
+    }
+
+    fun updateCustomer() {
+        viewModelScope.launch {
+            getCustomer()
+        }
+    }
+
+    private suspend fun initData() {
+        beerList = getBeerUseCase()
+        bottleList = getBottlesUseCase()
+        barrels = getBarrelsUseCase()
     }
 
     /**
      * if beer price not defined for customer, takes 0 as price
      */
-    private fun attachPrices(pricesForClient: List<ObjToBeerPrice>) {
+    private fun attachPrices(pricesForClient: List<ClientBeerPrice>) {
         beerListLiveData.value = beerList
             .map { beerModel ->
                 val price = findBeerPrice(beerModel, pricesForClient)
-                beerModel.copy(fasi = price.round())
+                beerModel.copy(price = price.round())
             }
     }
 
     /**
-     * if bottle price not defined for customer, takes default price
+     * if bottle price not defined for customer, takes 0 as price
      */
     private fun attachBottlePrices(pricesForClient: List<ClientBottlePrice>) {
         bottleListLiveData.value = bottleList
@@ -136,23 +150,48 @@ class AddDeliveryViewModel(
                 }?.let {
                     bottleItem.copy(price = it.price)
                 }
-                    ?: bottleItem
+                    ?: bottleItem.copy(price = .0)
             }
     }
 
+    /**
+     * if no price defined for any actual product,
+     * request to enter the price before delivery
+     * */
+    private fun checkForPrices() {
+        viewModelScope.launch {
+            if (
+                beerListLiveData.value
+                    ?.filter { it.isActive }
+                    ?.any { beer ->
+                        (beer.price ?: .0) < DOUBLE_PRECISION
+                    } == true
+                ||
+                bottleListLiveData.value
+                    ?.filter { it.isActive }
+                    ?.any { bottle ->
+                        bottle.price < DOUBLE_PRECISION
+                    } == true
+            )
+                _requestPricesFlow.emit(clientLiveData.value?.id)
+            else
+                _requestPricesFlow.emit(null)
+        }
+    }
+
     private fun findBeerPrice(
-        beerModel: BeerModelBase,
-        pricesForClient: List<ObjToBeerPrice>
-    ): Double = pricesForClient.find { objToBeerPrice ->
-        objToBeerPrice.beerID == beerModel.id
-    }?.fasi?.toDouble() ?: 0.0
+        beerModel: Beer,
+        pricesForClient: List<ClientBeerPrice>
+    ): Double = pricesForClient.find { clientPrice ->
+        clientPrice.beerID == beerModel.id
+    }?.price ?: 0.0
 
     fun onDoneClick(deliveryDataComment: String) {
         if (callIsBlocked) return
         callIsBlocked = true
 
         val hasZeroPrice = saleItemsList.any {
-            (it.beer.fasi ?: .0) < 0.01
+            (it.beer.price ?: .0) < 0.01
         } || bottleSaleItemsList.any {
             it.bottle.price < 0.01
         }
@@ -165,9 +204,9 @@ class AddDeliveryViewModel(
 
         val saleRequestModel = SaleRequestModel(
             clientID,
-            Session.get().getUserID(),
+            session.getUserID(),
             deliveryDataComment,
-            Session.get().getUserID(),
+            session.getUserID(),
             isReplace = if (isReplace) "1" else "0",
             operationDate = dateTimeFormat.format(saleDateCalendar.time),
             orderID = orderID,
@@ -328,7 +367,7 @@ class AddDeliveryViewModel(
     private fun getRecordData() {
         sendRequest(
             ApeniApiService.getInstance().getRecord(
-                RecordRequestModel(operation ?: "", recordID)
+                RecordRequestModel(operation.orEmpty(), recordID)
             ),
             successWithData = {
                 var date: Date? = null
@@ -373,7 +412,7 @@ class AddDeliveryViewModel(
             it.bottle.price * it.count
         }.plus(
             saleItemsList.sumOf {
-                it.canType.volume * it.count * (it.beer.fasi ?: 0.0)
+                it.canType.volume * it.count * (it.beer.price ?: 0.0)
             }
         ).round()
 
@@ -392,7 +431,22 @@ class AddDeliveryViewModel(
         bottleSaleItemsList.clear()
     }
 
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted(CLIENT_ID_KEY) clientID: Int,
+            @Assisted(ORDER_ID_KEY) orderID: Int,
+            @Assisted(RECORD_ID_KEY) recordID: Int,
+            @Assisted(OPERATION_KEY) operation: String?,
+        ): AddDeliveryViewModel
+    }
+
     companion object {
+        private const val CLIENT_ID_KEY = "clientID"
+        private const val ORDER_ID_KEY = "orderID"
+        private const val RECORD_ID_KEY = "RECORD_ID"
+        private const val OPERATION_KEY = "OPERATION"
         const val TAG = "TAG AddDelivery-----"
     }
 }

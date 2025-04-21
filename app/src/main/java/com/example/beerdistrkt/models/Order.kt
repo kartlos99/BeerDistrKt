@@ -1,8 +1,11 @@
 package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.squareup.moshi.Json
 
 data class Order(
@@ -11,7 +14,7 @@ data class Order(
     var orderStatus: OrderStatus,
     val distributorID: Int,
     val clientID: Int,
-    val client: Obieqti,
+    val customer: Customer?,
     val comment: String?,
     val isEdited: Int,
     var sortValue: Double,
@@ -53,7 +56,7 @@ data class Order(
         val ID: Int,
         val orderID: Int,
         val beerID: Int,
-        val beer: BeerModelBase,
+        val beer: Beer,
         val canTypeID: Int,
         val count: Int,
         val check: Int,
@@ -62,29 +65,27 @@ data class Order(
     ) {
 
         fun toTempBeerItemModel(
-            barrels: List<CanModel>,
+            barrels: List<Barrel>,
             onRemove: (beerItem: TempBeerItemModel) -> Unit,
             onEdit: (beerItem: TempBeerItemModel) -> Unit
         ): TempBeerItemModel? {
-            val canType = barrels.find { it.id == canTypeID }
-            return takeUnless { canType == null }?.let {
-                TempBeerItemModel(
-                    ID = orderID,
-                    beer = beer,
-                    canType = canType!!,
-                    count = count,
-                    orderItemID = ID,
-                    onRemoveClick = onRemove,
-                    onEditClick = onEdit
-                )
-            }
+            val barrel = barrels.find { it.id == canTypeID } ?: return null
+            return TempBeerItemModel(
+                ID = orderID,
+                beer = beer,
+                canType = barrel,
+                count = count,
+                orderItemID = ID,
+                onRemoveClick = onRemove,
+                onEditClick = onEdit
+            )
         }
     }
 
     data class Sales(
         val orderID: Int,
         val beerID: Int,
-        val beer: BeerModelBase,
+        val beer: Beer,
         val check: Int,
         val canTypeID: Int,
         val count: Int
@@ -93,7 +94,7 @@ data class Order(
     data class BottleItem(
         val id: Int,
         val orderID: Int,
-        val bottle: BaseBottleModel,
+        val bottle: Bottle,
         val count: Int,
     ) {
         fun toTempBottleItemModel(
@@ -114,7 +115,7 @@ data class Order(
 
     data class BottleSaleItem(
         val orderID: Int,
-        val bottle: BaseBottleModel,
+        val bottle: Bottle,
         val count: Int,
     )
 

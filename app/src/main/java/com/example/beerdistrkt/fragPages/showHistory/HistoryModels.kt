@@ -1,11 +1,11 @@
 package com.example.beerdistrkt.fragPages.showHistory
 
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
+import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.Obieqti
+import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.models.OrderStatus
-import com.example.beerdistrkt.models.User
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.squareup.moshi.Json
 
 data class OrderHistoryDTO(
@@ -34,16 +34,16 @@ data class OrderHistoryDTO(
     )
 
     fun toOrderHistory(
-        clients: List<Obieqti>,
+        clients: List<Customer>,
         usersList: List<User>
-    ): OrderHistory {
+    ): OrderHistory? {
 
         val client = clients.find {
             (it.id ?: 0) == clientID
-        } ?: Obieqti.emptyModel
+        } ?: return null
 
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
 
         return OrderHistory(
             hID,
@@ -51,7 +51,7 @@ data class OrderHistoryDTO(
             orderDate.split(" ")[0],
             orderStatus,
             distributor.username,
-            client.dasaxeleba,
+            client.name,
             comment,
             modifyDate,
             modifyUser.username,
@@ -87,15 +87,15 @@ data class SaleHistoryDTO(
     val modifyUserID: Int
 ) {
     fun toPm(
-        clients: List<Obieqti>,
+        clients: List<Customer>,
         usersList: List<User>,
-        beerList: List<BeerModelBase>
+        beerList: List<Beer>
     ): SaleHistory? {
         val client = clients.find {
             it.id == clientID
-        } ?: Obieqti.emptyModel
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        } ?: return null
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
         val beer = beerList.find { it.id == beerID } ?: return null
 
         return SaleHistory(
@@ -116,9 +116,9 @@ data class SaleHistoryDTO(
 
 data class SaleHistory(
     val saleDate: String,
-    val client: Obieqti,
+    val client: Customer,
     val distributor: User,
-    val beer: BeerModelBase,
+    val beer: Beer,
     val chek: Int,
     val unitPrice: Double,
     val canTypeID: Int,
@@ -143,14 +143,14 @@ data class MoneyHistoryDTO(
     val modifyUserID: Int
 ) {
     fun toPm(
-        clients: List<Obieqti>,
+        clients: List<Customer>,
         usersList: List<User>
-    ): MoneyHistory {
+    ): MoneyHistory? {
         val client = clients.find {
             it.id == clientID
-        } ?: Obieqti.emptyModel
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        } ?: return null
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
 
         return MoneyHistory(
             operationDate,
@@ -167,13 +167,13 @@ data class MoneyHistoryDTO(
 
 data class MoneyHistory(
     val operationDate: String,
-    val client: Obieqti,
+    val client: Customer,
     val distributor: User,
     val moneyAmount: Double,
     val paymentType: PaymentType,
     val comment: String?,
     val modifyDate: String,
-    val modifyUser: User
+    val modifyUser: User,
 )
 
 
@@ -189,15 +189,15 @@ data class BottleSaleHistoryDTO(
     val modifyUserID: Int
 ) {
     fun toPm(
-        clients: List<Obieqti>,
+        clients: List<Customer>,
         usersList: List<User>,
-        bottles: List<BaseBottleModel>
+        bottles: List<Bottle>
     ): BottleSaleHistory? {
         val client = clients.find {
             it.id == clientID
-        } ?: Obieqti.emptyModel
-        val distributor = usersList.find { it.id == distributorID.toString() } ?: User.EMPTY_USER
-        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: User.EMPTY_USER
+        } ?: return null
+        val distributor = usersList.find { it.id == distributorID.toString() } ?: return null
+        val modifyUser = usersList.find { it.id == modifyUserID.toString() } ?: return null
         val bottle = bottles.find { it.id == bottleID } ?: return null
 
         return BottleSaleHistory(
@@ -216,12 +216,12 @@ data class BottleSaleHistoryDTO(
 
 data class BottleSaleHistory(
     val saleDate: String,
-    val client: Obieqti,
+    val client: Customer,
     val distributor: User,
-    val bottle: BaseBottleModel,
+    val bottle: Bottle,
     val unitPrice: Double,
     val count: Int,
     val comment: String?,
     val modifyDate: String,
-    val modifyUser: User
+    val modifyUser: User,
 )

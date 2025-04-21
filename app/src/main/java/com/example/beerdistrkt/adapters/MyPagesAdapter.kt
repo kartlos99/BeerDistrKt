@@ -1,15 +1,14 @@
 package com.example.beerdistrkt.adapters
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.statement.StatementSubPageFragment
-import com.example.beerdistrkt.utils.LOCATION
-import com.example.beerdistrkt.utils.OBJ_ID
 
 
-class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
+class MyPagesAdapter(
+    private val fm: FragmentManager,
+    private val customerID: Int
+) :
     androidx.fragment.app.FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private var titles = arrayOf(" ფინანსები ", " კასრები ")
@@ -21,13 +20,7 @@ class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
     }
 
     override fun getItem(position: Int): StatementSubPageFragment {
-        val bundle = bundleOf(
-            LOCATION to position,
-            OBJ_ID to objId,
-        )
-        return StatementSubPageFragment.newInstance().apply {
-            arguments = bundle
-        }
+        return StatementSubPageFragment.newInstance(position, customerID)
     }
 
     override fun getCount(): Int {
@@ -50,7 +43,7 @@ class MyPagesAdapter(val fm: FragmentManager, private val objId: Int) :
         return titles[position]
     }
 
-    private fun makeFragmentTag(id: Long): String? {
+    private fun makeFragmentTag(id: Long): String {
         return "android:switcher:${R.id.statement_viewpager}:$id"
     }
 }

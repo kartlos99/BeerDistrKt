@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
+import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
@@ -68,7 +70,12 @@ class StatementSubPageFragment : BaseFragment<StatementSubPageViewModel>() {
         }
 
         val linearLayoutManager = LinearLayoutManager(context)
-        statementListAdapter = StatementAdapter(mutableListOf(), pagePos)
+        statementListAdapter = StatementAdapter(
+            mutableListOf(),
+            pagePos,
+            viewModel.session.hasPermission(Permission.EditOldSale),
+            viewModel.session.hasPermission(Permission.EditSale),
+        )
 
         vBinding.statementSubPageRc.apply {
             layoutManager = linearLayoutManager
@@ -185,7 +192,13 @@ class StatementSubPageFragment : BaseFragment<StatementSubPageViewModel>() {
     }
 
     companion object {
-        fun newInstance() = StatementSubPageFragment()
         const val TAG = "StatementSubPageFragment"
+
+        fun newInstance(position: Int, customerID: Int) = StatementSubPageFragment().apply {
+            arguments = bundleOf(
+                LOCATION to position,
+                OBJ_ID to customerID,
+            )
+        }
     }
 }

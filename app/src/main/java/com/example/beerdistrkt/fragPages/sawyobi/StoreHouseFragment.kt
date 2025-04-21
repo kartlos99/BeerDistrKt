@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -33,22 +34,21 @@ import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
-import com.example.beerdistrkt.getViewModel
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import com.example.beerdistrkt.utils.goAway
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Calendar
 
+@AndroidEntryPoint
 class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickListener {
 
     private val binding by viewBinding(SawyobiFragmentBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { StoreHouseViewModel() }
-    }
+    override val viewModel by viewModels<StoreHouseViewModel>()
+
     private var dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
         viewModel.onDateSelected(year, month, day)
 
@@ -88,9 +88,9 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             storeHouseAddBeerItemBtn.setOnClickListener(this@StoreHouseFragment)
             storeHouseDoneBtn.setOnClickListener(this@StoreHouseFragment)
 
-            storeHouseDoneBtn.isEnabled = Session.get().hasPermission(Permission.AddEditStoreHouse)
+            storeHouseDoneBtn.isEnabled = viewModel.session.hasPermission(Permission.AddEditStoreHouse)
             storeHouseAddBeerItemBtn.isVisible =
-                Session.get().hasPermission(Permission.AddEditStoreHouse)
+                viewModel.session.hasPermission(Permission.AddEditStoreHouse)
 
             realisationTypeSelector.check(R.id.realizationByBarrel)
             realisationTypeSelector.addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -130,7 +130,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
         }
         binding.beerSelector.initView(
             viewModel.beerList,
-            viewModel.cansList,
+            viewModel.barrels,
             ::onFormUpdate
         )
         binding.bottleSelector.onDeleteClick = {
@@ -283,7 +283,7 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sawyobiDetail -> {
-                if (Session.get().hasPermission(Permission.AddEditStoreHouse))
+                if (viewModel.session.hasPermission(Permission.AddEditStoreHouse))
                     requireView().findNavController()
                         .navigate(StoreHouseFragmentDirections.actionSawyobiFragmentToSawyobiListFragment())
                 else
@@ -320,14 +320,14 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
             }
 
             R.id.storeHouseAddBeerItemBtn -> {
-                if (Session.get().hasPermission(Permission.AddEditStoreHouse)) {
+                if (viewModel.session.hasPermission(Permission.AddEditStoreHouse)) {
                     tryCollectInputItem()
                 } else
                     showToast(R.string.no_permission_common)
             }
 
             R.id.storeHouseDoneBtn -> {
-                if (Session.get().hasPermission(Permission.AddEditStoreHouse))
+                if (viewModel.session.hasPermission(Permission.AddEditStoreHouse))
                     viewModel.onDoneClick(
                         binding.storeHouseComment.editText?.text.toString(),
                         collectEmptyBarrels(),

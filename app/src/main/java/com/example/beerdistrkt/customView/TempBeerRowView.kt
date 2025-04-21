@@ -28,8 +28,8 @@ class TempBeerRowView @JvmOverloads constructor(
         with(binding) {
             tempBeerEditBtn.isVisible = data.onEditClick != null
             tempBeerInfo.text =
-                String.format("%s : %s x %s", data.beer.dasaxeleba, data.canType.name, data.count)
-            tempBeerColor.setBackgroundColor(Color.parseColor(data.beer.displayColor ?: "#fff"))
+                String.format("%s : %s x %s", data.beer.name, data.canType.name, data.count)
+            tempBeerColor.setBackgroundColor(data.beer.displayColor)
 
             tempBeerRemoveBtn.setOnClickListener {
                 data.onRemoveClick.invoke(data)

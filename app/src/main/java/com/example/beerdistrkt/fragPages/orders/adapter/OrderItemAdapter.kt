@@ -12,6 +12,7 @@ class OrderItemAdapter(
     private val saleItems: Map<Int, List<Order.Sales>> = emptyMap(),
     private val bottleOrderItems: List<Order.BottleItem> = emptyList(),
     private val bottleSaleItems: List<Order.BottleSaleItem> = emptyList(),
+    private val showVolume: Boolean = false,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -37,6 +38,7 @@ class OrderItemAdapter(
                 val key = orderItems.keys.elementAt(position)
                 orderItems[key]?.let { orderItemsList ->
                     val salesOfThisBeer = saleItems[key]
+                    orderItemView.showVolume = showVolume
                     orderItemView.fillData(orderItemsList, salesOfThisBeer?.toMutableList())
                 }
             }

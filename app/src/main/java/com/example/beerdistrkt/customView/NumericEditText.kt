@@ -16,7 +16,7 @@ constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val maxValue = 999
+    private val maxValue = 9999
     private val minValue = 0
     private var binding = NumericEdittextViewBinding.bind(
         inflate(context, R.layout.numeric_edittext_view, this)

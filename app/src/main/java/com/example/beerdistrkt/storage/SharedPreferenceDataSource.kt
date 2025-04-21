@@ -1,9 +1,8 @@
 package com.example.beerdistrkt.storage
 
 import android.content.Context
+import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.login.models.WorkRegion
-import com.example.beerdistrkt.models.VcsResponse
-import com.example.beerdistrkt.utils.UserInfo
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -15,7 +14,6 @@ class SharedPreferenceDataSource(appContext: Context) {
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-    private val moshiJsonAdapter: JsonAdapter<VcsResponse> = moshi.adapter(VcsResponse::class.java)
     private val moshiSessionAdapter: JsonAdapter<UserInfo> = moshi.adapter(UserInfo::class.java)
     private val moshiRegionAdapter: JsonAdapter<WorkRegion> = moshi.adapter(WorkRegion::class.java)
 
@@ -33,16 +31,6 @@ class SharedPreferenceDataSource(appContext: Context) {
 
     fun getPass(): String {
         return sharedPreference.getString(PASS, "") ?: ""
-    }
-
-    fun saveVersions(version: VcsResponse) {
-        val data = moshiJsonAdapter.toJson(version)
-        sharedPreference.edit().putString(KEY_VERSION, data).apply()
-    }
-
-    fun getVersions(): VcsResponse? {
-        val jsonData = sharedPreference.getString(KEY_VERSION, "") ?: ""
-        return if (jsonData.isNotEmpty()) moshiJsonAdapter.fromJson(jsonData) else null
     }
 
     fun clearVersions() {

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.beerdistrkt.fragPages.homePage.HomeFragment"
+        android:name="com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment"
         android:label="@string/home_def_title"
         tools:layout="@layout/home_fragment">
         <action
@@ -19,7 +19,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_homeFragment_to_objListFragment"
-            app:destination="@id/objListFragment" />
+            app:destination="@id/customersFragment" />
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment"
@@ -41,7 +41,7 @@
         tools:layout="@layout/orders_fragment">
         <action
             android:id="@+id/action_ordersFragment_to_objListFragment"
-            app:destination="@id/objListFragment" />
+            app:destination="@id/customersFragment" />
         <action
             android:id="@+id/action_ordersFragment_to_addDeliveryFragment"
             app:destination="@id/addDeliveryFragment" />
@@ -66,13 +66,13 @@
         tools:layout="@layout/sys_clear_fragment">
         <action
             android:id="@+id/action_sysClearFragment_to_objListFragment"
-            app:destination="@id/objListFragment" />
+            app:destination="@id/customersFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addObjectFragment"
-        android:name="com.example.beerdistrkt.fragPages.addEditObiects.AddObjectFragment"
-        android:label="@string/create_client"
-        tools:layout="@layout/add_object_fragment">
+        android:id="@+id/addCustomerFragment"
+        android:name="com.example.beerdistrkt.fragPages.customer.presentation.AddCustomerFragment"
+        tools:label="@string/create_client"
+        tools:layout="@layout/add_customer_fragment">
         <argument
             android:name="clientID"
             android:defaultValue="0"
@@ -80,8 +80,8 @@
     </fragment>
     <fragment
         android:id="@+id/addUserFragment"
-        android:name="com.example.beerdistrkt.fragPages.addEditUser.AddUserFragment"
-        android:label="@string/add_user"
+        android:name="com.example.beerdistrkt.fragPages.user.presentation.modify.AddUserFragment"
+        tools:label="@string/add_user"
         tools:layout="@layout/add_user_fragment">
         <argument
             android:name="userID"
@@ -90,7 +90,7 @@
     </fragment>
     <fragment
         android:id="@+id/userListFragment"
-        android:name="com.example.beerdistrkt.fragPages.usersList.UserListFragment"
+        android:name="com.example.beerdistrkt.fragPages.user.presentation.list.UserListFragment"
         android:label="@string/title_users_list"
         tools:layout="@layout/user_list_fragment">
         <action
@@ -112,10 +112,10 @@
         android:label="@string/store_house_io_title"
         tools:layout="@layout/sawyobi_list_fragment" />
     <fragment
-        android:id="@+id/objListFragment"
-        android:name="com.example.beerdistrkt.fragPages.objList.ObjListFragment"
+        android:id="@+id/customersFragment"
+        android:name="com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment"
         android:label="@string/choose_client"
-        tools:layout="@layout/obj_list_fragment">
+        tools:layout="@layout/fragment_customers">
         <action
             android:id="@+id/action_objListFragment_to_amonaweriFragment"
             app:destination="@id/statementFragment" />
@@ -130,8 +130,8 @@
             android:name="directionTo"
             app:argType="string" />
         <action
-            android:id="@+id/action_objListFragment_to_addObjectFragment"
-            app:destination="@id/addObjectFragment" />
+            android:id="@+id/action_customersFragment_to_addCustomerFragment"
+            app:destination="@id/addCustomerFragment" />
     </fragment>
     <fragment
         android:id="@+id/salesFragment"
@@ -188,6 +188,9 @@
             android:name="recordID"
             android:defaultValue="0"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_addDeliveryFragment_to_addCustomerFragment"
+            app:destination="@id/addCustomerFragment" />
     </fragment>
     <fragment
         android:id="@+id/addOrdersFragment"
@@ -214,16 +217,19 @@
     <fragment
         android:id="@+id/salesHistoryFragment"
         android:name="com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment"
-        android:label="fragment_sales_history"
+        android:label="@string/history"
         tools:layout="@layout/fragment_sales_history">
         <argument
             android:name="recordID"
+            app:argType="integer" />
+        <argument
+            android:name="historyOf"
             app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.beerdistrkt.fragPages.settings.SettingsFragment"
-        android:label="settings_fragment"
+        android:label="@string/settings"
         tools:layout="@layout/settings_fragment" />
     <fragment
         android:id="@+id/changesListFragment"
@@ -250,7 +256,7 @@
         app:enterAnim="@anim/shake" />
     <fragment
         android:id="@+id/bottleListFragment"
-        android:name="com.example.beerdistrkt.fragPages.bottlemanagement.BottleListFragment"
+        android:name="com.example.beerdistrkt.fragPages.bottle.presentation.BottleListFragment"
         android:label="@string/bottles"
         tools:layout="@layout/fragment_bottle_list" >
         <action
@@ -259,8 +265,8 @@
     </fragment>
     <fragment
         android:id="@+id/bottleDetailFragment"
-        android:name="com.example.beerdistrkt.fragPages.bottlemanagement.BottleDetailFragment"
-        android:label="@string/add_bottle"
+        android:name="com.example.beerdistrkt.fragPages.bottle.presentation.BottleDetailFragment"
+        tools:label="@string/add_bottle"
         tools:layout="@layout/fragment_bottle_detail" >
         <argument
             android:name="bottleID"
@@ -273,8 +279,8 @@
         android:label="@string/add_expense"
         tools:layout="@layout/add_edit_expense_fragment" >
         <argument
-            android:name="expense"
-            app:argType="com.example.beerdistrkt.fragPages.expense.domain.model.Expense"
+            android:name="expenseId"
+            app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

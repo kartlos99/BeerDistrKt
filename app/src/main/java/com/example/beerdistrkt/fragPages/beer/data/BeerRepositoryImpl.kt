@@ -8,6 +8,7 @@ import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 @ActivityRetainedScoped
@@ -18,6 +19,8 @@ class BeerRepositoryImpl @Inject constructor(
 ) : BaseRepository(ioDispatcher), BeerRepository {
 
     private var beers: List<Beer> = emptyList()
+
+    override val beersFlow: MutableStateFlow<List<Beer>?> = MutableStateFlow(null)
 
     override suspend fun updateBeerSortValue(
         beerId: Int,
@@ -30,6 +33,7 @@ class BeerRepositoryImpl @Inject constructor(
                 .map(beerMapper::toDomain)
                 .also {
                     beers = it
+                    beersFlow.emit(it)
                 }
         }
     }
@@ -44,11 +48,39 @@ class BeerRepositoryImpl @Inject constructor(
                 .map(beerMapper::toDomain)
                 .also {
                     beers = it
+                    beersFlow.emit(it)
                 }
         }
     }
 
     override suspend fun refreshBeers() {
         fetchBeers()
+    }
+
+    override suspend fun putBeer(beer: Beer): ApiResponse<List<Beer>> {
+        return apiCall {
+            api.putBeer(beerMapper.toDto(beer))
+                .map(beerMapper::toDomain)
+                .also {
+                    beers = it
+                    beersFlow.emit(it)
+                }
+        }
+    }
+
+    override suspend fun deleteBeer(beerId: Int): ApiResponse<List<Beer>> {
+        return apiCall {
+            api.deleteBeer(beerId)
+                .map(beerMapper::toDomain)
+                .also {
+                    beers = it
+                    beersFlow.emit(it)
+                }
+        }
+    }
+
+    override suspend fun setBeers(beers: List<Beer>) {
+        this.beers = beers
+        beersFlow.emit(beers)
     }
 }

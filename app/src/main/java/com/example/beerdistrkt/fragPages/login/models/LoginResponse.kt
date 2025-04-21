@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.login.models
 
+import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.squareup.moshi.Json
 
 data class LoginResponse(
@@ -36,9 +37,9 @@ data class AttachedRegion(
             field = value
         }
 
-    fun toWorkRegion(): WorkRegion {
-        return WorkRegion(ID, name, ownStorage)
-    }
+//    fun toWorkRegion(): WorkRegion {
+//        return WorkRegion(ID, name, ownStorage)
+//    }
 }
 
 enum class UserType(val value: String) {

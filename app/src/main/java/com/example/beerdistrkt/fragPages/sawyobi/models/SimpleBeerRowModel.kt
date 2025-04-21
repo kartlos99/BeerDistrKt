@@ -5,5 +5,5 @@ data class SimpleBeerRowModel(
     val values: Map<Int, Int>,
     val middleIconRes: Int? = null,
     val iconColor: Int? = null,
-    val underlineColor: String? = null
+    val underlineColor: Int? = null
 )

@@ -12,18 +12,22 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.StatementListRowBinding
 import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
-import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
-import com.example.beerdistrkt.utils.*
+import com.example.beerdistrkt.utils.K_PAGE
+import com.example.beerdistrkt.utils.M_PAGE
+import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.orEmpty
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import kotlin.math.roundToInt
 
 class StatementAdapter(
     private val statementList: MutableList<StatementModel>,
-    private val location: Int
+    private val location: Int,
+    private val editOldSalePermission: Boolean,
+    private val editSalePermission: Boolean,
 ) : RecyclerView.Adapter<StatementAdapter.StatementViewHolder>() {
 
     var isGrouped = true
@@ -40,6 +44,8 @@ class StatementAdapter(
         return StatementViewHolder(
             StatementListRowBinding.inflate(LayoutInflater.from(parent.context)),
             location,
+            editOldSalePermission,
+            editSalePermission,
             checkGrouped
         )
     }
@@ -72,6 +78,8 @@ class StatementAdapter(
     class StatementViewHolder(
         private val binding: StatementListRowBinding,
         private val location: Int,
+        private val editOldSalePermission: Boolean,
+        private val editSalePermission: Boolean,
         private val isGrouped: () -> Boolean
     ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
@@ -83,59 +91,63 @@ class StatementAdapter(
             )
         }
 
-        fun bind(item: StatementModel) {
-            with(binding) {
-                val df = DecimalFormat("#0.00")
-                root.tag = item
-                tAmonListTarigi.text = item.tarigi
-                tAmonaweriRowComment.text = item.comment.orEmpty()
+        fun bind(item: StatementModel) = with(binding) {
+            val df = DecimalFormat("#0.00")
+            root.tag = item
+            tAmonListTarigi.text = item.tarigi
+            tAmonaweriRowComment.text = item.comment.orEmpty()
 
-                val defTextColor = Color.parseColor("#292929")
-                val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
+            val defTextColor = Color.parseColor("#292929")
+            val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
 
-                when (location) {
-                    M_PAGE -> {
-                        val frictionColor =
-                            if (item.comment.isNullOrBlank()) Color.parseColor("#808080") else Color.MAGENTA
-                        val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-                        tAmonListIn.text =
-                            getFormattedString(item.price, df).setFrictionSize(
-                                frSize,
-                                frictionColor
-                            )
-                        tAmonListOut.text =
-                            getFormattedString(item.pay, df).setFrictionSize(frSize, frictionColor)
-                        tAmonListBalance.text =
-                            df.format(item.balance).setFrictionSize(frSize, frictionColor)
-                    }
-
-                    K_PAGE -> {
-                        tAmonListIn.text =
-                            if (item.k_in == 0) DASH else item.k_in.toString()
-                        tAmonListOut.text =
-                            if (item.k_out == 0) DASH else item.k_out.toString()
-                        tAmonListBalance.text =
-                            item.balance.roundToInt().toString()
-                    }
+            when (location) {
+                M_PAGE -> {
+                    val frictionColor =
+                        if (item.comment.isNullOrBlank()) Color.parseColor("#808080") else Color.MAGENTA
+                    val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
+                    tAmonListIn.text = if (item.isGift) "უფასო" else
+                        getFormattedString(item.price, df).setFrictionSize(
+                            frSize,
+                            frictionColor
+                        )
+                    tAmonListOut.text =
+                        getFormattedString(item.pay, df).setFrictionSize(frSize, frictionColor)
+                    tAmonListBalance.text =
+                        df.format(item.balance).setFrictionSize(frSize, frictionColor)
                 }
 
-                item.recordType.icon?.let {
-                    recordTypeIndicator.setImageResource(it)
+                K_PAGE -> {
+                    tAmonListIn.text =
+                        if (item.k_in == 0) DASH else item.k_in.toString()
+                    tAmonListOut.text =
+                        if (item.k_out == 0) DASH else item.k_out.toString()
+                    tAmonListBalance.text =
+                        item.balance.roundToInt().toString()
                 }
-                recordTypeIndicator.isVisible = item.recordType.icon != null
+            }
 
-                tAmonListIn.setTextColor(textColor)
-                tAmonListOut.setTextColor(textColor)
-                tAmonListBalance.setTextColor(textColor)
+            if (item.groupGift && isGrouped())
+                recordTypeIndicator.setImageResource(R.drawable.ic_gift_24)
+            else
+                recordTypeIndicator.setImageResource(0)
+            item.recordType.icon?.let {
+                recordTypeIndicator.setImageResource(it)
+            }
 
-                if (item.comment.isNullOrBlank())
-                    tAmonaweriRowComment.goAway()
+            recordTypeIndicator.isVisible = item.recordType.icon != null
+                    || (item.groupGift && isGrouped() && location == M_PAGE)
 
-                root.setOnClickListener {
-                    if (!item.comment.isNullOrBlank())
-                        tAmonaweriRowComment.isVisible =
-                            tAmonaweriRowComment.visibility != View.VISIBLE
-                }
+            tAmonListIn.setTextColor(textColor)
+            tAmonListOut.setTextColor(textColor)
+            tAmonListBalance.setTextColor(textColor)
+
+            if (item.comment.isNullOrBlank())
+                tAmonaweriRowComment.goAway()
+
+            root.setOnClickListener {
+                if (!item.comment.isNullOrBlank())
+                    tAmonaweriRowComment.isVisible =
+                        tAmonaweriRowComment.visibility != View.VISIBLE
             }
         }
 
@@ -163,9 +175,9 @@ class StatementAdapter(
 
                     val dateFormat = SimpleDateFormat(ctx.getString(R.string.patern_date))
 
-                    if (Session.get().hasPermission(Permission.EditOldSale) ||
+                    if (editOldSalePermission ||
                         (dateFormat.format(selectedItemDate) == dateFormat.format(Date())
-                                && Session.get().hasPermission(Permission.EditSale))
+                                && editSalePermission)
                     ) {
                         if (location == M_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.finance_menu_title))

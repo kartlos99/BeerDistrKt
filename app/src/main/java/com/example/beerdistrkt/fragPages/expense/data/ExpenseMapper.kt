@@ -2,32 +2,26 @@ package com.example.beerdistrkt.fragPages.expense.data
 
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
-import com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory
+import com.example.beerdistrkt.fragPages.expense.domain.usecase.GetExpenseCategoriesUseCase
+import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUserUseCase
 import javax.inject.Inject
 
-class ExpenseMapper @Inject constructor() {
+class ExpenseMapper @Inject constructor(
+    private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
+    private val getUserUseCase: GetUserUseCase,
+) {
 
-    fun mapToDto(expense: Expense): ExpenseDto =
-        ExpenseDto(
-            id = expense.id,
-            distributorID = expense.distributorID,
-            amount = expense.amount,
-            comment = expense.comment,
-            date = expense.date,
-            category = expense.category.id ?: -1
-        )
-
-    fun mapToDomain(
+    suspend fun mapToDomain(
         expenseDto: ExpenseDto,
-        categories: List<ExpenseCategory>
     ): Expense {
         return Expense(
             id = expenseDto.id,
-            distributorID = expenseDto.distributorID,
+            distributor = getUserUseCase(expenseDto.distributorID)
+                ?: throw NoSuchElementException(NO_MATCHING_USER),
             amount = expenseDto.amount,
             comment = expenseDto.comment,
             date = expenseDto.date,
-            category = categories.firstOrNull {
+            category = getExpenseCategoriesUseCase.categories.firstOrNull {
                 it.id == expenseDto.category
             } ?: throw NoSuchElementException(NO_MATCHING_CATEGORY)
         )
@@ -35,5 +29,6 @@ class ExpenseMapper @Inject constructor() {
 
     companion object {
         private const val NO_MATCHING_CATEGORY = "expense category can't be found!"
+        private const val NO_MATCHING_USER = "expense author can't be found!"
     }
 }

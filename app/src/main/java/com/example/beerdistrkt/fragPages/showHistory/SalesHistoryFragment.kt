@@ -1,9 +1,7 @@
 package com.example.beerdistrkt.fragPages.showHistory
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -16,54 +14,46 @@ import com.example.beerdistrkt.databinding.ViewMoneyHistoryItemBinding
 import com.example.beerdistrkt.databinding.ViewSalesHistoryItemBinding
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
-import com.example.beerdistrkt.getViewModel
+import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.utils.ApiResponseState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
 
-    private val frBinding by viewBinding(FragmentSalesHistoryBinding::bind)
+    private val binding by viewBinding(FragmentSalesHistoryBinding::bind)
 
-    override val viewModel by lazy {
-        getViewModel { SalesHistoryViewModel() }
+    private val historyOf: String by lazy {
+        SalesHistoryFragmentArgs.fromBundle(requireArguments()).historyOf
+    }
+    private val recordID: Int by lazy {
+        SalesHistoryFragmentArgs.fromBundle(requireArguments()).recordID
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_sales_history, container, false)
-    }
+    override val viewModel: SalesHistoryViewModel
+            by paramViewModels<SalesHistoryViewModel, SalesHistoryViewModel.Factory> { factory ->
+                factory.create(recordID, historyOf)
+            }
+
+    override var frLayout: Int? = R.layout.fragment_sales_history
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        setPageTitle(R.string.history)
-        arguments?.let {
-            when (it.getString(KEY_HISTORY_OF)) {
-                BARREL_DELIVERY -> {
-                    viewModel.getData(it.getInt(KEY_RECORD_ID, 0))
-                    setPageTitle(R.string.sale_history_title)
-                }
 
-                BOTTLE_DELIVERY -> {
-                    viewModel.requestBottleSaleHistory(it.getInt(KEY_RECORD_ID, 0))
-                    setPageTitle(R.string.sale_history_title)
-                }
-
-                MONEY -> {
-                    viewModel.getMoneyData(it.getInt(KEY_RECORD_ID, 0))
-                    setPageTitle(R.string.money_history_title)
-                }
-            }
-        }
+        setPageTitle(when(viewModel.historyOf) {
+            BARREL_DELIVERY -> R.string.sale_history_title
+            BOTTLE_DELIVERY -> R.string.sale_history_title
+            MONEY -> R.string.money_history_title
+            else -> R.string.ok
+        })
     }
 
     private fun initViewModel() {
         viewModel.saleHistoryLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Loading -> frBinding.fragSalesHistoryLoader.isVisible =
-                    it.showLoading
+                is ApiResponseState.Loading ->
+                    binding.fragSalesHistoryLoader.isVisible = it.showLoading
 
                 is ApiResponseState.Success -> showHistory(it.data)
                 else -> showToast(R.string.server_error)
@@ -71,7 +61,7 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
         }
         viewModel.bottleSaleHistoryLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Loading -> frBinding.fragSalesHistoryLoader.isVisible =
+                is ApiResponseState.Loading -> binding.fragSalesHistoryLoader.isVisible =
                     it.showLoading
 
                 is ApiResponseState.Success -> showBottleHistory(it.data)
@@ -80,7 +70,7 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
         }
         viewModel.moneyHistoryLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Loading -> frBinding.fragSalesHistoryLoader.isVisible =
+                is ApiResponseState.Loading -> binding.fragSalesHistoryLoader.isVisible =
                     it.showLoading
 
                 is ApiResponseState.Success -> showMoneyHistory(it.data)
@@ -94,14 +84,14 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
             showToast(getString(R.string.history_not_found))
             return
         }
-        frBinding.fragSalesHistoryBaseInfo.text = StringBuilder()
+        binding.fragSalesHistoryBaseInfo.text = StringBuilder()
             .append("ობიექტი: ")
-            .append(historyList.first().client.dasaxeleba)
+            .append(historyList.first().client.name)
             .append("\nდისტრიბუტორი: ")
             .append(historyList.first().distributor.username)
 
-        frBinding.fragSalesHistoryRc.layoutManager = LinearLayoutManager(context)
-        frBinding.fragSalesHistoryRc.adapter = SimpleListAdapter(
+        binding.fragSalesHistoryRc.layoutManager = LinearLayoutManager(context)
+        binding.fragSalesHistoryRc.adapter = SimpleListAdapter(
             historyList,
             null,
             R.layout.view_bottle_sales_history_item,
@@ -130,14 +120,14 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
             showToast(getString(R.string.history_not_found))
             return
         }
-        val obj = data[0]
-        frBinding.fragSalesHistoryBaseInfo.text = StringBuilder()
+        val moneyHistory = data[0]
+        binding.fragSalesHistoryBaseInfo.text = StringBuilder()
             .append("ობიექტი: ")
-            .append(obj.client.dasaxeleba)
+            .append(moneyHistory.client.name)
             .append("\nდისტრიბუტორი: ")
-            .append(obj.distributor.username)
+            .append(moneyHistory.distributor.username)
 
-        frBinding.fragSalesHistoryRc.layoutManager = LinearLayoutManager(context)
+        binding.fragSalesHistoryRc.layoutManager = LinearLayoutManager(context)
         val adapter = SimpleListAdapter(
             data,
             null,
@@ -156,7 +146,7 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
                 moneyHistoryBinding.viewMoneyHistoryPaymentType.setImageResource(item.paymentType.iconRes)
             }
         )
-        frBinding.fragSalesHistoryRc.adapter = adapter
+        binding.fragSalesHistoryRc.adapter = adapter
     }
 
     private fun showHistory(data: List<SaleHistory>) {
@@ -165,13 +155,13 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
             return
         }
         val obj = data[0]
-        frBinding.fragSalesHistoryBaseInfo.text = StringBuilder()
+        binding.fragSalesHistoryBaseInfo.text = StringBuilder()
             .append("ობიექტი: ")
-            .append(obj.client.dasaxeleba)
+            .append(obj.client.name)
             .append("\nდისტრიბუტორი: ")
             .append(obj.distributor.username)
 
-        frBinding.fragSalesHistoryRc.layoutManager = LinearLayoutManager(context)
+        binding.fragSalesHistoryRc.layoutManager = LinearLayoutManager(context)
         val adapter = SimpleListAdapter(
             data,
             null,
@@ -188,7 +178,7 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
                 itemBinding.viewSaleHistoryComment.text = item.comment
                 itemBinding.viewSaleHistoryBeerRow.setData(
                     SimpleBeerRowModel(
-                        item.beer.dasaxeleba ?: "",
+                        item.beer.name,
                         mapOf(item.canTypeID to item.count),
                         null,
                         null,
@@ -197,13 +187,10 @@ class SalesHistoryFragment : BaseFragment<SalesHistoryViewModel>() {
                 )
             }
         )
-        frBinding.fragSalesHistoryRc.adapter = adapter
+        binding.fragSalesHistoryRc.adapter = adapter
     }
 
     companion object {
-        const val KEY_RECORD_ID = "record_id"
-        const val KEY_HISTORY_OF = "KEY_HISTORY_OF"
-
         const val MONEY = "money"
         const val BARREL_DELIVERY = "delivery"
         const val BOTTLE_DELIVERY = "BOTTLE_DELIVERY"

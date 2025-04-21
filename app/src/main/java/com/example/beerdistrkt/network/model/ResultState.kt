@@ -7,7 +7,11 @@ sealed class ResultState<out T> {
         val statusCode: Int = 0,
         val message: String? = null,
         val errorCode: String? = null
-    ) : ResultState<Nothing>()
+    ) : ResultState<Nothing>() {
+
+        val formatedMessage: String
+            get() = "Error: code=$errorCode - msg=$message"
+    }
 }
 
 
@@ -31,4 +35,24 @@ fun <T> ResultState<T>.onError(onError: (error: ResultState.Error) -> Unit): Res
     if (this is ResultState.Error)
         onError(this)
     return this
+}
+
+fun <T> ResultState<T>.onLoading(onLoading: () -> Unit): ResultState<T> {
+    if (this is ResultState.Loading)
+        onLoading()
+    return this
+}
+
+fun <T> ResultState<T>.isLoading() = this == ResultState.Loading
+
+fun <T> ResultState<T>.isError() = this is ResultState.Error
+
+fun <T> ResultState<T>.isSuccess() = this is ResultState.Success<T>
+
+fun <T, R> ResultState<T>.transform(convert: (data: T) -> R): ResultState<R> {
+    return when (this) {
+        ResultState.Loading -> ResultState.Loading
+        is ResultState.Error -> this
+        is ResultState.Success -> ResultState.Success(convert(this.data))
+    }
 }

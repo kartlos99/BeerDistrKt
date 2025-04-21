@@ -1,15 +1,17 @@
 package com.example.beerdistrkt.fragPages.beer.domain.model
 
+import android.graphics.Color
+import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.models.BeerStatus
 import com.example.beerdistrkt.utils.DiffItem
 
 data class Beer(
-    var id: Int = 0,
-    var name: String,
-    var displayColor: String? = null,
-    var price: Double? = null,
-    var status: BeerStatus = BeerStatus.ACTIVE,
-    var sortValue: Double
+    val id: Int = 0,
+    val name: String,
+    val displayColor: Int = Color.rgb(128, 128, 128),
+    val price: Double? = .0,
+    val status: BeerStatus = BeerStatus.ACTIVE,
+    val sortValue: Double = .0
 ) : DiffItem {
 
     override val key: Int
@@ -17,4 +19,11 @@ data class Beer(
 
     val isActive: Boolean
         get() = status == BeerStatus.ACTIVE
+
+    companion object {
+        fun newInstance() = Beer(
+            name = String.empty(),
+            sortValue = .0
+        )
+    }
 }

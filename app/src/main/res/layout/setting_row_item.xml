@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/gr_size_12"
+    android:paddingVertical="@dimen/gr_size_20">
+
+    <TextView
+        android:id="@+id/settingTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="69"
+        android:lineSpacingExtra="@dimen/gr_size_2"
+        android:textSize="@dimen/sp18"
+        tools:text="პარამეტრის სახელი" />
+
+    <TextView
+        android:id="@+id/settingValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="31"
+        android:background="@drawable/bkg_underline"
+        android:padding="@dimen/gr_size_8"
+        android:textAlignment="center"
+        android:textSize="@dimen/sp18"
+        android:textStyle="bold"
+        tools:text="0" />
+
+</LinearLayout>

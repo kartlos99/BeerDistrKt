@@ -15,6 +15,7 @@ abstract class BaseRepository(private val ioDispatcher: CoroutineDispatcher) {
             try {
                 ApiResponse.Success(apiCall.invoke())
             } catch (throwable: Throwable) {
+                println("API_ERROR: ${throwable.message}")
                 when (throwable) {
                     is IOException -> ApiResponse.Error(IO_EXCEPTION_CODE, "ioException")
                     is HttpException -> with(convertErrorBody(throwable)) {

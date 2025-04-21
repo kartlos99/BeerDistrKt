@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewTempBottleRowBinding
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 
 class TempBottleRowView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,

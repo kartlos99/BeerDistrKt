@@ -20,7 +20,7 @@ import javax.inject.Inject
 class ExpenseRepositoryImpl @Inject constructor(
     private val api: DistributionApi,
     private val expenseCategoryMapper: ExpenseCategoryMapper,
-    private val expenseMapper: ExpenseMapper,
+    private val expenseDtoMapper: ExpenseDtoMapper,
     ioDispatcher: CoroutineDispatcher
 ) : BaseRepository(ioDispatcher), ExpenseRepository {
 
@@ -59,7 +59,7 @@ class ExpenseRepositoryImpl @Inject constructor(
 
     override suspend fun putExpense(expense: Expense): ApiResponse<Any> {
         return apiCall {
-            api.putExpense(expenseMapper.mapToDto(expense))
+            api.putExpense(expenseDtoMapper.mapToDto(expense))
         }
     }
 

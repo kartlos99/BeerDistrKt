@@ -1,12 +1,12 @@
 package com.example.beerdistrkt.fragPages.realisation.models
 
 import com.example.beerdistrkt.areNotNull
+import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
-import com.example.beerdistrkt.models.BeerModelBase
-import com.example.beerdistrkt.models.CanModel
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.models.bottle.BaseBottleModel
-import com.example.beerdistrkt.models.bottle.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.squareup.moshi.Json
 
 data class RecordResponseDTO(
@@ -30,8 +30,8 @@ data class SaleRowModel(
     val comment: String?
 ) {
     fun toTempBeerItemModel(
-        barrels: List<CanModel>,
-        beerList: List<BeerModelBase>
+        barrels: List<Barrel>,
+        beerList: List<Beer>
     ): TempBeerItemModel? {
         val canType = barrels.find { it.id == canTypeID }
         val beer = beerList.find { it.id == beerID }
@@ -62,7 +62,7 @@ data class SaleBottleRowModel(
     val orderID: Int,
     val comment: String?
 ) {
-    fun toTempBottleItemModel(bottles: List<BaseBottleModel>): TempBottleItemModel? {
+    fun toTempBottleItemModel(bottles: List<Bottle>): TempBottleItemModel? {
         bottles
             .firstOrNull { it.id == bottleID }
             ?.let { bottle ->
