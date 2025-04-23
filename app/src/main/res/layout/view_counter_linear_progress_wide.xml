@@ -10,7 +10,7 @@
         style="@style/OrderCansAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/gray_3"
+        android:textColor="?attr/frictionPartTextColor"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2345/1023" />
 

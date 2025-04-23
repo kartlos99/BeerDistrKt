@@ -8,14 +8,15 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.ViewCounterLinearProgressBinding
+import com.example.beerdistrkt.databinding.ViewCounterLinearProgressWideBinding
+import com.example.beerdistrkt.getAttrColor
 import kotlin.math.sign
 
 class CounterLinearProgressWideView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var binding: ViewCounterLinearProgressBinding = ViewCounterLinearProgressBinding.bind(
+    private var binding: ViewCounterLinearProgressWideBinding = ViewCounterLinearProgressWideBinding.bind(
         inflate(context, R.layout.view_counter_linear_progress_wide, this)
     )
     var boldStyle = BOLD_STYLE_ALL
@@ -31,14 +32,14 @@ class CounterLinearProgressWideView @JvmOverloads constructor(
                 val combText = "$count/$progress"
                 val spanText = SpannableString(combText)
                 spanText.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.colorForText)),
+                    ForegroundColorSpan(context.getAttrColor(R.attr.mainTextColor)),
                     0, combText.indexOf("/"), Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                 )
                 countTv.text = spanText
             } else {
                 val spanText = SpannableString("$count")
                 spanText.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.colorForText)),
+                    ForegroundColorSpan(context.getAttrColor(R.attr.mainTextColor)),
                     0, spanText.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE
                 )
                 countTv.text = spanText
@@ -55,7 +56,7 @@ class CounterLinearProgressWideView @JvmOverloads constructor(
 
     fun setCount(count: Int) = with(binding) {
         countTv.text = count.toString()
-        countTv.setTextColor(resources.getColor(R.color.colorForText))
+        countTv.setTextColor(context.getAttrColor(R.attr.mainTextColor))
         updateBoldStyle(count)
     }
 

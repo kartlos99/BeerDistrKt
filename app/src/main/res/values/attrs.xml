@@ -6,4 +6,5 @@
 
     <attr name="mainTextColor" format="color" />
     <attr name="secondaryTextColor" format="color" />
+    <attr name="frictionPartTextColor" format="color" />
 </resources>

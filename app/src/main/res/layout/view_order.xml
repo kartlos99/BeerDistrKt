@@ -75,6 +75,7 @@
                 android:layout_marginBottom="@dimen/gr_size_8"
                 android:animateLayoutChanges="true"
                 android:background="@drawable/bkg_rounded_white_r8"
+                android:backgroundTint="?attr/viewBackground"
                 android:clickable="true"
                 android:elevation="4dp"
                 android:focusable="true"

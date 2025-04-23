@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderItemAdapter
+import com.example.beerdistrkt.getAttrColor
 import com.example.beerdistrkt.getColor
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
@@ -60,7 +61,7 @@ class OrderView @JvmOverloads constructor(
         orderComment.isVisible = false
         orderStatusTv.text = ""
         orderUnitRootSwipe.close(false)
-        orderMainConstraint.backgroundTintList = null
+        orderMainConstraint.backgroundTintList = ColorStateList.valueOf(context.getAttrColor(R.attr.colorSurface))
     }
 
     fun lockSwipe(lock: Boolean) {

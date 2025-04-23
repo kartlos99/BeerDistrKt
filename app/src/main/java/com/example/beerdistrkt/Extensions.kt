@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -23,6 +24,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AnimRes
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.MainThread
@@ -570,4 +573,12 @@ fun Double.toFormatedString(pattern: String = DEFAULT_NUMBER_PATTERN): String {
     return if (abs(this - longNumb) < DOUBLE_PRECISION) {
         longNumb.toString()
     } else decimalFormat.format(this)
+}
+
+
+@ColorInt
+fun Context.getAttrColor(@AttrRes attrColor: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attrColor, typedValue, true)
+    return typedValue.data
 }

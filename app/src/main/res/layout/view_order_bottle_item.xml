@@ -10,23 +10,24 @@
         android:id="@+id/bottleImage"
         android:layout_width="@dimen/gr_size_24"
         android:layout_height="@dimen/gr_size_24"
+        android:alpha="0.5"
         android:contentDescription="@string/img_description"
         android:src="@drawable/beer_bottle"
-        android:alpha="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSecondaryContainer" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/bottleName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/gr_size_4"
+        android:background="@drawable/bkg_underline_dots"
         android:ellipsize="end"
         android:lines="1"
-        android:textSize="14sp"
         android:paddingBottom="@dimen/gr_size_2"
-        android:background="@drawable/bkg_underline_dots"
+        android:textSize="14sp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/bottleCount"

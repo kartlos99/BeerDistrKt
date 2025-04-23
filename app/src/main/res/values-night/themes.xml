@@ -19,6 +19,7 @@
         <item name="colorSurface">#292929</item>
         <item name="mainTextColor">#E0E0E0</item>
         <item name="secondaryTextColor">#CCCCCC</item>
+        <item name="frictionPartTextColor">#959595</item>
 
         <item name="colorSecondaryContainer">#232323</item>
         <item name="colorOnSecondaryContainer">#B9B9B9</item>

@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewCounterLinearProgressBinding
+import com.example.beerdistrkt.getAttrColor
 import kotlin.math.sign
 
 class CounterLinearProgressView @JvmOverloads constructor(
@@ -31,14 +32,14 @@ class CounterLinearProgressView @JvmOverloads constructor(
                 val combText = "$count/$progress"
                 val spanText = SpannableString(combText)
                 spanText.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.colorForText)),
+                    ForegroundColorSpan(context.getAttrColor(R.attr.mainTextColor)),
                     0, combText.indexOf("/"), Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                 )
                 countTv.text = spanText
             } else {
                 val spanText = SpannableString("$count")
                 spanText.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.colorForText)),
+                    ForegroundColorSpan(context.getAttrColor(R.attr.mainTextColor)),
                     0, spanText.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE
                 )
                 countTv.text = spanText
@@ -56,7 +57,7 @@ class CounterLinearProgressView @JvmOverloads constructor(
     fun setCount(count: Int) {
         with(binding) {
             countTv.text = count.toString()
-            countTv.setTextColor(resources.getColor(R.color.colorForText))
+            countTv.setTextColor(context.getAttrColor(R.attr.mainTextColor))
             updateBoldStyle(count)
         }
     }
