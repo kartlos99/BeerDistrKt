@@ -7,4 +7,10 @@
     <attr name="mainTextColor" format="color" />
     <attr name="secondaryTextColor" format="color" />
     <attr name="frictionPartTextColor" format="color" />
+
+    <attr name="colorOrderBkg" format="color" />
+    <attr name="colorSaleBkg" format="color" />
+    <attr name="colorOrderHeaderBkg" format="color" />
+    <attr name="colorOrderSummaryBkg" format="color" />
+
 </resources>

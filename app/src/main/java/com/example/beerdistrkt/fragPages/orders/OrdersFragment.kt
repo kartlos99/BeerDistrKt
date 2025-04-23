@@ -140,7 +140,8 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
             ordersAdapter.updateLastItem(checked)
         }
         vBinding.ordersRecycler.setBackgroundColor(
-            if (checked) resources.getColor(R.color.color_delivery_bkg) else resources.getColor(R.color.color_order_bkg)
+            if (checked)
+                requireContext().getAttrColor(R.attr.colorSaleBkg) else requireContext().getAttrColor(R.attr.colorOrderBkg)
         )
     }
 
