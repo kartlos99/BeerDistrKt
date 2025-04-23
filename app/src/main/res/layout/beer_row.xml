@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/gr_size_8"
         android:textAlignment="textEnd"
+        android:textColor="?attr/secondaryTextColor"
         android:textSize="@dimen/sp24"
         tools:text="4.35" />
 
