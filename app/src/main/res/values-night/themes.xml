@@ -24,6 +24,8 @@
         <item name="colorSecondaryContainer">#232323</item>
         <item name="colorOnSecondaryContainer">#B9B9B9</item>
 
+        <item name="colorTertiary">#1A1A1A</item>
+
         <item name="colorOrderBkg">#A44802</item>
         <item name="colorSaleBkg">#277bd8</item>
         <item name="colorOrderHeaderBkg">#015755</item>

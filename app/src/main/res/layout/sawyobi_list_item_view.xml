@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/gr_size_4"
-    android:background="#e5e5e5"
+    android:background="?attr/colorTertiary"
     android:elevation="2dp">
 
     <TextView
@@ -32,10 +32,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/gr_size_4"
-        android:background="@color/gray_light"
+        android:background="?attr/colorSecondaryContainer"
         android:gravity="end"
         android:padding="@dimen/gr_size_2"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/shlSubRecycler" />
 
     <ImageView
