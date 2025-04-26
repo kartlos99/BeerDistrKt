@@ -51,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/beerSelectorBeerRecycler"
-        app:tint="@color/arrow_color_tr" />
+        app:tint="?attr/colorOnSecondaryContainer" />
 
     <ImageView
         android:id="@+id/beerSelectorBtnRightImg"
@@ -65,7 +65,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/beerSelectorBeerRecycler"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/beerSelectorBeerRecycler"
-        app:tint="@color/arrow_color_tr" />
+        app:tint="?attr/colorOnSecondaryContainer" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/beerGroup"

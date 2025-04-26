@@ -48,7 +48,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/bottleRecycler"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bottleRecycler"
-        app:tint="@color/arrow_color_tr" />
+        app:tint="?attr/colorOnSecondaryContainer" />
 
     <ImageView
         android:id="@+id/rightSelectorImg"
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/bottleRecycler"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bottleRecycler"
-        app:tint="@color/arrow_color_tr" />
+        app:tint="?attr/colorOnSecondaryContainer" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/bottleGroup"

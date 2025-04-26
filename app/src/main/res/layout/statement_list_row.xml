@@ -74,6 +74,7 @@
         android:contentDescription="@string/img_description"
         android:importantForAccessibility="no"
         android:padding="@dimen/gr_size_2"
+        app:tint="?attr/mainTextColor"
         android:src="@drawable/barrel_24"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/t_amon_list_in"

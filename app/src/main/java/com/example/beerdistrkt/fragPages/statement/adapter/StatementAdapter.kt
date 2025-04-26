@@ -6,12 +6,14 @@ import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.StatementListRowBinding
 import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
+import com.example.beerdistrkt.getAttrColor
 import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.K_PAGE
@@ -83,6 +85,8 @@ class StatementAdapter(
         private val isGrouped: () -> Boolean
     ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
+        private val df = DecimalFormat("#0.00")
+
         init {
             binding.root.setOnCreateContextMenuListener(this)
             binding.root.layoutParams = ViewGroup.LayoutParams(
@@ -92,20 +96,23 @@ class StatementAdapter(
         }
 
         fun bind(item: StatementModel) = with(binding) {
-            val df = DecimalFormat("#0.00")
+
             root.tag = item
             tAmonListTarigi.text = item.tarigi
             tAmonaweriRowComment.text = item.comment.orEmpty()
 
-            val defTextColor = Color.parseColor("#292929")
+            val defTextColor = root.context.getAttrColor(R.attr.mainTextColor)
             val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
 
             when (location) {
                 M_PAGE -> {
-                    val frictionColor =
-                        if (item.comment.isNullOrBlank()) Color.parseColor("#808080") else Color.MAGENTA
+                    val frictionColor = if (item.comment.isNullOrBlank())
+                        FRICTION_PART_COLOR.toColorInt()
+                    else
+                        Color.MAGENTA
+
                     val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-                    tAmonListIn.text = if (item.isGift) "უფასო" else
+                    tAmonListIn.text = if (item.isGift) COST_FREE else
                         getFormattedString(item.price, df).setFrictionSize(
                             frSize,
                             frictionColor
@@ -219,6 +226,11 @@ class StatementAdapter(
                     } else
                         ctx.showToast(R.string.no_edit_access)
                 }
+        }
+
+        companion object {
+            private const val FRICTION_PART_COLOR = "#808080"
+            private const val COST_FREE = "უფასო"
         }
     }
 }
