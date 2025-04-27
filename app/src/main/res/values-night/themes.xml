@@ -15,6 +15,7 @@
 
         <item name="strokeColor">@color/gray_6</item>
         <item name="viewBackground">?android:windowBackground</item>
+        <item name="fieldBackground">#2E2E2E</item>
         <item name="onBackground">#B1B1B1</item>
         <item name="colorSurface">#292929</item>
         <item name="mainTextColor">#E0E0E0</item>
@@ -30,5 +31,6 @@
         <item name="colorSaleBkg">#277bd8</item>
         <item name="colorOrderHeaderBkg">#015755</item>
         <item name="colorOrderSummaryBkg">#016F2D</item>
+        <item name="colorSaleSection">#4A818A</item>
     </style>
 </resources>

@@ -2,7 +2,9 @@
 <resources>
     <attr name="strokeColor" format="color" />
     <attr name="viewBackground" format="color" />
+    <attr name="fieldBackground" format="color" />
     <attr name="onBackground" format="color" />
+    <attr name="colorSaleSection" format="color" />
 
     <attr name="mainTextColor" format="color" />
     <attr name="secondaryTextColor" format="color" />
