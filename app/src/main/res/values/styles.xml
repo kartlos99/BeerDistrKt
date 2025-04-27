@@ -29,7 +29,7 @@
     <style name="PriceBoxTitle">
         <item name="android:elevation">@dimen/gr_size_2</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:textColor">@color/colorForText</item>
+        <item name="android:textColor">?attr/mainTextColor</item>
         <item name="android:textSize">@dimen/sp18</item>
     </style>
 

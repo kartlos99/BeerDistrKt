@@ -5,6 +5,8 @@
     <attr name="fieldBackground" format="color" />
     <attr name="onBackground" format="color" />
     <attr name="colorSaleSection" format="color" />
+    <attr name="colorBeerPriceBkg" format="color" />
+    <attr name="colorBottlePriceBkg" format="color" />
 
     <attr name="mainTextColor" format="color" />
     <attr name="secondaryTextColor" format="color" />

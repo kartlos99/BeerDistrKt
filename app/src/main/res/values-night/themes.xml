@@ -32,5 +32,7 @@
         <item name="colorOrderHeaderBkg">#015755</item>
         <item name="colorOrderSummaryBkg">#016F2D</item>
         <item name="colorSaleSection">#4A818A</item>
+        <item name="colorBeerPriceBkg">#3A525B</item>
+        <item name="colorBottlePriceBkg">#585866</item>
     </style>
 </resources>
