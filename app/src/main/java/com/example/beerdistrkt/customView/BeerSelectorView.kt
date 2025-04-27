@@ -64,11 +64,13 @@ class BeerSelectorView @JvmOverloads constructor(
                 checkForm()
             }
             beerSelectorBtnLeftImg.setOnClickListener {
+                if (visibleBeers.isEmpty()) return@setOnClickListener
                 beerPos =
                     (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + visibleBeers.size - 1) % visibleBeers.size
                 beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)
             }
             beerSelectorBtnRightImg.setOnClickListener {
+                if (visibleBeers.isEmpty()) return@setOnClickListener
                 beerPos =
                     (snapHelper.getSnapPosition(beerSelectorBeerRecycler) + 1) % visibleBeers.size
                 beerSelectorBeerRecycler.smoothScrollToPosition(beerPos)

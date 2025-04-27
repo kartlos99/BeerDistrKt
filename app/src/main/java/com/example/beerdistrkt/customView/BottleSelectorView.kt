@@ -75,11 +75,13 @@ class BottleSelectorView @JvmOverloads constructor(
                 })
 
             leftSelectorImg.setOnClickListener {
+                if (visibleBottles.isEmpty()) return@setOnClickListener
                 bottleIndex =
                     (snapHelper.getSnapPosition(bottleRecycler) + visibleBottles.size - 1) % visibleBottles.size
                 bottleRecycler.smoothScrollToPosition(bottleIndex)
             }
             rightSelectorImg.setOnClickListener {
+                if (visibleBottles.isEmpty()) return@setOnClickListener
                 bottleIndex =
                     (snapHelper.getSnapPosition(bottleRecycler) + 1) % visibleBottles.size
                 bottleRecycler.smoothScrollToPosition(bottleIndex)
