@@ -25,6 +25,11 @@ class SettingsViewModel @Inject constructor(
         getSettingsUseCase.asFlow()
     val apiStateFlow: StateFlow<ResultState<List<SettingParam>>> = _apiStateFlow.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            getSettingsUseCase.invoke()
+        }
+    }
 
     fun setNewValue(setting: SettingParam, value: String) {
         viewModelScope.launch {

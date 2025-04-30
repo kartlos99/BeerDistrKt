@@ -43,6 +43,8 @@ class MainActViewModel @Inject constructor(
         showContentFlow.emit(false)
         userPreferencesRepository.readUserSession().also { userInfo ->
             session.restoreFromSavedInfo(userInfo)
+            if (session.isAccessTokenValid())
+                refreshSettingsUseCase()
         }
         userPreferencesRepository.readRegion().also { region ->
             session.restoreLastRegion(region)
@@ -52,7 +54,6 @@ class MainActViewModel @Inject constructor(
             }
         }
         refreshBaseDataUseCase()
-        refreshSettingsUseCase()
         showContentFlow.emit(true)
     }
 
@@ -90,6 +91,6 @@ class MainActViewModel @Inject constructor(
     }
 
     sealed interface ActUiEvent {
-        data object GoToLoginPage: ActUiEvent
+        data object GoToLoginPage : ActUiEvent
     }
 }
