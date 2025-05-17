@@ -31,6 +31,7 @@
     <dimen name="gr_size_72">72dp</dimen>
     <dimen name="gr_size_96">96dp</dimen>
     <dimen name="gr_size_128">128dp</dimen>
+    <dimen name="field_max_width">400dp</dimen>
 
     <dimen name="sp12">12sp</dimen>
     <dimen name="sp13">13sp</dimen>

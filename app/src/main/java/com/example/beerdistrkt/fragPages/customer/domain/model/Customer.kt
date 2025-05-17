@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.customer.domain.model
 
 import com.example.beerdistrkt.common.domain.model.EntityStatus
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.models.CustomerIdlInfo
 
 data class Customer(
@@ -11,6 +12,8 @@ data class Customer(
     var comment: String? = null,
     var identifyCode: String? = null,
     var contactPerson: String? = null,
+    val location: String? = null,
+    val paymentType: PaymentType? = null,
     val status: EntityStatus = EntityStatus.ACTIVE,
     var hasCheck: Boolean = false,
     var warnInfo: CustomerIdlInfo? = null,

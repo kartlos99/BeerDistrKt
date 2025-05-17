@@ -45,6 +45,8 @@
     <string name="saxeli_gvari">სახელი გვარი</string>
     <string name="adress">მისამართი</string>
     <string name="tel">ტელ:</string>
+    <string name="location">მდებარეობა</string>
+    <string name="location_title">მდებარეობა:</string>
     <string name="admin_rights">ადმინსტრატორი</string>
     <string name="manager_rights">მენეჯერი</string>
     <string name="confirm">გაიმეორეთ პაროლი</string>
@@ -103,6 +105,7 @@
     <string name="bottles">ბოთლები</string>
     <string name="finances">ფინანსები</string>
     <string name="pay">გადახდა</string>
+    <string name="payment_type">გადახდის ტიპი</string>
     <string name="price">ღირებულება:</string>
     <string name="taken_by_cash">ნაღდი:</string>
     <string name="taken_by_transfer">ჩარიცვა:</string>
@@ -309,4 +312,7 @@
 
     <string name="attention">ყურადღება</string>
     <string name="no_price_message">რომელიღაც პროდუქტზე ფასი არაა შეყვანილი, ფასის გარეშე რეალიზაციას ვერ გაატარებთ!</string>
+    <string name="none">განუსაზღვრელი</string>
+    <string name="payment_type_cash">ნაღდი</string>
+    <string name="payment_type_bank">საბანკო</string>
 </resources>

@@ -12,6 +12,7 @@ import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseC
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.PutCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
 import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
+import com.example.beerdistrkt.fragPages.customer.presentation.model.SpecifiedPaymentType
 import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.fragPages.login.models.Permission
 import com.example.beerdistrkt.models.AttachRegionsRequest
@@ -56,6 +57,9 @@ class AddCustomerViewModel @AssistedInject constructor(
     private val _availableGroupsFlow = MutableStateFlow(listOf<Int>())
     val availableGroupsFlow = _availableGroupsFlow.asStateFlow()
 
+    private val _paymentTypeFlow = MutableStateFlow(listOf<Int>())
+    val paymentTypeFlow = _paymentTypeFlow.asStateFlow()
+
     val eventsFlow = MutableSharedFlow<Int>()
 
     init {
@@ -63,6 +67,10 @@ class AddCustomerViewModel @AssistedInject constructor(
             _availableGroupsFlow.emit(
                 CustomerGroup.entries
                     .map { it.displayName }
+            )
+            _paymentTypeFlow.emit(
+                SpecifiedPaymentType.entries
+                    .map { it.textRes }
             )
             _customerStateFlow.emit(
                 customerUiMapper.mapToUi(getCustomerUseCase(clientID))
@@ -176,12 +184,20 @@ class AddCustomerViewModel @AssistedInject constructor(
         it.copy(tel = phone.toString())
     }
 
+    fun onLocationChange(location: CharSequence) = _customerStateFlow.update {
+        it.copy(location = location.toString())
+    }
+
     fun onCommentChange(comment: CharSequence) = _customerStateFlow.update {
         it.copy(comment = comment.toString())
     }
 
     fun onGroupChange(position: Int) = _customerStateFlow.update {
         it.copy(group = CustomerGroup.entries[position])
+    }
+
+    fun onPaymentTypeChange(position: Int) = _customerStateFlow.update {
+        it.copy(specifiedPaymentType = SpecifiedPaymentType.entries[position])
     }
 
     @AssistedFactory

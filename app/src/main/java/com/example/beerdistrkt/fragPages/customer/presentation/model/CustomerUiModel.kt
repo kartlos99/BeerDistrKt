@@ -13,6 +13,8 @@ data class CustomerUiModel(
     val comment: String = String.empty(),
     val identifyCode: String = String.empty(),
     val contactPerson: String = String.empty(),
+    val location: String = String.empty(),
+    val specifiedPaymentType: SpecifiedPaymentType = SpecifiedPaymentType.NONE,
     val status: EntityStatus = EntityStatus.ACTIVE,
     val hasCheck: Boolean = false,
     val warnInfo: CustomerIdlInfo? = null,

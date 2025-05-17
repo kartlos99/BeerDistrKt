@@ -7,6 +7,8 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
+import com.example.beerdistrkt.fragPages.customer.presentation.model.SpecifiedPaymentType
+import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.toFormatedString
 import javax.inject.Inject
@@ -70,6 +72,12 @@ class CustomerUiMapper @Inject constructor(
                 comment = customer.comment.orEmpty(),
                 identifyCode = customer.identifyCode.orEmpty(),
                 contactPerson = customer.contactPerson.orEmpty(),
+                location = customer.location.orEmpty(),
+                specifiedPaymentType = when (customer.paymentType) {
+                    PaymentType.Cash -> SpecifiedPaymentType.CASH
+                    PaymentType.Transfer -> SpecifiedPaymentType.TRANSFER
+                    null -> SpecifiedPaymentType.NONE
+                },
                 status = customer.status,
                 hasCheck = customer.hasCheck,
                 warnInfo = customer.warnInfo,
@@ -88,6 +96,12 @@ class CustomerUiMapper @Inject constructor(
             comment = uiModel.comment.trim(),
             identifyCode = uiModel.identifyCode.trim(),
             contactPerson = uiModel.contactPerson.trim(),
+            location = uiModel.location.trim(),
+            paymentType = when(uiModel.specifiedPaymentType) {
+                SpecifiedPaymentType.NONE -> null
+                SpecifiedPaymentType.CASH -> PaymentType.Cash
+                SpecifiedPaymentType.TRANSFER -> PaymentType.Transfer
+            },
             status = uiModel.status,
             hasCheck = uiModel.hasCheck,
             warnInfo = uiModel.warnInfo,

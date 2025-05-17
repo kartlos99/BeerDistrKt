@@ -78,9 +78,13 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         addEditClientPerson.editText?.simpleTextChangeListener(viewModel::onContactPersonChange)
         addEditClientAddress.editText?.simpleTextChangeListener(viewModel::onAddressChange)
         addEditClientPhone.editText?.simpleTextChangeListener(viewModel::onPhoneChange)
+        locationField.editText?.simpleTextChangeListener(viewModel::onLocationChange)
         addEditComment.editText?.simpleTextChangeListener(viewModel::onCommentChange)
         clientGroupInput.setOnItemClickListener { _, _, position, _ ->
             viewModel.onGroupChange(position)
+        }
+        paymentTypeInput.setOnItemClickListener { _, _, position, _ ->
+            viewModel.onPaymentTypeChange(position)
         }
     }
 
@@ -91,6 +95,15 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
             items.map { getString(it) }
         )
         binding.clientGroupInput.setAdapter(adapter)
+    }
+
+    private fun setupPaymentTypeDropDown(items: List<Int>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.support_simple_spinner_dropdown_item,
+            items.map { getString(it) }
+        )
+        binding.paymentTypeInput.setAdapter(adapter)
     }
 
     private fun observeData() {
@@ -113,6 +126,10 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         viewModel.availableGroupsFlow.collectLatest(
             viewLifecycleOwner,
             action = ::setupCustomerGroupDropDown
+        )
+        viewModel.paymentTypeFlow.collectLatest(
+            viewLifecycleOwner,
+            action = ::setupPaymentTypeDropDown
         )
         viewModel.eventsFlow.collectLatest(viewLifecycleOwner, action = ::showToast)
     }
@@ -167,9 +184,11 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         addEditClientPerson.editText?.setDifferText(customer.contactPerson)
         addEditClientAddress.editText?.setDifferText(customer.address)
         addEditClientPhone.editText?.setDifferText(customer.tel)
+        locationField.editText?.setDifferText(customer.location)
         addEditComment.editText?.setDifferText(customer.comment)
         addEditClientCheck.isChecked = customer.hasCheck
         clientGroupInput.setText(getString(customer.group.displayName), false)
+        paymentTypeInput.setText(getString(customer.specifiedPaymentType.textRes), false)
         drawPriceInputFields(customer)
     }
 
