@@ -2,6 +2,7 @@ package com.example.beerdistrkt
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Handler
@@ -30,6 +31,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -581,4 +583,13 @@ fun Context.getAttrColor(@AttrRes attrColor: Int): Int {
     val typedValue = TypedValue()
     theme.resolveAttribute(attrColor, typedValue, true)
     return typedValue.data
+}
+
+fun Context.openMap(link: String) {
+    val intent = Intent(Intent.ACTION_VIEW, link.toUri())
+//        intent.setPackage("com.google.android.apps.maps")
+    if (intent.resolveActivity(packageManager) != null)
+        startActivity(intent)
+    else
+        showToast("NO_MAPS_APP")
 }

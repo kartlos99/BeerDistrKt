@@ -12,9 +12,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/locationBtn"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/locationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:padding="@dimen/gr_size_8"
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/addDeliveryDebtContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_location_24"/>
 
     <FrameLayout
         android:id="@+id/addDeliveryDebtContainer"

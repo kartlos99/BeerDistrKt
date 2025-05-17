@@ -27,6 +27,7 @@ import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.notifyNewComment
+import com.example.beerdistrkt.openMap
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.setTint
@@ -110,6 +111,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         optionIcon.setOnClickListener(owner)
         addDeliveryMoneyCashImg.setOnClickListener(owner)
         addDeliveryMoneyTransferImg.setOnClickListener(owner)
+        locationBtn.setOnClickListener(owner)
     }
 
     private fun AddDeliveryFragmentBinding.initView() {
@@ -216,6 +218,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
             binding.addDeliveryClientInfo.text = it.name
+            binding.locationBtn.isVisible = it.location != null
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner) {
             binding.beerSelector.updateBeers(it)
@@ -396,6 +399,12 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                     binding.addDeliveryMoneyTransferEt.text.toString()
                 )
                 viewModel.onDoneClick(binding.addDeliveryComment.editText?.text.toString())
+            }
+
+            R.id.locationBtn -> {
+                viewModel.clientLiveData.value?.location?.let {loc ->
+                    requireActivity().openMap(loc)
+                }
             }
 
             R.id.addDeliveryDateBtn -> {

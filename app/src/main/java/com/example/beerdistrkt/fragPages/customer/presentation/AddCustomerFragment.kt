@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -28,6 +27,7 @@ import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
+import com.example.beerdistrkt.openMap
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.setDifferText
 import com.example.beerdistrkt.showInfoDialog
@@ -85,6 +85,12 @@ class AddCustomerFragment : BaseFragment<AddCustomerViewModel>() {
         }
         paymentTypeInput.setOnItemClickListener { _, _, position, _ ->
             viewModel.onPaymentTypeChange(position)
+        }
+        locationBtn.setOnClickListener {
+            if (locationField.editText?.text.toString().isNotEmpty())
+                requireActivity().openMap(locationField.editText?.text.toString())
+            else
+                showToast(R.string.enter_location)
         }
     }
 

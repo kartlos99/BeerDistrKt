@@ -315,4 +315,5 @@
     <string name="none">განუსაზღვრელი</string>
     <string name="payment_type_cash">ნაღდი</string>
     <string name="payment_type_bank">საბანკო</string>
+    <string name="enter_location">ჩაწერეთ ლოკაციის ლინკი</string>
 </resources>
