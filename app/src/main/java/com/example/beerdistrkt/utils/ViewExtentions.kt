@@ -19,12 +19,8 @@ fun ViewGroup.inflate(layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
 
-fun View.goAway() {
-    this.visibility = View.GONE
-}
-
 fun View.hide() {
-    this.visibility = View.INVISIBLE
+    this.visibility = View.GONE
 }
 
 fun View.show() {
@@ -36,7 +32,7 @@ fun View.visibleIf(boolean: Boolean) {
     if (boolean)
         this.show()
     else
-        this.goAway()
+        this.hide()
 }
 
 fun View.explodeAnim() {

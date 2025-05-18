@@ -40,7 +40,7 @@ import com.example.beerdistrkt.utils.MITANA
 import com.example.beerdistrkt.utils.MITANA_BOTTLE
 import com.example.beerdistrkt.utils.M_OUT
 import com.example.beerdistrkt.utils.explodeAnim
-import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.hide
 import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.waitFor
 import dagger.hilt.android.AndroidEntryPoint
@@ -324,7 +324,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         when (moneyRowModel.paymentType) {
             PaymentType.Cash -> {
                 addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
-                transferGroup.goAway()
+                transferGroup.hide()
                 cashGroup.show()
                 500 waitFor {
                     addDeliveryMoneyCashImg.explodeAnim()
@@ -334,7 +334,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             PaymentType.Transfer -> {
                 addDeliveryMoneyTransferEt.setText(moneyRowModel.amount.toString())
                 transferGroup.show()
-                cashGroup.goAway()
+                cashGroup.hide()
                 500 waitFor {
                     addDeliveryMoneyTransferImg.explodeAnim()
                 }
@@ -342,11 +342,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
 
         addDeliveryComment.editText?.setText(moneyRowModel.comment ?: "")
-        optionSection.goAway()
+        optionSection.hide()
     }
 
     private fun fillBarrels(barrelRowModel: BarrelRowModel) {
-        binding.optionSection.goAway()
+        binding.optionSection.hide()
         binding.beerSelector.fillBarrels(barrelRowModel)
         binding.addDeliveryComment.editText?.setText(barrelRowModel.comment ?: "")
     }
@@ -362,7 +362,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun fillBottleSale(saleBottleRowModel: SaleBottleRowModel) = with(binding) {
-        beerSelector.goAway()
+        beerSelector.hide()
         saleBottleRowModel.toTempBottleItemModel(viewModel.bottleList)?.let { data ->
             bottleSelector.fillBottleItemForm(data)
             addDeliveryCheckGift.isChecked = saleBottleRowModel.price == 0.0
@@ -425,7 +425,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
             R.id.addDeliveryMoneyCashImg -> with(binding) {
                 if (operation == M_OUT && viewModel.canChangePaymentType()) {
-                    cashGroup.goAway()
+                    cashGroup.hide()
                     transferGroup.show()
                     addDeliveryMoneyTransferEt.text = addDeliveryMoneyEt.text
                     addDeliveryMoneyEt.setText("")
@@ -434,7 +434,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
             R.id.addDeliveryMoneyTransferImg -> with(binding) {
                 if (operation == M_OUT && viewModel.canChangePaymentType()) {
-                    transferGroup.goAway()
+                    transferGroup.hide()
                     cashGroup.show()
                     addDeliveryMoneyEt.text = addDeliveryMoneyTransferEt.text
                     addDeliveryMoneyTransferEt.setText("")

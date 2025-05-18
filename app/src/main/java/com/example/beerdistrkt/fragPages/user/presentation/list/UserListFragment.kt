@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.user.presentation.list
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -18,7 +19,6 @@ import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess
-import com.example.beerdistrkt.utils.hide
 import com.example.beerdistrkt.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,7 +56,7 @@ class UserListFragment : BaseFragment<UserListViewModel>() {
 
     private fun handleUsers(result: ResultState<List<User>>) = with(binding) {
         progressIndicator.isVisible = result.isLoading()
-        infoField.hide()
+        infoField.isInvisible = true
         result.onSuccess { users ->
             val usersForTheRegion = users.filterByRegion(viewModel.session.region?.id ?: -1)
             initUsersRecycler(usersForTheRegion)

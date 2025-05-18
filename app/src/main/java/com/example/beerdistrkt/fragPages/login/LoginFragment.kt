@@ -17,8 +17,7 @@ import com.example.beerdistrkt.databinding.LoginFragmentBinding
 import com.example.beerdistrkt.fragPages.login.models.LoginResponse
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.hide
 import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.firebase.auth.FirebaseAuth
@@ -111,14 +110,14 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
                     is ApiResponseState.ApiError -> {
                         viewLoginLoginBtn.isEnabled = true
-                        viewLoginProgress.goAway()
+                        viewLoginProgress.hide()
                         showToast(it.errorText)
                     }
 
                     is ApiResponseState.Loading -> {
                         if (!it.showLoading) {
                             viewLoginLoginBtn.isEnabled = true
-                            viewLoginProgress.goAway()
+                            viewLoginProgress.hide()
                         }
                     }
 
@@ -134,7 +133,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             else -> {
                 showToast(R.string.no_regions_accosiated)
                 binding.viewLoginLoginBtn.isEnabled = true
-                binding.viewLoginProgress.goAway()
+                binding.viewLoginProgress.hide()
             }
         }
     }
@@ -185,7 +184,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     private fun onLoginSuccess() {
         binding.viewLoginLoginBtn.isEnabled = true
-        binding.viewLoginProgress.goAway()
+        binding.viewLoginProgress.hide()
         actViewModel.updateNavHeader()
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
     }

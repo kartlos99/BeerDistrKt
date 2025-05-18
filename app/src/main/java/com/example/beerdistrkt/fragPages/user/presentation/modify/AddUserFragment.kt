@@ -1,7 +1,5 @@
 package com.example.beerdistrkt.fragPages.user.presentation.modify
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -32,8 +29,7 @@ import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.text
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
-import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.hide
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -75,10 +71,10 @@ class AddUserFragment : BaseFragment<AddUserViewModel>() {
 
     private fun AddUserFragmentBinding.initView() {
         if (userID.isEmpty()) {
-            addUserChangePassBox.goAway()
+            addUserChangePassBox.hide()
         } else {
-            addUserPass.goAway()
-            addUserPassConfirm.goAway()
+            addUserPass.hide()
+            addUserPassConfirm.hide()
         }
 
         addUserChangePassBox.setOnCheckedChangeListener { _, isChecked ->

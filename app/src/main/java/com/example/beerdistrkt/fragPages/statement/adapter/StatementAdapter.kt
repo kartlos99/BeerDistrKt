@@ -18,7 +18,7 @@ import com.example.beerdistrkt.setFrictionSize
 import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
-import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.hide
 import com.example.beerdistrkt.utils.orEmpty
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -149,7 +149,7 @@ class StatementAdapter(
             tAmonListBalance.setTextColor(textColor)
 
             if (item.comment.isNullOrBlank())
-                tAmonaweriRowComment.goAway()
+                tAmonaweriRowComment.hide()
 
             root.setOnClickListener {
                 if (!item.comment.isNullOrBlank())

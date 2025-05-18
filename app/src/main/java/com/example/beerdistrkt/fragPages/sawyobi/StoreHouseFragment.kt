@@ -37,7 +37,7 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.TempBeerItemModel
 import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.hide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Calendar
@@ -107,9 +107,9 @@ class StoreHouseFragment : BaseFragment<StoreHouseViewModel>(), View.OnClickList
 
     private fun switchToEditMode() {
         pageTitleRes = R.string.m_edit
-        binding.storeHouseFullBarrelsRecycler.goAway()
-        binding.storeHouseBottlesRecycler.goAway()
-        binding.storeHouseEmptyBarrelDataContainer.goAway()
+        binding.storeHouseFullBarrelsRecycler.hide()
+        binding.storeHouseBottlesRecycler.hide()
+        binding.storeHouseEmptyBarrelDataContainer.hide()
         viewModel.clearEnteredData()
     }
 

@@ -7,7 +7,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.CommentViewBinding
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.utils.changeDatePattern
-import com.example.beerdistrkt.utils.goAway
+import com.example.beerdistrkt.utils.hide
 import com.example.beerdistrkt.utils.show
 
 class CommentsAdapter(
@@ -24,7 +24,7 @@ class CommentsAdapter(
                 commentText.text = item.comment
                 if (item.op == 'E') {
                     commentAuthor.text = item.username
-                    commentImg.goAway()
+                    commentImg.hide()
                 } else {
                     commentAuthor.text = ""
                     commentImg.show()

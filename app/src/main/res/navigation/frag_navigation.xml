@@ -171,7 +171,7 @@
     <fragment
         android:id="@+id/addDeliveryFragment"
         android:name="com.example.beerdistrkt.fragPages.realisation.AddDeliveryFragment"
-        android:label="add_delivery_fragment"
+        android:label="@string/delivery"
         tools:layout="@layout/add_delivery_fragment">
         <argument
             android:name="clientObjectID"
