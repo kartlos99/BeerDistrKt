@@ -107,7 +107,6 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         addDeliveryDoneBtn.setOnClickListener(owner)
         addDeliveryDateBtn.setOnClickListener(owner)
         addDeliveryAddSaleItemBtn.setOnClickListener(owner)
-        addDeliveryMoneyExpander.setOnClickListener(owner)
         optionIcon.setOnClickListener(owner)
         addDeliveryMoneyCashImg.setOnClickListener(owner)
         addDeliveryMoneyTransferImg.setOnClickListener(owner)
@@ -219,6 +218,12 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
             binding.addDeliveryClientInfo.text = it.name
             binding.locationBtn.isVisible = it.location != null
+            if (operation == null)
+                when (it.paymentType) {
+                    PaymentType.Cash -> binding.transferGroup.isVisible = false
+                    PaymentType.Transfer -> binding.cashGroup.isVisible = false
+                    null -> {}
+                }
         }
         viewModel.beerListLiveData.observe(viewLifecycleOwner) {
             binding.beerSelector.updateBeers(it)
@@ -316,10 +321,11 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun fillMoney(moneyRowModel: MoneyRowModel) = with(binding) {
-        addDeliveryMoneyExpander.goAway()
         when (moneyRowModel.paymentType) {
             PaymentType.Cash -> {
                 addDeliveryMoneyEt.setText(moneyRowModel.amount.toString())
+                transferGroup.goAway()
+                cashGroup.show()
                 500 waitFor {
                     addDeliveryMoneyCashImg.explodeAnim()
                 }
@@ -327,12 +333,8 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
             PaymentType.Transfer -> {
                 addDeliveryMoneyTransferEt.setText(moneyRowModel.amount.toString())
-                addDeliveryMoneyTransferEt.show()
-                addDeliveryMoneyTransferImg.show()
-                addDeliveryTransferLariSign.show()
-                addDeliveryMoneyEt.goAway()
-                addDeliveryMoneyCashImg.goAway()
-                addDeliveryLariSign.goAway()
+                transferGroup.show()
+                cashGroup.goAway()
                 500 waitFor {
                     addDeliveryMoneyTransferImg.explodeAnim()
                 }
@@ -402,7 +404,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             }
 
             R.id.locationBtn -> {
-                viewModel.clientLiveData.value?.location?.let {loc ->
+                viewModel.clientLiveData.value?.location?.let { loc ->
                     requireActivity().openMap(loc)
                 }
             }
@@ -421,36 +423,19 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
 
             R.id.addDeliveryAddSaleItemBtn -> tryCollectSaleItem()
 
-            R.id.addDeliveryMoneyExpander -> with(binding) {
-                addDeliveryMoneyTransferEt.show()
-                addDeliveryMoneyTransferImg.show()
-                addDeliveryTransferLariSign.show()
-                addDeliveryMoneyExpander.goAway()
-            }
-
             R.id.addDeliveryMoneyCashImg -> with(binding) {
-                if (operation == M_OUT) {
-                    addDeliveryMoneyEt.goAway()
-                    addDeliveryMoneyCashImg.goAway()
-                    addDeliveryLariSign.goAway()
-                    addDeliveryMoneyTransferEt.show()
-                    addDeliveryMoneyTransferImg.show()
-                    addDeliveryTransferLariSign.show()
-
+                if (operation == M_OUT && viewModel.canChangePaymentType()) {
+                    cashGroup.goAway()
+                    transferGroup.show()
                     addDeliveryMoneyTransferEt.text = addDeliveryMoneyEt.text
                     addDeliveryMoneyEt.setText("")
                 }
             }
 
             R.id.addDeliveryMoneyTransferImg -> with(binding) {
-                if (operation == M_OUT) {
-                    addDeliveryMoneyTransferEt.goAway()
-                    addDeliveryMoneyTransferImg.goAway()
-                    addDeliveryTransferLariSign.goAway()
-                    addDeliveryMoneyEt.show()
-                    addDeliveryMoneyCashImg.show()
-                    addDeliveryLariSign.show()
-
+                if (operation == M_OUT && viewModel.canChangePaymentType()) {
+                    transferGroup.goAway()
+                    cashGroup.show()
                     addDeliveryMoneyEt.text = addDeliveryMoneyTransferEt.text
                     addDeliveryMoneyTransferEt.setText("")
                 }

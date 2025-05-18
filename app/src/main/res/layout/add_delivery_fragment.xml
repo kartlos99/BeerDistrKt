@@ -323,17 +323,6 @@
                         app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
 
                     <ImageView
-                        android:id="@+id/addDeliveryMoneyExpander"
-                        android:layout_width="@dimen/gr_size_48"
-                        android:layout_height="@dimen/gr_size_48"
-                        android:contentDescription="@string/img_description"
-                        android:padding="@dimen/gr_size_8"
-                        android:src="@drawable/ic_arrow_down_24dp"
-                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyEt"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt" />
-
-                    <ImageView
                         android:id="@+id/addDeliveryMoneyCashImg"
                         android:layout_width="@dimen/gr_size_48"
                         android:layout_height="@dimen/gr_size_48"
@@ -345,6 +334,12 @@
                         app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyEt"
                         app:tint="@color/gray_6" />
 
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/cashGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="addDeliveryMoneyEt, addDeliveryLariSign, addDeliveryMoneyCashImg"/>
+
                     <EditText
                         android:id="@+id/addDeliveryMoneyTransferEt"
                         android:layout_width="wrap_content"
@@ -355,7 +350,6 @@
                         android:hint="@string/default_0"
                         android:inputType="numberDecimal"
                         android:textAlignment="center"
-                        android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/addDeliveryMoneyEt"
@@ -368,7 +362,6 @@
                         android:layout_marginBottom="@dimen/gr_size_4"
                         android:text="@string/lari"
                         android:textSize="@dimen/textSize_4"
-                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
                         app:layout_constraintStart_toEndOf="@id/addDeliveryMoneyTransferEt"
                         app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt" />
@@ -380,11 +373,16 @@
                         android:contentDescription="@string/img_description"
                         android:padding="@dimen/gr_size_8"
                         android:src="@drawable/ic_transfer"
-                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@id/addDeliveryMoneyTransferEt"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/addDeliveryMoneyTransferEt"
                         app:tint="@color/gray_6" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/transferGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="addDeliveryMoneyTransferEt, addDeliveryTransferLariSign, addDeliveryMoneyTransferImg"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

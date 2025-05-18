@@ -24,6 +24,7 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -429,6 +430,13 @@ class AddDeliveryViewModel @AssistedInject constructor(
     fun clearSaleItems() {
         saleItemsList.clear()
         bottleSaleItemsList.clear()
+    }
+
+    fun canChangePaymentType(): Boolean {
+        val moneyRowModel = _editOperationState.value as? MoneyRowModel ?: return false
+        val customer = clientLiveData.value ?: return false
+        return customer.paymentType == null
+                || customer.paymentType != moneyRowModel.paymentType
     }
 
 
