@@ -54,7 +54,10 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
     private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.delete -> {
-                askForRemoving()
+                if (category?.id == DEFAULT_CATEGORY_ID)
+                    showToast(R.string.default_category_cant_be_removed)
+                else
+                    askForRemoving()
                 return true
             }
         }
@@ -161,4 +164,7 @@ class ExpenseCategoryFragment : BaseFragment<ExpenseCategoryViewModel>() {
         }
     }
 
+    companion object {
+        private const val DEFAULT_CATEGORY_ID = 1
+    }
 }

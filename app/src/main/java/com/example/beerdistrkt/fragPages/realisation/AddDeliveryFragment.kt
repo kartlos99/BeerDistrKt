@@ -217,7 +217,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     private fun initViewModel() {
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
             binding.addDeliveryClientInfo.text = it.name
-            binding.locationBtn.isVisible = it.location != null
+            binding.locationBtn.isVisible = !it.location.isNullOrEmpty()
             if (operation == null)
                 when (it.paymentType) {
                     PaymentType.Cash -> binding.transferGroup.isVisible = false

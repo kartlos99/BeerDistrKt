@@ -289,6 +289,7 @@
     <string name="expense_categories_title">ხარჯის კატეგორიები</string>
     <string name="text_confirm">დადასტურება</string>
     <string name="category">კატეგორია</string>
+    <string name="default_category_cant_be_removed">დეფოლტ კატეგორიას ვერ წაშლი!</string>
     <string name="add_category">კატეგორიის დამატება</string>
     <string name="edit_category">კატეგორიის რედაქტირება</string>
     <string name="remove_category">კატეგორიის წაშლა</string>
