@@ -12,21 +12,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@id/locationBtn"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/locationBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/gr_size_32"
         android:layout_height="0dp"
-        android:padding="@dimen/gr_size_8"
         android:importantForAccessibility="no"
+        android:padding="@dimen/gr_size_4"
+        android:src="@drawable/ic_location_24"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/addDeliveryDebtContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_location_24"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <FrameLayout
         android:id="@+id/addDeliveryDebtContainer"
@@ -338,7 +340,7 @@
                         android:id="@+id/cashGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="addDeliveryMoneyEt, addDeliveryLariSign, addDeliveryMoneyCashImg"/>
+                        app:constraint_referenced_ids="addDeliveryMoneyEt, addDeliveryLariSign, addDeliveryMoneyCashImg" />
 
                     <EditText
                         android:id="@+id/addDeliveryMoneyTransferEt"
@@ -382,7 +384,7 @@
                         android:id="@+id/transferGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="addDeliveryMoneyTransferEt, addDeliveryTransferLariSign, addDeliveryMoneyTransferImg"/>
+                        app:constraint_referenced_ids="addDeliveryMoneyTransferEt, addDeliveryTransferLariSign, addDeliveryMoneyTransferImg" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

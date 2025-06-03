@@ -294,6 +294,11 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         return false
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.requestUpdate()
+    }
+
     override fun onRefresh() {
         viewModel.getOrders()
     }

@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.bottle.presentation
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.asDouble
 import com.example.beerdistrkt.common.domain.model.ValidationResult
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
@@ -50,7 +51,7 @@ class BottleValidator {
 
     private fun isVolumeValid(volumeStr: String): Double? {
         return try {
-            volumeStr.toDouble().takeIf { it > 0.001 }
+            volumeStr.asDouble().takeIf { it > 0.001 }
         } catch (e: Exception) {
             null
         }
@@ -64,7 +65,7 @@ class BottleValidator {
 
     private fun isPriceValid(priceStr: String): Double? {
         return try {
-            priceStr.toDouble().takeIf { it >= .0 }
+            priceStr.asDouble().takeIf { it >= .0 }
         } catch (e: Exception) {
             null
         }

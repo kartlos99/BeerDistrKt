@@ -1,8 +1,9 @@
 package com.example.beerdistrkt.fragPages.realisation
 
 sealed class Event {
-    object DuplicateBarrelItem: Event()
-    object DuplicateBottleItem: Event()
-    object NoPriceException: Event()
-    object CustomerNotFount: Event()
+    data object DuplicateBarrelItem: Event()
+    data object DuplicateBottleItem: Event()
+    data object NoPriceException: Event()
+    data object CustomerNotFount: Event()
+    data object EmptyFormError: Event()
 }

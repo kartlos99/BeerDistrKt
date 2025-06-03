@@ -1,12 +1,13 @@
 package com.example.beerdistrkt.fragPages.customer.domain.mapper
 
-import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
+import com.example.beerdistrkt.asDouble
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBeerPrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.ClientBottlePrice
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
+import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.customer.presentation.model.SpecifiedPaymentType
 import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.orZero
@@ -110,14 +111,14 @@ class CustomerUiMapper @Inject constructor(
                 ClientBeerPrice(
                     clientID = uiModel.id.orZero(),
                     beerID = it.id,
-                    price = it.price.toDouble()
+                    price = it.price.asDouble()
                 )
             },
             bottlePrices = uiModel.bottlePrices.map {
                 ClientBottlePrice(
                     clientID = uiModel.id.orZero(),
                     bottleID = it.id,
-                    price = it.price.toDouble()
+                    price = it.price.asDouble()
                 )
             }
         )

@@ -20,6 +20,7 @@ import com.example.beerdistrkt.databinding.FragmentClientDebtBinding
 import com.example.beerdistrkt.models.DebtResponse
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.DOT_CHAR
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -90,10 +91,10 @@ class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
                 closeIndex,
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
             )
-            if (text.subSequence(currPos, closeIndex).contains(DOT)) {
+            if (text.subSequence(currPos, closeIndex).contains(DOT_CHAR)) {
                 spText.setSpan(
                     AbsoluteSizeSpan(resources.getDimensionPixelSize(R.dimen.sp13)),
-                    text.indexOf(DOT, currPos),
+                    text.indexOf(DOT_CHAR, currPos),
                     text.indexOf(" ", currPos),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                 )
@@ -110,7 +111,6 @@ class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
 
     companion object {
         const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
-        const val DOT = "."
 
         fun getInstance(clientID: Int): ClientDebtFragment {
             return ClientDebtFragment().apply {

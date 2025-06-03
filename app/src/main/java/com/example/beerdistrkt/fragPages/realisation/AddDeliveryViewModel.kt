@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.asDouble
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
@@ -223,8 +224,15 @@ class AddDeliveryViewModel @AssistedInject constructor(
             },
             barrels = getEmptyBarrelsList(),
             money = moneyOut
-
         )
+
+        if (saleRequestModel.isEmpty()) {
+            viewModelScope.launch {
+                eventsFlow.emit(Event.EmptyFormError)
+            }
+            return
+        }
+
 
         if (operation == null)
             addDelivery(saleRequestModel)
@@ -344,21 +352,21 @@ class AddDeliveryViewModel @AssistedInject constructor(
     fun setMoney(cashValue: String, transferValue: String) {
         moneyOut.clear()
         if (operation == null || operation == M_OUT) {
-            if (cashValue.isNotEmpty() && cashValue.toDouble() > 0)
+            if (cashValue.isNotEmpty() && cashValue.asDouble() > 0)
                 moneyOut.add(
                     SaleRequestModel.MoneyOutItem(
                         recordID,
                         dateTimeFormat.format(saleDateCalendar.time),
-                        cashValue.toDouble(),
+                        cashValue.asDouble(),
                         PaymentType.Cash
                     )
                 )
-            if (transferValue.isNotEmpty() && transferValue.toDouble() > 0)
+            if (transferValue.isNotEmpty() && transferValue.asDouble() > 0)
                 moneyOut.add(
                     SaleRequestModel.MoneyOutItem(
                         recordID,
                         dateTimeFormat.format(saleDateCalendar.time),
-                        transferValue.toDouble(),
+                        transferValue.asDouble(),
                         PaymentType.Transfer
                     )
                 )

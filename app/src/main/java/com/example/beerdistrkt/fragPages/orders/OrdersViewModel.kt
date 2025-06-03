@@ -116,6 +116,11 @@ class OrdersViewModel @Inject constructor(
         distributorsExpandedStateMap[distributorID] = state
     }
 
+    fun requestUpdate() {
+        if (customers.isNotEmpty() && barrels.isNotEmpty())
+            getOrders()
+    }
+
     fun getOrders() {
 
         ordersLiveData.value = ApiResponseState.Loading(true)

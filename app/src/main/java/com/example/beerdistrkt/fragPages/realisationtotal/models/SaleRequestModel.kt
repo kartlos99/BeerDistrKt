@@ -19,6 +19,11 @@ data class SaleRequestModel(
     val money: List<MoneyOutItem>? = null
 ) {
 
+    fun isEmpty(): Boolean = sales.isNullOrEmpty()
+            && bottleSales.isNullOrEmpty()
+            && barrels.isNullOrEmpty()
+            && money.isNullOrEmpty()
+
     data class BottleSaleItem(
         val id: Int = 0,
         val bottleID: Int,

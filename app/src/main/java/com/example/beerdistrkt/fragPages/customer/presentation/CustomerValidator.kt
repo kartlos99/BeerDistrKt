@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.customer.presentation
 
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.asDouble
 import com.example.beerdistrkt.common.domain.model.ValidationResult
 import com.example.beerdistrkt.fragPages.customer.domain.mapper.CustomerUiMapper
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
@@ -28,7 +29,7 @@ class CustomerValidator @Inject constructor(
     private fun isPricesValid(prices: List<PriceEditModel>): Boolean {
         return prices.all {
             try {
-                it.price.toDouble() in DOUBLE_PRECISION..1000.0
+                it.price.asDouble() in DOUBLE_PRECISION..MAX_VALID_PRICE
             } catch (e: Exception) {
                 false
             }
@@ -53,4 +54,7 @@ class CustomerValidator @Inject constructor(
         }
     }
 
+    companion object {
+        private const val MAX_VALID_PRICE = 1000.0
+    }
 }

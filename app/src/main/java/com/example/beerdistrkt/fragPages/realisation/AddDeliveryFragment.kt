@@ -29,6 +29,7 @@ import com.example.beerdistrkt.fragPages.realisationtotal.models.PaymentType
 import com.example.beerdistrkt.notifyNewComment
 import com.example.beerdistrkt.openMap
 import com.example.beerdistrkt.paramViewModels
+import com.example.beerdistrkt.parseDouble
 import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.setTint
 import com.example.beerdistrkt.showInfoDialog
@@ -208,7 +209,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
     }
 
     private fun getColorForValidationIndicator(value: CharSequence): Int {
-        return if (value.isNotEmpty() && (value.toString().toDoubleOrNull() ?: .0) > .0)
+        return if (value.isNotEmpty() && (value.toString().parseDouble()) > .0)
             R.color.green_08
         else
             R.color.gray_6
@@ -268,6 +269,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                     Event.DuplicateBarrelItem -> showToast(R.string.already_in_list)
                     Event.DuplicateBottleItem -> showToast(R.string.bottle_already_in_list)
                     Event.NoPriceException -> showToast(R.string.no_price_exception)
+                    Event.EmptyFormError -> showToast(R.string.fill_data)
                 }
             }
         }

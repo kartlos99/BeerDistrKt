@@ -15,6 +15,7 @@ import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.parseDouble
 import com.example.beerdistrkt.utils.Session
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -88,14 +89,14 @@ class AddEditExpenseViewModel @AssistedInject constructor(
 
         when {
             comment.length < 3 -> _errorStateFlow.emit(ERROR_TEXT_NO_COMMENT)
-            parseDouble(amountStr) <= .0 -> _errorStateFlow.emit(ERROR_TEXT_NO_AMOUNT)
+            amountStr.parseDouble() <= .0 -> _errorStateFlow.emit(ERROR_TEXT_NO_AMOUNT)
             else -> _categoriesStateFlow.value.firstOrNull {
                 it.id == categoryID
             }?.let { category ->
                 val expense = Expense(
                     expense?.id,
                     currentUser,
-                    parseDouble(amountStr),
+                    amountStr.parseDouble(),
                     comment,
                     dateTimeFormat.format(Calendar.getInstance().time),
                     category
@@ -104,12 +105,6 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             }
                 ?: _errorStateFlow.emit(ERROR_TEXT_NO_CATEGORY)
         }
-    }
-
-    private fun parseDouble(string: String): Double = try {
-        string.toDouble()
-    } catch (e: NumberFormatException) {
-        -.1
     }
 
     fun setComment(comment: String) = _expenseState.update {

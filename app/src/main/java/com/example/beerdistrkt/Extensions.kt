@@ -41,12 +41,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.COMMA_CHAR
 import com.example.beerdistrkt.utils.DEFAULT_NUMBER_PATTERN
+import com.example.beerdistrkt.utils.DOT_CHAR
 import com.example.beerdistrkt.utils.DOUBLE_PRECISION
 import com.example.beerdistrkt.utils.RELATIVE_FRICTION_SIZE
 import com.google.android.material.textfield.TextInputLayout
@@ -440,8 +441,8 @@ infix fun Number.waitFor(block: (() -> Unit)) {
 
 fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableString {
     val sp = SpannableString(this)
-    if (this.contains(".")) {
-        val startIndex = this.indexOf(ClientDebtFragment.DOT)
+    if (this.contains(DOT_CHAR)) {
+        val startIndex = this.indexOf(DOT_CHAR)
         var endIndex = this.indexOf(" ", startIndex)
         if (endIndex == -1) endIndex = this.length
         sp.setSpan(
@@ -564,10 +565,12 @@ fun areNotNull(vararg objects: Any?): Boolean =
     objects.all { it != null }
 
 fun String.parseDouble(defaultValue: Double = -1.0): Double = try {
-    this.toDouble()
+    this.replace(COMMA_CHAR, DOT_CHAR).toDouble()
 } catch (e: NumberFormatException) {
     defaultValue
 }
+
+fun String.asDouble(): Double = this.replace(COMMA_CHAR, DOT_CHAR).toDouble()
 
 fun Double.toFormatedString(pattern: String = DEFAULT_NUMBER_PATTERN): String {
     val decimalFormat = DecimalFormat(pattern)
