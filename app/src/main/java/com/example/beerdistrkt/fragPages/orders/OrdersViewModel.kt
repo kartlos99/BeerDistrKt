@@ -117,7 +117,7 @@ class OrdersViewModel @Inject constructor(
     }
 
     fun requestUpdate() {
-        if (customers.isNotEmpty() && barrels.isNotEmpty())
+        if (::customers.isInitialized && ::barrels.isInitialized)
             getOrders()
     }
 
