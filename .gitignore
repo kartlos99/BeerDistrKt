@@ -20,3 +20,4 @@ localdata.gradle
 local.properties
 sh.exe.stackdump
 app/production/release/
+/PrivateKey.kt
