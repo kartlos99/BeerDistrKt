@@ -16,7 +16,7 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.AddUserFragmentBinding
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.presentation.model.RegionChipItem

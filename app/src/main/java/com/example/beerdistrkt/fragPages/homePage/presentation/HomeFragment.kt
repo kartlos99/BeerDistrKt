@@ -22,7 +22,7 @@ import com.example.beerdistrkt.databinding.HomeFragmentBinding
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
 import com.example.beerdistrkt.fragPages.homePage.presentation.adapter.CommentsAdapter
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.sawyobi.StoreHouseListFragment
 import com.example.beerdistrkt.getDimenPixelOffset
@@ -31,7 +31,6 @@ import com.example.beerdistrkt.showTextInputDialog
 import com.example.beerdistrkt.utils.AMONAWERI
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.MITANA
-import com.example.beerdistrkt.utils.Session
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 

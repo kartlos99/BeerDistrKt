@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.models
 
-import com.example.beerdistrkt.fragPages.login.models.WorkRegion
+import com.example.beerdistrkt.fragPages.login.domain.model.WorkRegion
 import com.squareup.moshi.Json
 
 data class DebtResponse(

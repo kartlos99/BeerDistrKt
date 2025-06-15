@@ -1,10 +1,10 @@
 package com.example.beerdistrkt.fragPages.login.data.model
 
-import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.fragPages.user.data.model.WorkRegionDto
 
-data class LoginApiModel(
+data class LoginDataDto(
     val id: Int,
     val username: String,
     val name: String,

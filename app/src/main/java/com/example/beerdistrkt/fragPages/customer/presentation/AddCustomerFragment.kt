@@ -23,7 +23,7 @@ import com.example.beerdistrkt.common.domain.model.Goods
 import com.example.beerdistrkt.databinding.AddCustomerFragmentBinding
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
 import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
-import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
+import com.example.beerdistrkt.fragPages.login.domain.model.AttachedRegion
 import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onError
 import com.example.beerdistrkt.network.model.onSuccess

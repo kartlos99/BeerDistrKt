@@ -317,4 +317,9 @@
     <string name="payment_type_cash">ნაღდი</string>
     <string name="payment_type_bank">საბანკო</string>
     <string name="enter_location">ჩაწერეთ ლოკაციის ლინკი</string>
+
+    <string name="error_cant_identify_user">ვერ მოხერხდა მომხმარებლის იდენტიფიკაცია</string>
+    <string name="error_incorrect_password">პაროლი არასწორია!</string>
+    <string name="error_no_region_attached">მომხმარებელი არცერთ რეგიონზე არაა მიმაგრებული</string>
+    <string name="error_unknown">უცნობი შეცდომა</string>
 </resources>

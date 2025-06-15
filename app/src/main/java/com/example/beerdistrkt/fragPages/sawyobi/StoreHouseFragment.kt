@@ -25,7 +25,7 @@ import com.example.beerdistrkt.adapters.SimpleListAdapter
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.SawyobiFragmentBinding
-import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.orders.view.OrderBottleItemView
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.sawyobi.Event.DuplicateBarrelItem

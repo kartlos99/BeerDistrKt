@@ -25,7 +25,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentCustomersBinding
 import com.example.beerdistrkt.fragPages.customer.presentation.adapters.ClientsListAdapter
-import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
 import com.example.beerdistrkt.network.model.isLoading

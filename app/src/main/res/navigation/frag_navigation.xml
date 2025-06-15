@@ -144,7 +144,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.beerdistrkt.fragPages.login.LoginFragment"
+        android:name="com.example.beerdistrkt.fragPages.login.presentation.LoginFragment"
         android:label="login_fragment"
         tools:layout="@layout/login_fragment">
         <action

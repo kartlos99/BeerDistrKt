@@ -17,7 +17,7 @@ import com.example.beerdistrkt.common.helper.LinearDividerItemDecoration
 import com.example.beerdistrkt.databinding.FragmentExpenseBinding
 import com.example.beerdistrkt.fragPages.expense.domain.model.Expense
 import com.example.beerdistrkt.fragPages.expense.presentation.view.ExpenseItemView
-import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.storage.ObjectCache
 import dagger.hilt.android.AndroidEntryPoint

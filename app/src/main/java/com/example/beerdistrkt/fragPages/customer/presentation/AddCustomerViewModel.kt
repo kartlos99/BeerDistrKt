@@ -13,8 +13,8 @@ import com.example.beerdistrkt.fragPages.customer.domain.usecase.PutCustomersUse
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerUiModel
 import com.example.beerdistrkt.fragPages.customer.presentation.model.PriceEditModel
 import com.example.beerdistrkt.fragPages.customer.presentation.model.SpecifiedPaymentType
-import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
-import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.AttachedRegion
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.models.AttachRegionsRequest
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.network.api.ApiResponse

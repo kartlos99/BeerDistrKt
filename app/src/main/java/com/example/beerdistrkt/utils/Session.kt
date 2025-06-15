@@ -1,9 +1,9 @@
 package com.example.beerdistrkt.utils
 
 import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
-import com.example.beerdistrkt.fragPages.login.models.LoginResponse
-import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.LoginData
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 
@@ -31,7 +31,7 @@ class Session(
 
     fun getRegionID(): String = (region?.id ?: 0).toString()
 
-    fun justLoggedIn(userdata: LoginResponse) {
+    fun justLoggedIn(userdata: LoginData) {
         userID = userdata.id.toString()
         userType = userdata.type
         loggedIn = true

@@ -1,6 +1,6 @@
 package com.example.beerdistrkt.fragPages.addEditUser
 
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult
 import com.example.beerdistrkt.fragPages.user.domain.UserValidator
 import com.example.beerdistrkt.fragPages.user.domain.model.User

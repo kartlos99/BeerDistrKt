@@ -28,10 +28,9 @@ import com.example.beerdistrkt.MainActViewModel.ActUiEvent.GoToLoginPage
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.databinding.NavHeaderBinding
-import com.example.beerdistrkt.db.ApeniDataBase
 import com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment
-import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService

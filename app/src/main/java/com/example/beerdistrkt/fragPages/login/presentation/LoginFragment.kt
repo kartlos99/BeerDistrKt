@@ -1,10 +1,10 @@
-package com.example.beerdistrkt.fragPages.login
+package com.example.beerdistrkt.fragPages.login.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -13,16 +13,12 @@ import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.MainActViewModel
 import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.LoginFragmentBinding
-import com.example.beerdistrkt.fragPages.login.models.LoginResponse
+import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.hide
-import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,28 +44,14 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         actViewModel = (activity as MainActivity).viewModel
-        with(binding) {
-            viewLoginLoginBtn.setOnClickListener {
-                viewModel.logIn(
-                    viewLoginUserField.text.toString(),
-                    viewLoginPasswordField.text.toString()
-                )
-                viewLoginLoginBtn.isEnabled = false
-                viewLoginProgress.visibleIf(true)
-            }
-            tvBuildInfo.text = getBuildInfo()
-            if (BuildConfig.DEBUG) {
-                viewLoginUserField.setText("kartlos")
-                viewLoginPasswordField.setText("0000")
-            }
-        }
+        initView()
 
         if (viewModel.session.isUserLogged())
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         else
             checkSavedPass()
 
-        initViewModel()
+        observeData()
     }
 
     private fun getBuildInfo(): String {
@@ -84,15 +66,48 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             with(binding) {
                 viewLoginUserField.setText(userName)
                 viewLoginPasswordField.setText(password)
-                viewModel.logIn(userName, password)
+                viewModel.signIn(userName, password)
                 viewLoginLoginBtn.isEnabled = false
                 viewLoginProgress.visibleIf(true)
             }
         }
     }
 
-    private fun initViewModel() {
-        viewModel.loginResponseLiveData.observe(viewLifecycleOwner) {
+    private fun initView() = with(binding) {
+        viewLoginLoginBtn.setOnClickListener {
+            viewModel.signIn(
+                viewLoginUserField.text.toString(),
+                viewLoginPasswordField.text.toString()
+            )
+            viewLoginLoginBtn.isEnabled = false
+            viewLoginProgress.visibleIf(true)
+        }
+        tvBuildInfo.text = getBuildInfo()
+        if (BuildConfig.DEBUG) {
+            viewLoginUserField.setText("kartlos")
+            viewLoginPasswordField.setText("0000")
+        }
+    }
+
+    private fun observeData() {
+        viewModel.loginDataStateFlow.collectLatest(viewLifecycleOwner) { state ->
+            binding.errorField.text = state.errorMessageRes?.let { getString(it) } ?: String.empty()
+            binding.viewLoginProgress.isVisible = state.isLoading
+            binding.viewLoginLoginBtn.isEnabled = state.isLoginEnabled
+        }
+        viewModel.openHomeScreenFlow.collectLatest(viewLifecycleOwner) {
+            if (binding.viewLoginSaveChk.isChecked) {
+                SharedPreferenceDataSource(requireContext()).saveUserName(
+                    binding.viewLoginUserField.text.toString()
+                )
+                SharedPreferenceDataSource(requireContext()).savePassword(
+                    binding.viewLoginPasswordField.text.toString()
+                )
+            }
+            actViewModel.updateNavHeader()
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+        }
+        /*viewModel.loginResponseLiveData.observe(viewLifecycleOwner) {
             with(binding) {
                 when (it) {
                     is ApiResponseState.Success -> {
@@ -124,10 +139,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     else -> {}
                 }
             }
-        }
+        }*/
     }
 
-    private fun afterSuccessResponse(data: LoginResponse) {
+    /*private fun afterSuccessResponse(data: LoginData) {
         when {
             data.regions.isNotEmpty() -> proceedLogin(data)
             else -> {
@@ -136,14 +151,14 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 binding.viewLoginProgress.hide()
             }
         }
-    }
+    }*/
 
-    private fun proceedLogin(data: LoginResponse) {
+    /*private fun proceedLogin(data: LoginData) {
         viewModel.setUserData(data)
         loginToFirebase(data.username)
-    }
+    }*/
 
-    private fun loginToFirebase(username: String) {
+    /*private fun loginToFirebase(username: String) {
         val userMail = "$username@apeni.ge"
         mAuth.signInWithEmailAndPassword(userMail, BuildConfig.FIREBASE_PASS)
             .addOnCompleteListener { task ->
@@ -165,9 +180,9 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     }
                 }
             }
-    }
+    }*/
 
-    private fun registerInFirebase(username: String) {
+    /*private fun registerInFirebase(username: String) {
         mAuth.createUserWithEmailAndPassword(username, BuildConfig.FIREBASE_PASS)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -180,13 +195,13 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     viewModel.session.clearSession()
                 }
             }
-    }
+    }*/
 
-    private fun onLoginSuccess() {
+    /*private fun onLoginSuccess() {
         binding.viewLoginLoginBtn.isEnabled = true
         binding.viewLoginProgress.hide()
         actViewModel.updateNavHeader()
         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-    }
+    }*/
 
 }

@@ -3,9 +3,9 @@ package com.example.beerdistrkt.network
 import com.example.beerdistrkt.BuildConfig
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
-import com.example.beerdistrkt.fragPages.login.data.model.LoginApiModel
-import com.example.beerdistrkt.fragPages.login.models.AttachedRegion
-import com.example.beerdistrkt.fragPages.login.models.LoginRequest
+import com.example.beerdistrkt.fragPages.login.data.model.LoginDataDto
+import com.example.beerdistrkt.fragPages.login.domain.model.AttachedRegion
+import com.example.beerdistrkt.fragPages.login.data.model.LoginRequest
 import com.example.beerdistrkt.fragPages.orders.models.OrderDeleteRequestModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderReSortModel
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
@@ -227,7 +227,7 @@ interface ApeniApiService {
 //    fun addUpdateUser(@Body model: AddUserRequestModel): Call<DataResponse<String>>
 
     @POST("user/login.php")
-    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginApiModel>>
+    fun logIn(@Body userAndPass: LoginRequest): Call<DataResponse<LoginDataDto>>
 
     @POST("user/changePassword.php")
     fun changePassword(@Body model: ChangePassRequestModel): Call<DataResponse<String>>

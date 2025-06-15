@@ -3,7 +3,7 @@ package com.example.beerdistrkt.fragPages.user.presentation.modify
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
-import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.user.domain.UserValidationResult

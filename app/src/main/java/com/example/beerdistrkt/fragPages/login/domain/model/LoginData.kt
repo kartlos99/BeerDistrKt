@@ -1,9 +1,9 @@
-package com.example.beerdistrkt.fragPages.login.models
+package com.example.beerdistrkt.fragPages.login.domain.model
 
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.squareup.moshi.Json
 
-data class LoginResponse(
+data class LoginData(
     val id: Int,
     val username: String,
     val name: String,
@@ -11,8 +11,7 @@ data class LoginResponse(
     val permissions: List<Permission>,
     val regions: List<WorkRegion>,
     val token: String
-) {
-}
+)
 
 data class WorkRegion(
     val regionID: String,

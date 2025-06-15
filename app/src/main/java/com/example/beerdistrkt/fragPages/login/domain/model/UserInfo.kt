@@ -1,7 +1,5 @@
 package com.example.beerdistrkt.fragPages.login.domain.model
 
-import com.example.beerdistrkt.fragPages.login.models.Permission
-import com.example.beerdistrkt.fragPages.login.models.UserType
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 
 data class UserInfo(

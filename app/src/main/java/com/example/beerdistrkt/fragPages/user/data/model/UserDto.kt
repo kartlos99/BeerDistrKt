@@ -1,7 +1,7 @@
 package com.example.beerdistrkt.fragPages.user.data.model
 
 import androidx.annotation.Keep
-import com.example.beerdistrkt.fragPages.login.models.UserType
+import com.example.beerdistrkt.fragPages.login.domain.model.UserType
 import com.example.beerdistrkt.models.UserStatus
 
 @Keep

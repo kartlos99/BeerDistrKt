@@ -19,7 +19,7 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
 import com.example.beerdistrkt.databinding.BottlesSaleRowBinding
 import com.example.beerdistrkt.databinding.SalesFragmentBinding
-import com.example.beerdistrkt.fragPages.login.models.Permission
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.realisationtotal.adapter.BarrelsIOAdapter
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.BottleSale
 import com.example.beerdistrkt.fragPages.realisationtotal.domain.model.RealizationDay

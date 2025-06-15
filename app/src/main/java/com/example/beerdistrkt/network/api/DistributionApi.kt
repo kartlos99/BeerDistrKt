@@ -17,6 +17,8 @@ import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.UserApiModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
 import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
+import com.example.beerdistrkt.fragPages.login.data.model.LoginDataDto
+import com.example.beerdistrkt.fragPages.login.data.model.LoginRequest
 import com.example.beerdistrkt.fragPages.settings.data.model.SettingParamDto
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -110,6 +112,9 @@ interface DistributionApi {
 
     @POST("general/deleteRecord.php")
     suspend fun deleteRecord(@Body deleteModel: DeleteRecordApiModel)
+
+    @POST("user/signIn.php")
+    suspend fun signIn(@Body loginRequest: LoginRequest): LoginDataDto
 
     /* settings */
     @GET("settings/getAll.php")
