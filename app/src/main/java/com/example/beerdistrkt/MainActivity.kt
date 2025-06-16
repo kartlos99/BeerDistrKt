@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -28,10 +29,10 @@ import com.example.beerdistrkt.MainActViewModel.ActUiEvent.GoToLoginPage
 import com.example.beerdistrkt.databinding.ActivityMainBinding
 import com.example.beerdistrkt.databinding.ChangePassDialogBinding
 import com.example.beerdistrkt.databinding.NavHeaderBinding
+import com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment
 import com.example.beerdistrkt.fragPages.homePage.presentation.HomeFragment
 import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.login.domain.model.UserType
-import com.example.beerdistrkt.fragPages.customer.presentation.CustomersFragment
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.service.NotificationService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
@@ -48,6 +49,11 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
     val viewModel by viewModels<MainActViewModel>()
 
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
+
+    private val noToolbarScreens = setOf(
+        R.id.loginFragment,
+        R.id.loaderScreenFragment
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,8 +87,29 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
             .navigate(R.id.action_homeFragment_to_loginFragment)
     }
 
+    fun setNewGraph(needAuth: Boolean) {
+        val navController = this.findNavController(R.id.mainNavHostFragment)
+        val navInflater = navController.navInflater
+        val navGraph = navInflater.inflate(R.navigation.frag_navigation)
+        navGraph.setStartDestination(R.id.homeFragment)
+        navController.setGraph(navGraph, null)
+
+        val config = AppBarConfiguration.Builder(navController.graph)
+            .setOpenableLayout(vBinding.drawerLayout)
+            .build()
+        NavigationUI.setupWithNavController(vBinding.toolBar, navController, config)
+
+        if (needAuth)
+            navController.navigate(R.id.action_homeFragment_to_loginFragment)
+    }
+
     private fun initNavController() {
         val navController = this.findNavController(R.id.mainNavHostFragment)
+        val navInflater = navController.navInflater
+        val navGraph = navInflater.inflate(R.navigation.frag_navigation)
+        navGraph.setStartDestination(R.id.loaderScreenFragment)
+
+        navController.setGraph(navGraph, null)
 
         setupActionBarWithNavController(navController, vBinding.drawerLayout)
         vBinding.navView.setupWithNavController(navController)
@@ -97,7 +124,7 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(vBinding.drawerLayout.windowToken, 0)
 
-            vBinding.toolBar.isVisible = destination.id != R.id.loginFragment
+            vBinding.toolBar.isVisible = !noToolbarScreens.contains(destination.id)
         }
 
         NotificationService.myNotificationInterface = this
