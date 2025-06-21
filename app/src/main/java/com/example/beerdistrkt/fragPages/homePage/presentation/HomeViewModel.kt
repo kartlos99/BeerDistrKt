@@ -10,9 +10,11 @@ import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
+import com.example.beerdistrkt.fragPages.settings.domain.usecase.RefreshSettingsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.network.ApeniApiService
@@ -36,6 +38,8 @@ class HomeViewModel @Inject constructor(
     private val refreshCustomers: RefreshCustomersUseCase,
     private val refreshUsersUseCase: RefreshUsersUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val refreshSettingsUseCase: RefreshSettingsUseCase,
+    private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
     override var session: Session,
     private val apeniApi: ApeniApiService,
 ) : BaseViewModel() {
@@ -80,9 +84,13 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            val userInfo = userPreferencesRepository.readUserSession()
-            session.restoreFromSavedInfo(userInfo)
-            checkToken()
+//            val userInfo = userPreferencesRepository.readUserSession()
+//            session.restoreFromSavedInfo(userInfo)
+//            checkToken()
+            refreshBaseDataUseCase()
+            refreshSettingsUseCase()
+            refreshCustomers()
+            refreshUsersUseCase()
             getComments()
         }
     }

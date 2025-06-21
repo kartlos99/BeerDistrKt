@@ -17,6 +17,7 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.LoginFragmentBinding
 import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
+import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.utils.visibleIf
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,7 +81,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 viewLoginPasswordField.text.toString()
             )
             viewLoginLoginBtn.isEnabled = false
-            viewLoginProgress.visibleIf(true)
+            viewLoginProgress.show()
         }
         tvBuildInfo.text = getBuildInfo()
         if (BuildConfig.DEBUG) {

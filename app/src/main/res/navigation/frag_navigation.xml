@@ -137,7 +137,7 @@
         android:id="@+id/salesFragment"
         android:name="com.example.beerdistrkt.fragPages.realisationtotal.SalesFragment"
         android:label="@string/daily_sales"
-        tools:layout="@layout/sales_fragment" >
+        tools:layout="@layout/sales_fragment">
         <action
             android:id="@+id/action_salesFragment_to_addEditExpenseFragment"
             app:destination="@id/addEditExpenseFragment" />
@@ -234,8 +234,8 @@
     <fragment
         android:id="@+id/changesListFragment"
         android:name="com.example.beerdistrkt.fragPages.reporting.ChangesListFragment"
-        tools:layout="@layout/fragment_changes_list"
-        android:label="@string/page_title_report_changes">
+        android:label="@string/page_title_report_changes"
+        tools:layout="@layout/fragment_changes_list">
         <action
             android:id="@+id/action_changesListFragment_to_detailedChangeHistoryFragment"
             app:destination="@id/detailedChangeHistoryFragment" />
@@ -243,8 +243,8 @@
     <fragment
         android:id="@+id/detailedChangeHistoryFragment"
         android:name="com.example.beerdistrkt.fragPages.reporting.DetailedChangeHistoryFragment"
-        tools:layout="@layout/fragment_detailed_change_hinstory"
-        android:label="@string/page_title_detailed_history">
+        android:label="@string/page_title_detailed_history"
+        tools:layout="@layout/fragment_detailed_change_hinstory">
         <argument
             android:name="recordID"
             app:argType="string"
@@ -258,7 +258,7 @@
         android:id="@+id/bottleListFragment"
         android:name="com.example.beerdistrkt.fragPages.bottle.presentation.BottleListFragment"
         android:label="@string/bottles"
-        tools:layout="@layout/fragment_bottle_list" >
+        tools:layout="@layout/fragment_bottle_list">
         <action
             android:id="@+id/action_bottleListFragment_to_bottleDetailFragment"
             app:destination="@id/bottleDetailFragment" />
@@ -267,28 +267,28 @@
         android:id="@+id/bottleDetailFragment"
         android:name="com.example.beerdistrkt.fragPages.bottle.presentation.BottleDetailFragment"
         tools:label="@string/add_bottle"
-        tools:layout="@layout/fragment_bottle_detail" >
+        tools:layout="@layout/fragment_bottle_detail">
         <argument
             android:name="bottleID"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/addEditExpenseFragment"
         android:name="com.example.beerdistrkt.fragPages.expense.presentation.AddEditExpenseFragment"
         android:label="@string/add_expense"
-        tools:layout="@layout/add_edit_expense_fragment" >
+        tools:layout="@layout/add_edit_expense_fragment">
         <argument
             android:name="expenseId"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/expenseCategoryListFragment"
         android:name="com.example.beerdistrkt.fragPages.expensecategory.presentation.ExpenseCategoryListFragment"
         android:label="@string/expense_categories_title"
-        tools:layout="@layout/fragment_expense_category_list" >
+        tools:layout="@layout/fragment_expense_category_list">
         <action
             android:id="@+id/action_expenseCategoryListFragment_to_expenseCategoryFragment"
             app:destination="@id/expenseCategoryFragment" />
@@ -297,17 +297,27 @@
         android:id="@+id/expenseCategoryFragment"
         android:name="com.example.beerdistrkt.fragPages.expensecategory.presentation.ExpenseCategoryFragment"
         android:label="@string/add_category"
-        tools:layout="@layout/fragment_expense_category" >
+        tools:layout="@layout/fragment_expense_category">
         <argument
             android:name="category"
+            android:defaultValue="@null"
             app:argType="com.example.beerdistrkt.fragPages.expense.domain.model.ExpenseCategory"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/loaderScreenFragment"
-        tools:layout="@layout/fragment_loading_screen"
         android:name="com.example.beerdistrkt.fragPages.login.presentation.LoaderScreenFragment"
-        android:label="LoaderScreenFragment" >
+        android:label="LoaderScreenFragment"
+        tools:layout="@layout/fragment_loading_screen">
+        <action
+            android:id="@+id/action_loaderScreenFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loaderScreenFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loaderScreenFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loaderScreenFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

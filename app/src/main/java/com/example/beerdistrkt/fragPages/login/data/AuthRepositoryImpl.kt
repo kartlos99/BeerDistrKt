@@ -3,6 +3,7 @@ package com.example.beerdistrkt.fragPages.login.data
 import com.example.beerdistrkt.fragPages.login.domain.AuthRepository
 import com.example.beerdistrkt.fragPages.login.domain.model.LoginData
 import com.example.beerdistrkt.fragPages.login.data.model.LoginRequest
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.user.data.UserMapper
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
@@ -17,6 +18,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val api: DistributionApi,
     private val userMapper: UserMapper,
     private val session: Session,
+    private val userPreferencesRepository: UserPreferencesRepository,
     ioDispatcher: CoroutineDispatcher,
 ) : BaseRepository(ioDispatcher), AuthRepository {
 
@@ -39,8 +41,8 @@ class AuthRepositoryImpl @Inject constructor(
                 },
                 token = userData.token
             ).also {
-
                 session.justLoggedIn(it)
+                userPreferencesRepository.saveUserSession(session.getUserInfo())
             }
         }
     }

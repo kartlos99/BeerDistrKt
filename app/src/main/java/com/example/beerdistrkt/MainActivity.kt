@@ -69,15 +69,12 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
         windowInsetsController = WindowCompat.getInsetsController(window, window.decorView).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+        initNavController()
     }
 
     private fun setObservers() {
         viewModel.headerUpdateLiveData.observe(this) {
             updateNavigationView()
-        }
-        viewModel.showContentFlow.collectLatest(this) {
-            vBinding.progressIndicator.isVisible = !it
-            if (it) initNavController()
         }
         viewModel.eventsFlow.collectLatest(this, action = ::handleUiEvents)
     }
@@ -87,31 +84,15 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
             .navigate(R.id.action_homeFragment_to_loginFragment)
     }
 
-    fun setNewGraph(needAuth: Boolean) {
-        val navController = this.findNavController(R.id.mainNavHostFragment)
-        val navInflater = navController.navInflater
-        val navGraph = navInflater.inflate(R.navigation.frag_navigation)
-        navGraph.setStartDestination(R.id.homeFragment)
-        navController.setGraph(navGraph, null)
-
-        val config = AppBarConfiguration.Builder(navController.graph)
-            .setOpenableLayout(vBinding.drawerLayout)
-            .build()
-        NavigationUI.setupWithNavController(vBinding.toolBar, navController, config)
-
-        if (needAuth)
-            navController.navigate(R.id.action_homeFragment_to_loginFragment)
-    }
-
     private fun initNavController() {
         val navController = this.findNavController(R.id.mainNavHostFragment)
-        val navInflater = navController.navInflater
-        val navGraph = navInflater.inflate(R.navigation.frag_navigation)
-        navGraph.setStartDestination(R.id.loaderScreenFragment)
 
-        navController.setGraph(navGraph, null)
+        val config = AppBarConfiguration.Builder(setOf(R.id.homeFragment))
+            .setOpenableLayout(vBinding.drawerLayout)
+            .build()
 
-        setupActionBarWithNavController(navController, vBinding.drawerLayout)
+        NavigationUI.setupWithNavController(vBinding.toolBar, navController, config)
+        setupActionBarWithNavController(navController, config)
         vBinding.navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { controller, destination, _ ->
@@ -132,15 +113,15 @@ class MainActivity : AppCompatActivity(), CustomersFragment.CallPermissionInterf
             startForegroundService(Intent(this, NotificationService::class.java))
         }
 
-        vBinding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+        vBinding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.mChangePass -> changePass()
                 R.id.mLogOut -> viewModel.performUserLogout()
             }
             NavigationUI.onNavDestinationSelected(item, navController)
             vBinding.drawerLayout.closeDrawer(GravityCompat.START)
-            return@OnNavigationItemSelectedListener true
-        })
+            true
+        }
     }
 
     fun setFullScreen() {

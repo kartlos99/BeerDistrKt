@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.MainActivity
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentLoadingScreenBinding
@@ -33,7 +33,13 @@ class LoaderScreenFragment : BaseFragment<LoaderScreenViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.openHomeScreenFlow.collectLatest(viewLifecycleOwner) {
-            (activity as? MainActivity)?.setNewGraph(it is Action.OpenLoginPage)
+            when (it) {
+                Action.OpenHomePage -> findNavController()
+                    .navigate(LoaderScreenFragmentDirections.actionLoaderScreenFragmentToHomeFragment())
+
+                Action.OpenLoginPage -> findNavController()
+                    .navigate(LoaderScreenFragmentDirections.actionLoaderScreenFragmentToLoginFragment())
+            }
         }
     }
 

@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository,
-    private val userMapper: UserMapper,
-    private val apeniApi: ApeniApiService,
+//    private val userPreferencesRepository: UserPreferencesRepository,
+//    private val userMapper: UserMapper,
+//    private val apeniApi: ApeniApiService,
     private val signInUseCase: SignInUseCase,
 ) : BaseViewModel() {
 
@@ -99,12 +99,13 @@ class LoginViewModel @Inject constructor(
         )
     }
 */
-    fun setUserData(data: LoginData) {
+
+    /*fun setUserData(data: LoginData) {
         session.justLoggedIn(data)
         viewModelScope.launch {
             userPreferencesRepository.saveUserSession(session.getUserInfo())
         }
-    }
+    }*/
 
     companion object {
         const val ERROR_CODE_CANT_IDENTIFY_USER = "1525"
