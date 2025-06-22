@@ -19,7 +19,6 @@ import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.show
 import com.example.beerdistrkt.utils.visibleIf
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,10 +29,6 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     override val viewModel: LoginViewModel by viewModels()
 
     private lateinit var actViewModel: MainActViewModel
-
-    private val mAuth by lazy {
-        FirebaseAuth.getInstance()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,101 +103,6 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             actViewModel.updateNavHeader()
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         }
-        /*viewModel.loginResponseLiveData.observe(viewLifecycleOwner) {
-            with(binding) {
-                when (it) {
-                    is ApiResponseState.Success -> {
-                        if (viewLoginSaveChk.isChecked) {
-                            SharedPreferenceDataSource(requireContext()).saveUserName(it.data.username)
-                            SharedPreferenceDataSource(requireContext()).savePassword(
-                                viewLoginPasswordField.text.toString()
-                            )
-                        }
-                        viewLoginLoginBtn.isEnabled = false
-                        viewLoginProgress.show()
-                        afterSuccessResponse(it.data)
-                        viewModel.loginResponseLiveData.value = ApiResponseState.Sleep
-                    }
-
-                    is ApiResponseState.ApiError -> {
-                        viewLoginLoginBtn.isEnabled = true
-                        viewLoginProgress.hide()
-                        showToast(it.errorText)
-                    }
-
-                    is ApiResponseState.Loading -> {
-                        if (!it.showLoading) {
-                            viewLoginLoginBtn.isEnabled = true
-                            viewLoginProgress.hide()
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        }*/
     }
-
-    /*private fun afterSuccessResponse(data: LoginData) {
-        when {
-            data.regions.isNotEmpty() -> proceedLogin(data)
-            else -> {
-                showToast(R.string.no_regions_accosiated)
-                binding.viewLoginLoginBtn.isEnabled = true
-                binding.viewLoginProgress.hide()
-            }
-        }
-    }*/
-
-    /*private fun proceedLogin(data: LoginData) {
-        viewModel.setUserData(data)
-        loginToFirebase(data.username)
-    }*/
-
-    /*private fun loginToFirebase(username: String) {
-        val userMail = "$username@apeni.ge"
-        mAuth.signInWithEmailAndPassword(userMail, BuildConfig.FIREBASE_PASS)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("auth", "SignIN:success")
-                    onLoginSuccess()
-                    FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                        Log.d("token-msg", it.result, it.exception)
-                    }
-                } else {
-                    if (task.exception is FirebaseAuthInvalidUserException) {
-                        registerInFirebase(userMail)
-                        Log.d("auth", "exp_MEssage: " + task.exception?.message)
-                    } else {
-                        showToast(R.string.auth_fail_firebase)
-                        Log.d("auth", "exp_MEssage: " + task.exception?.message)
-                        viewModel.session.clearSession()
-                    }
-                }
-            }
-    }*/
-
-    /*private fun registerInFirebase(username: String) {
-        mAuth.createUserWithEmailAndPassword(username, BuildConfig.FIREBASE_PASS)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("auth", "createUserWithEmail:success")
-//                    val user = mAuth.currentUser
-                    onLoginSuccess()
-                } else {
-                    Log.d("auth", task.exception?.message ?: "")
-                    showToast(R.string.registration_fail_firebase)
-                    viewModel.session.clearSession()
-                }
-            }
-    }*/
-
-    /*private fun onLoginSuccess() {
-        binding.viewLoginLoginBtn.isEnabled = true
-        binding.viewLoginProgress.hide()
-        actViewModel.updateNavHeader()
-        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-    }*/
 
 }
