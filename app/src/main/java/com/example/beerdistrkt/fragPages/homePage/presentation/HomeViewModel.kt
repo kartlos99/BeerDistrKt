@@ -10,15 +10,20 @@ import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.model.AddCommentModel
 import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetCommentsUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshBaseDataUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.fragPages.sawyobi.domain.usecase.GetStoreHouseBalanceUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.settings.domain.usecase.RefreshSettingsUseCase
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.user.domain.usecase.RefreshUsersUseCase
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.api.toResultState
 import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.onError
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -40,16 +45,17 @@ class HomeViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val refreshSettingsUseCase: RefreshSettingsUseCase,
     private val refreshBaseDataUseCase: RefreshBaseDataUseCase,
+    private val getCommentsUseCase: GetCommentsUseCase,
+    private val getStoreHouseBalanceUseCase: GetStoreHouseBalanceUseCase,
     override var session: Session,
-    private val apeniApi: ApeniApiService,
 ) : BaseViewModel() {
 
     val mainLoaderLiveData = MutableLiveData<Boolean?>(null)
 
     private var currentDate = Calendar.getInstance()
 
-    private val _barrelsListLiveData = MutableLiveData<ApiResponseState<List<SimpleBeerRowModel>>>()
-    val barrelsListLiveData: LiveData<ApiResponseState<List<SimpleBeerRowModel>>>
+    private val _barrelsListLiveData = MutableLiveData<ResultState<List<SimpleBeerRowModel>>>()
+    val barrelsListLiveData: LiveData<ResultState<List<SimpleBeerRowModel>>>
         get() = _barrelsListLiveData
 
     private val _commentsListLiveData = MutableLiveData<List<CommentModel>>()
@@ -72,14 +78,16 @@ class HomeViewModel @Inject constructor(
 
         getBeerUseCase.beerAsFlow().combine(_storeHouseDataFlow.asStateFlow()) { beer, data ->
             when (data) {
-                is ResultState.Error -> {}
+                is ResultState.Error -> {
+                    _barrelsListLiveData.value = data
+                }
 
                 is ResultState.Success -> if (!beer.isNullOrEmpty()) {
                     _barrelsListLiveData.value =
-                        ApiResponseState.Success(formAllBarrelsList(data.data, beer))
+                        ResultState.Success(formAllBarrelsList(data.data, beer))
                 }
 
-                else -> _barrelsListLiveData.value = ApiResponseState.Loading(true)
+                else -> _barrelsListLiveData.value = ResultState.Loading
             }
         }.launchIn(viewModelScope)
 
@@ -120,17 +128,12 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getRegionBalance() {
-        sendRequest(
-            ApeniApiService.getInstance().getStoreHouseBalance(
-                dateFormatDash.format(currentDate.time), 0
-            ),
-            successWithData = {
-                Log.d("store", it.empty.toString())
-                viewModelScope.launch {
-                    _storeHouseDataFlow.emit(ResultState.Success(it))
-                }
-            },
-        )
+        viewModelScope.launch {
+            val result = getStoreHouseBalanceUseCase(
+                dateFormatDash.format(currentDate.time)
+            ).toResultState()
+            _storeHouseDataFlow.emit(result)
+        }
     }
 
     private fun getGlobalBalance() {
@@ -144,7 +147,7 @@ class HomeViewModel @Inject constructor(
                     valueOfDiff[globalModel.id] = globalModel.getBalance()
                 }
                 300 waitFor {
-                    _barrelsListLiveData.value = ApiResponseState.Success(
+                    _barrelsListLiveData.value = ResultState.Success(
                         listOf(
                             SimpleBeerRowModel(
                                 BARRELS_IN_BREWERY_TITLE,
@@ -185,12 +188,15 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getComments() {
-        sendRequest(
-            apeniApi.getComments(),
-            successWithData = {
+        viewModelScope.launch {
+            val result = getCommentsUseCase().toResultState()
+            result.onSuccess {
                 _commentsListLiveData.value = it
             }
-        )
+            result.onError { code, message ->
+                _commentsListLiveData.value = emptyList()
+            }
+        }
     }
 
     fun addComment(comment: AddCommentModel) {

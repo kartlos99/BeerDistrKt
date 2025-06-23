@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -15,4 +16,12 @@ class StorehouseIoRepositoryImpl @Inject constructor(
         return apiCall { api.getStoreHouseIoPagedList(pageIndex) }
     }
 
+    override suspend fun getStoreBalance(
+        date: String,
+        checkFlag: Int,
+    ): ApiResponse<StoreHouseResponse> {
+        return apiCall {
+            api.getStoreHouseBalance(date, checkFlag)
+        }
+    }
 }

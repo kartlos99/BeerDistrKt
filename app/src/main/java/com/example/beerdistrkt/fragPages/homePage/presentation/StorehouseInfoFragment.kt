@@ -15,8 +15,7 @@ import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentStorehouseInfoBinding
 import com.example.beerdistrkt.fragPages.sawyobi.adapters.SimpleBeerRowAdapter
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
+import com.example.beerdistrkt.network.model.ResultState
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,11 +38,11 @@ class StorehouseInfoFragment : BaseFragment<HomeViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.barrelsListLiveData.observe(viewLifecycleOwner) {
-            binding.homeMainStoreHouseLoader.isVisible = it is ApiResponseState.Loading
+            binding.homeMainStoreHouseLoader.isVisible = it is ResultState.Loading
             when (it) {
-                is ApiResponseState.Loading -> {}
-                is ApiResponseState.Success -> initStoreHouseRecycler(it.data)
-                else -> showToast(R.string.some_error)
+                is ResultState.Error -> showToast(R.string.some_error)
+                is ResultState.Success -> initStoreHouseRecycler(it.data)
+                else -> {}
             }
         }
 

@@ -2,6 +2,7 @@ package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
+import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
 import com.example.beerdistrkt.fragPages.bottle.data.model.BottleOrderUpdateDto
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDTO
 import com.example.beerdistrkt.fragPages.customer.data.model.CustomerDeactivationDto
@@ -9,17 +10,18 @@ import com.example.beerdistrkt.fragPages.expense.data.model.DeleteExpenseCategor
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseCategoryDto
 import com.example.beerdistrkt.fragPages.expense.data.model.ExpenseDto
 import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
+import com.example.beerdistrkt.fragPages.homePage.data.model.CommentDto
+import com.example.beerdistrkt.fragPages.login.data.model.LoginDataDto
+import com.example.beerdistrkt.fragPages.login.data.model.LoginRequest
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
+import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
+import com.example.beerdistrkt.fragPages.settings.data.model.SettingParamDto
 import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.UserApiModel
 import com.example.beerdistrkt.models.CustomerIdlInfo
-import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
-import com.example.beerdistrkt.fragPages.login.data.model.LoginDataDto
-import com.example.beerdistrkt.fragPages.login.data.model.LoginRequest
-import com.example.beerdistrkt.fragPages.settings.data.model.SettingParamDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -32,6 +34,12 @@ interface DistributionApi {
         @Query("pageIndex") pageIndex: Int,
         @Query("groupID") groupID: String = ""
     ): List<StorehouseIoDto>
+
+    @GET("storeHouse/getBalance.php")
+    suspend fun getStoreHouseBalance(
+        @Query("date") date: String,
+        @Query("chek") checkFlag: Int
+    ): StoreHouseResponse
 
     @GET("listing/expenseCategories.php")
     suspend fun getExpenseCategories(): List<ExpenseCategoryDto>
@@ -102,6 +110,9 @@ interface DistributionApi {
     /* general */
     @GET("general/getBaseData.php")
     suspend fun getBaseData(): BaseDataDto
+
+    @GET("general/getComments.php")
+    suspend fun getComments(): List<CommentDto>
 
     /* users */
     @GET("listing/users.php")

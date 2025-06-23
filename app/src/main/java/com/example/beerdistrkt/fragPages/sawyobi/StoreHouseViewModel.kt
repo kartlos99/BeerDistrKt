@@ -8,10 +8,13 @@ import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
+import com.example.beerdistrkt.fragPages.sawyobi.domain.usecase.GetStoreHouseBalanceUseCase
 import com.example.beerdistrkt.fragPages.sawyobi.models.BottleIoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.IoModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBeerRowModel
@@ -19,9 +22,9 @@ import com.example.beerdistrkt.fragPages.sawyobi.models.SimpleBottleRowModel
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreInsertRequestModel
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
-import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.api.toResultState
+import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,6 +40,7 @@ class StoreHouseViewModel @Inject constructor(
     private val getBeerUseCase: GetBeerUseCase,
     private val getBottlesUseCase: GetBottlesUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
+    private val getStoreHouseBalanceUseCase: GetStoreHouseBalanceUseCase,
 ) : BaseViewModel() {
 
     var selectedDate: Calendar = Calendar.getInstance()
@@ -108,22 +112,18 @@ class StoreHouseViewModel @Inject constructor(
     }
 
     private fun getStoreBalance() {
-        sendRequest(
-            ApeniApiService.getInstance().getStoreHouseBalance(
+        viewModelScope.launch {
+            val result = getStoreHouseBalanceUseCase(
                 dateFormatDash.format(selectedDate.time),
                 if (isChecked) 1 else 0
-            ),
-            successWithData = {
-                Log.d("store", it.empty.toString())
+            ).toResultState()
+            result.onSuccess {
                 formFullList(it.full)
                 proceedBottleBalance(it.bottles)
                 if (it.empty != null)
                     formEmptyList(it.empty, it.full)
-            },
-            finally = {
-                Log.d("storeFinaly", it.toString())
             }
-        )
+        }
     }
 
     private fun formEmptyList(
@@ -340,14 +340,16 @@ class StoreHouseViewModel @Inject constructor(
     private fun processBottleIoData(data: List<BottleIoModel>) {
         receivedBottleItemsList.clear()
         data.forEach {
-            receivedBottleItemsList.add(it.toTempBottleItemModel(
-                bottleList,
-                { tempBottleModel ->
-                    receivedBottleItemsList.removeAll { it.id == tempBottleModel.id }
-                    updateTempInputItemList()
-                },
-                {}
-            ))
+            receivedBottleItemsList.add(
+                it.toTempBottleItemModel(
+                    bottleList,
+                    { tempBottleModel ->
+                        receivedBottleItemsList.removeAll { it.id == tempBottleModel.id }
+                        updateTempInputItemList()
+                    },
+                    {}
+                )
+            )
         }
         updateTempInputItemList()
     }

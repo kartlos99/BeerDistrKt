@@ -4,7 +4,6 @@ data class CommentModel(
     val comment: String,
     val op: Char,
     val commentDate: String,
-    val dasaxeleba: String,
+    val customerName: String,
     val username: String
-) {
-}
+)

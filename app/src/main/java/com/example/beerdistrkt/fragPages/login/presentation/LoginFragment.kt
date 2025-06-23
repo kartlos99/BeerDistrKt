@@ -42,7 +42,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
         actViewModel = (activity as MainActivity).viewModel
         initView()
 
-        if (viewModel.session.isUserLogged())
+        if (viewModel.session.isAccessTokenValid())
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         else
             checkSavedPass()

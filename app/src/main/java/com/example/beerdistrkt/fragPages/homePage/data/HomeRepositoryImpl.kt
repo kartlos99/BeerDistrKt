@@ -8,6 +8,8 @@ import com.example.beerdistrkt.fragPages.beer.domain.BeerRepository
 import com.example.beerdistrkt.fragPages.bottle.domain.BottleRepository
 import com.example.beerdistrkt.fragPages.homePage.domain.HomeRepository
 import com.example.beerdistrkt.fragPages.bottle.data.BottleDtoMapper
+import com.example.beerdistrkt.fragPages.homePage.domain.model.CommentModel
+import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -23,6 +25,7 @@ class HomeRepositoryImpl @Inject constructor(
     private val bottleRepository: BottleRepository,
     private val databaseDao: ApeniDatabaseDao,
     private val barrelMapper: BarrelMapper,
+    private val commentMapper: CommentMapper,
     ioDispatcher: CoroutineDispatcher,
 ) : BaseRepository(ioDispatcher), HomeRepository {
 
@@ -54,4 +57,11 @@ class HomeRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getComments(): ApiResponse<List<CommentModel>> {
+        return apiCall {
+            api.getComments().map {
+                commentMapper.mapToDomain(it)
+            }
+        }
+    }
 }

@@ -125,8 +125,8 @@ interface ApeniApiService {
 //    fun getCanList(): Call<DataResponse<List<CanModel>>>
 
     // general
-    @GET("general/getComments.php")
-    fun getComments(): Call<DataResponse<List<CommentModel>>>
+//    @GET("general/getComments.php")
+//    fun getComments(): Call<DataResponse<List<CommentModel>>>
 
     @POST("general/addComment.php")
     fun addComment(@Body comment: AddCommentModel): Call<DataResponse<String>>
@@ -194,11 +194,11 @@ interface ApeniApiService {
 //    fun getCustomersIdleInfo(): Call<DataResponse<List<CustomerIdlInfo>>>
 
     // storeHouse
-    @GET("storeHouse/getBalance.php")
-    fun getStoreHouseBalance(
-        @Query("date") date: String,
-        @Query("chek") chek: Int
-    ): Call<DataResponse<StoreHouseResponse>>
+//    @GET("storeHouse/getBalance.php")
+//    fun getStoreHouseBalance(
+//        @Query("date") date: String,
+//        @Query("chek") chek: Int
+//    ): Call<DataResponse<StoreHouseResponse>>
 
     @POST("storeHouse/add.php")
     fun addStoreHouseOperation(@Body StoreHouseAddObject: StoreInsertRequestModel): Call<DataResponse<String>>

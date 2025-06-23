@@ -20,7 +20,7 @@ class CommentsAdapter(
         fun bind(item: CommentModel) {
             with(binding) {
                 commentDate.text = item.commentDate.changeDatePattern()
-                commentClientName.text = item.dasaxeleba
+                commentClientName.text = item.customerName
                 commentText.text = item.comment
                 if (item.op == 'E') {
                     commentAuthor.text = item.username
