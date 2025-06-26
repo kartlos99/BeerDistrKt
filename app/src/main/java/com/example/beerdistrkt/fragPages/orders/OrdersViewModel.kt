@@ -82,6 +82,8 @@ class OrdersViewModel @Inject constructor(
 
     private val foldsLiveData = userPreferencesRepository.userPreferencesFlow.asLiveData()
 
+    private var isFetchingOrders = false
+
     init {
         initializeData()
         _orderDayLiveData.value = dateFormatDash.format(orderDateCalendar.time)
@@ -123,48 +125,53 @@ class OrdersViewModel @Inject constructor(
 
     fun getOrders() {
 
-        ordersLiveData.value = ApiResponseState.Loading(true)
-        sendRequest(
-            ApeniApiService.getInstance().getOrders(dateFormatDash.format(orderDateCalendar.time)),
-            successWithData = { ordersDto ->
-                clientRegionMap = ordersDto.groupBy {
-                    it.clientID
-                }.mapValues {
-                    it.value.first().availableRegions
+        if (!isFetchingOrders) {
+            isFetchingOrders = true
+            ordersLiveData.value = ApiResponseState.Loading(true)
+            sendRequest(
+                ApeniApiService.getInstance()
+                    .getOrders(dateFormatDash.format(orderDateCalendar.time)),
+                successWithData = { ordersDto ->
+                    clientRegionMap = ordersDto.groupBy {
+                        it.clientID
+                    }.mapValues {
+                        it.value.first().availableRegions
+                    }
+                    allOrders.clear()
+                    allOrders.addAll(ordersDto.map { orderDTO ->
+                        orderDTO.toPm(
+                            customers,
+                            beers,
+                            bottleList,
+                            onDeleteClick = { order ->
+                                askForOrderDeleteLiveData.value = order
+                            },
+                            onEditClick = { order ->
+                                editOrderLiveData.value = order
+                            },
+                            onChangeDistributorClick = { order ->
+                                changeDistributorLiveData.value = order
+                            },
+                            onItemClick = { order ->
+                                if (deliveryMode) onItemClickLiveData.value = order
+                            },
+                            onHistoryClick = { orderID ->
+                                onShowHistoryLiveData.eventValue = orderID
+                            }
+                        )
+                    })
+                    proceedOrders()
+                },
+                failure = {
+                    Log.d("getOrder", "failed: ${it.message}")
+                    ordersLiveData.value = ApiResponseState.ApiError(999, it.message ?: "")
+                },
+                finally = {
+                    ordersLiveData.value = ApiResponseState.Loading(false)
+                    isFetchingOrders = false
                 }
-                allOrders.clear()
-                allOrders.addAll(ordersDto.map { orderDTO ->
-                    orderDTO.toPm(
-                        customers,
-                        beers,
-                        bottleList,
-                        onDeleteClick = { order ->
-                            askForOrderDeleteLiveData.value = order
-                        },
-                        onEditClick = { order ->
-                            editOrderLiveData.value = order
-                        },
-                        onChangeDistributorClick = { order ->
-                            changeDistributorLiveData.value = order
-                        },
-                        onItemClick = { order ->
-                            if (deliveryMode) onItemClickLiveData.value = order
-                        },
-                        onHistoryClick = { orderID ->
-                            onShowHistoryLiveData.eventValue = orderID
-                        }
-                    )
-                })
-                proceedOrders()
-            },
-            failure = {
-                Log.d("getOrder", "failed: ${it.message}")
-                ordersLiveData.value = ApiResponseState.ApiError(999, it.message ?: "")
-            },
-            finally = {
-                ordersLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
+            )
+        }
     }
 
     private fun proceedOrders() {

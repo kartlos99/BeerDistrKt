@@ -11,10 +11,17 @@ class UserAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
 
+        if (response.request.url.pathSegments.last() == AUTHENTICATE) {
+            return null
+        }
         synchronized(this) {
             if (authHelper.token != null)
                 authHelper.logout()
         }
         return null
+    }
+
+    companion object {
+        const val AUTHENTICATE = "authenticate.php"
     }
 }

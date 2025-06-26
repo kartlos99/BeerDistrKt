@@ -310,8 +310,10 @@
         android:label="LoaderScreenFragment"
         tools:layout="@layout/fragment_loading_screen">
         <action
-            android:id="@+id/action_loaderScreenFragment_to_loginFragment"
+            android:id="@+id/action_splash_to_login"
             app:destination="@id/loginFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
             app:popUpTo="@id/loaderScreenFragment"
             app:popUpToInclusive="true" />
         <action

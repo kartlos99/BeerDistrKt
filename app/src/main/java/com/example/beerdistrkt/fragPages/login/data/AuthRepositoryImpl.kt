@@ -46,4 +46,8 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun checkAuth() : ApiResponse<Int> {
+        return apiCall { api.checkAuth().userID }
+    }
 }

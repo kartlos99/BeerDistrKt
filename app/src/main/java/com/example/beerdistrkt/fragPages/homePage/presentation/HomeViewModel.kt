@@ -91,16 +91,20 @@ class HomeViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
 
-        viewModelScope.launch {
+        if (session.isApiCommunicationReady()) viewModelScope.launch {
 //            val userInfo = userPreferencesRepository.readUserSession()
 //            session.restoreFromSavedInfo(userInfo)
 //            checkToken()
-            refreshBaseDataUseCase()
-            refreshSettingsUseCase()
-            refreshCustomers()
-            refreshUsersUseCase()
-            getComments()
+            fetchData()
         }
+    }
+
+    private suspend fun fetchData() {
+        refreshBaseDataUseCase()
+        refreshSettingsUseCase()
+        refreshCustomers()
+        refreshUsersUseCase()
+        getComments()
     }
 
     fun updateBottomSheetState(state: Int) = viewModelScope.launch {
@@ -110,30 +114,26 @@ class HomeViewModel @Inject constructor(
     fun setRegion(selectedRegion: WorkRegion) {
         viewModelScope.launch {
             userPreferencesRepository.saveRegion(selectedRegion)
-            refreshCustomers()
-            refreshUsersUseCase()
+            fetchData()
         }
         SharedPreferenceDataSource.getInstance().clearVersions()
         getStoreBalance()
-        getComments()
     }
 
 
     fun getStoreBalance() = viewModelScope.launch {
-        _storeHouseDataFlow.value = ResultState.Loading
-        if (session.region?.hasOwnStorage == true)
-            getRegionBalance()
-        else
-            getGlobalBalance()
+        when (session.region?.hasOwnStorage) {
+            true -> getRegionBalance()
+            false -> getGlobalBalance()
+            null -> println("Region is not defined in the session!")
+        }
     }
 
-    private fun getRegionBalance() {
-        viewModelScope.launch {
-            val result = getStoreHouseBalanceUseCase(
-                dateFormatDash.format(currentDate.time)
-            ).toResultState()
-            _storeHouseDataFlow.emit(result)
-        }
+    private suspend fun getRegionBalance() {
+        _storeHouseDataFlow.value = ResultState.Loading
+        val result = getStoreHouseBalanceUseCase(dateFormatDash.format(currentDate.time))
+            .toResultState()
+        _storeHouseDataFlow.emit(result)
     }
 
     private fun getGlobalBalance() {

@@ -72,7 +72,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         setHasOptionsMenu(viewModel.session.regions.size > 1)
-        if (viewModel.session.isAccessTokenValid() && viewModel.session.region == null)
+        if (viewModel.session.isAccessTokenValid() && viewModel.session.region == null) {
             if (viewModel.session.regions.size == 1)
                 onRegionChange(viewModel.session.regions.first())
             else
@@ -82,11 +82,13 @@ class HomeFragment : BaseFragment<HomeViewModel>(), View.OnClickListener {
                 ) {
                     onRegionChange(it)
                 }
+        } else {
+            viewModel.getStoreBalance()
+        }
 
         binding.btnOrder.text = getString(
             if (viewModel.session.region?.id == 3) R.string.delivery else R.string.orders
         )
-        viewModel.getStoreBalance()
     }
 
     private fun showStoreHouseData() {

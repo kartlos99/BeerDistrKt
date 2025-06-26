@@ -5,4 +5,5 @@ import com.example.beerdistrkt.network.api.ApiResponse
 
 interface AuthRepository {
     suspend fun signIn(username: String, password: String): ApiResponse<LoginData>
+    suspend fun checkAuth() : ApiResponse<Int>
 }

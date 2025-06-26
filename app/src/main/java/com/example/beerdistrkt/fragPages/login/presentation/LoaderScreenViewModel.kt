@@ -2,7 +2,9 @@ package com.example.beerdistrkt.fragPages.login.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.login.domain.usecase.CheckAuthUseCase
 import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
+import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoaderScreenViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val checkAuthUseCase: CheckAuthUseCase,
     override var session: Session,
 ) : BaseViewModel() {
 
@@ -40,9 +43,24 @@ class LoaderScreenViewModel @Inject constructor(
 //            }
         }
 
-        _actionFlow.emit(
-            if (session.isAccessTokenValid()) Action.OpenHomePage else Action.OpenLoginPage
-        )
+        if (session.isAccessTokenValid())
+            makeAuthTestCall()
+        else
+            goToAuth()
+
+    }
+
+    private suspend fun makeAuthTestCall() {
+        when (val result = checkAuthUseCase()) {
+            is ApiResponse.Error -> goToAuth()
+            is ApiResponse.Success -> _actionFlow.emit(Action.OpenHomePage)
+        }
+    }
+
+    private suspend fun goToAuth() {
+        session.clearSession()
+        session.clearUserPreference()
+        _actionFlow.emit(Action.OpenLoginPage)
     }
 
     sealed interface Action {

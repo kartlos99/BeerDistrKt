@@ -13,6 +13,7 @@ import com.example.beerdistrkt.fragPages.homePage.data.model.BaseDataDto
 import com.example.beerdistrkt.fragPages.homePage.data.model.CommentDto
 import com.example.beerdistrkt.fragPages.login.data.model.LoginDataDto
 import com.example.beerdistrkt.fragPages.login.data.model.LoginRequest
+import com.example.beerdistrkt.fragPages.login.data.model.UserAuthDto
 import com.example.beerdistrkt.fragPages.realisationtotal.data.model.RealizationDayDto
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
@@ -126,6 +127,9 @@ interface DistributionApi {
 
     @POST("user/signIn.php")
     suspend fun signIn(@Body loginRequest: LoginRequest): LoginDataDto
+
+    @POST("user/authenticate.php")
+    suspend fun checkAuth(): UserAuthDto
 
     /* settings */
     @GET("settings/getAll.php")

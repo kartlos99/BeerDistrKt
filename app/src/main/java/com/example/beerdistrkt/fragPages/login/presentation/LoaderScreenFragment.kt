@@ -37,8 +37,14 @@ class LoaderScreenFragment : BaseFragment<LoaderScreenViewModel>() {
                 Action.OpenHomePage -> findNavController()
                     .navigate(LoaderScreenFragmentDirections.actionLoaderScreenFragmentToHomeFragment())
 
-                Action.OpenLoginPage -> findNavController()
-                    .navigate(LoaderScreenFragmentDirections.actionLoaderScreenFragmentToLoginFragment())
+                Action.OpenLoginPage -> {
+                    try {
+                        findNavController()
+                            .navigate(LoaderScreenFragmentDirections.actionSplashToLogin())
+                    } catch (e: Exception) {
+                        findNavController().navigate(R.id.action_global_loginFragment)
+                    }
+                }
             }
         }
     }

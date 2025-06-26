@@ -64,6 +64,8 @@ class Session(
         return false
     }
 
+    fun isApiCommunicationReady(): Boolean = isAccessTokenValid() && region != null
+
     fun getUserInfo(): UserInfo {
         return UserInfo(
             userID ?: "",
