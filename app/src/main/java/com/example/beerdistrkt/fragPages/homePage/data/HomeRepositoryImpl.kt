@@ -38,6 +38,8 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBarrels(): List<Barrel> {
+        if (barrels.isEmpty())
+            refreshBaseData()
         return barrels
     }
 

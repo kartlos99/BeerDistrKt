@@ -31,6 +31,8 @@ class UserRepositoryImpl @Inject constructor(
         MutableStateFlow(ResultState.Success(emptyList()))
 
     override suspend fun getUsers(regionId: Int): List<User> {
+        if (users.isEmpty())
+            fetchUsers()
         return users
             .filterByRegion(regionId)
             .ifEmpty {

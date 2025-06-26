@@ -39,6 +39,8 @@ class BeerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBeers(): List<Beer> {
+        if (beers.isEmpty())
+            fetchBeers()
         return beers
     }
 
