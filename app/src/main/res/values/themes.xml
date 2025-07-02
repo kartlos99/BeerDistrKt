@@ -34,5 +34,7 @@
         <item name="colorSaleSection">@color/blue_1</item>
         <item name="colorBeerPriceBkg">@color/beer_price_bkg</item>
         <item name="colorBottlePriceBkg">@color/bottle_price_bkg</item>
+
+        <item name="colorInactiveOrderBkg">@color/red_01</item>
     </style>
 </resources>

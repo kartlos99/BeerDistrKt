@@ -34,5 +34,7 @@
         <item name="colorSaleSection">#4A818A</item>
         <item name="colorBeerPriceBkg">#3A525B</item>
         <item name="colorBottlePriceBkg">#585866</item>
+
+        <item name="colorInactiveOrderBkg">#523535</item>
     </style>
 </resources>

@@ -13,9 +13,9 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.databinding.ViewOrderBinding
 import com.example.beerdistrkt.fragPages.orders.adapter.OrderItemAdapter
 import com.example.beerdistrkt.getAttrColor
-import com.example.beerdistrkt.getColor
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.models.OrderStatus
+import com.example.beerdistrkt.setAmount
 import com.example.beerdistrkt.showToast
 
 class OrderView @JvmOverloads constructor(
@@ -75,12 +75,13 @@ class OrderView @JvmOverloads constructor(
         resetForm()
         with(binding) {
             orderUnitClientNameTv.text = order.customer?.name?.uppercase()
+            orderPriceText.setAmount(order.price())
             orderUnitHistoryImg.isVisible = order.isEdited > 0
             orderUnitCommentImg.isVisible = !order.comment.isNullOrEmpty()
             orderUnitCheckImg.isVisible = order.items.any { it.check == 1 }
             if (order.needCleaning == 1) {
                 orderStatusTv.text = resources.getString(R.string.need_cleaning, order.passDays)
-                orderStatusTv.setTextColor(Color.parseColor("#FFA6A6"))
+                orderStatusTv.setTextColor(Color.parseColor("#88FFA6A6"))
             }
             if (order.orderStatus != OrderStatus.ACTIVE) {
                 if (order.orderStatus != OrderStatus.COMPLETED) {
@@ -91,7 +92,7 @@ class OrderView @JvmOverloads constructor(
                     orderStatusTv.setTextColor(Color.RED)
                 else
                     orderMainConstraint.backgroundTintList =
-                        ColorStateList.valueOf(getColor(R.color.red_01))
+                        ColorStateList.valueOf(context.getAttrColor(R.attr.colorInactiveOrderBkg))
             }
             bkgForDeleted.isVisible = order.orderStatus == OrderStatus.DELETED
 

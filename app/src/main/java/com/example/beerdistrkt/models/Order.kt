@@ -52,6 +52,26 @@ data class Order(
         _onHistoryClick?.invoke(this.ID.toString())
     }
 
+    fun price(): Double {
+        var priceSum = .0
+        items.forEach { barrelItem ->
+            val unitPrice = customer?.beerPrices?.firstOrNull { it.beerID == barrelItem.beer.id }?.price ?: .0
+            val itemPrice = when (barrelItem.canTypeID) {
+                1 -> 50
+                2 -> 30
+                3 -> 20
+                4 -> 10
+                else -> 0
+            } * barrelItem.count * unitPrice
+            priceSum += itemPrice
+        }
+        bottleItems.forEach { bottleItem ->
+            val unitPrice = customer?.bottlePrices?.firstOrNull { it.bottleID == bottleItem.bottle.id }?.price ?: .0
+            priceSum += bottleItem.count * unitPrice
+        }
+        return priceSum
+    }
+
     data class Item(
         val ID: Int,
         val orderID: Int,

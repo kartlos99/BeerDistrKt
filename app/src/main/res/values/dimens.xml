@@ -18,6 +18,7 @@
     <dimen name="gr_size_4">4dp</dimen>
     <dimen name="gr_size_6">6dp</dimen>
     <dimen name="gr_size_8">8dp</dimen>
+    <dimen name="gr_size_10">10dp</dimen>
     <dimen name="gr_size_12">12dp</dimen>
     <dimen name="gr_size_16">16dp</dimen>
     <dimen name="gr_size_20">20dp</dimen>

@@ -117,7 +117,7 @@
                     android:paddingStart="@dimen/gr_size_12"
                     android:textSize="@dimen/sp18"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/orderUnitHistoryImg"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/orderUnitDragImg"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="ობიექტი საბურთალოზე" />
@@ -140,6 +140,7 @@
                     android:contentDescription="@string/img_description"
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_history_24"
+                    app:layout_constraintBottom_toBottomOf="@id/orderUnitCommentImg"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCommentImg"
                     app:layout_constraintTop_toTopOf="@id/orderUnitCommentImg"
                     app:tint="@color/gray_6" />
@@ -151,6 +152,7 @@
                     android:contentDescription="@string/img_description"
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/ic_comment_white_24dp"
+                    app:layout_constraintBottom_toBottomOf="@id/orderUnitCheckImg"
                     app:layout_constraintEnd_toStartOf="@id/orderUnitCheckImg"
                     app:layout_constraintTop_toTopOf="@id/orderUnitCheckImg"
                     app:tint="@color/gray_6" />
@@ -163,28 +165,54 @@
                     android:contentDescription="@string/img_description"
                     android:padding="@dimen/gr_size_4"
                     android:src="@drawable/circle"
+                    app:layout_constraintBottom_toBottomOf="@id/orderPriceIcon"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@id/orderPriceIcon" />
+
+                <ImageView
+                    android:id="@+id/orderPriceIcon"
+                    android:layout_width="@dimen/gr_size_24"
+                    android:layout_height="@dimen/gr_size_24"
+                    android:layout_marginStart="@dimen/gr_size_10"
+                    android:layout_marginTop="@dimen/gr_size_4"
+                    android:contentDescription="@string/img_description"
+                    android:padding="@dimen/gr_size_2"
+                    android:src="@drawable/ic_sell_24"
+                    app:layout_constraintStart_toStartOf="@id/orderUnitClientNameTv"
+                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv"
+                    app:tint="?secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/orderPriceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?secondaryTextColor"
+                    android:textSize="@dimen/sp18"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/orderPriceIcon"
+                    app:layout_constraintStart_toEndOf="@id/orderPriceIcon"
+                    app:layout_constraintTop_toTopOf="@id/orderPriceIcon"
+                    tools:text="543₾" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/gr_size_1"
                     android:layout_marginStart="@dimen/gr_size_12"
-                    android:layout_marginTop="@dimen/gr_size_6"
+                    android:layout_marginTop="@dimen/gr_size_4"
                     android:background="@color/gray_3"
-                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv" />
+                    app:layout_constraintTop_toBottomOf="@id/orderPriceIcon" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/orderItemList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gr_size_12"
+                    android:layout_marginTop="@dimen/gr_size_8"
                     android:layout_marginBottom="@dimen/gr_size_8"
                     android:paddingStart="@dimen/gr_size_12"
                     android:paddingBottom="@dimen/gr_size_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/orderUnitClientNameTv"
+                    app:layout_constraintTop_toBottomOf="@id/orderPriceIcon"
                     tools:itemCount="4"
                     tools:listitem="@layout/view_order_item" />
 
