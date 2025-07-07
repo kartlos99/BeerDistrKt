@@ -2,7 +2,7 @@ package com.example.beerdistrkt.adapters
 
 import androidx.fragment.app.FragmentManager
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.fragPages.statement.StatementSubPageFragment
+import com.example.beerdistrkt.fragPages.statement.presentation.StatementSubPageFragment
 
 
 class MyPagesAdapter(

@@ -155,7 +155,7 @@
     </fragment>
     <fragment
         android:id="@+id/statementFragment"
-        android:name="com.example.beerdistrkt.fragPages.statement.StatementFragment"
+        android:name="com.example.beerdistrkt.fragPages.statement.presentation.StatementFragment"
         android:label="@string/statement_title"
         tools:layout="@layout/statement_fragment">
         <argument

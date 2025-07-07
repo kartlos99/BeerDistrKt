@@ -1,21 +1,27 @@
-package com.example.beerdistrkt.fragPages.statement
+package com.example.beerdistrkt.fragPages.statement.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetFinanceStatementUseCase
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
 import com.example.beerdistrkt.models.DeleteRequest
 import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
+class StatementSubPageViewModel @Inject constructor(
+    private val getFinanceStatementUseCase: GetFinanceStatementUseCase,
+) : BaseViewModel() {
 
     private val _statementLiveData = MutableLiveData<ApiResponseState<List<StatementModel>>>()
     val statementLiveData: LiveData<ApiResponseState<List<StatementModel>>>
@@ -40,9 +46,24 @@ class StatementSubPageViewModel @Inject constructor() : BaseViewModel() {
     fun loadMoreData() {
         if (statementDataList.size < totalCount)
             when (pagePos) {
-                M_PAGE -> getMoneyStatement()
+                M_PAGE -> getFinanceStatement()
                 K_PAGE -> getBarrelStatement()
             }
+    }
+
+    private fun getFinanceStatement() {
+        viewModelScope.launch {
+
+            when(val result = getFinanceStatementUseCase(clientID, statementDataList.size)) {
+                is ApiResponse.Error -> {
+                    println("kd_ Error: ${result.message}")
+                }
+                is ApiResponse.Success -> {
+                    println("kd_ result.data")
+                    println(result.data)
+                }
+            }
+        }
     }
 
     private fun getMoneyStatement() {

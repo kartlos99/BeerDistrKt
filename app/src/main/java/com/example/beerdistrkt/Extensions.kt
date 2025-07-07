@@ -433,6 +433,10 @@ fun ImageView.setTint(@ColorRes resId: Int) {
     setColorFilter(getColor(resId))
 }
 
+fun ImageView.setTintFromAttr(@AttrRes resId: Int) {
+    setColorFilter(context.getAttrColor(resId))
+}
+
 infix fun Number.waitFor(block: (() -> Unit)) {
     Handler(Looper.getMainLooper()).postDelayed({
         block()

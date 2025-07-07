@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.statement
+package com.example.beerdistrkt.fragPages.statement.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,10 +18,10 @@ import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
-import com.example.beerdistrkt.fragPages.statement.adapter.StatementAdapter
+import com.example.beerdistrkt.fragPages.statement.presentation.adapter.StatementAdapter
 import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
-import com.example.beerdistrkt.fragPages.statement.model.StatementRecordType
+import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.LOCATION

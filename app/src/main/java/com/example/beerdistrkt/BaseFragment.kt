@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.fragPages.login.presentation.LoginFragment
-import com.example.beerdistrkt.fragPages.statement.StatementSubPageFragment
+import com.example.beerdistrkt.fragPages.statement.presentation.StatementSubPageFragment
 import com.example.beerdistrkt.utils.ApiResponseState
 import java.text.SimpleDateFormat
 import java.util.Locale

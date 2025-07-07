@@ -18,6 +18,8 @@ import com.example.beerdistrkt.fragPages.realisationtotal.data.model.Realization
 import com.example.beerdistrkt.fragPages.sawyobi.data.StorehouseIoDto
 import com.example.beerdistrkt.fragPages.sawyobi.models.StoreHouseResponse
 import com.example.beerdistrkt.fragPages.settings.data.model.SettingParamDto
+import com.example.beerdistrkt.fragPages.statement.data.model.BarrelStatementDto
+import com.example.beerdistrkt.fragPages.statement.data.model.FinanceStatementDto
 import com.example.beerdistrkt.fragPages.user.data.model.AddUserRequestModel
 import com.example.beerdistrkt.fragPages.user.data.model.BaseInsertApiModel
 import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
@@ -137,4 +139,17 @@ interface DistributionApi {
 
     @POST("settings/updateSetting.php")
     suspend fun updateSetting(@Body settingParamDto: SettingParamDto): SettingParamDto
+
+    /* statement */
+    @GET("statement/getCombinedFinancial.php")
+    suspend fun getFinancialStatement(
+        @Query("clientID") clientID: Int,
+        @Query("offset") offset: Int,
+    ): FinanceStatementDto
+
+    @GET("statement/getBarrels.php")
+    suspend fun getBarrelStatement(
+        @Query("clientID") clientID: Int,
+        @Query("offset") offset: Int,
+    ): BarrelStatementDto
 }

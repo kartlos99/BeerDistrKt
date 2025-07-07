@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.statement
+package com.example.beerdistrkt.fragPages.statement.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
