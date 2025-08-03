@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.fragPages.statement.model
 
 import android.annotation.SuppressLint
+import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
 import com.example.beerdistrkt.utils.K_OUT
 import com.example.beerdistrkt.utils.MITANA
 import com.example.beerdistrkt.utils.MITANA_BOTTLE
@@ -45,4 +46,6 @@ data class StatementModel(
         else -> MITANA
     }
 
+    var barrelsMap: String? = null
+    var color: Int? = null
 }

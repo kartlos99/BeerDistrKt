@@ -1,123 +1,104 @@
 package com.example.beerdistrkt.fragPages.statement.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
+import com.example.beerdistrkt.fragPages.statement.domain.model.FinanceStatementItem
+import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetFinanceStatementUseCase
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
-import com.example.beerdistrkt.models.DeleteRequest
-import com.example.beerdistrkt.network.ApeniApiService
+import com.example.beerdistrkt.fragPages.statement.presentation.mapper.FinanceStatementUiMapper
+import com.example.beerdistrkt.fragPages.statement.presentation.model.FinanceStatementUiModel
 import com.example.beerdistrkt.network.api.ApiResponse
-import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.M_PAGE
+import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.asSuccessState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.util.Date
-import javax.inject.Inject
 
-@HiltViewModel
-class StatementSubPageViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = FinanceStatementViewModel.Factory::class)
+class FinanceStatementViewModel @AssistedInject constructor(
     private val getFinanceStatementUseCase: GetFinanceStatementUseCase,
+    private val financeStatementUiMapper: FinanceStatementUiMapper,
+    @Assisted val clientID: Int,
 ) : BaseViewModel() {
 
-    private val _statementLiveData = MutableLiveData<ApiResponseState<List<StatementModel>>>()
-    val statementLiveData: LiveData<ApiResponseState<List<StatementModel>>>
+    private val _statementLiveData =
+        MutableLiveData<ResultState<List<FinanceStatementUiModel>>>()
+    val statementLiveData: LiveData<ResultState<List<FinanceStatementUiModel>>>
         get() = _statementLiveData
 
     var isGroupedLiveData = MutableLiveData(true)
 
-    private var statementDataList = ArrayList<StatementModel>()
+    private val statement = mutableListOf<FinanceStatementItem>()
+    private val statementUiItems = mutableListOf<FinanceStatementUiModel>()
 
-    var clientID = 0
-    var pagePos = 0
     val needUpdateLiveData = MutableLiveData<String?>(null)
     private var totalCount = 1L
 
     val isLastPage
-        get() = statementDataList.size >= totalCount
+        get() = statement.size >= totalCount
+
+    val isDataLoading
+        get() = _statementLiveData.value is ResultState.Loading
+
+    init {
+        requestStatementList()
+    }
 
     fun requestStatementList() {
-        statementDataList.clear()
+        statement.clear()
         loadMoreData()
     }
 
     fun loadMoreData() {
-        if (statementDataList.size < totalCount)
-            when (pagePos) {
-                M_PAGE -> getFinanceStatement()
-//                K_PAGE -> getBarrelStatement()
-            }
+        if (statement.size < totalCount)
+            getFinanceStatement()
     }
 
     private fun getFinanceStatement() {
         viewModelScope.launch {
+            _statementLiveData.value = ResultState.Loading
+            when (val result = getFinanceStatementUseCase(clientID, statement.size)) {
 
-            when(val result = getFinanceStatementUseCase(clientID, statementDataList.size)) {
                 is ApiResponse.Error -> {
-
+                    Log.d(TAG, "getFinanceStatement: ${result.message}")
+                    _statementLiveData.value = ResultState.Error(result.statusCode)
                 }
+
                 is ApiResponse.Success -> {
                     totalCount = result.data.totalCount
-//                    statementDataList.addAll(result.data.statements)
-//                    proceedData(it.list)
-
-                    println("result.data")
-                    println(result.data)
+                    statement.addAll(result.data.statements)
+                    statementUiItems.addAll(
+                        result.data.statements.map(financeStatementUiMapper::map)
+                    )
+//                    proceedData(statement)
+                    _statementLiveData.value = statementUiItems.toList().asSuccessState()
                 }
             }
         }
     }
 
-/*
-    private fun getMoneyStatement() {
-        _statementLiveData.value = ApiResponseState.Loading(true)
-        loadingCounter++
-        sendRequest(
-            ApeniApiService.getInstance().getFinancialStatement(statementDataList.size, clientID),
-            successWithData = {
-                totalCount = it.totalCount
-                statementDataList.addAll(it.list)
-                proceedData(it.list)
-            },
-            finally = {
-                loadingCounter--
-                _statementLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
-    }
+    private fun proceedData(statementItems: List<FinanceStatementItem>) {
+        _statementLiveData.value = ResultState.Success(
+            statementItems.map(financeStatementUiMapper::map)
 
-    private fun getBarrelStatement() {
-        _statementLiveData.value = ApiResponseState.Loading(true)
-        loadingCounter++
-        sendRequest(
-            ApeniApiService.getInstance().getBarrelStatement(statementDataList.size, clientID),
-            successWithData = {
-                totalCount = it.totalCount
-                statementDataList.addAll(it.list)
-                proceedData(it.list)
-            },
-            finally = {
-                loadingCounter--
-                _statementLiveData.value = ApiResponseState.Loading(false)
-            }
-        )
-    }
-*/
-
-    private fun proceedData(newPart: List<StatementModel>) {
-        _statementLiveData.value = ApiResponseState.Success(
-            if (isGroupedLiveData.value == true)
-                groupStatementList(newPart)
-            else
-                newPart
+//            if (isGroupedLiveData.value == true)
+//                groupStatementList(newPart)
+//            else
+//                newPart
         )
     }
 
     fun changeDataStructure(grouped: Boolean) {
         isGroupedLiveData.value = grouped
-        proceedData(statementDataList)
+        proceedData(statement)
     }
 
     private fun groupStatementList(rowList: List<StatementModel>): ArrayList<StatementModel> {
@@ -136,7 +117,7 @@ class StatementSubPageViewModel @Inject constructor(
             var bal: Float = rowList[0].balance
             var kIn = 0
             var kOut = 0
-            var grGift = if(rowList[0].isGift) 1 else 0
+            var grGift = if (rowList[0].isGift) 1 else 0
             val totalComment = mutableListOf<String?>()
             totalComment.add(rowList[0].comment)
 
@@ -202,8 +183,9 @@ class StatementSubPageViewModel @Inject constructor(
         return groupedList
     }
 
-    fun deleteRecord(table: String, id: Int) {
-        sendRequest(
+    fun deleteRecord(recType: StatementRecordType, recordId: Long) {
+        return
+        /*sendRequest(
             ApeniApiService.getInstance().deleteRecord(
                 DeleteRequest(
                     id.toString(),
@@ -215,7 +197,12 @@ class StatementSubPageViewModel @Inject constructor(
                 requestStatementList()
                 needUpdateLiveData.value = pagePos.toString()
             }
-        )
+        )*/
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(clientID: Int): FinanceStatementViewModel
     }
 
     companion object {

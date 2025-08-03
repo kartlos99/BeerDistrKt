@@ -16,30 +16,36 @@
 
         <TextView
             android:id="@+id/amoColumnTitle1"
+            style="@style/ColumnTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5" />
+            android:layout_weight="5"
+            android:gravity="start"
+            tools:text="თარიღი" />
 
         <TextView
             android:id="@+id/amoColumnTitle2"
+            style="@style/ColumnTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:textAlignment="center" />
+            tools:text="ღირებულება" />
 
         <TextView
             android:id="@+id/amoColumnTitle3"
+            style="@style/ColumnTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:textAlignment="center" />
+            android:text="@string/pay" />
 
         <TextView
             android:id="@+id/amoColumnTitle4"
+            style="@style/ColumnTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:textAlignment="center" />
+            tools:text="ბალანსი" />
 
     </LinearLayout>
 

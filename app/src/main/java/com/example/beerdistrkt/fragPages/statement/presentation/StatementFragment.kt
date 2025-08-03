@@ -47,7 +47,7 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
             pagesAdapter?.fragmentM?.changeStatementAppearance(isChecked)
             pagesAdapter?.fragmentK?.changeStatementAppearance(isChecked)
             if (pagesAdapter?.fragmentM?.action == null) {
-                pagesAdapter?.fragmentM?.action = ::goEditing
+                pagesAdapter?.fragmentM?.action = ::editingFinanceStatement
                 pagesAdapter?.fragmentK?.action = ::goEditing
                 pagesAdapter?.fragmentM?.onShowHistory = ::showHistory
             }
@@ -83,6 +83,12 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
                 historyOf,
             )
         )
+    }
+
+    private fun editingFinanceStatement(operation: String, recordID: Long) {
+        val action = StatementFragmentDirections
+            .actionStatementFragmentToAddDeliveryFragment(clientID, operation, 0, recordID.toInt())
+        this.findNavController().navigate(action)
     }
 
     private fun goEditing(operation: String, recordID: Int) {

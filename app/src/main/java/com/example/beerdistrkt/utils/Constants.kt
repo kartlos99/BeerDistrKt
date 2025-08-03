@@ -6,3 +6,6 @@ const val DEFAULT_NUMBER_PATTERN = "#0.00"
 
 const val DOT_CHAR = "."
 const val COMMA_CHAR = ","
+
+const val DATE_PATTERN = "yyyy-MM-dd"
+const val DATETIME_PATTERN = "yyyy-MM-dd HH:mm"

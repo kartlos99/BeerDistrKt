@@ -73,6 +73,14 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="ColumnTitle">
+        <item name="android:textSize">@dimen/sp15</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:lines">1</item>
+    </style>
+
     <style name="MyToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorSecondary">#fff</item>
     </style>

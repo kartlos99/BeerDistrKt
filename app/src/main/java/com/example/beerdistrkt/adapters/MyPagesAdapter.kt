@@ -1,7 +1,9 @@
 package com.example.beerdistrkt.adapters
 
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.statement.presentation.FinanceStatementFragment
 import com.example.beerdistrkt.fragPages.statement.presentation.StatementSubPageFragment
 
 
@@ -19,8 +21,11 @@ class MyPagesAdapter(
         return mPagerFragments
     }
 
-    override fun getItem(position: Int): StatementSubPageFragment {
-        return StatementSubPageFragment.newInstance(position, customerID)
+    override fun getItem(position: Int): Fragment {
+        return when (position) {
+            0 -> FinanceStatementFragment.newInstance(customerID)
+            else -> StatementSubPageFragment.newInstance(position, customerID)
+        }
     }
 
     override fun getCount(): Int {
@@ -31,9 +36,9 @@ class MyPagesAdapter(
         this.titles = titles
     }
 
-    val fragmentM: StatementSubPageFragment
+    val fragmentM: FinanceStatementFragment
         get() = fm.findFragmentByTag(makeFragmentTag(0))
-                as StatementSubPageFragment
+                as FinanceStatementFragment
 
     val fragmentK: StatementSubPageFragment
         get() = fm.findFragmentByTag(makeFragmentTag(1))

@@ -1,4 +1,4 @@
-package com.example.beerdistrkt.fragPages.statement.adapter
+package com.example.beerdistrkt.fragPages.statement.presentation.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -15,6 +15,8 @@ import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.model.StatementModel
 import com.example.beerdistrkt.getAttrColor
 import com.example.beerdistrkt.setFrictionSize
+import com.example.beerdistrkt.setTint
+import com.example.beerdistrkt.setTintFromAttr
 import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.K_PAGE
 import com.example.beerdistrkt.utils.M_PAGE
@@ -143,6 +145,11 @@ class StatementAdapter(
 
             recordTypeIndicator.isVisible = item.recordType.icon != null
                     || (item.groupGift && isGrouped() && location == M_PAGE)
+
+            if (item.color != null)
+                recordTypeIndicator.setTint(R.color.colorAccent)
+            else
+                recordTypeIndicator.setTintFromAttr(R.attr.mainTextColor)
 
             tAmonListIn.setTextColor(textColor)
             tAmonListOut.setTextColor(textColor)
