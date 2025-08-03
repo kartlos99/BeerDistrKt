@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/date_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/gr_size_2"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintEnd_toStartOf="@id/middle_section"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2024-01-04" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/middle_section"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_orderCol"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@id/base_barrier"
+        app:layout_constraintEnd_toStartOf="@id/balance_tv"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/date_tv"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/sale_tv"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:alpha=".9"
+            android:ellipsize="end"
+            android:padding="@dimen/gr_size_2"
+            android:text="-"
+            android:textSize="@dimen/sp12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/money_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/money_cell_bkg"
+            android:gravity="end|center_vertical"
+            android:paddingHorizontal="4dp"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp15"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/sale_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="123.45₾" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/balance_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_orderCol"
+        android:gravity="end|center_vertical"
+        android:paddingStart="2dp"
+        android:paddingTop="@dimen/gr_size_2"
+        android:paddingEnd="4dp"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintBottom_toBottomOf="@id/base_barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/middle_section"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="123.23" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/base_barrier"
+        android:layout_width="@dimen/gr_size_0"
+        android:layout_height="@dimen/gr_size_0"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="balance_tv, date_tv, middle_section" />
+
+    <TextView
+        android:id="@+id/comment_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bkg_underline"
+        android:padding="@dimen/gr_size_4"
+        android:textSize="@dimen/sp15"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/base_barrier"
+        tools:text="comment"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
