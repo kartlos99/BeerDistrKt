@@ -23,7 +23,7 @@ class StatementRepositoryImpl @Inject constructor(
 
     override suspend fun getFinancialStatement(
         customerId: Int,
-        offset: Int,
+        offset: String?,
     ): ApiResponse<FinanceStatement> {
         return apiCall {
             val data = api.getFinancialStatement(customerId, offset)

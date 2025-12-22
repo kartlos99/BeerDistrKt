@@ -2,7 +2,6 @@ package com.example.beerdistrkt.fragPages.statement.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -14,19 +13,15 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
 import com.example.beerdistrkt.fragPages.login.domain.model.Permission
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
-import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
-import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
-import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
 import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementAdapter
-import com.example.beerdistrkt.fragPages.statement.presentation.model.FinanceStatementUiModel
+import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.OBJ_ID
+import com.example.beerdistrkt.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -104,62 +99,64 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
     }
 
     fun changeStatementAppearance(grouped: Boolean) {
-        viewModel.changeDataStructure(grouped)
+//        viewModel.changeDataStructure(grouped)
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            CtxMenuItem.Edit.itemID -> if (pagePos == 0) {
-                val statementItem = fAdapter.getClickedItem(item.groupId)
-                action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
-                true
-            } else false
+    /*
+        override fun onContextItemSelected(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                CtxMenuItem.Edit.itemID -> if (pagePos == 0) {
+                    val statementItem = fAdapter.getClickedItem(item.groupId)
+                    action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
+                    true
+                } else false
 
-            CtxMenuItem.EditBarrel.itemID -> if (pagePos == 1) {
-                val statementItem = fAdapter.getClickedItem(item.groupId)
-                action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
-                true
-            } else false
+                CtxMenuItem.EditBarrel.itemID -> if (pagePos == 1) {
+                    val statementItem = fAdapter.getClickedItem(item.groupId)
+                    action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
+                    true
+                } else false
 
-            CtxMenuItem.Delete.itemID -> if (pagePos == 0) {
-                confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
-                true
-            } else false
+                CtxMenuItem.Delete.itemID -> if (pagePos == 0) {
+                    confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
+                    true
+                } else false
 
-            CtxMenuItem.DeleteBarrel.itemID -> if (pagePos == 1) {
-                confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
-                true
-            } else false
+                CtxMenuItem.DeleteBarrel.itemID -> if (pagePos == 1) {
+                    confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
+                    true
+                } else false
 
-            CtxMenuItem.History.itemID -> {
-                val statementItem = fAdapter.getClickedItem(item.groupId)
-                if (statementItem.pay != .0)
-                    onShowHistory?.invoke(statementItem.recordId.orZero().toInt(), MONEY)
-                else {
-                    when (statementItem.recordType) {
-                        StatementRecordType.SALE_BEER ->
-                            onShowHistory?.invoke(
-                                statementItem.recordId.orZero().toInt(),
-                                BARREL_DELIVERY
-                            )
+                CtxMenuItem.History.itemID -> {
+                    val statementItem = fAdapter.getClickedItem(item.groupId)
+                    if (statementItem.pay != .0)
+                        onShowHistory?.invoke(statementItem.recordId.orZero().toInt(), MONEY)
+                    else {
+                        when (statementItem.recordType) {
+                            StatementRecordType.SALE_BEER ->
+                                onShowHistory?.invoke(
+                                    statementItem.recordId.orZero().toInt(),
+                                    BARREL_DELIVERY
+                                )
 
-                        StatementRecordType.SALE_BOTTLE ->
-                            onShowHistory?.invoke(
-                                statementItem.recordId.orZero().toInt(),
-                                BOTTLE_DELIVERY
-                            )
+                            StatementRecordType.SALE_BOTTLE ->
+                                onShowHistory?.invoke(
+                                    statementItem.recordId.orZero().toInt(),
+                                    BOTTLE_DELIVERY
+                                )
 
-                        else -> {}
+                            else -> {}
+                        }
                     }
+                    return true
                 }
-                return true
+
+                else -> return super.onContextItemSelected(item)
             }
-
-            else -> return super.onContextItemSelected(item)
         }
-    }
+    */
 
-    private fun confirmDeleteStatement(statementModel: FinanceStatementUiModel) {
+    private fun confirmDeleteStatement(statementModel: FStatementUiItem) {
         requireContext().showAskingDialog(
             null,
             R.string.confirm_delete_text,
@@ -167,9 +164,9 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
             R.string.no,
             R.style.ThemeOverlay_MaterialComponents_Dialog
         ) {
-            statementModel.recordId?.let {
-                viewModel.deleteRecord(statementModel.recordType, it)
-            }
+//            statementModel.recordId?.let {
+//                viewModel.deleteRecord(statementModel.recordType, it)
+//            }
         }
     }
 
@@ -178,7 +175,7 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
         viewModel.requestStatementList()
     }
 
-    inner class PaginatedListener(layoutManager: LinearLayoutManager) :
+    inner class PaginatedListener(val layoutManager: LinearLayoutManager) :
         PaginatedScrollListener(layoutManager) {
 
         override fun loadMoreItems() {

@@ -10,7 +10,7 @@ class GetFinanceStatementUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         customerId: Int,
-        offset: Int,
+        offset: String?,
     ): ApiResponse<FinanceStatement> {
         return statementRepository.getFinancialStatement(customerId, offset)
     }

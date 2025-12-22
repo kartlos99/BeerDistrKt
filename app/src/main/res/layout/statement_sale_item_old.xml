@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/mainLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/date_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/gr_size_2"
+            android:textSize="@dimen/sp15"
+            tools:text="2024-01-04" />
+
+        <TextView
+            android:id="@+id/groupPriceTv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/sale_cell_bkg"
+            android:gravity="end|center_vertical"
+            android:padding="2dp"
+            android:textSize="@dimen/sp15"
+            tools:text="123.45₾" />
+
+        <FrameLayout
+            android:id="@+id/giftContainer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/gr_size_4">
+
+            <ImageView
+                android:id="@+id/giftImg"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|start"
+                android:contentDescription="@string/img_description"
+                android:importantForAccessibility="no"
+                android:padding="@dimen/gr_size_2"
+                android:src="@drawable/ic_gift_24"
+                android:visibility="gone"
+                app:tint="#FF00FF"
+                tools:visibility="visible" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/balance_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/color_orderCol"
+            android:gravity="end|center_vertical"
+            android:padding="2dp"
+            android:textSize="@dimen/sp15"
+            tools:text="123.23" />
+    </LinearLayout>
+
+
+    <!--    <androidx.constraintlayout.widget.Barrier-->
+    <!--        android:id="@+id/base_barrier"-->
+    <!--        android:layout_width="@dimen/gr_size_0"-->
+    <!--        android:layout_height="@dimen/gr_size_0"-->
+    <!--        app:barrierDirection="bottom"-->
+    <!--        app:constraint_referenced_ids="balance_tv, date_tv, groupPriceTv" />-->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSaleItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/saleItemsRc"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guidelineSaleItems"
+        app:layout_constraintTop_toBottomOf="@id/mainLine"
+
+        tools:itemCount="3"
+        tools:listitem="@layout/statement_sale_sub_item" />
+
+    <TextView
+        android:id="@+id/comment_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bkg_underline"
+        android:padding="@dimen/gr_size_4"
+        android:textSize="@dimen/sp15"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/saleItemsRc"
+        tools:text="comment"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import java.text.ParseException
 import java.util.Date
 import javax.inject.Inject
 
+@Deprecated("create dedicated pages")
 @HiltViewModel
 class StatementSubPageViewModel @Inject constructor(
     private val getFinanceStatementUseCase: GetFinanceStatementUseCase,
@@ -54,7 +55,7 @@ class StatementSubPageViewModel @Inject constructor(
     private fun getFinanceStatement() {
         viewModelScope.launch {
 
-            when(val result = getFinanceStatementUseCase(clientID, statementDataList.size)) {
+            when(val result = getFinanceStatementUseCase(clientID, "statementDataList.size")) {
                 is ApiResponse.Error -> {
 
                 }

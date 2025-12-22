@@ -1,26 +1,22 @@
 package com.example.beerdistrkt.fragPages.statement.presentation.adapter
 
 import android.graphics.Color
-import android.view.ContextMenu
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
-import com.example.beerdistrkt.databinding.StatementListRowBinding
+import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
 import com.example.beerdistrkt.databinding.StatementMoneyItemBinding
-import com.example.beerdistrkt.databinding.StatementSaleItemBinding
-import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
-import com.example.beerdistrkt.fragPages.statement.model.CtxMenuItem
-import com.example.beerdistrkt.fragPages.statement.presentation.model.FinanceStatementUiModel
+import com.example.beerdistrkt.databinding.StatementSaleItemOldBinding
+import com.example.beerdistrkt.databinding.StatementSaleSubItemBinding
+import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
+import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
 import com.example.beerdistrkt.getAttrColor
-import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.setFrictionSize
-import com.example.beerdistrkt.setTintFromAttr
-import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.DefaultDiffItemCallback
 import com.example.beerdistrkt.utils.hide
 import java.text.DecimalFormat
@@ -29,51 +25,59 @@ class FStatementAdapter(
     private val editOldSalePermission: Boolean,
     private val editSalePermission: Boolean,
     private val isGrouped: () -> Boolean,
-) : ListAdapter<FinanceStatementUiModel, RecyclerView.ViewHolder>(
+) : ListAdapter<FStatementUiItem, RecyclerView.ViewHolder>(
     DefaultDiffItemCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-//            0 -> StatementViewHolder(
-//                StatementListRowBinding.inflate(LayoutInflater.from(parent.context)),
+            VIEW_TYPE_SALE -> StatementSaleItemViewHolder(
+                StatementSaleItemOldBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
 //                editOldSalePermission,
 //                editSalePermission,
 //                isGrouped,
-//            )
+            )
 
-            0 -> StatementMoneyItemViewHolder(
-                StatementMoneyItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            VIEW_TYPE_MONEY -> StatementMoneyItemViewHolder(
+                StatementMoneyItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
             )
-            else -> StatementSaleItemViewHolder(
-                StatementSaleItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-            )
+
+            else -> throw NoSuchElementException("Unknown view type - FStatementAdapter")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        when (item.recordType) {
-            StatementRecordType.TAKE_MONEY -> (holder as StatementMoneyItemViewHolder).bind(item)
-            else -> (holder as StatementSaleItemViewHolder).bind(item)
+        when (val item = getItem(position)) {
+            is FStatementUiItem.Money -> (holder as StatementMoneyItemViewHolder).bind(item)
+            is FStatementUiItem.Sale -> (holder as StatementSaleItemViewHolder).bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position).recordType) {
-            StatementRecordType.TAKE_MONEY -> 0
-            else -> 1
+        return when (getItem(position)) {
+            is FStatementUiItem.Money -> VIEW_TYPE_MONEY
+            is FStatementUiItem.Sale -> VIEW_TYPE_SALE
         }
     }
 
-    fun getClickedItem(position: Int): FinanceStatementUiModel = super.getItem(position)
+//    fun getClickedItem(position: Int): FinanceStatementUiModel = super.getItem(position)
 
     companion object {
         const val DASH = "-"
+        const val VIEW_TYPE_MONEY = 1
+        const val VIEW_TYPE_SALE = 2
     }
 
     class StatementSaleItemViewHolder(
-        private val binding: StatementSaleItemBinding,
+        private val binding: StatementSaleItemOldBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val df = DecimalFormat("#0.00")
@@ -85,7 +89,7 @@ class FStatementAdapter(
             )
         }
 
-        fun bind(item: FinanceStatementUiModel) = with(binding) {
+        fun bind(item: FStatementUiItem.Sale) = with(binding) {
 
             root.tag = item
             dateTv.text = item.dateStr
@@ -100,31 +104,52 @@ class FStatementAdapter(
                 Color.MAGENTA
 
             val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-            saleTv.text = if (item.isGift) COST_FREE else
+            groupPriceTv.text = if (item.isGift) COST_FREE else
                 getFormattedString(item.price, df).setFrictionSize(
                     frSize,
                     frictionColor
                 )
             balanceTv.text = df.format(item.balance).setFrictionSize(frSize, frictionColor)
+            giftImg.isVisible = item.isGift
 
-            saleTypeIcon.setImageResource(item.iconRes.orZero())
+//            saleTypeIcon.setImageResource(item.iconRes.orZero())
+//
+//            saleTypeIcon.isVisible = item.iconRes != null
+//            saleTypeColor.isVisible = item.color != null
+//
+//            if (item.color != null) {
+//                saleTypeIcon.setColorFilter(item.color)
+//                saleTypeColor.setBackgroundColor(item.color)
+//            } else {
+//                saleTypeIcon.setTintFromAttr(R.attr.mainTextColor)
+//            }
 
-            saleTypeIcon.isVisible = item.iconRes != null
-            saleTypeColor.isVisible = item.color != null
+            val subItemsAdapter = SimpleDataAdapter<SaleItemUiModel>(
+                layoutId = R.layout.statement_sale_sub_item,
+                onBind = { subItem, view ->
+                    StatementSaleSubItemBinding.bind(view).apply {
+                        priceTv.setTextColor(textColor)
+                        priceTv.text = getFormattedString(subItem.price, df).setFrictionSize(
+                            frSize,
+                            frictionColor
+                        )
+                        detailsTv.text = subItem.details
+                        subItem.recordType.icon?.let { saleTypeIcon.setImageResource(it) }
+                        subItem.itemColor?.let { saleTypeColor.setBackgroundColor(it) }
+                        saleTypeColor.isVisible = subItem.itemColor != null
+                    }
+                }
+            )
+            saleItemsRc.adapter = subItemsAdapter
+            saleItemsRc.layoutManager = LinearLayoutManager(root.context)
+            subItemsAdapter.submitList(item.items)
 
-            if (item.color != null) {
-                saleTypeIcon.setColorFilter(item.color)
-                saleTypeColor.setBackgroundColor(item.color)
-            } else {
-                saleTypeIcon.setTintFromAttr(R.attr.mainTextColor)
-            }
+//            detailsTv.isVisible = item.items.isNotEmpty()
+//            item.items.firstOrNull()?.let {
+//                detailsTv.text = it.details
+//            }
 
-            detailsTv.isVisible = item.details != null
-            item.details?.let {
-                detailsTv.text = it
-            }
-
-            saleTv.setTextColor(textColor)
+            groupPriceTv.setTextColor(textColor)
             balanceTv.setTextColor(textColor)
 
             if (item.comment.isNullOrBlank())
@@ -161,7 +186,7 @@ class FStatementAdapter(
             )
         }
 
-        fun bind(item: FinanceStatementUiModel) = with(binding) {
+        fun bind(item: FStatementUiItem.Money) = with(binding) {
 
             root.tag = item
             dateTv.text = item.dateStr
@@ -207,7 +232,7 @@ class FStatementAdapter(
         }
     }
 
-    class StatementViewHolder(
+    /*class StatementViewHolder(
         private val binding: StatementListRowBinding,
         private val editOldSalePermission: Boolean,
         private val editSalePermission: Boolean,
@@ -240,32 +265,14 @@ class FStatementAdapter(
 
             val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
             tAmonListIn.text = if (item.isGift) COST_FREE else
-                getFormattedString(item.price, df).setFrictionSize(
-                    frSize,
-                    frictionColor
-                )
+                getFormattedString(item.price, df).setFrictionSize(frSize, frictionColor)
             tAmonListOut.text =
                 getFormattedString(item.pay, df).setFrictionSize(frSize, frictionColor)
             tAmonListBalance.text =
                 df.format(item.balance).setFrictionSize(frSize, frictionColor)
 
             recordTypeIndicator.setImageResource(item.iconRes.orZero())
-//            if (item.groupGift && isGrouped())
-//                recordTypeIndicator.setImageResource(R.drawable.ic_gift_24)
-//            else
-//                recordTypeIndicator.setImageResource(0)
-
-//            item.recordType.icon?.let {
-//                recordTypeIndicator.setImageResource(it)
-//            }
-
             recordTypeIndicator.isVisible = item.iconRes != null
-//                    || (item.groupGift && isGrouped() && location == M_PAGE)
-
-            if (item.color != null)
-                recordTypeIndicator.setColorFilter(item.color)
-            else
-                recordTypeIndicator.setTintFromAttr(R.attr.mainTextColor)
 
             tAmonListIn.setTextColor(textColor)
             tAmonListOut.setTextColor(textColor)
@@ -280,6 +287,7 @@ class FStatementAdapter(
                         tAmonaweriRowComment.visibility != View.VISIBLE
             }
         }
+        *//*
 
         private fun getFormattedString(value: Double, formatter: DecimalFormat): String =
             if (value == .0)
@@ -333,5 +341,5 @@ class FStatementAdapter(
             private const val FRICTION_PART_COLOR = "#808080"
             private const val COST_FREE = "უფასო"
         }
-    }
+    }*/
 }

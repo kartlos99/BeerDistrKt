@@ -1,28 +1,41 @@
 package com.example.beerdistrkt.fragPages.statement.presentation.mapper
 
-import com.example.beerdistrkt.R
+import com.example.beerdistrkt.fragPages.statement.domain.model.FStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.FinanceStatementDetails
-import com.example.beerdistrkt.fragPages.statement.domain.model.FinanceStatementItem
-import com.example.beerdistrkt.fragPages.statement.presentation.model.FinanceStatementUiModel
+import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
+import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
 import javax.inject.Inject
 
 class FinanceStatementUiMapper @Inject constructor() {
 
-    fun map(item: FinanceStatementItem): FinanceStatementUiModel {
-        return FinanceStatementUiModel(
+    fun map(item: FStatement): FStatementUiItem = when (item) {
+        is FStatement.PayMoney -> FStatementUiItem.Money(
             dateStr = item.dateStr,
-            price = item.price,
-            pay = item.pay,
-            balance = item.balance,
-            recordType = item.recordType,
-            details = item.details?.let(::mapDetails),
             comment = item.comment,
-            recordId = item.recId,
-            iconRes = if (item.isGift()) R.drawable.ic_gift_24 else item.recordType.icon,
-            color = when (item.details) {
-                is FinanceStatementDetails.BeerDetails -> item.details.beer.displayColor
-                else -> null
-            },
+            pay = item.amount,
+            balance = item.balance,
+            recordId = item.recordId
+        )
+
+        is FStatement.SaleGroup -> FStatementUiItem.Sale(
+            dateStr = item.dateStr,
+            comment = item.comment,
+            price = item.saleItems.sumOf { it.price },
+            balance = item.balance,
+            isGift = item.isGift,
+            isSoldToday = item.isSoldToday,
+            items = item.saleItems.map {
+                SaleItemUiModel(
+                    price = it.price,
+                    recordId = it.recordId,
+                    recordType = it.recordType,
+                    itemColor = when (it.details) {
+                        is FinanceStatementDetails.BeerDetails -> it.details.beer.displayColor
+                        else -> null
+                    },
+                    details = it.details?.let(::mapDetails).orEmpty()
+                )
+            }
         )
     }
 

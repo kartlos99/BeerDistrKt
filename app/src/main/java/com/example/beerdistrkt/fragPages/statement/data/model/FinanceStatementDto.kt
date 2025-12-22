@@ -7,6 +7,7 @@ import com.squareup.moshi.Json
 @Keep
 data class FinanceStatementDto(
     val totalCount: Long,
+    val firstOperationDate: String,
     val statements: List<FinanceStatementItemDto>,
 )
 

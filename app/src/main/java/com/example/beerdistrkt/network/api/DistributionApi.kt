@@ -144,7 +144,7 @@ interface DistributionApi {
     @GET("statement/getCombinedFinancial.php")
     suspend fun getFinancialStatement(
         @Query("clientID") clientID: Int,
-        @Query("offset") offset: Int,
+        @Query("offset") dateOffset: String?,
     ): FinanceStatementDto
 
     @GET("statement/getBarrels.php")

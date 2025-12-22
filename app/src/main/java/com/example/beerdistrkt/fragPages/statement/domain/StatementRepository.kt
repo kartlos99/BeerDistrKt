@@ -7,7 +7,7 @@ import com.example.beerdistrkt.network.api.ApiResponse
 interface StatementRepository {
     suspend fun getFinancialStatement(
         customerId: Int,
-        offset: Int,
+        offset: String?,
     ): ApiResponse<FinanceStatement>
 
     suspend fun getBarrelStatement(

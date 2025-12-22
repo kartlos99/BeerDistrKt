@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/price_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="end|center_vertical"
+        android:minWidth="100dp"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="2dp"
+        android:textSize="@dimen/sp14"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sale_type_icon"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="123.45₾" />
+
+    <ImageView
+        android:id="@+id/sale_type_icon"
+        android:layout_width="@dimen/gr_size_24"
+        android:layout_height="22dp"
+        android:contentDescription="@string/img_description"
+        android:importantForAccessibility="no"
+        android:padding="@dimen/gr_size_2"
+        android:src="@drawable/ic_tank_600_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sale_type_color"
+        app:layout_constraintStart_toEndOf="@id/price_tv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/mainTextColor"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/sale_type_color"
+        android:layout_width="@dimen/gr_size_4"
+        android:layout_height="@dimen/gr_size_16"
+        android:background="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/details_tv"
+        app:layout_constraintStart_toEndOf="@id/sale_type_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/details_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha=".9"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="@dimen/gr_size_2"
+        android:textSize="@dimen/sp12"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sale_type_color"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="7x50" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
