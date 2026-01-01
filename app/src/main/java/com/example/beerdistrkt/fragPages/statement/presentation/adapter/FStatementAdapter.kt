@@ -1,24 +1,28 @@
 package com.example.beerdistrkt.fragPages.statement.presentation.adapter
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.common.adapter.SimpleDataAdapter
-import com.example.beerdistrkt.databinding.StatementMoneyItemBinding
-import com.example.beerdistrkt.databinding.StatementSaleItemOldBinding
+import com.example.beerdistrkt.databinding.FinanceStatementItemBinding
 import com.example.beerdistrkt.databinding.StatementSaleSubItemBinding
+import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementAdapter.Companion.DASH
 import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
 import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
 import com.example.beerdistrkt.getAttrColor
 import com.example.beerdistrkt.setFrictionSize
+import com.example.beerdistrkt.setTimeSize
 import com.example.beerdistrkt.utils.DefaultDiffItemCallback
+import com.example.beerdistrkt.utils.MINUS_SIGN
+import com.example.beerdistrkt.utils.PLUS_SIGN
 import com.example.beerdistrkt.utils.hide
+import com.example.beerdistrkt.utils.show
 import java.text.DecimalFormat
 
 class FStatementAdapter(
@@ -32,7 +36,7 @@ class FStatementAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_SALE -> StatementSaleItemViewHolder(
-                StatementSaleItemOldBinding.inflate(
+                FinanceStatementItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -43,7 +47,7 @@ class FStatementAdapter(
             )
 
             VIEW_TYPE_MONEY -> StatementMoneyItemViewHolder(
-                StatementMoneyItemBinding.inflate(
+                FinanceStatementItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -74,62 +78,54 @@ class FStatementAdapter(
         const val DASH = "-"
         const val VIEW_TYPE_MONEY = 1
         const val VIEW_TYPE_SALE = 2
+
+        const val AMOUNT_PATTERN = "#0.00₾"
     }
 
     class StatementSaleItemViewHolder(
-        private val binding: StatementSaleItemOldBinding,
+        private val binding: FinanceStatementItemBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val df = DecimalFormat("#0.00")
+        private val df = DecimalFormat(AMOUNT_PATTERN)
 
         init {
-            binding.root.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+            binding.operationDelta.setTextColor(binding.root.context.getAttrColor(R.attr.colorSale))
+            binding.statementIcon.backgroundTintList =
+                ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorSaleIconBkg))
+            binding.statementIcon.imageTintList =
+                ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorSale))
+            binding.statementIcon.setImageResource(R.drawable.ic_delivery)
+            binding.saleItemsRc.show()
         }
 
         fun bind(item: FStatementUiItem.Sale) = with(binding) {
 
             root.tag = item
-            dateTv.text = item.dateStr
-            commentTv.text = item.comment
+            val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
+            statementDate.text = item.dateStr.setTimeSize(frSize)
 
+            comment.isVisible = !item.comment.isNullOrBlank()
+            comment.text = item.comment
+
+            val balanceColor =
+                root.context.getAttrColor(if (item.balance > 0) R.attr.colorWarning else R.attr.mainTextColor)
             val defTextColor = root.context.getAttrColor(R.attr.mainTextColor)
             val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
 
-            val frictionColor = if (item.comment.isNullOrBlank())
-                FRICTION_PART_COLOR.toColorInt()
-            else
-                Color.MAGENTA
+            val frictionColor = FRICTION_PART_COLOR.toColorInt()
 
-            val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-            groupPriceTv.text = if (item.isGift) COST_FREE else
-                getFormattedString(item.price, df).setFrictionSize(
-                    frSize,
-                    frictionColor
-                )
-            balanceTv.text = df.format(item.balance).setFrictionSize(frSize, frictionColor)
-            giftImg.isVisible = item.isGift
 
-//            saleTypeIcon.setImageResource(item.iconRes.orZero())
-//
-//            saleTypeIcon.isVisible = item.iconRes != null
-//            saleTypeColor.isVisible = item.color != null
-//
-//            if (item.color != null) {
-//                saleTypeIcon.setColorFilter(item.color)
-//                saleTypeColor.setBackgroundColor(item.color)
-//            } else {
-//                saleTypeIcon.setTintFromAttr(R.attr.mainTextColor)
-//            }
+            operationDelta.text = if (item.isGift) COST_FREE else
+                df.customFormat(item.price, MINUS_SIGN).setFrictionSize(frSize)
+            balance.text = df.format(item.balance).setFrictionSize(frSize)
+            giftIcon.isVisible = item.isGift
 
             val subItemsAdapter = SimpleDataAdapter<SaleItemUiModel>(
                 layoutId = R.layout.statement_sale_sub_item,
                 onBind = { subItem, view ->
                     StatementSaleSubItemBinding.bind(view).apply {
                         priceTv.setTextColor(textColor)
-                        priceTv.text = getFormattedString(subItem.price, df).setFrictionSize(
+                        priceTv.text = df.customFormat(subItem.price).setFrictionSize(
                             frSize,
                             frictionColor
                         )
@@ -141,31 +137,11 @@ class FStatementAdapter(
                 }
             )
             saleItemsRc.adapter = subItemsAdapter
-            saleItemsRc.layoutManager = LinearLayoutManager(root.context)
             subItemsAdapter.submitList(item.items)
 
-//            detailsTv.isVisible = item.items.isNotEmpty()
-//            item.items.firstOrNull()?.let {
-//                detailsTv.text = it.details
-//            }
+            balance.setTextColor(balanceColor)
 
-            groupPriceTv.setTextColor(textColor)
-            balanceTv.setTextColor(textColor)
-
-            if (item.comment.isNullOrBlank())
-                commentTv.hide()
-
-            root.setOnClickListener {
-                if (!item.comment.isNullOrBlank())
-                    commentTv.isVisible = !commentTv.isVisible
-            }
         }
-
-        private fun getFormattedString(value: Double, formatter: DecimalFormat): String =
-            if (value == .0)
-                DASH
-            else
-                formatter.format(value)
 
         companion object {
             private const val FRICTION_PART_COLOR = "#808080"
@@ -173,173 +149,51 @@ class FStatementAdapter(
         }
     }
 
+
     class StatementMoneyItemViewHolder(
-        private val binding: StatementMoneyItemBinding,
+        private val binding: FinanceStatementItemBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val df = DecimalFormat("#0.00")
+        private val df = DecimalFormat(AMOUNT_PATTERN)
 
         init {
-            binding.root.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+            binding.expandDetailsImg.isVisible = false
+
+            binding.saleItemsRc.hide()
+            binding.operationDelta.setTextColor(binding.root.context.getAttrColor(R.attr.colorPayment))
+            binding.statementIcon.backgroundTintList =
+                ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorPaymentIconBkg))
+            binding.statementIcon.imageTintList =
+                ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorPayment))
+            binding.statementIcon.setImageResource(R.drawable.ic_cash)
         }
 
         fun bind(item: FStatementUiItem.Money) = with(binding) {
 
             root.tag = item
-            dateTv.text = item.dateStr
-
-            commentTv.text = item.comment
-
-            val defTextColor = root.context.getAttrColor(R.attr.mainTextColor)
-            val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
-
-            val frictionColor = if (item.comment.isNullOrBlank())
-                FRICTION_PART_COLOR.toColorInt()
-            else
-                Color.MAGENTA
-
             val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-            balanceTv.text = df.format(item.balance).setFrictionSize(frSize, frictionColor)
-            moneyTv.text = getFormattedString(item.pay, df).setFrictionSize(
-                frSize,
-                frictionColor
+            statementDate.text = item.dateStr.setTimeSize(frSize)
+
+            comment.isVisible = !item.comment.isNullOrBlank()
+            comment.text = item.comment
+
+            val balanceColor = root.context.getAttrColor(
+                if (item.balance > 0) R.attr.colorWarning else R.attr.mainTextColor
             )
 
-            saleTv.setTextColor(textColor)
-            moneyTv.setTextColor(textColor)
-            balanceTv.setTextColor(textColor)
+            balance.text = df.format(item.balance).setFrictionSize(frSize)
+            operationDelta.text = df.customFormat(item.pay, PLUS_SIGN).setFrictionSize(frSize)
 
-            if (item.comment.isNullOrBlank())
-                commentTv.hide()
+            balance.setTextColor(balanceColor)
 
-            root.setOnClickListener {
-                if (!item.comment.isNullOrBlank())
-                    commentTv.isVisible = !commentTv.isVisible
-            }
         }
 
-        private fun getFormattedString(value: Double, formatter: DecimalFormat): String =
-            if (value == .0)
-                DASH
-            else
-                formatter.format(value)
-
-        companion object {
-            private const val FRICTION_PART_COLOR = "#808080"
-        }
     }
 
-    /*class StatementViewHolder(
-        private val binding: StatementListRowBinding,
-        private val editOldSalePermission: Boolean,
-        private val editSalePermission: Boolean,
-        private val isGrouped: () -> Boolean,
-    ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
-
-        private val df = DecimalFormat("#0.00")
-
-        init {
-            binding.root.setOnCreateContextMenuListener(this)
-            binding.root.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        fun bind(item: FinanceStatementUiModel) = with(binding) {
-
-            root.tag = item
-            tAmonListTarigi.text = item.dateStr
-            tAmonaweriRowComment.text = item.comment
-
-            val defTextColor = root.context.getAttrColor(R.attr.mainTextColor)
-            val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
-
-            val frictionColor = if (item.comment.isNullOrBlank())
-                FRICTION_PART_COLOR.toColorInt()
-            else
-                Color.MAGENTA
-
-            val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-            tAmonListIn.text = if (item.isGift) COST_FREE else
-                getFormattedString(item.price, df).setFrictionSize(frSize, frictionColor)
-            tAmonListOut.text =
-                getFormattedString(item.pay, df).setFrictionSize(frSize, frictionColor)
-            tAmonListBalance.text =
-                df.format(item.balance).setFrictionSize(frSize, frictionColor)
-
-            recordTypeIndicator.setImageResource(item.iconRes.orZero())
-            recordTypeIndicator.isVisible = item.iconRes != null
-
-            tAmonListIn.setTextColor(textColor)
-            tAmonListOut.setTextColor(textColor)
-            tAmonListBalance.setTextColor(textColor)
-
-            if (item.comment.isNullOrBlank())
-                tAmonaweriRowComment.hide()
-
-            root.setOnClickListener {
-                if (!item.comment.isNullOrBlank())
-                    tAmonaweriRowComment.isVisible =
-                        tAmonaweriRowComment.visibility != View.VISIBLE
-            }
-        }
-        *//*
-
-        private fun getFormattedString(value: Double, formatter: DecimalFormat): String =
-            if (value == .0)
-                DASH
-            else
-                formatter.format(value)
-
-        override fun onCreateContextMenu(
-            menu: ContextMenu?,
-            v: View?,
-            menuInfo: ContextMenu.ContextMenuInfo?
-        ) {
-            val ctx = itemView.context ?: return
-            if (isGrouped())
-                ctx.showToast(R.string.remove_grouping)
-            else
-                (itemView.tag as? FinanceStatementUiModel)?.let { itemData ->
-//                    val itemData = it as StatementModel
-
-//                    val selectedItemDate: Date =
-//                        itemData.getItemDate(ctx.getString(R.string.patern_datetime)) ?: return
-
-//                    val dateFormat = SimpleDateFormat(ctx.getString(R.string.patern_date))
-
-                    if (editOldSalePermission || (itemData.isSaleToday() && editSalePermission)) {
-                        menu?.setHeaderTitle(ctx.getString(R.string.finance_menu_title))
-                        menu?.add(
-                            bindingAdapterPosition,
-                            CtxMenuItem.Edit.itemID,
-                            1,
-                            CtxMenuItem.Edit.title
-                        ) //groupId, itemId, order, title
-                        menu?.add(
-                            bindingAdapterPosition,
-                            CtxMenuItem.History.itemID,
-                            2,
-                            CtxMenuItem.History.title
-                        )
-                        menu?.add(
-                            bindingAdapterPosition,
-                            CtxMenuItem.Delete.itemID,
-                            3,
-                            CtxMenuItem.Delete.title
-                        )
-                    } else
-                        ctx.showToast(R.string.no_edit_access)
-                }
-        }
-
-        companion object {
-            private const val FRICTION_PART_COLOR = "#808080"
-            private const val COST_FREE = "უფასო"
-        }
-    }*/
 }
+
+fun DecimalFormat.customFormat(value: Double, sign: String? = null): String =
+    if (value == .0)
+        DASH
+    else
+        sign.orEmpty() + this.format(value)

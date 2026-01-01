@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/gr_size_8"
+    android:background="@drawable/rect_r12">
+
+    <ImageView
+        android:id="@+id/statementIcon"
+        android:layout_width="@dimen/gr_size_40"
+        android:layout_height="@dimen/gr_size_40"
+        android:layout_margin="@dimen/gr_size_8"
+        android:background="@drawable/white_circle"
+        android:backgroundTint="?attr/colorPaymentIconBkg"
+        android:contentDescription="@string/img_description"
+        android:padding="@dimen/gr_size_10"
+        android:src="@drawable/ic_card_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorPayment" />
+
+    <ImageView
+        android:id="@+id/giftIcon"
+        android:layout_width="@dimen/gr_size_20"
+        android:layout_height="@dimen/gr_size_20"
+        android:layout_marginTop="-3dp"
+        android:layout_marginEnd="-3dp"
+        android:background="@drawable/white_circle"
+        android:backgroundTint="?attr/colorSaleBkg"
+        android:contentDescription="@string/img_description"
+        android:padding="3dp"
+        android:src="@drawable/ic_gift_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/statementIcon"
+        app:layout_constraintTop_toTopOf="@id/statementIcon"
+        app:tint="?attr/colorSurface" />
+
+    <TextView
+        android:id="@+id/statementDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        app:layout_constraintBottom_toBottomOf="@id/statementIcon"
+        app:layout_constraintStart_toEndOf="@id/statementIcon"
+        app:layout_constraintTop_toTopOf="@id/statementIcon"
+        tools:text="2025-12-23\n01:24" />
+
+    <androidx.legacy.widget.Space
+        android:layout_width="@dimen/gr_size_0"
+        android:layout_height="@dimen/gr_size_8"
+        app:layout_constraintStart_toStartOf="@id/statementIcon"
+        app:layout_constraintTop_toBottomOf="@id/statementIcon" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/gr_size_8"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/expandDetailsImg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statementIcon"
+        tools:text="this is comment, always visible if exists."
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/expandDetailsImg"
+        android:layout_width="@dimen/gr_size_36"
+        android:layout_height="@dimen/gr_size_36"
+        android:contentDescription="@string/img_description"
+        android:padding="@dimen/gr_size_8"
+        android:src="@drawable/ic_arrow_down_24dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statementIcon" />
+
+    <TextView
+        android:id="@+id/balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        android:textColor="?attr/mainTextColor"
+        android:textStyle="bold"
+        android:tooltipText="balance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/statementDate"
+        tools:text="700₾" />
+
+    <TextView
+        android:id="@+id/addToBalanceArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        android:gravity="center_vertical"
+        android:text="→"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="@dimen/sp18"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@id/balance"
+        app:layout_constraintBottom_toBottomOf="@id/balance"
+        app:layout_constraintEnd_toStartOf="@id/balance" />
+
+    <TextView
+        android:id="@+id/operationDelta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        android:textColor="?attr/colorPayment"
+        app:layout_constraintEnd_toStartOf="@id/addToBalanceArrow"
+        app:layout_constraintTop_toTopOf="@id/statementDate"
+        tools:text="+150₾" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/saleItemsRc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/expandDetailsImg"
+        tools:itemCount="3"
+        tools:listitem="@layout/statement_sale_sub_item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

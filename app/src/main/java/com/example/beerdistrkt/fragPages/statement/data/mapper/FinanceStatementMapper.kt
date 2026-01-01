@@ -55,7 +55,7 @@ class FinanceStatementMapper @Inject constructor(
         val dtoSaleItem = saleItemsDto.first()
         return FStatement.SaleGroup(
             dateStr = dtoSaleItem.dateStr,
-            balance = dtoSaleItem.balance,
+            balance = -dtoSaleItem.balance,
             comment = dtoSaleItem.comment,
             saleItems = saleItemsDto.map {
                 SaleItem(
@@ -73,7 +73,7 @@ class FinanceStatementMapper @Inject constructor(
             return if (recordType == StatementRecordType.TAKE_MONEY) FStatement.PayMoney(
                 dateStr = dateStr,
                 amount = pay,
-                balance = balance,
+                balance = -balance,
                 recordId = recId,
                 recordType = recordType,
                 comment = comment,

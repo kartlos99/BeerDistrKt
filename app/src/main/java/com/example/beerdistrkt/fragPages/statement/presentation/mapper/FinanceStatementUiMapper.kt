@@ -10,7 +10,7 @@ class FinanceStatementUiMapper @Inject constructor() {
 
     fun map(item: FStatement): FStatementUiItem = when (item) {
         is FStatement.PayMoney -> FStatementUiItem.Money(
-            dateStr = item.dateStr,
+            dateStr = item.dateStr.splitDatetimeByLines(),
             comment = item.comment,
             pay = item.amount,
             balance = item.balance,
@@ -18,7 +18,7 @@ class FinanceStatementUiMapper @Inject constructor() {
         )
 
         is FStatement.SaleGroup -> FStatementUiItem.Sale(
-            dateStr = item.dateStr,
+            dateStr = item.dateStr.splitDatetimeByLines(),
             comment = item.comment,
             price = item.saleItems.sumOf { it.price },
             balance = item.balance,
@@ -49,4 +49,6 @@ class FinanceStatementUiMapper @Inject constructor() {
                 "x${details.count} (${details.bottle.name.substring(0..2)})"
         }
     }
+
+    private fun String.splitDatetimeByLines(): String = this.replace(" ", "\n")
 }

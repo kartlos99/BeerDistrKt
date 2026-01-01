@@ -5,7 +5,8 @@ import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.utils.DiffItem
 
 
-sealed interface FStatementUiItem: DiffItem{
+sealed interface FStatementUiItem : DiffItem {
+
     data class Sale(
         val dateStr: String,
         val comment: String?,
@@ -14,7 +15,7 @@ sealed interface FStatementUiItem: DiffItem{
         val isGift: Boolean,
         val isSoldToday: Boolean,
         val items: List<SaleItemUiModel>,
-    ): FStatementUiItem {
+    ) : FStatementUiItem {
 
         override val key: String
             get() = dateStr
@@ -26,7 +27,7 @@ sealed interface FStatementUiItem: DiffItem{
         val pay: Double,
         val balance: Double,
         val recordId: Long?,
-    ): FStatementUiItem {
+    ) : FStatementUiItem {
 
         override val key: String
             get() = "${recordId.orZero()}_$dateStr"
@@ -39,7 +40,7 @@ data class SaleItemUiModel(
     val recordType: StatementRecordType,
     val itemColor: Int? = null,
     val details: String,
-): DiffItem {
+) : DiffItem {
     override val key: Any?
         get() = "$recordId-${recordType.name}"
 }

@@ -443,12 +443,35 @@ infix fun Number.waitFor(block: (() -> Unit)) {
     }, this.toLong())
 }
 
+fun String.setTimeSize(fontSize: Int): SpannableString = SpannableString(this).apply {
+    val startIndex = maxOf(0, this.length - 5)
+    val endIndex = this.length
+    setSpan(
+        AbsoluteSizeSpan(fontSize),
+        startIndex,
+        endIndex,
+        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+    )
+}
+
+fun String.setFrictionSize(fontSize: Int): SpannableString = SpannableString(this).apply {
+    if (this.contains(DOT_CHAR)) {
+        val startIndex = this.indexOf(DOT_CHAR)
+        val endIndex = minOf(startIndex + 3, this.length)
+        setSpan(
+            AbsoluteSizeSpan(fontSize),
+            startIndex,
+            endIndex,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+    }
+}
+
 fun String.setFrictionSize(fontSize: Int, fontColor: Int? = null): SpannableString {
     val sp = SpannableString(this)
     if (this.contains(DOT_CHAR)) {
         val startIndex = this.indexOf(DOT_CHAR)
-        var endIndex = this.indexOf(" ", startIndex)
-        if (endIndex == -1) endIndex = this.length
+        val endIndex = minOf(startIndex + 3, this.length)
         sp.setSpan(
             AbsoluteSizeSpan(fontSize),
             startIndex,

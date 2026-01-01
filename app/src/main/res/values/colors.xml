@@ -67,4 +67,9 @@
     <color name="history_cell_changed">#FDF5BD</color>
     <color name="history_cell_empty">#F9F9F9</color>
 
+    <color name="green_100">#dcfce7</color>
+    <color name="green_600">#00a63e</color>
+    <color name="red_100">#ffe2e2</color>
+    <color name="red_600">#e7000b</color>
+
 </resources>

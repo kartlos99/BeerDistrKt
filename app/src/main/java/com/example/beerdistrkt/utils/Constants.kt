@@ -9,3 +9,6 @@ const val COMMA_CHAR = ","
 
 const val DATE_PATTERN = "yyyy-MM-dd"
 const val DATETIME_PATTERN = "yyyy-MM-dd HH:mm"
+
+const val PLUS_SIGN = "+"
+const val MINUS_SIGN = "-"
