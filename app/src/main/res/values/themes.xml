@@ -40,5 +40,6 @@
         <item name="colorSale">@color/red_600</item>
         <item name="colorSaleIconBkg">@color/red_100</item>
         <item name="colorWarning">@color/orange_08</item>
+        <item name="saleSubItemsBkg">@color/gray_50</item>
     </style>
 </resources>

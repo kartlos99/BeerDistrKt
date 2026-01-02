@@ -17,3 +17,8 @@ sealed class FinanceStatementDetails {
         val bottle: Bottle,
     ) : FinanceStatementDetails()
 }
+
+fun FinanceStatementDetails.getProductName(): String = when (this) {
+    is FinanceStatementDetails.BeerDetails -> beer.name
+    is FinanceStatementDetails.BottleDetails -> bottle.name
+}

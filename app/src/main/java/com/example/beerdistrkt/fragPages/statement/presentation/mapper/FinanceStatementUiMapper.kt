@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.statement.presentation.mapper
 
 import com.example.beerdistrkt.fragPages.statement.domain.model.FStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.FinanceStatementDetails
+import com.example.beerdistrkt.fragPages.statement.domain.model.getProductName
 import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
 import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class FinanceStatementUiMapper @Inject constructor() {
             items = item.saleItems.map {
                 SaleItemUiModel(
                     price = it.price,
+                    productName = it.details?.getProductName().orEmpty(),
                     recordId = it.recordId,
                     recordType = it.recordType,
                     itemColor = when (it.details) {
@@ -43,10 +45,10 @@ class FinanceStatementUiMapper @Inject constructor() {
 
         return when (details) {
             is FinanceStatementDetails.BeerDetails ->
-                "${details.barrel.volume} x${details.count} (${details.beer.name.substring(0..2)})"
+                "კასრი(${details.barrel.volume}) x ${details.count}"
 
             is FinanceStatementDetails.BottleDetails ->
-                "x${details.count} (${details.bottle.name.substring(0..2)})"
+                "ბოთლი x ${details.count}"
         }
     }
 

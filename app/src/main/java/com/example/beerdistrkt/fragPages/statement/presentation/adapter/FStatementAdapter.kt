@@ -88,63 +88,62 @@ class FStatementAdapter(
 
         private val df = DecimalFormat(AMOUNT_PATTERN)
 
-        init {
-            binding.operationDelta.setTextColor(binding.root.context.getAttrColor(R.attr.colorSale))
-            binding.statementIcon.backgroundTintList =
-                ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorSaleIconBkg))
-            binding.statementIcon.imageTintList =
-                ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorSale))
-            binding.statementIcon.setImageResource(R.drawable.ic_delivery)
-            binding.saleItemsRc.show()
+        private val frSize by lazy {
+            binding.root.resources.getDimensionPixelSize(R.dimen.sp12)
         }
 
-        fun bind(item: FStatementUiItem.Sale) = with(binding) {
-
-            root.tag = item
-            val frSize = root.resources.getDimensionPixelSize(R.dimen.sp12)
-            statementDate.text = item.dateStr.setTimeSize(frSize)
-
-            comment.isVisible = !item.comment.isNullOrBlank()
-            comment.text = item.comment
-
-            val balanceColor =
-                root.context.getAttrColor(if (item.balance > 0) R.attr.colorWarning else R.attr.mainTextColor)
-            val defTextColor = root.context.getAttrColor(R.attr.mainTextColor)
-            val textColor = if (item.comment.isNullOrBlank()) defTextColor else Color.MAGENTA
-
-            val frictionColor = FRICTION_PART_COLOR.toColorInt()
-
-
-            operationDelta.text = if (item.isGift) COST_FREE else
-                df.customFormat(item.price, MINUS_SIGN).setFrictionSize(frSize)
-            balance.text = df.format(item.balance).setFrictionSize(frSize)
-            giftIcon.isVisible = item.isGift
-
-            val subItemsAdapter = SimpleDataAdapter<SaleItemUiModel>(
+        private val subItemsAdapter by lazy(LazyThreadSafetyMode.NONE) {
+            SimpleDataAdapter<SaleItemUiModel>(
                 layoutId = R.layout.statement_sale_sub_item,
                 onBind = { subItem, view ->
                     StatementSaleSubItemBinding.bind(view).apply {
-                        priceTv.setTextColor(textColor)
-                        priceTv.text = df.customFormat(subItem.price).setFrictionSize(
-                            frSize,
-                            frictionColor
-                        )
+                        priceTv.text = df.customFormat(subItem.price).setFrictionSize(frSize)
                         detailsTv.text = subItem.details
                         subItem.recordType.icon?.let { saleTypeIcon.setImageResource(it) }
                         subItem.itemColor?.let { saleTypeColor.setBackgroundColor(it) }
                         saleTypeColor.isVisible = subItem.itemColor != null
+                        itemName.text = subItem.productName
                     }
                 }
             )
-            saleItemsRc.adapter = subItemsAdapter
-            subItemsAdapter.submitList(item.items)
+        }
 
+        init {
+            with(binding) {
+                operationDelta.setTextColor(root.context.getAttrColor(R.attr.colorSale))
+                statementIcon.backgroundTintList =
+                    ColorStateList.valueOf(root.context.getAttrColor(R.attr.colorSaleIconBkg))
+                statementIcon.imageTintList =
+                    ColorStateList.valueOf(root.context.getAttrColor(R.attr.colorSale))
+                statementIcon.setImageResource(R.drawable.ic_delivery)
+                saleItemsRc.show()
+                subItemSeparatorLine.show()
+
+                saleItemsRc.adapter = subItemsAdapter
+            }
+        }
+
+        fun bind(item: FStatementUiItem.Sale) = with(binding) {
+            root.tag = item
+
+            statementDate.text = item.dateStr.setTimeSize(frSize)
+
+            operationDelta.text = if (item.isGift) COST_FREE else
+                df.customFormat(item.price, MINUS_SIGN).setFrictionSize(frSize)
+
+            val balanceColor = root.context
+                .getAttrColor(if (item.balance > 0) R.attr.colorWarning else R.attr.mainTextColor)
             balance.setTextColor(balanceColor)
+            balance.text = df.format(item.balance).setFrictionSize(frSize)
 
+            comment.isVisible = !item.comment.isNullOrBlank()
+            comment.text = item.comment
+
+            giftIcon.isVisible = item.isGift
+            subItemsAdapter.submitList(item.items)
         }
 
         companion object {
-            private const val FRICTION_PART_COLOR = "#808080"
             private const val COST_FREE = "უფასო"
         }
     }
@@ -160,6 +159,7 @@ class FStatementAdapter(
             binding.expandDetailsImg.isVisible = false
 
             binding.saleItemsRc.hide()
+            binding.subItemSeparatorLine.hide()
             binding.operationDelta.setTextColor(binding.root.context.getAttrColor(R.attr.colorPayment))
             binding.statementIcon.backgroundTintList =
                 ColorStateList.valueOf(binding.root.context.getAttrColor(R.attr.colorPaymentIconBkg))

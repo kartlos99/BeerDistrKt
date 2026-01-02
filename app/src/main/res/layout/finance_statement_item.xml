@@ -112,14 +112,33 @@
         app:layout_constraintTop_toTopOf="@id/statementDate"
         tools:text="+150₾" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/sub_items_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="comment, expandDetailsImg" />
+
+    <View
+        android:id="@+id/sub_item_separator_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="?attr/strokeColor"
+        app:layout_constraintTop_toBottomOf="@id/sub_items_barrier" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/saleItemsRc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="0.5dp"
+        android:background="@drawable/bkg_bottom_rounded_r12"
+        android:paddingVertical="@dimen/gr_size_8"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/expandDetailsImg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sub_items_barrier"
         tools:itemCount="3"
+        tools:layout_height="50dp"
         tools:listitem="@layout/statement_sale_sub_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,6 +36,7 @@ sealed interface FStatementUiItem : DiffItem {
 
 data class SaleItemUiModel(
     val price: Double,
+    val productName: String,
     val recordId: Long,
     val recordType: StatementRecordType,
     val itemColor: Int? = null,

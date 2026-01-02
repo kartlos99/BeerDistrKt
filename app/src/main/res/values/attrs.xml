@@ -23,5 +23,6 @@
     <attr name="colorSale" format="color" />
     <attr name="colorSaleIconBkg" format="color" />
     <attr name="colorWarning" format="color" />
+    <attr name="saleSubItemsBkg" format="color" />
 
 </resources>
