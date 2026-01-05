@@ -17,6 +17,8 @@ sealed interface FStatementUiItem : DiffItem {
         val items: List<SaleItemUiModel>,
     ) : FStatementUiItem {
 
+        var isExpanded = false
+
         override val key: String
             get() = dateStr
     }

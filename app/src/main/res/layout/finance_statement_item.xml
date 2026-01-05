@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/gr_size_8"
+    android:animateLayoutChanges="true"
     android:background="@drawable/rect_r12">
 
     <ImageView
@@ -125,7 +126,9 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="?attr/strokeColor"
-        app:layout_constraintTop_toBottomOf="@id/sub_items_barrier" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/sub_items_barrier"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/saleItemsRc"
@@ -134,11 +137,13 @@
         android:layout_margin="0.5dp"
         android:background="@drawable/bkg_bottom_rounded_r12"
         android:paddingVertical="@dimen/gr_size_8"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sub_items_barrier"
         tools:itemCount="3"
         tools:layout_height="50dp"
-        tools:listitem="@layout/statement_sale_sub_item" />
+        tools:listitem="@layout/statement_sale_sub_item"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

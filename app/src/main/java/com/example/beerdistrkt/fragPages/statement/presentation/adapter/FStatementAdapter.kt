@@ -61,7 +61,9 @@ class FStatementAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is FStatementUiItem.Money -> (holder as StatementMoneyItemViewHolder).bind(item)
-            is FStatementUiItem.Sale -> (holder as StatementSaleItemViewHolder).bind(item)
+            is FStatementUiItem.Sale -> (holder as StatementSaleItemViewHolder).bind(item) {
+                notifyItemChanged(position)
+            }
         }
     }
 
@@ -116,15 +118,20 @@ class FStatementAdapter(
                 statementIcon.imageTintList =
                     ColorStateList.valueOf(root.context.getAttrColor(R.attr.colorSale))
                 statementIcon.setImageResource(R.drawable.ic_delivery)
-                saleItemsRc.show()
-                subItemSeparatorLine.show()
 
                 saleItemsRc.adapter = subItemsAdapter
             }
         }
 
-        fun bind(item: FStatementUiItem.Sale) = with(binding) {
+        fun bind(item: FStatementUiItem.Sale, updateItem: () -> Unit) = with(binding) {
             root.tag = item
+            saleItemsRc.isVisible = item.isExpanded
+            subItemSeparatorLine.isVisible = item.isExpanded
+            expandDetailsImg.rotation = if (item.isExpanded) 180f else 0f
+            expandDetailsImg.setOnClickListener {
+                item.isExpanded = !item.isExpanded
+                updateItem()
+            }
 
             statementDate.text = item.dateStr.setTimeSize(frSize)
 
