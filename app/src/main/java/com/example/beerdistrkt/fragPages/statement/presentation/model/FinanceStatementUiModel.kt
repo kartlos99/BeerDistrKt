@@ -28,8 +28,11 @@ sealed interface FStatementUiItem : DiffItem {
         val comment: String?,
         val pay: Double,
         val balance: Double,
-        val recordId: Long?,
+        val recordId: Long,
     ) : FStatementUiItem {
+
+//        fun getDate(): Date? =
+//            SimpleDateFormat(DATETIME_PATTERN, Locale.getDefault()).parse(dateStr)
 
         override val key: String
             get() = "${recordId.orZero()}_$dateStr"
@@ -44,6 +47,10 @@ data class SaleItemUiModel(
     val itemColor: Int? = null,
     val details: String,
 ) : DiffItem {
-    override val key: Any?
+
+//    fun getDate(): Date? =
+//        SimpleDateFormat(DATETIME_PATTERN, Locale.getDefault()).parse(dateStr)
+
+    override val key: String
         get() = "$recordId-${recordType.name}"
 }

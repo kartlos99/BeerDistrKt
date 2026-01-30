@@ -322,4 +322,5 @@
     <string name="error_incorrect_password">პაროლი არასწორია!</string>
     <string name="error_no_region_attached">მომხმარებელი არცერთ რეგიონზე არაა მიმაგრებული</string>
     <string name="error_unknown">უცნობი შეცდომა</string>
+    <string name="options">ქმედება</string>
 </resources>

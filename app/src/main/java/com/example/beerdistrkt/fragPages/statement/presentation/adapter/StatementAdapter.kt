@@ -189,9 +189,10 @@ class StatementAdapter(
 
                     val dateFormat = SimpleDateFormat(ctx.getString(R.string.patern_date))
 
-                    if (editOldSalePermission ||
-                        (dateFormat.format(selectedItemDate) == dateFormat.format(Date())
-                                && editSalePermission)
+                    if (
+                        editOldSalePermission
+                        ||
+                        (dateFormat.format(selectedItemDate) == dateFormat.format(Date()) && editSalePermission)
                     ) {
                         if (location == M_PAGE) {
                             menu?.setHeaderTitle(ctx.getString(R.string.finance_menu_title))

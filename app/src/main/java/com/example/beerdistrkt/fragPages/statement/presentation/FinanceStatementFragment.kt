@@ -1,6 +1,8 @@
 package com.example.beerdistrkt.fragPages.statement.presentation
 
+import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,19 +11,31 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
+import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
+import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
 import com.example.beerdistrkt.fragPages.login.domain.model.Permission
+import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementActionListener
 import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementAdapter
+import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOption
+import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog
+import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.ACTION_KEY
+import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.OPTIONS_REQUEST_KEY
 import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
+import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
+import com.example.beerdistrkt.getParcelableObject
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.showAskingDialog
+import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.OBJ_ID
 import com.example.beerdistrkt.utils.show
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -58,6 +72,21 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
         initView()
         initRecycler()
         observeData()
+
+//        BottomSheetDialog()
+        setResultListener()
+    }
+
+
+    private fun setResultListener() {
+        childFragmentManager.setFragmentResultListener(
+            OPTIONS_REQUEST_KEY,
+            viewLifecycleOwner
+        ) { _, bundle ->
+            bundle.getParcelableObject<StatementOption>(ACTION_KEY)?.let { selectedAction ->
+                viewModel.onActionSelected(selectedAction)
+            }
+        }
     }
 
     private fun initView() = with(binding) {
@@ -69,12 +98,7 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
 
     private fun initRecycler() = with(binding.statementSubPageRc) {
         val linearLayoutManager = LinearLayoutManager(context)
-        fAdapter = FStatementAdapter(
-            viewModel.session.hasPermission(Permission.EditOldSale),
-            viewModel.session.hasPermission(Permission.EditSale),
-        ) {
-            return@FStatementAdapter viewModel.isGroupedLiveData.value ?: true
-        }
+        fAdapter = FStatementAdapter(viewModel)
         layoutManager = linearLayoutManager
         this.adapter = fAdapter
         addOnScrollListener(PaginatedListener(linearLayoutManager))
@@ -94,6 +118,15 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
             if (it != null) {
                 updateAnotherPage?.invoke()
                 viewModel.needUpdateLiveData.value = null
+            }
+        }
+        viewModel.eventsFlow.collectLatest(viewLifecycleOwner) {
+            when (it) {
+                FinanceStatementViewModel.UiEvent.CantModify ->
+                    showToast(R.string.no_edit_access)
+
+                FinanceStatementViewModel.UiEvent.OpenOptions ->
+                    StatementOptionsDialog().show(childFragmentManager, StatementOptionsDialog.TAG)
             }
         }
     }

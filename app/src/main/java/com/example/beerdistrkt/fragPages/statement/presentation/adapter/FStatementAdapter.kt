@@ -26,9 +26,7 @@ import com.example.beerdistrkt.utils.show
 import java.text.DecimalFormat
 
 class FStatementAdapter(
-    private val editOldSalePermission: Boolean,
-    private val editSalePermission: Boolean,
-    private val isGrouped: () -> Boolean,
+    private val listener: FStatementActionListener,
 ) : ListAdapter<FStatementUiItem, RecyclerView.ViewHolder>(
     DefaultDiffItemCallback()
 ) {
@@ -41,9 +39,7 @@ class FStatementAdapter(
                     parent,
                     false
                 ),
-//                editOldSalePermission,
-//                editSalePermission,
-//                isGrouped,
+                listener,
             )
 
             VIEW_TYPE_MONEY -> StatementMoneyItemViewHolder(
@@ -51,7 +47,8 @@ class FStatementAdapter(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                )
+                ),
+                listener,
             )
 
             else -> throw NoSuchElementException("Unknown view type - FStatementAdapter")
@@ -86,6 +83,7 @@ class FStatementAdapter(
 
     class StatementSaleItemViewHolder(
         private val binding: FinanceStatementItemBinding,
+        private val listener: FStatementActionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val df = DecimalFormat(AMOUNT_PATTERN)
@@ -105,6 +103,9 @@ class FStatementAdapter(
                         subItem.itemColor?.let { saleTypeColor.setBackgroundColor(it) }
                         saleTypeColor.isVisible = subItem.itemColor != null
                         itemName.text = subItem.productName
+                        infoIcon.setOnClickListener {
+                            listener.onSaleOptionClick(subItem)
+                        }
                     }
                 }
             )
@@ -158,6 +159,7 @@ class FStatementAdapter(
 
     class StatementMoneyItemViewHolder(
         private val binding: FinanceStatementItemBinding,
+        private val listener: FStatementActionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val df = DecimalFormat(AMOUNT_PATTERN)
@@ -193,6 +195,9 @@ class FStatementAdapter(
 
             balance.setTextColor(balanceColor)
 
+            statementIcon.setOnClickListener {
+                listener.onPaymentOptionClick(item)
+            }
         }
 
     }

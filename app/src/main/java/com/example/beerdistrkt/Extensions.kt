@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
@@ -624,4 +627,12 @@ fun Context.openMap(link: String) {
         startActivity(intent)
     else
         showToast("NO_MAPS_APP")
+}
+
+inline fun <reified T : Parcelable> Bundle.getParcelableObject(key: String): T? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this.getParcelable(key, T::class.java)
+    } else {
+        this.getParcelable(key)
+    }
 }
