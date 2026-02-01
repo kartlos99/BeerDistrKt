@@ -1,41 +1,32 @@
 package com.example.beerdistrkt.fragPages.statement.presentation
 
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
-import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
-import com.example.beerdistrkt.fragPages.login.domain.model.Permission
-import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementActionListener
 import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementAdapter
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOption
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.ACTION_KEY
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.OPTIONS_REQUEST_KEY
 import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
-import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
 import com.example.beerdistrkt.getParcelableObject
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.showAskingDialog
-import com.example.beerdistrkt.showToast
 import com.example.beerdistrkt.utils.OBJ_ID
-import com.example.beerdistrkt.utils.show
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -43,8 +34,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
 
     private val binding by viewBinding(StatementSubPageFragmentBinding::bind)
-
-    private var pagePos: Int = 0
 
     var action: ((operation: String, recordID: Long) -> Unit)? = null
     var updateAnotherPage: (() -> Unit)? = null
@@ -127,6 +116,28 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
 
                 FinanceStatementViewModel.UiEvent.OpenOptions ->
                     StatementOptionsDialog().show(childFragmentManager, StatementOptionsDialog.TAG)
+
+                is FinanceStatementViewModel.UiEvent.GoEdit -> {
+                    val action = StatementFragmentDirections
+                        .actionStatementFragmentToAddDeliveryFragment(
+                            clientObjectID = clientID,
+                            operacia = it.typeAndId.first,
+                            orderID = 0,
+                            recordID = it.typeAndId.second.toInt()
+                        )
+                    parentFragment?.findNavController()?.navigate(action)
+                }
+
+                is FinanceStatementViewModel.UiEvent.GoHistory -> {
+                    val action = StatementFragmentDirections
+                        .actionStatementFragmentToSalesHistoryFragment(
+                            historyOf = it.subjectAndId.first,
+                            recordID = it.subjectAndId.second.toInt()
+                        )
+                    parentFragment?.findNavController()?.navigate(action)
+                }
+
+                FinanceStatementViewModel.UiEvent.DeleteConfirmation -> {}/*confirmDeleteStatement()*/
             }
         }
     }

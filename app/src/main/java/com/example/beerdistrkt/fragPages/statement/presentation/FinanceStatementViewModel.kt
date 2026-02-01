@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.fragPages.login.domain.model.Permission
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
+import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
 import com.example.beerdistrkt.fragPages.statement.domain.model.FStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetFinanceStatementUseCase
@@ -18,6 +21,9 @@ import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUi
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.asSuccessState
+import com.example.beerdistrkt.utils.MITANA
+import com.example.beerdistrkt.utils.MITANA_BOTTLE
+import com.example.beerdistrkt.utils.M_OUT
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -131,7 +137,7 @@ class FinanceStatementViewModel @AssistedInject constructor(
         if (itemDate == null) return false
 
         return session.hasPermission(Permission.EditOldSale) ||
-        (session.hasPermission(Permission.EditSale) && itemDate.isSoldToday)
+                (session.hasPermission(Permission.EditSale) && itemDate.isSoldToday)
     }
 
     override fun onPaymentOptionClick(item: FStatementUiItem.Money) = onOptionClick(item)
@@ -150,20 +156,43 @@ class FinanceStatementViewModel @AssistedInject constructor(
 
     private var modifyingObject: Any? = null
 
-    fun onActionSelected(action: StatementOption) = when (modifyingObject) {
-        is FStatementUiItem.Money -> when (action) {
-            StatementOption.HISTORY -> TODO()
-            StatementOption.EDIT -> TODO()
-            StatementOption.DELETE -> TODO()
-        }
+    fun onActionSelected(action: StatementOption) = viewModelScope.launch {
+        when (val item = modifyingObject) {
+            is FStatementUiItem.Money -> when (action) {
+                StatementOption.HISTORY -> _eventsFlow.emit(
+                    UiEvent.GoHistory(Pair(MONEY, item.recordId))
+                )
 
-        is SaleItemUiModel -> when (action) {
-            StatementOption.HISTORY -> TODO()
-            StatementOption.EDIT -> TODO()
-            StatementOption.DELETE -> TODO()
-        }
+                StatementOption.EDIT -> _eventsFlow.emit(UiEvent.GoEdit(Pair(M_OUT, item.recordId)))
+                StatementOption.DELETE -> _eventsFlow.emit(UiEvent.DeleteConfirmation)
+            }
 
-        else -> {}
+            is SaleItemUiModel -> when (action) {
+                StatementOption.HISTORY -> {
+                    when (item.recordType) {
+                        StatementRecordType.SALE_BEER -> BARREL_DELIVERY
+                        StatementRecordType.SALE_BOTTLE -> BOTTLE_DELIVERY
+                        else -> null
+                    }?.let { subject ->
+                        _eventsFlow.emit(UiEvent.GoHistory(Pair(subject, item.recordId)))
+                    }
+                }
+
+                StatementOption.EDIT -> {
+                    when (item.recordType) {
+                        StatementRecordType.SALE_BEER -> MITANA
+                        StatementRecordType.SALE_BOTTLE -> MITANA_BOTTLE
+                        else -> null
+                    }?.let { op ->
+                        _eventsFlow.emit(UiEvent.GoEdit(Pair(op, item.recordId)))
+                    }
+                }
+
+                StatementOption.DELETE -> _eventsFlow.emit(UiEvent.DeleteConfirmation)
+            }
+
+            else -> {}
+        }
     }
 
     @AssistedFactory
@@ -174,6 +203,9 @@ class FinanceStatementViewModel @AssistedInject constructor(
     sealed interface UiEvent {
         data object OpenOptions : UiEvent
         data object CantModify : UiEvent
+        data class GoEdit(val typeAndId: Pair<String, Long>) : UiEvent
+        data class GoHistory(val subjectAndId: Pair<String, Long>) : UiEvent
+        data object DeleteConfirmation : UiEvent
     }
 
     companion object {
