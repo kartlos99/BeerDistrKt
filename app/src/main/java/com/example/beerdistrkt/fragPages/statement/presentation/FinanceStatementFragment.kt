@@ -14,12 +14,12 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
+import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
 import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementAdapter
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOption
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.ACTION_KEY
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.OPTIONS_REQUEST_KEY
-import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
 import com.example.beerdistrkt.getParcelableObject
 import com.example.beerdistrkt.network.model.ResultState
 import com.example.beerdistrkt.network.model.onSuccess
@@ -109,6 +109,9 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
                 viewModel.needUpdateLiveData.value = null
             }
         }
+        viewModel.apiState.collectLatest(viewLifecycleOwner) {
+            binding.statementProgressBar.isVisible = it is ResultState.Loading
+        }
         viewModel.eventsFlow.collectLatest(viewLifecycleOwner) {
             when (it) {
                 FinanceStatementViewModel.UiEvent.CantModify ->
@@ -137,7 +140,16 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
                     parentFragment?.findNavController()?.navigate(action)
                 }
 
-                FinanceStatementViewModel.UiEvent.DeleteConfirmation -> {}/*confirmDeleteStatement()*/
+                is FinanceStatementViewModel.UiEvent.DeleteConfirmation ->
+                    confirmDeleteStatement(it.tableAndId)
+
+                FinanceStatementViewModel.UiEvent.ShowDeleteSucceed -> showToast(R.string.is_deleted)
+                FinanceStatementViewModel.UiEvent.ShowDeleteSucceedWithUpdateRequest -> {
+                    showToast(R.string.is_deleted)
+                    updateAnotherPage?.invoke()
+                }
+
+                is FinanceStatementViewModel.UiEvent.ShowError -> showToast(it.msg)
             }
         }
     }
@@ -200,7 +212,7 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
         }
     */
 
-    private fun confirmDeleteStatement(statementModel: FStatementUiItem) {
+    private fun confirmDeleteStatement(data: Pair<StatementRecordType, Long>) {
         requireContext().showAskingDialog(
             null,
             R.string.confirm_delete_text,
@@ -208,9 +220,7 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
             R.string.no,
             R.style.ThemeOverlay_MaterialComponents_Dialog
         ) {
-//            statementModel.recordId?.let {
-//                viewModel.deleteRecord(statementModel.recordType, it)
-//            }
+            viewModel.deleteRecord(data)
         }
     }
 

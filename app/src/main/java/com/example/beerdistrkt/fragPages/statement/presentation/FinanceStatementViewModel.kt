@@ -12,6 +12,7 @@ import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Compan
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
 import com.example.beerdistrkt.fragPages.statement.domain.model.FStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
+import com.example.beerdistrkt.fragPages.statement.domain.usecase.DeleteRecordUseCase
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetFinanceStatementUseCase
 import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementActionListener
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOption
@@ -29,14 +30,18 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = FinanceStatementViewModel.Factory::class)
 class FinanceStatementViewModel @AssistedInject constructor(
     private val getFinanceStatementUseCase: GetFinanceStatementUseCase,
     private val financeStatementUiMapper: FinanceStatementUiMapper,
+    private val deleteRecordUseCase: DeleteRecordUseCase,
     @Assisted val clientID: Int,
 ) : BaseViewModel(), FStatementActionListener {
 
@@ -48,9 +53,12 @@ class FinanceStatementViewModel @AssistedInject constructor(
     private val _eventsFlow = MutableSharedFlow<UiEvent>()
     val eventsFlow: SharedFlow<UiEvent> = _eventsFlow.asSharedFlow()
 
+    private val _apiState = MutableStateFlow<ResultState<Unit?>>(ResultState.Success(null))
+    val apiState: StateFlow<ResultState<Unit?>> = _apiState.asStateFlow()
+
     var isGroupedLiveData = MutableLiveData(true)
 
-    private val statement = mutableListOf<FStatement>()
+    private val statements = mutableListOf<FStatement>()
     private val statementUiItems = mutableListOf<FStatementUiItem>()
 
     val needUpdateLiveData = MutableLiveData<String?>(null)
@@ -69,12 +77,14 @@ class FinanceStatementViewModel @AssistedInject constructor(
     }
 
     fun requestStatementList() {
-        statement.clear()
+        statements.clear()
+        statementUiItems.clear()
+        oldestTime = null
         loadMoreData()
     }
 
     fun loadMoreData() {
-        if (statement.size < totalCount)
+        if (statements.size < totalCount)
             getFinanceStatement()
     }
 
@@ -92,7 +102,7 @@ class FinanceStatementViewModel @AssistedInject constructor(
                     totalCount = result.data.totalCount
                     oldestTime = result.data.statements.lastOrNull()?.dateStr
                     firstOperationDate = result.data.firstOperationDate
-                    statement.addAll(result.data.statements)
+                    statements.addAll(result.data.statements)
                     statementUiItems.addAll(
                         result.data.statements.map(financeStatementUiMapper::map)
                     )
@@ -102,8 +112,30 @@ class FinanceStatementViewModel @AssistedInject constructor(
         }
     }
 
-    fun deleteRecord(recType: StatementRecordType, recordId: Long) {
-        return
+    fun deleteRecord(tableAndRecordId: Pair<StatementRecordType, Long>) {
+        viewModelScope.launch {
+            _apiState.emit(ResultState.Loading)
+            val result = deleteRecordUseCase(
+                recordID = tableAndRecordId.second.toString(),
+                table = tableAndRecordId.first.name
+            )
+            _apiState.emit(result)
+            when (result) {
+                is ResultState.Error -> _eventsFlow.emit(UiEvent.ShowError(result.message.orEmpty()))
+
+                ResultState.Loading -> {}
+                is ResultState.Success<*> -> {
+                    if (tableAndRecordId.first == StatementRecordType.SALE_BEER) {
+                        _eventsFlow.emit(UiEvent.ShowDeleteSucceedWithUpdateRequest)
+                    } else {
+                        _eventsFlow.emit(UiEvent.ShowDeleteSucceed)
+                    }
+
+                    requestStatementList()
+                }
+            }
+        }
+
         /*sendRequest(
             ApeniApiService.getInstance().deleteRecord(
                 DeleteRequest(
@@ -120,11 +152,11 @@ class FinanceStatementViewModel @AssistedInject constructor(
     }
 
     private fun findItem(item: Any): FStatement? = when (item) {
-        is FStatementUiItem.Money -> statement.firstOrNull {
+        is FStatementUiItem.Money -> statements.firstOrNull {
             it is FStatement.PayMoney && it.recordId == item.recordId
         }
 
-        is SaleItemUiModel -> statement.firstOrNull {
+        is SaleItemUiModel -> statements.firstOrNull {
             it is FStatement.SaleGroup && it.saleItems.any { saleItem ->
                 saleItem.recordId == item.recordId
             }
@@ -164,7 +196,9 @@ class FinanceStatementViewModel @AssistedInject constructor(
                 )
 
                 StatementOption.EDIT -> _eventsFlow.emit(UiEvent.GoEdit(Pair(M_OUT, item.recordId)))
-                StatementOption.DELETE -> _eventsFlow.emit(UiEvent.DeleteConfirmation)
+                StatementOption.DELETE -> _eventsFlow.emit(
+                    UiEvent.DeleteConfirmation(StatementRecordType.TAKE_MONEY to item.recordId)
+                )
             }
 
             is SaleItemUiModel -> when (action) {
@@ -188,7 +222,9 @@ class FinanceStatementViewModel @AssistedInject constructor(
                     }
                 }
 
-                StatementOption.DELETE -> _eventsFlow.emit(UiEvent.DeleteConfirmation)
+                StatementOption.DELETE -> _eventsFlow.emit(
+                    UiEvent.DeleteConfirmation(item.recordType to item.recordId)
+                )
             }
 
             else -> {}
@@ -203,9 +239,12 @@ class FinanceStatementViewModel @AssistedInject constructor(
     sealed interface UiEvent {
         data object OpenOptions : UiEvent
         data object CantModify : UiEvent
+        data class ShowError(val msg: String) : UiEvent
+        data object ShowDeleteSucceed : UiEvent
+        data object ShowDeleteSucceedWithUpdateRequest : UiEvent
         data class GoEdit(val typeAndId: Pair<String, Long>) : UiEvent
         data class GoHistory(val subjectAndId: Pair<String, Long>) : UiEvent
-        data object DeleteConfirmation : UiEvent
+        data class DeleteConfirmation(val tableAndId: Pair<StatementRecordType, Long>) : UiEvent
     }
 
     companion object {

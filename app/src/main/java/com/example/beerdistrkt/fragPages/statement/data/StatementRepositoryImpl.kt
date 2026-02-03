@@ -5,9 +5,12 @@ import com.example.beerdistrkt.fragPages.statement.data.mapper.FinanceStatementM
 import com.example.beerdistrkt.fragPages.statement.domain.StatementRepository
 import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.FinanceStatement
+import com.example.beerdistrkt.fragPages.user.data.model.DeleteRecordApiModel
 import com.example.beerdistrkt.network.api.ApiResponse
 import com.example.beerdistrkt.network.api.BaseRepository
 import com.example.beerdistrkt.network.api.DistributionApi
+import com.example.beerdistrkt.network.api.toResultState
+import com.example.beerdistrkt.network.model.ResultState
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -39,5 +42,19 @@ class StatementRepositoryImpl @Inject constructor(
             val data = api.getBarrelStatement(customerId, offset)
             barrelStatementMapper.mapToDomain(data)
         }
+    }
+
+    override suspend fun deleteRecord(
+        recordID: String,
+        table: String,
+    ): ResultState<Unit> {
+        return apiCall {
+            api.deleteRecord(
+                DeleteRecordApiModel(
+                    recordID = recordID,
+                    table = table
+                )
+            )
+        }.toResultState()
     }
 }
