@@ -61,7 +61,6 @@ class FinanceStatementViewModel @AssistedInject constructor(
     private val statements = mutableListOf<FStatement>()
     private val statementUiItems = mutableListOf<FStatementUiItem>()
 
-    val needUpdateLiveData = MutableLiveData<String?>(null)
     private var totalCount = 1L
     private var oldestTime: String? = null
     private var firstOperationDate: String = String.empty()

@@ -37,3 +37,6 @@ class MyKeys {
         const val KAKHETI = "kakheti"
     }
 }
+
+const val YES = "Y"
+const val NO = "N"

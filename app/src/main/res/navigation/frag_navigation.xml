@@ -167,6 +167,10 @@
         <action
             android:id="@+id/action_statementFragment_to_salesHistoryFragment"
             app:destination="@id/salesHistoryFragment" />
+        <argument
+            android:name="needUpdate"
+            app:argType="string"
+            android:defaultValue="N" />
     </fragment>
     <fragment
         android:id="@+id/addDeliveryFragment"
@@ -191,6 +195,12 @@
         <action
             android:id="@+id/action_addDeliveryFragment_to_addCustomerFragment"
             app:destination="@id/addCustomerFragment" />
+        <action
+            android:id="@+id/action_addDeliveryFragment_to_statementFragment"
+            app:destination="@id/statementFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/addDeliveryFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/addOrdersFragment"

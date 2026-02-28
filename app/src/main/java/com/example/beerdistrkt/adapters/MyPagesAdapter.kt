@@ -36,13 +36,13 @@ class MyPagesAdapter(
         this.titles = titles
     }
 
-    val fragmentM: FinanceStatementFragment
+    val fragmentM: FinanceStatementFragment?
         get() = fm.findFragmentByTag(makeFragmentTag(0))
-                as FinanceStatementFragment
+                as? FinanceStatementFragment
 
-    val fragmentK: StatementSubPageFragment
+    val fragmentK: StatementSubPageFragment?
         get() = fm.findFragmentByTag(makeFragmentTag(1))
-                as StatementSubPageFragment
+                as? StatementSubPageFragment
 
     override fun getPageTitle(position: Int): CharSequence {
         return titles[position]

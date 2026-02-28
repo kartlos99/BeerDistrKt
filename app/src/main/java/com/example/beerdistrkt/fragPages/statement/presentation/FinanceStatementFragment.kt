@@ -35,9 +35,6 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
 
     private val binding by viewBinding(StatementSubPageFragmentBinding::bind)
 
-    var action: ((operation: String, recordID: Long) -> Unit)? = null
-    var updateAnotherPage: (() -> Unit)? = null
-    var onShowHistory: ((recordID: Int, historyOf: String) -> Unit)? = null
     private lateinit var fAdapter: FStatementAdapter
 
     private val clientID by lazy {
@@ -103,12 +100,6 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
                 fAdapter.submitList(it)
             }
         }
-        viewModel.needUpdateLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                updateAnotherPage?.invoke()
-                viewModel.needUpdateLiveData.value = null
-            }
-        }
         viewModel.apiState.collectLatest(viewLifecycleOwner) {
             binding.statementProgressBar.isVisible = it is ResultState.Loading
         }
@@ -143,10 +134,15 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
                 is FinanceStatementViewModel.UiEvent.DeleteConfirmation ->
                     confirmDeleteStatement(it.tableAndId)
 
-                FinanceStatementViewModel.UiEvent.ShowDeleteSucceed -> showToast(R.string.is_deleted)
+                FinanceStatementViewModel.UiEvent.ShowDeleteSucceed -> {
+                    showToast(R.string.is_deleted)
+                    (parentFragment as? StatementFragment)?.updateDebt()
+                }
+
                 FinanceStatementViewModel.UiEvent.ShowDeleteSucceedWithUpdateRequest -> {
                     showToast(R.string.is_deleted)
-                    updateAnotherPage?.invoke()
+                    (parentFragment as? StatementFragment)?.updateDebt()
+                    (parentFragment as? StatementFragment)?.updateBarrels()
                 }
 
                 is FinanceStatementViewModel.UiEvent.ShowError -> showToast(it.msg)

@@ -12,6 +12,7 @@ import com.example.beerdistrkt.adapters.MyPagesAdapter
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
 import com.example.beerdistrkt.databinding.StatementFragmentBinding
 import com.example.beerdistrkt.paramViewModels
+import com.example.beerdistrkt.utils.YES
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,6 +24,9 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
     }
     private val clientID by lazy {
         StatementFragmentArgs.fromBundle(requireArguments()).clientObjectID
+    }
+    private val needUpdate by lazy {
+        StatementFragmentArgs.fromBundle(requireArguments()).needUpdate
     }
 
     private val binding by viewBinding(StatementFragmentBinding::bind)
@@ -43,30 +47,23 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
         binding.statementViewpager.adapter = pagesAdapter
         binding.tabsAmonaweri.setupWithViewPager(binding.statementViewpager)
 
-        binding.chkGrAmonaweri.setOnCheckedChangeListener { _, isChecked ->
-            pagesAdapter?.fragmentM?.changeStatementAppearance(isChecked)
-            pagesAdapter?.fragmentK?.changeStatementAppearance(isChecked)
-            if (pagesAdapter?.fragmentM?.action == null) {
-                pagesAdapter?.fragmentM?.action = ::editingFinanceStatement
-                pagesAdapter?.fragmentK?.action = ::goEditing
-                pagesAdapter?.fragmentM?.onShowHistory = ::showHistory
-            }
-            if (pagesAdapter?.fragmentM?.updateAnotherPage == null) {
-                pagesAdapter?.fragmentM?.updateAnotherPage = {
-                    showDebt()
-                    pagesAdapter?.fragmentK?.updateData()
-                }
-                pagesAdapter?.fragmentK?.updateAnotherPage = {
-                    showDebt()
-                    pagesAdapter?.fragmentM?.updateData()
-                }
-            }
-        }
-
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
             binding.fragStatementClientInfo.text = it.name
         }
         showDebt()
+        if (needUpdate == YES) updateSales()
+    }
+
+    fun updateDebt() {
+        (childFragmentManager.findFragmentById(R.id.fragStatementDebtContainer) as? ClientDebtFragment)?.refreshData()
+    }
+
+    fun updateBarrels() {
+        pagesAdapter?.fragmentK?.updateData()
+    }
+
+    fun updateSales() {
+        pagesAdapter?.fragmentM?.updateData()
     }
 
     private fun showDebt() {
@@ -76,7 +73,7 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
             .commit()
     }
 
-    private fun showHistory(recordID: Int, historyOf: String) {
+    /*private fun showHistory(recordID: Int, historyOf: String) {
         this.findNavController().navigate(
             StatementFragmentDirections.actionStatementFragmentToSalesHistoryFragment(
                 recordID,
@@ -95,6 +92,6 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
         val action = StatementFragmentDirections
             .actionStatementFragmentToAddDeliveryFragment(clientID, operation, 0, recordID)
         this.findNavController().navigate(action)
-    }
+    }*/
 
 }

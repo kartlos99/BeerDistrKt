@@ -14,7 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel(assistedFactory = ClientDebtViewModel.Factory::class)
 class ClientDebtViewModel @AssistedInject constructor(
-    @Assisted private val clientID: Int?
+    @Assisted private val clientID: Int
 ) : BaseViewModel() {
 
     private val _clientDebtLiveData = MutableLiveData<ApiResponseState<DebtResponse?>>()
@@ -22,13 +22,10 @@ class ClientDebtViewModel @AssistedInject constructor(
         get() = _clientDebtLiveData
 
     init {
-        if (clientID != null)
-            getDebt(clientID)
-        else
-            _clientDebtLiveData.value = ApiResponseState.Error(null)
+        getDebt()
     }
 
-    private fun getDebt(clientID: Int) {
+    fun getDebt() {
         _clientDebtLiveData.value = ApiResponseState.Loading(true)
         ApeniApiService.getInstance().getDebt(clientID).sendRequest(
             successWithData = {
@@ -48,6 +45,6 @@ class ClientDebtViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(clientID: Int?): ClientDebtViewModel
+        fun create(clientID: Int): ClientDebtViewModel
     }
 }

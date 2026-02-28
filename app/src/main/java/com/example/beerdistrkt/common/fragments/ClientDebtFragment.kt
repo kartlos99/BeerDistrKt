@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
 
-    val clientID: Int? by lazy {
+    val clientID: Int by lazy {
         requireArguments().getInt(CLIENT_ID_KEY)
     }
     override val viewModel by paramViewModels<ClientDebtViewModel, ClientDebtViewModel.Factory> { factory ->
@@ -57,12 +57,24 @@ class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
         }
     }
 
+    fun refreshData() {
+        viewModel.getDebt()
+    }
+
     private fun onDebtDataReceived(data: DebtResponse?) {
         if (data == null) {
             showError()
             return
         }
-        binding.fragDebtAmount.text =
+        binding.fragDebtAmount.text = if (data.getMoneyDebt() != data.regionScopeDebt)
+            boldDataSpan(
+                getString(
+                    R.string.debt_amount_is,
+                    data.getMoneyDebt(),
+                    data.regionScopeDebt
+                )
+            )
+        else
             boldDataSpan(getString(R.string.amount_is, data.getMoneyDebt()))
         val ssb = SpannableStringBuilder()
         data.barrels.forEach { emptyBarrel ->
@@ -92,6 +104,14 @@ class ClientDebtFragment : BaseFragment<ClientDebtViewModel>() {
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
             )
             if (text.subSequence(currPos, closeIndex).contains(DOT_CHAR)) {
+                spText.setSpan(
+                    AbsoluteSizeSpan(resources.getDimensionPixelSize(R.dimen.sp13)),
+                    text.indexOf(DOT_CHAR, currPos),
+                    text.indexOf(" ", currPos),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                )
+            }
+            if (text.subSequence(currPos + 1, closeIndex).contains(DOT_CHAR)) {
                 spText.setSpan(
                     AbsoluteSizeSpan(resources.getDimensionPixelSize(R.dimen.sp13)),
                     text.indexOf(DOT_CHAR, currPos),

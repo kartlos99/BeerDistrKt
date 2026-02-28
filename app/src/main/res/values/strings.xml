@@ -159,6 +159,7 @@
     <string name="debt">დავალიანება</string>
     <string name="debt_receive_error_text">დავალიანების მონაცემების მიღება ვერ მოხერხდა</string>
     <string name="amount_is">თანხა: %.2f ₾</string>
+    <string name="debt_amount_is">თანხა: %.2f (%.2f) ₾</string>
 
     <string name="active">აქტიური</string>
     <string name="not_active">არა აქტიური</string>

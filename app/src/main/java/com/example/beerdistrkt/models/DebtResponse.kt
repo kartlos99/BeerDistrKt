@@ -7,14 +7,19 @@ data class DebtResponse(
     val clientID: Int,
     val clientName: String,
     val price: Double,
+    val regionScopePrice: Double,
     val barrel: Int,
     val payed: Double,
+    val regionScopePay: Double,
     val barrelTakenBack: Int,
     val needCleaning: Int,
     val passDays: Int,
     val barrels: List<EmptyBarrel>,
     val availableRegions: List<WorkRegion>
 ) {
+    val regionScopeDebt: Double
+        get() = regionScopePrice - regionScopePay
+
     fun getMoneyDebt() = price - payed
 
     fun getBarrelDebt() = barrel - barrelTakenBack
