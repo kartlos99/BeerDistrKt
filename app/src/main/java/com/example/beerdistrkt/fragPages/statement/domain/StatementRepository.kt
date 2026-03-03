@@ -13,7 +13,7 @@ interface StatementRepository {
 
     suspend fun getBarrelStatement(
         customerId: Int,
-        offset: Int,
+        offset: String?,
     ): ApiResponse<BarrelStatement>
 
     suspend fun deleteRecord(

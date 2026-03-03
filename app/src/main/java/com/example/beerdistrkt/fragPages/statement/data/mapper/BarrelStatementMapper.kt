@@ -1,11 +1,14 @@
 package com.example.beerdistrkt.fragPages.statement.data.mapper
 
 import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.common.model.BarrelEnum
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.statement.data.model.BarrelStatementDto
 import com.example.beerdistrkt.fragPages.statement.data.model.BarrelStatementItemDto
+import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelIo
 import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelStatementItem
+import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelsBalance
 import javax.inject.Inject
 
 class BarrelStatementMapper @Inject constructor(
@@ -19,24 +22,46 @@ class BarrelStatementMapper @Inject constructor(
 
         return BarrelStatement(
             totalCount = dto.totalCount,
-            statements = dto.statements.mapNotNull(::mapBarrelItem)
+            firstOperationDate = dto.firstOperationDate,
+            statements = groupByDate(dto.statements)
         )
     }
 
-    fun mapBarrelItem(dtoItem: BarrelStatementItemDto): BarrelStatementItem? = with(dtoItem) {
-        val barrel = barrels?.get(canType)?.firstOrNull() ?: return null
+    private fun groupByDate(items: List<BarrelStatementItemDto>): List<BarrelStatementItem> {
+        val grouped = items.groupBy { it.dateStr }
+        return grouped.flatMap { dtoEntity ->
+            buildList {
+                mapBarrelItem(dtoEntity.value)?.let(::add)
+            }
+        }
+    }
+
+    private fun mapBarrelItem(dtoItems: List<BarrelStatementItemDto>): BarrelStatementItem? {
+        val firstItem = dtoItems.firstOrNull() ?: return null
 
         return BarrelStatementItem(
-            dateStr = dateStr,
-            countIn = countIn,
-            countOut = countOut,
-            barrel = barrel,
-            balance50 = b50,
-            balance30 = b30,
-            balance20 = b20,
-            balance10 = b10,
-            recId = recId,
-            comment = comment
+            dateStr = firstItem.dateStr,
+            balance = BarrelsBalance(
+                balance50 = firstItem.b50,
+                balance30 = firstItem.b30,
+                balance20 = firstItem.b20,
+                balance10 = firstItem.b10,
+            ),
+            ioItems = dtoItems.map {
+                BarrelIo(
+                    countIn = it.countIn,
+                    countOut = it.countOut,
+                    barrel = BarrelEnum.findById(it.canType) ?: return null,
+                    recId = it.recId,
+                )
+            },
+            comment = dtoItems.mapNotNull { it.comment }
+                .distinct()
+                .joinToString(COMMENT_SEPARATOR)
         )
+    }
+
+    companion object {
+        private const val COMMENT_SEPARATOR = " | "
     }
 }

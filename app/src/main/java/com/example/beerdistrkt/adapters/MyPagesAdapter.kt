@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.fragPages.statement.presentation.FinanceStatementFragment
-import com.example.beerdistrkt.fragPages.statement.presentation.StatementSubPageFragment
+import com.example.beerdistrkt.fragPages.statement.presentation.barrels.BarrelsIoFragment
 
 
 class MyPagesAdapter(
@@ -15,16 +15,10 @@ class MyPagesAdapter(
 
     private var titles = arrayOf(" ფინანსები ", " კასრები ")
 
-    private val mPagerFragments: MutableList<StatementSubPageFragment> = ArrayList()
-
-    fun getDataFromAdapter(): List<StatementSubPageFragment> {
-        return mPagerFragments
-    }
-
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> FinanceStatementFragment.newInstance(customerID)
-            else -> StatementSubPageFragment.newInstance(position, customerID)
+            else -> BarrelsIoFragment.newInstance(customerID)
         }
     }
 
@@ -40,9 +34,9 @@ class MyPagesAdapter(
         get() = fm.findFragmentByTag(makeFragmentTag(0))
                 as? FinanceStatementFragment
 
-    val fragmentK: StatementSubPageFragment?
+    val fragmentK: BarrelsIoFragment?
         get() = fm.findFragmentByTag(makeFragmentTag(1))
-                as? StatementSubPageFragment
+                as? BarrelsIoFragment
 
     override fun getPageTitle(position: Int): CharSequence {
         return titles[position]

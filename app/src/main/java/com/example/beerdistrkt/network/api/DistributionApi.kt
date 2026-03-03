@@ -150,6 +150,6 @@ interface DistributionApi {
     @GET("statement/getBarrels.php")
     suspend fun getBarrelStatement(
         @Query("clientID") clientID: Int,
-        @Query("offset") offset: Int,
+        @Query("offset") offset: String?,
     ): BarrelStatementDto
 }

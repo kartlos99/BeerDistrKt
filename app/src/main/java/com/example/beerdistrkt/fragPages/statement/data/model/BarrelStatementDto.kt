@@ -1,12 +1,16 @@
 package com.example.beerdistrkt.fragPages.statement.data.model
 
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 
+@Keep
 data class BarrelStatementDto(
     val totalCount: Long,
+    val firstOperationDate: String,
     val statements: List<BarrelStatementItemDto>,
 )
 
+@Keep
 data class BarrelStatementItemDto(
     @Json(name = "dt")
     val dateStr: String,

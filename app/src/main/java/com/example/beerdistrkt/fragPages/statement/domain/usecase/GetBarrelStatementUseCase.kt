@@ -10,7 +10,7 @@ class GetBarrelStatementUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         customerId: Int,
-        offset: Int,
+        offset: String?,
     ): ApiResponse<BarrelStatement> {
         return statementRepository.getBarrelStatement(customerId, offset)
     }

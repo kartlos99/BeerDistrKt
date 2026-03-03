@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:paddingHorizontal="@dimen/gr_size_8"
+    android:paddingTop="@dimen/gr_size_4">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/datePartSeparator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".25" />
+
+    <ImageView
+        android:id="@+id/statementIcon"
+        android:layout_width="@dimen/gr_size_40"
+        android:layout_height="@dimen/gr_size_40"
+        android:layout_margin="@dimen/gr_size_8"
+        android:background="@drawable/white_circle"
+        android:backgroundTint="?attr/colorPaymentIconBkg"
+        android:contentDescription="@string/img_description"
+        android:padding="@dimen/gr_size_10"
+        android:src="@drawable/ic_card_24"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorPayment" />
+
+    <TextView
+        android:id="@+id/statementDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/datePartSeparator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2025-12-23\n01:24" />
+
+    <ImageView
+        android:id="@+id/info_icon"
+        android:layout_width="@dimen/gr_size_36"
+        android:layout_height="@dimen/gr_size_36"
+        android:contentDescription="@string/img_description"
+        android:importantForAccessibility="no"
+        android:padding="@dimen/gr_size_6"
+        android:src="@drawable/ic_more_vert"
+        app:layout_constraintEnd_toEndOf="@id/datePartSeparator"
+        app:layout_constraintStart_toStartOf="@id/datePartSeparator"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/mainTextColor" />
+
+    <androidx.legacy.widget.Space
+        android:layout_width="@dimen/gr_size_0"
+        android:layout_height="@dimen/gr_size_8"
+        app:layout_constraintStart_toStartOf="@id/statementIcon"
+        app:layout_constraintTop_toBottomOf="@id/statementIcon" />
+
+    <LinearLayout
+        android:id="@+id/dataContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/gr_size_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/datePartSeparator"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/data10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp16"
+            tools:text="+2/-1" />
+
+        <TextView
+            android:id="@+id/data20"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp16"
+            tools:text="+25/-17" />
+
+        <TextView
+            android:id="@+id/data30"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp16"
+            tools:text="+2/-1" />
+
+        <TextView
+            android:id="@+id/data50"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp16"
+            tools:text="+2/-1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/balanceContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_4"
+        android:background="?attr/colorSecondaryContainer"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/gr_size_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/datePartSeparator"
+        app:layout_constraintTop_toBottomOf="@id/dataContainer">
+
+        <TextView
+            android:id="@+id/bal10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textColor="?attr/mainTextColor"
+            android:textStyle="bold"
+            tools:text="0" />
+
+        <TextView
+            android:id="@+id/bal20"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textColor="?attr/mainTextColor"
+            android:textStyle="bold"
+            tools:text="20" />
+
+        <TextView
+            android:id="@+id/bal30"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textColor="?attr/mainTextColor"
+            android:textStyle="bold"
+            tools:text="3" />
+
+        <TextView
+            android:id="@+id/bal50"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textColor="?attr/mainTextColor"
+            android:textStyle="bold"
+            tools:text="50" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/balanceTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/colorSecondaryContainer"
+        android:text="@string/curr_balance"
+        app:layout_constraintBottom_toBottomOf="@id/balanceContainer"
+        app:layout_constraintEnd_toStartOf="@id/balanceContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/balanceContainer" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/comment_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="statementDate, balanceContainer" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/gr_size_8"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/comment_barrier"
+        tools:text="this is comment, always visible if exists."
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/sub_item_separator_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/strokeColor"
+        app:layout_constraintTop_toBottomOf="@id/comment" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

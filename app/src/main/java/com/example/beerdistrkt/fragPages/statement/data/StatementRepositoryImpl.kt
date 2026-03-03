@@ -36,7 +36,7 @@ class StatementRepositoryImpl @Inject constructor(
 
     override suspend fun getBarrelStatement(
         customerId: Int,
-        offset: Int,
+        offset: String?,
     ): ApiResponse<BarrelStatement> {
         return apiCall {
             val data = api.getBarrelStatement(customerId, offset)

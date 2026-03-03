@@ -324,4 +324,5 @@
     <string name="error_no_region_attached">მომხმარებელი არცერთ რეგიონზე არაა მიმაგრებული</string>
     <string name="error_unknown">უცნობი შეცდომა</string>
     <string name="options">ქმედება</string>
+    <string name="curr_balance">მიმდ.ნაშთი:</string>
 </resources>
