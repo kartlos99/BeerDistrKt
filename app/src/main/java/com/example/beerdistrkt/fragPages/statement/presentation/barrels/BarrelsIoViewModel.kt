@@ -10,18 +10,14 @@ import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BARREL_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.BOTTLE_DELIVERY
 import com.example.beerdistrkt.fragPages.showHistory.SalesHistoryFragment.Companion.MONEY
-import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelStatementItem
 import com.example.beerdistrkt.fragPages.statement.domain.model.FStatement
 import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.DeleteRecordUseCase
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetBarrelStatementUseCase
-import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetFinanceStatementUseCase
-import com.example.beerdistrkt.fragPages.statement.presentation.adapter.FStatementActionListener
 import com.example.beerdistrkt.fragPages.statement.presentation.barrels.adapter.BarrelStatementActionListener
 import com.example.beerdistrkt.fragPages.statement.presentation.barrels.mapper.BarrelUiMapper
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOption
-import com.example.beerdistrkt.fragPages.statement.presentation.mapper.FinanceStatementUiMapper
 import com.example.beerdistrkt.fragPages.statement.presentation.model.BarrelStatementUiModel
 import com.example.beerdistrkt.fragPages.statement.presentation.model.FStatementUiItem
 import com.example.beerdistrkt.fragPages.statement.presentation.model.SaleItemUiModel
@@ -89,7 +85,6 @@ class BarrelsIoViewModel @AssistedInject constructor(
     }
 
     fun loadMoreData() {
-        println("kd_ ${statements.size} - $totalCount")
         if (statements.size < totalCount)
             getBarrelStatement()
     }
@@ -100,20 +95,21 @@ class BarrelsIoViewModel @AssistedInject constructor(
             when (val result = getBarrelStatementUseCase(clientID, oldestTime)) {
 
                 is ApiResponse.Error -> {
-                    Log.d(TAG, "getBarrelStatement: ${result.message}")
                     _statementLiveData.value = ResultState.Error(result.statusCode)
                 }
 
                 is ApiResponse.Success -> {
-                    println("KD_")
-                    println(result.data)
                     totalCount = result.data.totalCount
                     oldestTime = result.data.statements.lastOrNull()?.dateStr
                     firstOperationDate = result.data.firstOperationDate
                     statements.addAll(result.data.statements)
-                    statementUiItems.addAll(
-                        result.data.statements.map(barrelUiMapper::map)
-                    )
+
+                    val nextPart = result.data.statements.mapIndexed { index, barrelStatementItem ->
+                        barrelUiMapper.map(barrelStatementItem).apply {
+                            isExpanded = statementUiItems.isEmpty() && index == 0
+                        }
+                    }
+                    statementUiItems.addAll(nextPart)
                     _statementLiveData.value = statementUiItems.toList().asSuccessState()
                 }
             }
