@@ -7,11 +7,21 @@
     android:orientation="vertical"
     tools:context=".fragPages.statement.presentation.StatementSubPageFragment">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/datePartSeparator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".25" />
+
     <LinearLayout
         android:id="@+id/statementListHeader"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@drawable/bkg_underline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/datePartSeparator"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -20,8 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:gravity="start"
-            tools:text="თარიღი" />
+            android:text="10" />
 
         <TextView
             android:id="@+id/amoColumnTitle2"
@@ -29,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            tools:text="ღირებულება" />
+            android:text="20" />
 
         <TextView
             android:id="@+id/amoColumnTitle3"
@@ -37,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="@string/pay" />
+            android:text="30" />
 
         <TextView
             android:id="@+id/amoColumnTitle4"
@@ -45,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            tools:text="ბალანსი" />
+            android:text="50" />
 
     </LinearLayout>
 

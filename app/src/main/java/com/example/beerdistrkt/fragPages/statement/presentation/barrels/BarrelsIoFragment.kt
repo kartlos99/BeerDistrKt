@@ -74,10 +74,7 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
     }
 
     private fun initView() = with(binding) {
-//        amoColumnTitle1.text = getString(R.string.text_tarigi)
-//        amoColumnTitle2.text = getString(R.string.price)
-//        amoColumnTitle3.text = getString(R.string.pay)
-//        amoColumnTitle4.text = getString(R.string.davalianeba)
+
     }
 
     private fun initRecycler() = with(binding.statementSubPageRc) {

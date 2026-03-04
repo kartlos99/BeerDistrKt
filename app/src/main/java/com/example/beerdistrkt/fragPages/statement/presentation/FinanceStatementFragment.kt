@@ -76,10 +76,7 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
     }
 
     private fun initView() = with(binding) {
-        amoColumnTitle1.text = getString(R.string.text_tarigi)
-        amoColumnTitle2.text = getString(R.string.price)
-        amoColumnTitle3.text = getString(R.string.pay)
-        amoColumnTitle4.text = getString(R.string.davalianeba)
+        statementListHeader.isVisible = false
     }
 
     private fun initRecycler() = with(binding.statementSubPageRc) {
