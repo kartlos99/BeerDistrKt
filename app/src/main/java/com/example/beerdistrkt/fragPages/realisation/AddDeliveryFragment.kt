@@ -258,7 +258,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                     if (!binding.addDeliveryComment.editText?.text.isNullOrEmpty())
                         notifyNewComment(binding.addDeliveryComment.editText?.text.toString())
                     val direction = AddDeliveryFragmentDirections
-                        .actionAddDeliveryFragmentToStatementFragment(clientID, YES)
+                        .actionAddDeliveryFragmentToStatementFragment(clientID, operation.orEmpty())
                     findNavController().navigate(direction)
                 }
 

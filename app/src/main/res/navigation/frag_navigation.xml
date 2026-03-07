@@ -168,7 +168,7 @@
             android:id="@+id/action_statementFragment_to_salesHistoryFragment"
             app:destination="@id/salesHistoryFragment" />
         <argument
-            android:name="needUpdate"
+            android:name="operation"
             app:argType="string"
             android:defaultValue="N" />
     </fragment>

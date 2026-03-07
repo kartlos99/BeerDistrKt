@@ -104,6 +104,7 @@
     <string name="bottle">ბოთლი</string>
     <string name="bottles">ბოთლები</string>
     <string name="finances">ფინანსები</string>
+    <string name="barrels">კასრები</string>
     <string name="pay">გადახდა</string>
     <string name="payment_type">გადახდის ტიპი</string>
     <string name="price">ღირებულება:</string>
