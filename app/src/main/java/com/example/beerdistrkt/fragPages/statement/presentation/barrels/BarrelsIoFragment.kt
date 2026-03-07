@@ -1,11 +1,13 @@
 package com.example.beerdistrkt.fragPages.statement.presentation.barrels
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.beerdistrkt.BaseFragment
@@ -13,9 +15,13 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.adapters.PaginatedScrollListener
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.StatementSubPageFragmentBinding
-import com.example.beerdistrkt.fragPages.statement.domain.model.StatementRecordType
+import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelIo
+import com.example.beerdistrkt.fragPages.statement.presentation.StatementFragment
+import com.example.beerdistrkt.fragPages.statement.presentation.StatementFragmentDirections
+import com.example.beerdistrkt.fragPages.statement.presentation.barrels.BarrelsIoViewModel.*
 import com.example.beerdistrkt.fragPages.statement.presentation.barrels.adapter.BarrelsStatementAdapter
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOption
+import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.ACTION_KEY
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.OPTIONS_REQUEST_KEY
 import com.example.beerdistrkt.getParcelableObject
@@ -39,7 +45,7 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
         arguments?.getInt(OBJ_ID).orZero()
     }
 
-    override val viewModel by paramViewModels<BarrelsIoViewModel, BarrelsIoViewModel.Factory> { factory ->
+    override val viewModel by paramViewModels<BarrelsIoViewModel, Factory> { factory ->
         factory.create(clientID)
     }
 
@@ -98,7 +104,38 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
         viewModel.apiState.collectLatest(viewLifecycleOwner) {
             binding.statementProgressBar.isVisible = it is ResultState.Loading
         }
-        viewModel.eventsFlow.collectLatest(viewLifecycleOwner) {
+        viewModel.eventsFlow.collectLatest(viewLifecycleOwner) { event ->
+            when (event) {
+                UiEvent.CantModify -> showToast(R.string.no_edit_access)
+                UiEvent.CantModifyInputs -> showToast(R.string.cant_modify_input_in_barrels_io)
+                is UiEvent.DeleteConfirmation -> confirmDeleteStatement(event.recordId)
+                is UiEvent.GoEdit -> {
+                    val action = StatementFragmentDirections
+                        .actionStatementFragmentToAddDeliveryFragment(
+                            clientObjectID = clientID,
+                            operacia = event.typeAndId.first,
+                            orderID = 0,
+                            recordID = event.typeAndId.second.toInt()
+                        )
+                    parentFragment?.findNavController()?.navigate(action)
+                }
+
+                UiEvent.OpenOptions ->
+                    StatementOptionsDialog().show(childFragmentManager, StatementOptionsDialog.TAG)
+
+                is UiEvent.SelectModifyingOutput -> {
+                    showBarrelOutputSelectorDialog(event.items) {
+                        viewModel.onModifyingOutputSelected(it)
+                    }
+                }
+
+                UiEvent.ShowDeleteSucceed -> {
+                    showToast(R.string.is_deleted)
+                    (parentFragment as? StatementFragment)?.updateDebt()
+                }
+
+                is UiEvent.ShowError -> showToast(event.msg)
+            }
             /*when (it) {
                 FinanceStatementViewModel.UiEvent.CantModify ->
                     showToast(R.string.no_edit_access)
@@ -142,6 +179,34 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
 
                 is FinanceStatementViewModel.UiEvent.ShowError -> showToast(it.msg)
             }*/
+        }
+    }
+
+    private fun showBarrelOutputSelectorDialog(
+        barrelOutputs: List<BarrelIo>,
+        onComplete: (selectedOutput: BarrelIo?) -> Unit
+    ) {
+        var selectedOutput: BarrelIo? = null
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setTitle(getString(R.string.select_barrel_io_dialog_title))
+            .setCancelable(true)
+            .setSingleChoiceItems(
+                barrelOutputs.map { "${it.barrel.displayName} x ${it.countOut}" }.toTypedArray(),
+                -1,
+            ) { _, i ->
+                selectedOutput = barrelOutputs[i]
+            }
+            .setPositiveButton(R.string.ok) { _, _ -> }
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (selectedOutput == null) {
+                showToast(R.string.no_selection)
+            }
+            onComplete.invoke(selectedOutput)
+            alertDialog.dismiss()
         }
     }
 
@@ -203,7 +268,7 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
         }
     */
 
-    private fun confirmDeleteStatement(data: Pair<StatementRecordType, Long>) {
+    private fun confirmDeleteStatement(data: Long) {
         requireContext().showAskingDialog(
             null,
             R.string.confirm_delete_text,
