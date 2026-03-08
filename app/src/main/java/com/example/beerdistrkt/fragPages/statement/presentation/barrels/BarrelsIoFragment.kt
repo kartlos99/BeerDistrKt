@@ -30,6 +30,7 @@ import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.showAskingDialog
+import com.example.beerdistrkt.utils.K_OUT
 import com.example.beerdistrkt.utils.OBJ_ID
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -121,7 +122,8 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
                 }
 
                 UiEvent.OpenOptions ->
-                    StatementOptionsDialog().show(childFragmentManager, StatementOptionsDialog.TAG)
+                    StatementOptionsDialog.newInstance(K_OUT)
+                        .show(childFragmentManager, StatementOptionsDialog.TAG)
 
                 is UiEvent.SelectModifyingOutput -> {
                     showBarrelOutputSelectorDialog(event.items) {

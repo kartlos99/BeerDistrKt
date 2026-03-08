@@ -106,7 +106,8 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
                     showToast(R.string.no_edit_access)
 
                 FinanceStatementViewModel.UiEvent.OpenOptions ->
-                    StatementOptionsDialog().show(childFragmentManager, StatementOptionsDialog.TAG)
+                    StatementOptionsDialog.newInstance(StatementRecordType.SALE_BEER.name)
+                        .show(childFragmentManager, StatementOptionsDialog.TAG)
 
                 is FinanceStatementViewModel.UiEvent.GoEdit -> {
                     val action = StatementFragmentDirections
