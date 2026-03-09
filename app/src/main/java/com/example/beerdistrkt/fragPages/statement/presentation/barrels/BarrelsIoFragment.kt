@@ -26,6 +26,7 @@ import com.example.beerdistrkt.fragPages.statement.presentation.dialog.Statement
 import com.example.beerdistrkt.fragPages.statement.presentation.dialog.StatementOptionsDialog.Companion.OPTIONS_REQUEST_KEY
 import com.example.beerdistrkt.getParcelableObject
 import com.example.beerdistrkt.network.model.ResultState
+import com.example.beerdistrkt.network.model.isLoading
 import com.example.beerdistrkt.network.model.onSuccess
 import com.example.beerdistrkt.orZero
 import com.example.beerdistrkt.paramViewModels
@@ -82,6 +83,9 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
 
     private fun initView() = with(binding) {
 
+        swipeRefresh.setOnRefreshListener {
+            viewModel.requestStatementList()
+        }
     }
 
     private fun initRecycler() = with(binding.statementSubPageRc) {
@@ -98,6 +102,7 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
 //        }
         viewModel.statementLiveData.observe(viewLifecycleOwner) { result ->
             binding.statementProgressBar.isVisible = result is ResultState.Loading
+            binding.swipeRefresh.isRefreshing = result.isLoading()
             result.onSuccess {
                 barrelsAdapter.submitList(it)
             }
