@@ -18,7 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.beerdistrkt.fragPages.login.presentation.LoginFragment
-import com.example.beerdistrkt.fragPages.statement.presentation.StatementSubPageFragment
+import com.example.beerdistrkt.fragPages.statement.presentation.FinanceStatementFragment
+import com.example.beerdistrkt.fragPages.statement.presentation.barrels.BarrelsIoFragment
 import com.example.beerdistrkt.utils.ApiResponseState
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -64,7 +65,8 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
         titleRes?.let { setPageTitle(it) }
         if (
             this !is LoginFragment
-            && this !is StatementSubPageFragment // because it's placed on another fragment
+            && this !is FinanceStatementFragment // because it's placed on another fragment
+            && this !is BarrelsIoFragment // because it's placed on another fragment
         )
             viewModel.checkToken()
     }

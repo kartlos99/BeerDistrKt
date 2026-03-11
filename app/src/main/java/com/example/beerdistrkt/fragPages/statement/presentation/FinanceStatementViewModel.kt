@@ -56,8 +56,6 @@ class FinanceStatementViewModel @AssistedInject constructor(
     private val _apiState = MutableStateFlow<ResultState<Unit?>>(ResultState.Success(null))
     val apiState: StateFlow<ResultState<Unit?>> = _apiState.asStateFlow()
 
-    var isGroupedLiveData = MutableLiveData(true)
-
     private val statements = mutableListOf<FStatement>()
     private val statementUiItems = mutableListOf<FStatementUiItem>()
 
@@ -134,20 +132,6 @@ class FinanceStatementViewModel @AssistedInject constructor(
                 }
             }
         }
-
-        /*sendRequest(
-            ApeniApiService.getInstance().deleteRecord(
-                DeleteRequest(
-                    id.toString(),
-                    table,
-                    session.userID ?: return
-                )
-            ),
-            success = {
-                requestStatementList()
-                needUpdateLiveData.value = pagePos.toString()
-            }
-        )*/
     }
 
     private fun findItem(item: Any): FStatement? = when (item) {
@@ -246,7 +230,4 @@ class FinanceStatementViewModel @AssistedInject constructor(
         data class DeleteConfirmation(val tableAndId: Pair<StatementRecordType, Long>) : UiEvent
     }
 
-    companion object {
-        private const val COMMENT_SEPARATOR = " | "
-    }
 }

@@ -72,11 +72,7 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
     }
 
     fun updateBarrels() {
-//        pagesAdapter?.fragmentK?.updateData()
-    }
-
-    fun updateSales() {
-//        pagesAdapter?.fragmentM?.updateData()
+        pagesAdapter?.getBarrelStatementFragment()?.updateData()
     }
 
     private fun showDebt() {
@@ -85,26 +81,5 @@ class StatementFragment : BaseFragment<StatementViewModel>() {
             .replace(R.id.fragStatementDebtContainer, debtFragment)
             .commit()
     }
-
-    /*private fun showHistory(recordID: Int, historyOf: String) {
-        this.findNavController().navigate(
-            StatementFragmentDirections.actionStatementFragmentToSalesHistoryFragment(
-                recordID,
-                historyOf,
-            )
-        )
-    }
-
-    private fun editingFinanceStatement(operation: String, recordID: Long) {
-        val action = StatementFragmentDirections
-            .actionStatementFragmentToAddDeliveryFragment(clientID, operation, 0, recordID.toInt())
-        this.findNavController().navigate(action)
-    }
-
-    private fun goEditing(operation: String, recordID: Int) {
-        val action = StatementFragmentDirections
-            .actionStatementFragmentToAddDeliveryFragment(clientID, operation, 0, recordID)
-        this.findNavController().navigate(action)
-    }*/
 
 }

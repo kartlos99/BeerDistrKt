@@ -8,7 +8,6 @@ import com.example.beerdistrkt.empty
 import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelIo
 import com.example.beerdistrkt.fragPages.statement.domain.model.BarrelStatementItem
-import com.example.beerdistrkt.fragPages.statement.domain.model.FStatement
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.DeleteRecordUseCase
 import com.example.beerdistrkt.fragPages.statement.domain.usecase.GetBarrelStatementUseCase
 import com.example.beerdistrkt.fragPages.statement.presentation.barrels.adapter.BarrelStatementActionListener
@@ -49,8 +48,6 @@ class BarrelsIoViewModel @AssistedInject constructor(
 
     private val _apiState = MutableStateFlow<ResultState<Unit?>>(ResultState.Success(null))
     val apiState: StateFlow<ResultState<Unit?>> = _apiState.asStateFlow()
-
-//    var isGroupedLiveData = MutableLiveData(true)
 
     private val statements = mutableListOf<BarrelStatementItem>()
     private val statementUiItems = mutableListOf<BarrelStatementUiModel>()
@@ -129,59 +126,13 @@ class BarrelsIoViewModel @AssistedInject constructor(
                 }
             }
         }
-
-        /*sendRequest(
-            ApeniApiService.getInstance().deleteRecord(
-                DeleteRequest(
-                    id.toString(),
-                    table,
-                    session.userID ?: return
-                )
-            ),
-            success = {
-                requestStatementList()
-                needUpdateLiveData.value = pagePos.toString()
-            }
-        )*/
-    }
-
-    private fun findItem(item: Any): FStatement? = when (item) {
-//        is FStatementUiItem.Money -> statements.firstOrNull {
-//            it is FStatement.PayMoney && it.recordId == item.recordId
-//        }
-//
-//        is SaleItemUiModel -> statements.firstOrNull {
-//            it is FStatement.SaleGroup && it.saleItems.any { saleItem ->
-//                saleItem.recordId == item.recordId
-//            }
-//        }
-//
-        else -> null
     }
 
     private fun canChangeData(itemDate: BarrelStatementItem): Boolean {
-//        if (itemDate == null) return false
 
         return session.hasPermission(Permission.EditOldSale) ||
                 (session.hasPermission(Permission.EditSale) && itemDate.isRegisteredToday)
     }
-
-//    override fun onPaymentOptionClick(item: FStatementUiItem.Money) = onOptionClick(item)
-//
-//    override fun onSaleOptionClick(item: SaleItemUiModel) = onOptionClick(item)
-
-    /*private fun onOptionClick(item: Any) {
-//        modifyingObject = item
-        viewModelScope.launch {
-            if (canChangeData(findItem(item)))
-                _eventsFlow.emit(UiEvent.OpenOptions)
-            else
-                _eventsFlow.emit(UiEvent.CantModify)
-        }
-    }*/
-
-
-//    private var modifyingObject: Any? = null
 
     fun onActionSelected(action: StatementOption) = viewModelScope.launch {
         val recordId = modifyingBarrelIo?.recId ?: return@launch
@@ -241,10 +192,6 @@ class BarrelsIoViewModel @AssistedInject constructor(
 
         /* on this page we can delete only one statement, BarrelOutput => 'kout' */
         data class DeleteConfirmation(val recordId: Long) : UiEvent
-    }
-
-    companion object {
-        private const val COMMENT_SEPARATOR = " | "
     }
 
 }

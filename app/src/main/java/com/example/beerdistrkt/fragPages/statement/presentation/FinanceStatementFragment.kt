@@ -60,7 +60,6 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
         initRecycler()
         observeData()
 
-//        BottomSheetDialog()
         setResultListener()
     }
 
@@ -92,9 +91,6 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
     }
 
     private fun observeData() {
-        viewModel.isGroupedLiveData.observe(viewLifecycleOwner) { grouped: Boolean ->
-//            statementListAdapter.isGrouped = grouped
-        }
         viewModel.statementLiveData.observe(viewLifecycleOwner) { result ->
             binding.statementProgressBar.isVisible = result is ResultState.Loading
             binding.swipeRefresh.isRefreshing = result.isLoading()
@@ -153,64 +149,6 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
         }
     }
 
-    fun changeStatementAppearance(grouped: Boolean) {
-//        viewModel.changeDataStructure(grouped)
-    }
-
-    /*
-        override fun onContextItemSelected(item: MenuItem): Boolean {
-            return when (item.itemId) {
-                CtxMenuItem.Edit.itemID -> if (pagePos == 0) {
-                    val statementItem = fAdapter.getClickedItem(item.groupId)
-                    action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
-                    true
-                } else false
-
-                CtxMenuItem.EditBarrel.itemID -> if (pagePos == 1) {
-                    val statementItem = fAdapter.getClickedItem(item.groupId)
-                    action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
-                    true
-                } else false
-
-                CtxMenuItem.Delete.itemID -> if (pagePos == 0) {
-                    confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
-                    true
-                } else false
-
-                CtxMenuItem.DeleteBarrel.itemID -> if (pagePos == 1) {
-                    confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
-                    true
-                } else false
-
-                CtxMenuItem.History.itemID -> {
-                    val statementItem = fAdapter.getClickedItem(item.groupId)
-                    if (statementItem.pay != .0)
-                        onShowHistory?.invoke(statementItem.recordId.orZero().toInt(), MONEY)
-                    else {
-                        when (statementItem.recordType) {
-                            StatementRecordType.SALE_BEER ->
-                                onShowHistory?.invoke(
-                                    statementItem.recordId.orZero().toInt(),
-                                    BARREL_DELIVERY
-                                )
-
-                            StatementRecordType.SALE_BOTTLE ->
-                                onShowHistory?.invoke(
-                                    statementItem.recordId.orZero().toInt(),
-                                    BOTTLE_DELIVERY
-                                )
-
-                            else -> {}
-                        }
-                    }
-                    return true
-                }
-
-                else -> return super.onContextItemSelected(item)
-            }
-        }
-    */
-
     private fun confirmDeleteStatement(data: Pair<StatementRecordType, Long>) {
         requireContext().showAskingDialog(
             null,
@@ -221,11 +159,6 @@ class FinanceStatementFragment : BaseFragment<FinanceStatementViewModel>() {
         ) {
             viewModel.deleteRecord(data)
         }
-    }
-
-    fun updateData() {
-//        statementListAdapter.clearData()
-        viewModel.requestStatementList()
     }
 
     inner class PaginatedListener(val layoutManager: LinearLayoutManager) :

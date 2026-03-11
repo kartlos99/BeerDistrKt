@@ -65,7 +65,6 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
         initRecycler()
         observeData()
 
-//        BottomSheetDialog()
         setResultListener()
     }
 
@@ -97,9 +96,6 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
     }
 
     private fun observeData() {
-//        viewModel.isGroupedLiveData.observe(viewLifecycleOwner) { grouped: Boolean ->
-//            statementListAdapter.isGrouped = grouped
-//        }
         viewModel.statementLiveData.observe(viewLifecycleOwner) { result ->
             binding.statementProgressBar.isVisible = result is ResultState.Loading
             binding.swipeRefresh.isRefreshing = result.isLoading()
@@ -143,49 +139,6 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
 
                 is UiEvent.ShowError -> showToast(event.msg)
             }
-            /*when (it) {
-                FinanceStatementViewModel.UiEvent.CantModify ->
-                    showToast(R.string.no_edit_access)
-
-                FinanceStatementViewModel.UiEvent.OpenOptions ->
-                    StatementOptionsDialog().show(childFragmentManager, StatementOptionsDialog.TAG)
-
-                is FinanceStatementViewModel.UiEvent.GoEdit -> {
-                    val action = StatementFragmentDirections
-                        .actionStatementFragmentToAddDeliveryFragment(
-                            clientObjectID = clientID,
-                            operacia = it.typeAndId.first,
-                            orderID = 0,
-                            recordID = it.typeAndId.second.toInt()
-                        )
-                    parentFragment?.findNavController()?.navigate(action)
-                }
-
-                is FinanceStatementViewModel.UiEvent.GoHistory -> {
-                    val action = StatementFragmentDirections
-                        .actionStatementFragmentToSalesHistoryFragment(
-                            historyOf = it.subjectAndId.first,
-                            recordID = it.subjectAndId.second.toInt()
-                        )
-                    parentFragment?.findNavController()?.navigate(action)
-                }
-
-                is FinanceStatementViewModel.UiEvent.DeleteConfirmation ->
-                    confirmDeleteStatement(it.tableAndId)
-
-                FinanceStatementViewModel.UiEvent.ShowDeleteSucceed -> {
-                    showToast(R.string.is_deleted)
-                    (parentFragment as? StatementFragment)?.updateDebt()
-                }
-
-                FinanceStatementViewModel.UiEvent.ShowDeleteSucceedWithUpdateRequest -> {
-                    showToast(R.string.is_deleted)
-                    (parentFragment as? StatementFragment)?.updateDebt()
-                    (parentFragment as? StatementFragment)?.updateBarrels()
-                }
-
-                is FinanceStatementViewModel.UiEvent.ShowError -> showToast(it.msg)
-            }*/
         }
     }
 
@@ -216,64 +169,6 @@ class BarrelsIoFragment : BaseFragment<BarrelsIoViewModel>() {
             alertDialog.dismiss()
         }
     }
-
-    fun changeStatementAppearance(grouped: Boolean) {
-//        viewModel.changeDataStructure(grouped)
-    }
-
-    /*
-        override fun onContextItemSelected(item: MenuItem): Boolean {
-            return when (item.itemId) {
-                CtxMenuItem.Edit.itemID -> if (pagePos == 0) {
-                    val statementItem = fAdapter.getClickedItem(item.groupId)
-                    action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
-                    true
-                } else false
-
-                CtxMenuItem.EditBarrel.itemID -> if (pagePos == 1) {
-                    val statementItem = fAdapter.getClickedItem(item.groupId)
-                    action?.invoke(statementItem.recordType.name, statementItem.recordId.orZero())
-                    true
-                } else false
-
-                CtxMenuItem.Delete.itemID -> if (pagePos == 0) {
-                    confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
-                    true
-                } else false
-
-                CtxMenuItem.DeleteBarrel.itemID -> if (pagePos == 1) {
-                    confirmDeleteStatement(fAdapter.getClickedItem(item.groupId))
-                    true
-                } else false
-
-                CtxMenuItem.History.itemID -> {
-                    val statementItem = fAdapter.getClickedItem(item.groupId)
-                    if (statementItem.pay != .0)
-                        onShowHistory?.invoke(statementItem.recordId.orZero().toInt(), MONEY)
-                    else {
-                        when (statementItem.recordType) {
-                            StatementRecordType.SALE_BEER ->
-                                onShowHistory?.invoke(
-                                    statementItem.recordId.orZero().toInt(),
-                                    BARREL_DELIVERY
-                                )
-
-                            StatementRecordType.SALE_BOTTLE ->
-                                onShowHistory?.invoke(
-                                    statementItem.recordId.orZero().toInt(),
-                                    BOTTLE_DELIVERY
-                                )
-
-                            else -> {}
-                        }
-                    }
-                    return true
-                }
-
-                else -> return super.onContextItemSelected(item)
-            }
-        }
-    */
 
     private fun confirmDeleteStatement(data: Long) {
         requireContext().showAskingDialog(
