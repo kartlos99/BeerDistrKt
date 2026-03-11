@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.models.DataResponse
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.Session
@@ -39,6 +40,10 @@ abstract class BaseViewModel : ViewModel() {
     private val _apiFailureMutableLiveData = MutableLiveData<ApiResponseState<Nothing>>()
     val apiFailureLiveData: LiveData<ApiResponseState<Nothing>>
         get() = _apiFailureMutableLiveData
+
+    fun hasAddOrderPermission(): Boolean {
+        return session.hasPermission(Permission.AddOrder)
+    }
 
     fun showNetworkFailMsgComplete() {
         _apiFailureMutableLiveData.value = ApiResponseState.Sleep

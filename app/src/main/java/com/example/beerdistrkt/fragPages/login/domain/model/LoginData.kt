@@ -93,5 +93,8 @@ enum class Permission(val code: String) {
     AddExpenseInPast("13"),
 
     @Json(name = "14")
-    ManageRegion("14")
+    ManageRegion("14"),
+
+    @Json(name = "15")
+    AddOrder("15"),
 }

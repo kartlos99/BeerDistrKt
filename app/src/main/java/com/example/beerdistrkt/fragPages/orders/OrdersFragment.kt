@@ -89,6 +89,7 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
     }
 
     private fun OrdersFragmentBinding.initView() {
+        addOrderBtn.isEnabled = viewModel.hasAddOrderPermission()
         addOrderBtn.setOnClickListener {
             it.findNavController().navigate(
                 OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(ADD_ORDER)
@@ -251,12 +252,12 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.order_option_menu, menu)
 
-        val deliveryItem = menu.findItem(R.id.topBarDelivery)
+//        val deliveryItem = menu.findItem(R.id.topBarDelivery)
         val swView = menu.findItem(R.id.appBarOrderSwitch).actionView as RelativeLayout
         switchToDelivery = swView.getChildAt(0) as SwitchCompat
         switchToDelivery?.setOnCheckedChangeListener { _, isChecked ->
             onModeChange(isChecked)
-            deliveryItem.isVisible = isChecked
+//            deliveryItem.isVisible = isChecked
         }
 
         searchItem = menu.findItem(R.id.orderSearch)
@@ -284,12 +285,12 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.topBarDelivery -> {
-                vBinding.root.findNavController().navigate(
-                    OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(MITANA)
-                )
-                return true
-            }
+//            R.id.topBarDelivery -> {
+//                vBinding.root.findNavController().navigate(
+//                    OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(MITANA)
+//                )
+//                return true
+//            }
         }
         return false
     }
