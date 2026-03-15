@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="@dimen/gr_size_4"
-    android:background="@drawable/bkg_underline"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bkg_underline"
+    android:paddingHorizontal="@dimen/gr_size_4"
+    android:paddingVertical="@dimen/gr_size_8">
 
     <TextView
         android:id="@+id/sysClearItemName"
@@ -24,9 +25,10 @@
         android:id="@+id/sysClearItemDays"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAlignment="textEnd"
-        android:paddingEnd="@dimen/gr_size_4"
         android:layout_weight="2"
-        android:text="@string/past_days" />
+        android:paddingStart="@dimen/gr_size_0"
+        android:paddingEnd="@dimen/gr_size_4"
+        android:text="@string/past_days"
+        android:textAlignment="textEnd" />
 
 </LinearLayout>

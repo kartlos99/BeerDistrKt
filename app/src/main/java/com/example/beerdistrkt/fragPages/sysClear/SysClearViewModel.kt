@@ -2,6 +2,7 @@ package com.example.beerdistrkt.fragPages.sysClear
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
@@ -9,6 +10,7 @@ import com.example.beerdistrkt.fragPages.sysClear.models.AddClearingModel
 import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
+import com.example.beerdistrkt.utils.asSuccessState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,6 +28,12 @@ class SysClearViewModel @Inject constructor(
     private val _addClearFlow = MutableSharedFlow<ApiResponseState<String>>()
     val addClearFlow: SharedFlow<ApiResponseState<String>> = _addClearFlow
 
+    private var sysClearItems: List<SysClearModel> = emptyList()
+
+    private val state = SavedStateHandle()
+    val searchQuery = state.getLiveData("searchQuery", "")
+
+
     init {
         getSysCleanList()
     }
@@ -36,6 +44,7 @@ class SysClearViewModel @Inject constructor(
             ApeniApiService.getInstance().getSysCleaning(),
             successWithData = {
                 _sysClearLiveData.value = ApiResponseState.Success(it)
+                sysClearItems = it
             },
             finally = {
                 _sysClearLiveData.value = ApiResponseState.Loading(false)
@@ -65,4 +74,11 @@ class SysClearViewModel @Inject constructor(
 
     suspend fun findClient(clientID: Int) =
         getCustomerUseCase(clientID)
+
+    fun onNewQuery(query: String) {
+        val filtered = sysClearItems.filter {
+            it.dasaxeleba.contains(query)
+        }
+        _sysClearLiveData.value = filtered.asSuccessState()
+    }
 }

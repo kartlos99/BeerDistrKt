@@ -2,11 +2,17 @@ package com.example.beerdistrkt.fragPages.sysClear
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +27,7 @@ import com.example.beerdistrkt.fragPages.sysClear.models.SysClearModel
 import com.example.beerdistrkt.showAskingDialog
 import com.example.beerdistrkt.utils.ApiResponseState
 import com.example.beerdistrkt.utils.SYS_CLEAR
+import com.example.beerdistrkt.utils.onTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,6 +37,9 @@ class SysClearFragment : BaseFragment<SysClearViewModel>() {
     private val binding by viewBinding(SysClearFragmentBinding::bind)
 
     override val viewModel by viewModels<SysClearViewModel>()
+
+    private lateinit var searchView: SearchView
+    private lateinit var searchItem: MenuItem
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +52,33 @@ class SysClearFragment : BaseFragment<SysClearViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
         setFragmentResultListener(SYS_CLEAR_REQUEST_KEY, ::onResultReceived)
-        setupMenu(R.menu.sys_clear_menu, ::onMenuItemSelected)
+        setupTopMenu(::onMenuItemSelected)
+    }
+
+    private fun setupTopMenu(onItemClick: (menuItem: MenuItem) -> Boolean) {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.sys_clear_menu, menu)
+                searchItem = menu.findItem(R.id.action_search)
+                searchView = searchItem.actionView as SearchView
+
+                val pendingQuery = viewModel.searchQuery.value
+                if (!pendingQuery.isNullOrEmpty()) {
+                    searchItem.expandActionView()
+                    searchView.setQuery(pendingQuery, false)
+                    viewModel.onNewQuery(pendingQuery)
+                }
+                searchView.onTextChanged { query ->
+                    viewModel.searchQuery.value = query
+                    viewModel.onNewQuery(query)
+                }
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return onItemClick.invoke(menuItem)
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
