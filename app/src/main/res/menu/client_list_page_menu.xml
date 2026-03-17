@@ -10,8 +10,28 @@
 
     <item
         android:id="@+id/only_notable_items"
-        android:title="@string/only_notable_items"
         android:checkable="true"
         android:checked="false"
+        android:title="@string/only_notable_items"
         app:showAsAction="never" />
+
+    <group
+        android:id="@+id/item_sort"
+        android:menuCategory="alternative"
+        android:checkableBehavior="single"
+        android:enabled="true">
+
+        <item
+            android:id="@+id/sort_by_name"
+            android:checked="true"
+            android:title="@string/by_name"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/sort_by_idle"
+            android:checked="false"
+            android:title="@string/by_idle"
+            app:showAsAction="never" />
+
+    </group>
 </menu>

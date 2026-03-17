@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerSortType
 import com.example.beerdistrkt.fragPages.login.domain.model.UserInfo
 import com.example.beerdistrkt.fragPages.user.domain.model.WorkRegion
 import com.squareup.moshi.JsonAdapter
@@ -88,8 +89,22 @@ class UserPreferencesRepository(
         }
     }
 
+    suspend fun saveCustomerSortType(sortType: CustomerSortType) {
+        val dataStoreKey = stringPreferencesKey(CUSTOMER_SORT_KEY)
+        dataStore.edit { preferences ->
+            preferences[dataStoreKey] = sortType.name
+        }
+    }
+
+    suspend fun readCustomerSortType(): CustomerSortType? {
+        val dataStoreKey = stringPreferencesKey(CUSTOMER_SORT_KEY)
+        val preferences = dataStore.data.first()
+        return preferences[dataStoreKey]?.let(CustomerSortType::valueOf)
+    }
+
     companion object {
         private const val SESSION_KEY = "SESSION_KEY"
         private const val REGION_KEY = "REGION_KEY"
+        private const val CUSTOMER_SORT_KEY = "CUSTOMER_SORT_KEY"
     }
 }

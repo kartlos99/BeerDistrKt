@@ -8,6 +8,8 @@ import com.example.beerdistrkt.fragPages.customer.domain.usecase.DeactivateCusto
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.RefreshCustomersUseCase
 import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerListUiState
+import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerSortType
+import com.example.beerdistrkt.fragPages.orders.repository.UserPreferencesRepository
 import com.example.beerdistrkt.fragPages.settings.domain.model.SettingCode.IDLE_WARNING
 import com.example.beerdistrkt.fragPages.settings.domain.usecase.GetSettingValueUseCase
 import com.example.beerdistrkt.network.api.toResultState
@@ -30,6 +32,7 @@ class CustomersViewModel @Inject constructor(
     private val refreshCustomersUseCase: RefreshCustomersUseCase,
     private val deactivateCustomerUseCase: DeactivateCustomerUseCase,
     private val getSettingValueUseCase: GetSettingValueUseCase,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : BaseViewModel() {
 
     private var customers: List<Customer> = listOf()
@@ -50,25 +53,53 @@ class CustomersViewModel @Inject constructor(
             if (getCustomersUseCase.customersAsFlow().value is ResultState.Loading || getCustomersUseCase().isEmpty()) {
                 refreshCustomersUseCase()
             }
-            getCustomersUseCase.customersAsFlow().collectLatest { customersResult ->
-                when (customersResult) {
-                    ResultState.Loading -> _customersFlow.emit(ResultState.Loading)
-                    is ResultState.Error -> _customersFlow.emit(customersResult)
-                    is ResultState.Success -> {
-                        customers = customersResult.data
-                            .filter { it.isActive() }
-                            .map { customer ->
-                                customer.copy(
-                                    warnInfo = customer.warnInfo?.takeIf { info ->
-                                        info.passedDays > getSettingValueUseCase(IDLE_WARNING)
-                                    }
-                                )
-                            }
+            getCustomers()
+        }
+    }
+
+    private suspend fun getCustomers() {
+        getCustomersUseCase.customersAsFlow().collectLatest { customersResult ->
+            when (customersResult) {
+                ResultState.Loading -> _customersFlow.emit(ResultState.Loading)
+                is ResultState.Error -> _customersFlow.emit(customersResult)
+                is ResultState.Success -> {
+                    val sortType = userPreferencesRepository.readCustomerSortType()
+                    customers = customersResult.data
+                        .filter { it.isActive() }
+                        .map { customer ->
+                            customer.copy(
+                                warnInfo = customer.warnInfo?.takeIf { info ->
+                                    info.passedDays > getSettingValueUseCase(IDLE_WARNING)
+                                }
+                            )
+                        }
+                    if (sortType != null)
+                        arrangeCustomers(sortType)
+                    else
                         _customersFlow.emit(CustomerListUiState(customers).asSuccessState())
-                    }
                 }
             }
         }
+    }
+
+    private suspend fun arrangeCustomers(sortType: CustomerSortType) {
+        customers = when (sortType) {
+            CustomerSortType.BY_NAME -> customers.sortedBy { it.name }
+            CustomerSortType.BY_IDLE -> customers.sortedBy { it.warnInfo?.passedDays }
+        }
+        val query = searchQuery.value
+        val list = if (query.isNullOrBlank())
+            customers
+        else
+            customers.filter { it.name.contains(query) }
+
+        _customersFlow.emit(
+            CustomerListUiState(
+                customers = list,
+                isFiltered = !query.isNullOrBlank(),
+                sortType = sortType
+            ).asSuccessState()
+        )
     }
 
     fun deactivateClient(clientID: Int?) {
@@ -107,6 +138,13 @@ class CustomersViewModel @Inject constructor(
 
     fun onRefresh() = viewModelScope.launch {
         refreshCustomersUseCase()
+    }
+
+    fun sortCustomers(sortType: CustomerSortType) {
+        viewModelScope.launch {
+            arrangeCustomers(sortType)
+            userPreferencesRepository.saveCustomerSortType(sortType)
+        }
     }
 
     companion object {

@@ -329,4 +329,6 @@
     <string name="no_selection">ჩანაწერის არჩევა არ მოხდა!</string>
     <string name="select_barrel_io_dialog_title">აირჩიეთ დასაკორექტირებელი ჩანაწერი!</string>
     <string name="cant_modify_input_in_barrels_io">კასრების ამონაწერიდან მიტანის დაკორექტირება არ ხდება. გადადით ფინანსების ამონაწერში!</string>
+    <string name="by_name">დალაგება სახელით</string>
+    <string name="by_idle">დალაგება საყურადღ.</string>
 </resources>

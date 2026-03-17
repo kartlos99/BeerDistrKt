@@ -25,6 +25,7 @@ import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.databinding.FragmentCustomersBinding
 import com.example.beerdistrkt.fragPages.customer.presentation.adapters.ClientsListAdapter
+import com.example.beerdistrkt.fragPages.customer.presentation.model.CustomerSortType
 import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.CLIENT_ID_KEY
 import com.example.beerdistrkt.fragPages.sysClear.SysClearFragment.Companion.SYS_CLEAR_REQUEST_KEY
@@ -47,7 +48,7 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
 
     private lateinit var vBinding: FragmentCustomersBinding
 
-    private lateinit var clientListAdapter : ClientsListAdapter
+    private lateinit var clientListAdapter: ClientsListAdapter
 
     private var clientPhone: String? = null
 
@@ -188,6 +189,18 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
         searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
 
+        viewModel.customersFlow.collectLatest(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                when (it.sortType) {
+                    CustomerSortType.BY_NAME -> menu.findItem(R.id.sort_by_name)
+                    CustomerSortType.BY_IDLE -> menu.findItem(R.id.sort_by_idle)
+                    null -> null
+                }?.let { menuItem ->
+                    menuItem.isChecked = true
+                }
+            }
+        }
+
         val pendingQuery = viewModel.searchQuery.value
         if (pendingQuery != null && pendingQuery.isNotEmpty()) {
             searchItem.expandActionView()
@@ -205,11 +218,16 @@ class CustomersFragment : BaseFragment<CustomersViewModel>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onContextItemSelected(item)
-        if (item.itemId == R.id.only_notable_items) {
-            searchItem.collapseActionView()
-            item.isChecked = !item.isChecked
-            viewModel.filterNotableItems(item.isChecked)
-            return true
+        when (item.itemId) {
+            R.id.only_notable_items -> {
+                searchItem.collapseActionView()
+                item.isChecked = !item.isChecked
+                viewModel.filterNotableItems(item.isChecked)
+                return true
+            }
+
+            R.id.sort_by_name -> viewModel.sortCustomers(CustomerSortType.BY_NAME)
+            R.id.sort_by_idle -> viewModel.sortCustomers(CustomerSortType.BY_IDLE)
         }
         return false
     }
