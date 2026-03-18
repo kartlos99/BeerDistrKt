@@ -21,4 +21,14 @@ data class CustomerUiModel(
     val group: CustomerGroup = CustomerGroup.BASE,
     val beerPrices: List<PriceEditModel> = emptyList(),
     val bottlePrices: List<PriceEditModel> = emptyList(),
-)
+) {
+    val hasMandatoryDataFilled: Boolean
+        get() = name.isNotBlank()
+                && address.isNotBlank()
+                && tel.isNotBlank()
+                && identifyCode.isNotBlank()
+                && contactPerson.isNotBlank()
+                && location.isNotBlank()
+                && beerPrices.all { it.price.isNotBlank() }
+                && bottlePrices.all { it.price.isNotBlank() }
+}

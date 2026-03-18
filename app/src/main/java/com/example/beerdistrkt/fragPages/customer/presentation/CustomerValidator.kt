@@ -21,7 +21,7 @@ class CustomerValidator @Inject constructor(
             isNameValid(customerUiModel.name) == null -> ValidationResult.NotValid(R.string.incorrect_customer_name_warning)
             !isPricesValid(customerUiModel.beerPrices) -> ValidationResult.NotValid(R.string.incorrect_beer_price_warning)
             !isPricesValid(customerUiModel.bottlePrices) -> ValidationResult.NotValid(R.string.incorrect_bottle_price_warning)
-
+            !customerUiModel.hasMandatoryDataFilled -> ValidationResult.NotValid(R.string.fill_mandatory_fields)
             else -> mapToCustomer(customerUiModel)
         }
     }
