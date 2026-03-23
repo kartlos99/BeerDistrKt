@@ -6,6 +6,7 @@ import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
+import com.example.beerdistrkt.orZero
 import com.squareup.moshi.Json
 
 data class Order(
@@ -36,6 +37,33 @@ data class Order(
         get() = items.isNotEmpty() || sales.isNotEmpty()
                 || bottleItems.isNotEmpty() || bottleSales.isNotEmpty()
 
+    fun hasEqualOrderAndDelivery(): Boolean {
+        val eqBeers = items.map { beerOrderItem ->
+            sales.firstOrNull { beerSaleItem ->
+                beerOrderItem.beer == beerSaleItem.beer
+                        && beerOrderItem.canTypeID == beerSaleItem.canTypeID
+            }?.count == beerOrderItem.count
+        }
+        val eqBottles = bottleItems.map { bottleOrderItem ->
+            bottleSales.firstOrNull { bottleSaleItem ->
+                bottleOrderItem.bottle == bottleSaleItem.bottle
+            }?.count == bottleOrderItem.count
+        }
+        val saleBeers = sales.map { beerSaleItem ->
+            items.firstOrNull { beerOrderItem ->
+                beerOrderItem.beer == beerSaleItem.beer
+                        && beerOrderItem.canTypeID == beerSaleItem.canTypeID
+            }?.count == beerSaleItem.count
+        }
+        val saleBottles = bottleSales.map { bottleSaleItem ->
+            bottleSales.firstOrNull { bottleOrderItem ->
+                bottleOrderItem.bottle == bottleSaleItem.bottle
+            }?.count == bottleSaleItem.count
+        }
+        return eqBeers.all { it } && eqBottles.all { it }
+                && saleBeers.all { it } && saleBottles.all { it }
+    }
+
     val onDeleteClick = {
         _onDeleteClick(this)
     }
@@ -55,7 +83,9 @@ data class Order(
     fun price(): Double {
         var priceSum = .0
         items.forEach { barrelItem ->
-            val unitPrice = customer?.beerPrices?.firstOrNull { it.beerID == barrelItem.beer.id }?.price ?: .0
+            val unitPrice = customer?.beerPrices?.firstOrNull {
+                it.beerID == barrelItem.beer.id
+            }?.price.orZero()
             val itemPrice = when (barrelItem.canTypeID) {
                 1 -> 50
                 2 -> 30
@@ -66,7 +96,9 @@ data class Order(
             priceSum += itemPrice
         }
         bottleItems.forEach { bottleItem ->
-            val unitPrice = customer?.bottlePrices?.firstOrNull { it.bottleID == bottleItem.bottle.id }?.price ?: .0
+            val unitPrice = customer?.bottlePrices?.firstOrNull {
+                it.bottleID == bottleItem.bottle.id
+            }?.price.orZero()
             priceSum += bottleItem.count * unitPrice
         }
         return priceSum
@@ -121,7 +153,7 @@ data class Order(
             onRemove: (bottleItem: TempBottleItemModel) -> Unit,
             onEdit: (bottleItem: TempBottleItemModel) -> Unit,
         ): TempBottleItemModel {
-            
+
             return TempBottleItemModel(
                 id = orderID,
                 bottle = bottle,

@@ -40,7 +40,6 @@ import com.example.beerdistrkt.utils.K_OUT
 import com.example.beerdistrkt.utils.MITANA
 import com.example.beerdistrkt.utils.MITANA_BOTTLE
 import com.example.beerdistrkt.utils.M_OUT
-import com.example.beerdistrkt.utils.YES
 import com.example.beerdistrkt.utils.explodeAnim
 import com.example.beerdistrkt.utils.hide
 import com.example.beerdistrkt.utils.show
@@ -253,14 +252,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
         viewModel.addSaleLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is ApiResponseState.Success -> {
-                    showToast(it.data)
-                    if (!binding.addDeliveryComment.editText?.text.isNullOrEmpty())
-                        notifyNewComment(binding.addDeliveryComment.editText?.text.toString())
-                    val direction = AddDeliveryFragmentDirections
-                        .actionAddDeliveryFragmentToStatementFragment(clientID, operation.orEmpty())
-                    findNavController().navigate(direction)
-                }
+                is ApiResponseState.Success -> onSaleDone(it.data)
 
                 else -> {}
             }
@@ -301,6 +293,20 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         }
         viewModel.requestPricesFlow.collectLatest(viewLifecycleOwner) {
             it?.let { customerID -> showRequestPriceDialog(customerID) }
+        }
+    }
+
+    private fun onSaleDone(data: String) {
+        showToast(data)
+        if (!binding.addDeliveryComment.editText?.text.isNullOrEmpty())
+            notifyNewComment(binding.addDeliveryComment.editText?.text.toString())
+
+        if (operation.isNullOrEmpty()) {
+            findNavController().navigateUp()
+        } else {
+            val direction = AddDeliveryFragmentDirections
+                .actionAddDeliveryFragmentToStatementFragment(clientID, operation.orEmpty())
+            findNavController().navigate(direction)
         }
     }
 

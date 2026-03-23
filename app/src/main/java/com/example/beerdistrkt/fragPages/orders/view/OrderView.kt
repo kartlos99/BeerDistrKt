@@ -74,6 +74,9 @@ class OrderView @JvmOverloads constructor(
     private fun fillData(order: Order) {
         resetForm()
         with(binding) {
+            val mismatchWarning = order.orderStatus != OrderStatus.ACTIVE && !order.hasEqualOrderAndDelivery()
+            val nameFieldBkgColor = if (mismatchWarning) Color.YELLOW else Color.TRANSPARENT
+            orderUnitClientNameTv.setBackgroundColor(nameFieldBkgColor)
             orderUnitClientNameTv.text = order.customer?.name?.uppercase()
             orderPriceText.setAmount(order.price())
             orderUnitHistoryImg.isVisible = order.isEdited > 0
