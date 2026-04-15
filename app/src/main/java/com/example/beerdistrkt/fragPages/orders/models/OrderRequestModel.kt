@@ -10,7 +10,8 @@ data class OrderRequestModel(
     val comment: String? = null,
     val modifyUserID: String,
     val items: List<Item>,
-    val bottleItems: List<BottleItem>
+    val bottleItems: List<BottleItem>,
+    val emptyBarrels: List<EmptyBarrelItem> = emptyList(),
 ) {
 
     data class Item(
@@ -28,5 +29,10 @@ data class OrderRequestModel(
         val bottleID: Int,
         val count: Int,
         val check: Boolean,
+    )
+
+    data class EmptyBarrelItem(
+        val barrelId: Int,
+        val count: Int,
     )
 }

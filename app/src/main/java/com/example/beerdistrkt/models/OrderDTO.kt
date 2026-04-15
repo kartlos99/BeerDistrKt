@@ -3,6 +3,7 @@ package com.example.beerdistrkt.models
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
+import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.squareup.moshi.Json
 
 data class OrderDTO(
@@ -22,7 +23,8 @@ data class OrderDTO(
     val bottleItems: List<BottleItem>,
     val sales: List<Sales>,
     val bottleSales: List<BottleSaleItem>,
-    val availableRegions: List<Int>
+    val availableRegions: List<Int>,
+    val emptyBarrels: List<OrderRequestModel.EmptyBarrelItem>? = null
 ) {
     data class Item(
         val ID: Int,
@@ -153,11 +155,12 @@ data class OrderDTO(
             bottleSales.map {
                 it.toPm(bottles)
             },
+            emptyBarrels,
             onDeleteClick,
             onEditClick,
             onChangeDistributorClick,
             onItemClick,
-            onHistoryClick
+            onHistoryClick,
         )
 
     }

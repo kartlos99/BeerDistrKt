@@ -77,6 +77,13 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bottle" />
 
+                <Button
+                    android:id="@+id/emptyBarrelBtn"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/empty" />
+
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.example.beerdistrkt.customView.BeerSelectorView
@@ -91,6 +98,98 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/beerSelector" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/emptyBarrelsContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/gr_size_2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bottleSelector"
+                app:layout_constraintVertical_bias="0.0">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/addDeliveryBarrelOutput1Tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_50litri"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount1"
+                        app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount1" />
+
+                    <com.example.beerdistrkt.customView.NumericEditText
+                        android:id="@+id/addDeliveryBarrelOutputCount1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/addDeliveryBarrelOutput2Tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_30litri"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount2"
+                        app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount2" />
+
+                    <com.example.beerdistrkt.customView.NumericEditText
+                        android:id="@+id/addDeliveryBarrelOutputCount2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount1" />
+
+                    <TextView
+                        android:id="@+id/addDeliveryBarrelOutput3Tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_20litri"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount3"
+                        app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount3" />
+
+                    <com.example.beerdistrkt.customView.NumericEditText
+                        android:id="@+id/addDeliveryBarrelOutputCount3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount2" />
+
+                    <TextView
+                        android:id="@+id/addDeliveryBarrelOutput4Tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_10litri"
+                        app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutputCount4"
+                        app:layout_constraintEnd_toStartOf="@id/addDeliveryBarrelOutputCount4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutputCount4" />
+
+                    <com.example.beerdistrkt.customView.NumericEditText
+                        android:id="@+id/addDeliveryBarrelOutputCount4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/addDeliveryBarrelOutputCount3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addOrderAddItemBtn"
                 android:layout_width="wrap_content"
@@ -102,7 +201,7 @@
                 app:backgroundTintMode="src_over"
                 app:fabSize="mini"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
+                app:layout_constraintTop_toBottomOf="@id/emptyBarrelsContainer" />
 
             <CheckBox
                 android:id="@+id/addOrderCheckBox"
@@ -111,7 +210,7 @@
                 android:layout_marginTop="8dp"
                 android:checked="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bottleSelector" />
+                app:layout_constraintTop_toBottomOf="@id/emptyBarrelsContainer" />
 
             <LinearLayout
                 android:id="@+id/addOrderItemsContainer"

@@ -6,15 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.beerdistrkt.BaseViewModel
 import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_10
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_20
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_30
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_50
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.beer.domain.usecase.GetBeerUseCase
+import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.domain.usecase.GetBottlesUseCase
+import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.login.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
-import com.example.beerdistrkt.fragPages.realisation.RealisationType
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
 import com.example.beerdistrkt.fragPages.user.domain.model.User
 import com.example.beerdistrkt.fragPages.user.domain.usecase.GetUsersUseCase
@@ -24,8 +29,6 @@ import com.example.beerdistrkt.models.OrderStatus.ACTIVE
 import com.example.beerdistrkt.models.OrderStatus.CANCELED
 import com.example.beerdistrkt.models.OrderStatus.COMPLETED
 import com.example.beerdistrkt.models.TempBeerItemModel
-import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
-import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.utils.ApiResponseState
 import dagger.assisted.Assisted
@@ -91,9 +94,9 @@ class AddOrdersViewModel @AssistedInject constructor(
 
     val eventsFlow = MutableSharedFlow<Event>()
 
-    val realisationStateFlow = MutableStateFlow(RealisationType.BARREL)
+    val realisationStateFlow = MutableStateFlow(GoodsType.BARREL)
 
-    val realisationType: RealisationType
+    val realisationType: GoodsType
         get() {
             return realisationStateFlow.value
         }
@@ -226,7 +229,28 @@ class AddOrdersViewModel @AssistedInject constructor(
         bottleOrderItemEditLiveData.value = item
     }
 
-    fun addOrder(comment: String, isChecked: Boolean) {
+    fun saveData(
+        comment: String,
+        isChecked: Boolean,
+        emptyBarrelsCount: List<Int> // empty barrels to take from customer
+    ) {
+        val emptyBarrelItems = listOf(
+            OrderRequestModel.EmptyBarrelItem(BARREL_50.id, emptyBarrelsCount[0]),
+            OrderRequestModel.EmptyBarrelItem(BARREL_30.id, emptyBarrelsCount[1]),
+            OrderRequestModel.EmptyBarrelItem(BARREL_20.id, emptyBarrelsCount[2]),
+            OrderRequestModel.EmptyBarrelItem(BARREL_10.id, emptyBarrelsCount[3]),
+        )
+        if (editingOrderID > 0)
+            editOrder(comment, isChecked, emptyBarrelItems)
+        else
+            addOrder(comment, isChecked, emptyBarrelItems)
+    }
+
+    private fun addOrder(
+        comment: String,
+        isChecked: Boolean,
+        emptyBarrelItems: List<OrderRequestModel.EmptyBarrelItem>
+    ) {
         if (callIsBlocked) return
         callIsBlocked = true
 
@@ -242,7 +266,8 @@ class AddOrdersViewModel @AssistedInject constructor(
             orderItemsList.map { it.toRequestOrderItem(isChecked) },
             bottleOrderItemsList.map {
                 it.toRequestOrderItem(isChecked)
-            }
+            },
+            emptyBarrelItems,
         )
 
         _addOrderLiveData.value = ApiResponseState.Loading(true)
@@ -256,7 +281,11 @@ class AddOrdersViewModel @AssistedInject constructor(
         )
     }
 
-    fun editOrder(comment: String, isChecked: Boolean) {
+    private fun editOrder(
+        comment: String,
+        isChecked: Boolean,
+        emptyBarrelItems: List<OrderRequestModel.EmptyBarrelItem>
+    ) {
         if (callIsBlocked) return
         callIsBlocked = true
 
@@ -272,7 +301,8 @@ class AddOrdersViewModel @AssistedInject constructor(
             orderItemsList.map { it.toRequestOrderItem(isChecked) },
             bottleOrderItemsList.map {
                 it.toRequestOrderItem(isChecked)
-            }
+            },
+            emptyBarrelItems,
         )
         Log.d("updateOrder1", orderRequestModel.toString())
         _addOrderLiveData.value = ApiResponseState.Loading(true)
@@ -350,11 +380,15 @@ class AddOrdersViewModel @AssistedInject constructor(
     }
 
     fun switchToBarrel() {
-        realisationStateFlow.value = RealisationType.BARREL
+        realisationStateFlow.value = GoodsType.BARREL
     }
 
     fun switchToBottle() {
-        realisationStateFlow.value = RealisationType.BOTTLE
+        realisationStateFlow.value = GoodsType.BOTTLE
+    }
+
+    fun switchToEmpty() {
+        realisationStateFlow.value = GoodsType.EMPTY_BARREL
     }
 
     fun hasNoOrderItems(): Boolean = orderItemsList.isEmpty() && bottleOrderItemsList.isEmpty()

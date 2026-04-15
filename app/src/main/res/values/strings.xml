@@ -1,5 +1,5 @@
 <resources>
-<!--    <string name="app_name">BeerDistrKt</string>-->
+    <!--    <string name="app_name">BeerDistrKt</string>-->
     <string name="orders">შეკვეთები</string>
     <string name="delivery">მიტანა</string>
     <string name="sale_at_the_client">ობიექტების რეალიზაცია</string>
@@ -148,7 +148,7 @@
     <string name="location_ge">თბილისი</string>
     <string name="msg_not_editable">კახეთის აპლიკაციაში დაფიქსირებულ მონაცემები თბილისიდან არ იცვლება</string>
 
-<!--    axali app-->
+    <!--    axali app-->
 
     <string name="can_type">კასრის ზომა</string>
     <string name="can_count">კასრების რაოდენობა</string>
@@ -195,9 +195,9 @@
     <string name="edit_client">ობიექტის რედაქტირება</string>
     <string name="mitana_no_order">შეკვეთის გარეშე მიტანა</string>
 
-<!--    kakhetshi kh-->
-<!--    <string name="channel_name">channel_tb</string>-->
-<!--    <string name="channel_id">channel_id_tb</string>-->
+    <!--    kakhetshi kh-->
+    <!--    <string name="channel_name">channel_tb</string>-->
+    <!--    <string name="channel_id">channel_id_tb</string>-->
     <string name="channel_description">აქ მოდის შეტყობინებები</string>
     <string name="add_comment">კომენტარის დამატება</string>
 
@@ -207,7 +207,7 @@
     <string name="enter_corect_data">შეავსეთ მოთხოვნილი ველები სათანადოდ!</string>
     <string name="cant_add_xarji">ძველი თარიღით ხარჯებს ვერ დაამატებთ!</string>
 
-<!--    v 2.2-->
+    <!--    v 2.2-->
     <string name="something_is_wrong">დაფიქსირდა დაურკვველი შეცდომა!</string>
     <string name="lt">%d ლტ.</string>
     <string name="lt_f">%.2f ლტ.</string>
@@ -216,7 +216,7 @@
     <string name="operator">ოპერატორი:</string>
     <string name="switch_title">Switch</string>
 
-<!--    order history-->
+    <!--    order history-->
     <string name="order_history_title">შეკვეთის ისტორია</string>
     <string name="client_field">ობიექტი: %s</string>
     <string name="date_field">თარიღი: %s</string>
@@ -332,4 +332,5 @@
     <string name="cant_modify_input_in_barrels_io">კასრების ამონაწერიდან მიტანის დაკორექტირება არ ხდება. გადადით ფინანსების ამონაწერში!</string>
     <string name="by_name">დალაგება სახელით</string>
     <string name="by_idle">დალაგება საყურადღ.</string>
+    <string name="empty">ცარიელი</string>
 </resources>

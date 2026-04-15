@@ -18,17 +18,17 @@ import com.example.beerdistrkt.BaseFragment
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.collectLatest
 import com.example.beerdistrkt.common.fragments.ClientDebtFragment
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_10
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_20
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_30
+import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_50
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
-import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
-import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
-import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.notifyNewComment
 import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.utils.ApiResponseState
-import com.example.beerdistrkt.utils.Session
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Calendar
@@ -119,6 +119,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                 when (checkedId) {
                     R.id.realizationByBarrel -> viewModel.switchToBarrel()
                     R.id.realizationByBottle -> viewModel.switchToBottle()
+                    R.id.emptyBarrelBtn -> viewModel.switchToEmpty()
                 }
                 checkForm()
             }
@@ -157,9 +158,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
 
     private fun checkForm() = with(vBinding) {
         addOrderAddItemBtn.backgroundTintList = if (
-            viewModel.realisationType == BARREL && beerSelector.formIsValid()
+            viewModel.realisationType == GoodsType.BARREL && beerSelector.formIsValid()
             ||
-            viewModel.realisationType == BOTTLE && bottleSelector.isFormValid()
+            viewModel.realisationType == GoodsType.BOTTLE && bottleSelector.isFormValid()
         )
             ColorStateList.valueOf(Color.GREEN)
         else
@@ -239,19 +240,9 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             }
         }
         viewModel.realisationStateFlow.collectLatest(viewLifecycleOwner) {
-            when (it) {
-                BARREL -> {
-                    vBinding.beerSelector.isVisible = true
-                    vBinding.bottleSelector.isVisible = false
-                }
-
-                BOTTLE -> {
-                    vBinding.beerSelector.isVisible = false
-                    vBinding.bottleSelector.isVisible = true
-                }
-
-                NONE -> {}
-            }
+            vBinding.beerSelector.isVisible = it == GoodsType.BARREL
+            vBinding.bottleSelector.isVisible = it == GoodsType.BOTTLE
+            vBinding.emptyBarrelsContainer.isVisible = it == GoodsType.EMPTY_BARREL
         }
     }
 
@@ -277,6 +268,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
         )
         addOrderStatusGroup.isVisible = viewModel.editingOrderID > 0
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_order)
+        vBinding.addDeliveryBarrelOutputCount1.amount = order.getEmptyBarrelCountFor(BARREL_50)
+        vBinding.addDeliveryBarrelOutputCount2.amount = order.getEmptyBarrelCountFor(BARREL_30)
+        vBinding.addDeliveryBarrelOutputCount3.amount = order.getEmptyBarrelCountFor(BARREL_20)
+        vBinding.addDeliveryBarrelOutputCount4.amount = order.getEmptyBarrelCountFor(BARREL_10)
     }
 
     override fun onClick(v: View?) {
@@ -288,16 +283,16 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
                     tryCollectOrderItem()
 
                 if (viewModel.hasNoOrderItems().not()) {
-                    if (viewModel.editingOrderID > 0)
-                        viewModel.editOrder(
-                            vBinding.addOrderComment.text.toString(),
-                            vBinding.addOrderCheckBox.isChecked
+                    viewModel.saveData(
+                        comment = vBinding.addOrderComment.text.toString(),
+                        isChecked = vBinding.addOrderCheckBox.isChecked,
+                        emptyBarrelsCount = listOf(
+                            vBinding.addDeliveryBarrelOutputCount1.amount,
+                            vBinding.addDeliveryBarrelOutputCount2.amount,
+                            vBinding.addDeliveryBarrelOutputCount3.amount,
+                            vBinding.addDeliveryBarrelOutputCount4.amount,
                         )
-                    else
-                        viewModel.addOrder(
-                            vBinding.addOrderComment.text.toString(),
-                            vBinding.addOrderCheckBox.isChecked
-                        )
+                    )
                 } else
                     showToast(R.string.fill_data)
             }
@@ -317,10 +312,10 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
     }
 
     private fun tryCollectOrderItem() = when {
-        viewModel.realisationType == BARREL && vBinding.beerSelector.formIsValid() ->
+        viewModel.realisationType == GoodsType.BARREL && vBinding.beerSelector.formIsValid() ->
             viewModel.addOrderItemToList(vBinding.beerSelector.getTempBeerItem())
 
-        viewModel.realisationType == BOTTLE && vBinding.bottleSelector.isFormValid() ->
+        viewModel.realisationType == GoodsType.BOTTLE && vBinding.bottleSelector.isFormValid() ->
             viewModel.addBottleOrderItem(vBinding.bottleSelector.getTempBottleItem())
 
         else -> showToast(R.string.fill_data)

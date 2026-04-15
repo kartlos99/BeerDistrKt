@@ -2,10 +2,12 @@ package com.example.beerdistrkt.models
 
 import com.example.beerdistrkt.R
 import com.example.beerdistrkt.common.model.Barrel
+import com.example.beerdistrkt.common.model.BarrelEnum
 import com.example.beerdistrkt.fragPages.beer.domain.model.Beer
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.bottle.domain.model.Bottle
 import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.orZero
 import com.squareup.moshi.Json
 
@@ -27,6 +29,7 @@ data class Order(
     val bottleItems: List<BottleItem>,
     val sales: List<Sales>,
     val bottleSales: List<BottleSaleItem>,
+    val emptyBarrels: List<OrderRequestModel.EmptyBarrelItem>? = null,
     private val _onDeleteClick: (Order) -> Unit,
     private val _onEditClick: (Order) -> Unit,
     private val _onChangeDistributorClick: ((Order) -> Unit)? = null,
@@ -62,6 +65,13 @@ data class Order(
         }
         return eqBeers.all { it } && eqBottles.all { it }
                 && saleBeers.all { it } && saleBottles.all { it }
+    }
+
+    fun getEmptyBarrelCountFor(barrelEnum: BarrelEnum): Int {
+        return emptyBarrels?.firstOrNull {
+            it.barrelId == barrelEnum.id
+        }
+            ?.count.orZero()
     }
 
     val onDeleteClick = {
