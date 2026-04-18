@@ -97,4 +97,7 @@ enum class Permission(val code: String) {
 
     @Json(name = "15")
     AddOrder("15"),
+
+    @Json(name = "17")
+    SetEmptyBarrelOutput("17"),
 }

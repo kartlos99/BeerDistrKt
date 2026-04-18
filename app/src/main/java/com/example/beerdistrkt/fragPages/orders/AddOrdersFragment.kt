@@ -25,6 +25,7 @@ import com.example.beerdistrkt.common.model.BarrelEnum.BARREL_50
 import com.example.beerdistrkt.customView.TempBeerRowView
 import com.example.beerdistrkt.customView.TempBottleRowView
 import com.example.beerdistrkt.databinding.AddOrdersFragmentBinding
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.notifyNewComment
 import com.example.beerdistrkt.paramViewModels
@@ -243,6 +244,7 @@ class AddOrdersFragment : BaseFragment<AddOrdersViewModel>(), View.OnClickListen
             vBinding.beerSelector.isVisible = it == GoodsType.BARREL
             vBinding.bottleSelector.isVisible = it == GoodsType.BOTTLE
             vBinding.emptyBarrelsContainer.isVisible = it == GoodsType.EMPTY_BARREL
+                    && viewModel.session.hasPermission(Permission.SetEmptyBarrelOutput)
         }
     }
 

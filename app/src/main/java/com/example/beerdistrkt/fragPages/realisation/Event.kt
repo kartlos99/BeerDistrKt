@@ -6,4 +6,5 @@ sealed class Event {
     data object NoPriceException: Event()
     data object CustomerNotFount: Event()
     data object EmptyFormError: Event()
+    data object EmptyBarrelsMissed: Event()
 }

@@ -25,7 +25,9 @@ import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
 import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleItemModel
+import com.example.beerdistrkt.fragPages.realisation.models.EmptyBarrelsMatchStatus
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
+import com.example.beerdistrkt.models.Order
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.round
 import com.example.beerdistrkt.utils.ApiResponseState
@@ -77,6 +79,9 @@ class AddDeliveryViewModel @AssistedInject constructor(
     private val bottleSaleItemsList = mutableListOf<TempBottleItemModel>()
     val tempRealisationLiveData = MutableLiveData<TempRealisationModel>()
 
+    val matchStatusLiveData = MutableLiveData<EmptyBarrelsMatchStatus>()
+    private var activeOrder: Order? = null
+
     val barrelOutItems = mutableListOf<SaleRequestModel.BarrelOutItem>()
     var moneyOut: MutableList<SaleRequestModel.MoneyOutItem> = mutableListOf()
     var isGift = false
@@ -102,6 +107,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
         viewModelScope.launch {
             initData()
             getCustomer()
+            getOrder(orderID)
         }
     }
 
@@ -191,6 +197,13 @@ class AddDeliveryViewModel @AssistedInject constructor(
     fun onDoneClick(deliveryDataComment: String) {
         if (callIsBlocked) return
         callIsBlocked = true
+
+        if (matchStatusLiveData.value == EmptyBarrelsMatchStatus.MISSED) {
+            viewModelScope.launch {
+                eventsFlow.emit(Event.EmptyBarrelsMissed)
+            }
+            return
+        }
 
         val hasZeroPrice = saleItemsList.any {
             (it.beer.price ?: .0) < 0.01
@@ -340,6 +353,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
                 count
             )
         )
+        updateEmptyBarrelsStatus()
     }
 
     private fun getEmptyBarrelsList(): List<SaleRequestModel.BarrelOutItem>? {
@@ -447,6 +461,66 @@ class AddDeliveryViewModel @AssistedInject constructor(
                 || customer.paymentType != moneyRowModel.paymentType
     }
 
+
+    private fun getOrder(id: Int) {
+        if (id == 0)
+            getActiveOrderID()
+        else {
+            sendRequest(
+                ApeniApiService.getInstance().getOrderByID(id),
+                successWithData = {
+                    if (it.isNotEmpty()) {
+
+                        val order = it[0].toPm(emptyList(), beerList, bottleList, {}, {}).copy(
+                            customer = clientLiveData.value
+                        )
+                        activeOrder = order
+                        updateEmptyBarrelsStatus()
+                    }
+                },
+                finally = {
+                    if (!it)
+                        matchStatusLiveData.value = EmptyBarrelsMatchStatus.UNDEFINED
+                }
+            )
+        }
+    }
+
+    private fun updateEmptyBarrelsStatus() {
+
+        if (activeOrder?.emptyBarrels.isNullOrEmpty()) {
+            matchStatusLiveData.value = EmptyBarrelsMatchStatus.UNDEFINED
+            return
+        }
+
+        val barrelMatch = activeOrder?.emptyBarrels?.let { emptyBarrelItems ->
+            emptyBarrelItems.all { emptyBarrelItem ->
+                val outItem = barrelOutItems.firstOrNull { barrelOutItem ->
+                    emptyBarrelItem.barrelId == barrelOutItem.canTypeID
+                }
+                if (outItem != null) {
+                    outItem.count == emptyBarrelItem.count
+                } else {
+                    emptyBarrelItem.count == 0
+                }
+            }
+        } ?: false
+
+        if (barrelMatch)
+            matchStatusLiveData.value = EmptyBarrelsMatchStatus.MATCHED
+        else
+            matchStatusLiveData.value = EmptyBarrelsMatchStatus.MISSED
+
+    }
+
+    private fun getActiveOrderID() {
+        sendRequest(
+            ApeniApiService.getInstance().getLastActiveOrderID(clientID),
+            successWithData = {
+                if (it > 0) getOrder(it)
+            }
+        )
+    }
 
     @AssistedFactory
     interface Factory {

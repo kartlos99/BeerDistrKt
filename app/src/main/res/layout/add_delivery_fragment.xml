@@ -160,6 +160,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/addDeliveryTempContainer" />
 
+            <ImageView
+                android:id="@+id/emptyBarrelStatus"
+                android:layout_width="@dimen/gr_size_64"
+                android:layout_height="@dimen/gr_size_36"
+                android:importantForAccessibility="no"
+                android:padding="@dimen/gr_size_12"
+                android:src="@drawable/bkg_rounded_white_r8"
+                app:layout_constraintBottom_toBottomOf="@id/addDeliveryBarrelOutput"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/addDeliveryBarrelOutput"
+                app:tint="?attr/colorWarning" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/addDeliveryBarrelOutputCard"
                 android:layout_width="0dp"

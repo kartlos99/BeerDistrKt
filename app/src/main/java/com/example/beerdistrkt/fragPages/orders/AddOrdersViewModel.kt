@@ -18,6 +18,7 @@ import com.example.beerdistrkt.fragPages.bottle.presentation.model.TempBottleIte
 import com.example.beerdistrkt.fragPages.customer.domain.model.Customer
 import com.example.beerdistrkt.fragPages.customer.domain.usecase.GetCustomerUseCase
 import com.example.beerdistrkt.fragPages.homePage.domain.usecase.GetBarrelsUseCase
+import com.example.beerdistrkt.fragPages.login.domain.model.Permission
 import com.example.beerdistrkt.fragPages.login.domain.model.WorkRegion
 import com.example.beerdistrkt.fragPages.orders.models.OrderRequestModel
 import com.example.beerdistrkt.fragPages.realisation.models.TempRealisationModel
@@ -234,12 +235,13 @@ class AddOrdersViewModel @AssistedInject constructor(
         isChecked: Boolean,
         emptyBarrelsCount: List<Int> // empty barrels to take from customer
     ) {
-        val emptyBarrelItems = listOf(
+        val emptyBarrelItems = if (session.hasPermission(Permission.SetEmptyBarrelOutput)) listOf(
             OrderRequestModel.EmptyBarrelItem(BARREL_50.id, emptyBarrelsCount[0]),
             OrderRequestModel.EmptyBarrelItem(BARREL_30.id, emptyBarrelsCount[1]),
             OrderRequestModel.EmptyBarrelItem(BARREL_20.id, emptyBarrelsCount[2]),
             OrderRequestModel.EmptyBarrelItem(BARREL_10.id, emptyBarrelsCount[3]),
-        )
+        ) else emptyList()
+
         if (editingOrderID > 0)
             editOrder(comment, isChecked, emptyBarrelItems)
         else

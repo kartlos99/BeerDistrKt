@@ -333,4 +333,5 @@
     <string name="by_name">დალაგება სახელით</string>
     <string name="by_idle">დალაგება საყურადღ.</string>
     <string name="empty">ცარიელი</string>
+    <string name="empty_barrel_miss_match">წამოსაღები კარსების რაოდენობა არ ემთხვევა შეკვეთილს!</string>
 </resources>

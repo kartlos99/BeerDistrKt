@@ -22,6 +22,7 @@ import com.example.beerdistrkt.fragPages.realisation.RealisationType.BARREL
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.BOTTLE
 import com.example.beerdistrkt.fragPages.realisation.RealisationType.NONE
 import com.example.beerdistrkt.fragPages.realisation.models.BarrelRowModel
+import com.example.beerdistrkt.fragPages.realisation.models.EmptyBarrelsMatchStatus
 import com.example.beerdistrkt.fragPages.realisation.models.MoneyRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleBottleRowModel
 import com.example.beerdistrkt.fragPages.realisation.models.SaleRowModel
@@ -32,6 +33,7 @@ import com.example.beerdistrkt.paramViewModels
 import com.example.beerdistrkt.parseDouble
 import com.example.beerdistrkt.setText
 import com.example.beerdistrkt.setTint
+import com.example.beerdistrkt.setTintFromAttr
 import com.example.beerdistrkt.showInfoDialog
 import com.example.beerdistrkt.simpleTextChangeListener
 import com.example.beerdistrkt.text
@@ -112,6 +114,19 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
         addDeliveryMoneyCashImg.setOnClickListener(owner)
         addDeliveryMoneyTransferImg.setOnClickListener(owner)
         locationBtn.setOnClickListener(owner)
+
+        addDeliveryBarrelOutputCount1.getEditTextView().simpleTextChangeListener {
+            collectEmptyBarrels()
+        }
+        addDeliveryBarrelOutputCount2.getEditTextView().simpleTextChangeListener {
+            collectEmptyBarrels()
+        }
+        addDeliveryBarrelOutputCount3.getEditTextView().simpleTextChangeListener {
+            collectEmptyBarrels()
+        }
+        addDeliveryBarrelOutputCount4.getEditTextView().simpleTextChangeListener {
+            collectEmptyBarrels()
+        }
     }
 
     private fun AddDeliveryFragmentBinding.initView() {
@@ -215,7 +230,14 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
             R.color.gray_6
     }
 
+    private fun showStatus(status: EmptyBarrelsMatchStatus) {
+        binding.emptyBarrelStatus.setTintFromAttr(status.colorAttrRes)
+    }
+
     private fun initViewModel() {
+        viewModel.matchStatusLiveData.observe(viewLifecycleOwner) { status ->
+            showStatus(status)
+        }
         viewModel.clientLiveData.observe(viewLifecycleOwner) {
             binding.addDeliveryClientInfo.text = it.name
             binding.locationBtn.isVisible = !it.location.isNullOrEmpty()
@@ -265,6 +287,7 @@ class AddDeliveryFragment : BaseFragment<AddDeliveryViewModel>(), View.OnClickLi
                     Event.DuplicateBottleItem -> showToast(R.string.bottle_already_in_list)
                     Event.NoPriceException -> showToast(R.string.no_price_exception)
                     Event.EmptyFormError -> showToast(R.string.fill_data)
+                    Event.EmptyBarrelsMissed -> showToast(R.string.empty_barrel_miss_match)
                 }
             }
         }
