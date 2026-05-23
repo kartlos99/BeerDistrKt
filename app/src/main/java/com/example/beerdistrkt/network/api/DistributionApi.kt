@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.network.api
 
+import com.example.beerdistrkt.common.model.SettingDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
 import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
@@ -139,6 +140,9 @@ interface DistributionApi {
 
     @POST("settings/updateSetting.php")
     suspend fun updateSetting(@Body settingParamDto: SettingParamDto): SettingParamDto
+
+    @GET("general/getFeatureSettings.php")
+    suspend fun getAppSettings(): List<SettingDto>
 
     /* statement */
     @GET("statement/getCombinedFinancial.php")

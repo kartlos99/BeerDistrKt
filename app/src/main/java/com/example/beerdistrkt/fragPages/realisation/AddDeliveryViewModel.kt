@@ -50,6 +50,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
     private val getBottlesUseCase: GetBottlesUseCase,
     private val getCustomerUseCase: GetCustomerUseCase,
     private val getBarrelsUseCase: GetBarrelsUseCase,
+    private val getAppSettingByNameUseCase: GetAppSettingByNameUseCase,
     @Assisted(CLIENT_ID_KEY) private val clientID: Int,
     @Assisted(ORDER_ID_KEY) private val orderID: Int,
     @Assisted(RECORD_ID_KEY) private val recordID: Int,
@@ -198,25 +199,28 @@ class AddDeliveryViewModel @AssistedInject constructor(
         if (callIsBlocked) return
         callIsBlocked = true
 
-        if (matchStatusLiveData.value == EmptyBarrelsMatchStatus.MISSED) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            if (
+                matchStatusLiveData.value == EmptyBarrelsMatchStatus.MISSED
+                && getAppSettingByNameUseCase(CHECK_EMPTY_BARRELS)
+            ) {
                 eventsFlow.emit(Event.EmptyBarrelsMissed)
+            } else {
+                val hasZeroPrice = saleItemsList.any {
+                    (it.beer.price ?: .0) < 0.01
+                } || bottleSaleItemsList.any {
+                    it.bottle.price < 0.01
+                }
+                if (hasZeroPrice && !isGift) {
+                    eventsFlow.emit(Event.NoPriceException)
+                } else {
+                    addUpdateDelivery(deliveryDataComment)
+                }
             }
-            return
         }
+    }
 
-        val hasZeroPrice = saleItemsList.any {
-            (it.beer.price ?: .0) < 0.01
-        } || bottleSaleItemsList.any {
-            it.bottle.price < 0.01
-        }
-        if (hasZeroPrice && !isGift) {
-            viewModelScope.launch {
-                eventsFlow.emit(Event.NoPriceException)
-            }
-            return
-        }
-
+    private suspend fun addUpdateDelivery(deliveryDataComment: String) {
         val saleRequestModel = SaleRequestModel(
             clientID,
             session.getUserID(),
@@ -243,14 +247,12 @@ class AddDeliveryViewModel @AssistedInject constructor(
             viewModelScope.launch {
                 eventsFlow.emit(Event.EmptyFormError)
             }
-            return
+        } else {
+            if (operation == null)
+                addDelivery(saleRequestModel)
+            else
+                updateDelivery(saleRequestModel)
         }
-
-
-        if (operation == null)
-            addDelivery(saleRequestModel)
-        else
-            updateDelivery(saleRequestModel)
     }
 
     private fun addDelivery(saleRequestModel: SaleRequestModel) {
@@ -499,17 +501,17 @@ class AddDeliveryViewModel @AssistedInject constructor(
                     emptyBarrelItem.barrelId == barrelOutItem.canTypeID
                 }
                 if (outItem != null) {
-                    outItem.count == emptyBarrelItem.count
+                    outItem.count <= emptyBarrelItem.count
                 } else {
                     emptyBarrelItem.count == 0
                 }
             }
         } ?: false
 
-        if (barrelMatch)
-            matchStatusLiveData.value = EmptyBarrelsMatchStatus.MATCHED
+        matchStatusLiveData.value = if (barrelMatch)
+            EmptyBarrelsMatchStatus.MATCHED
         else
-            matchStatusLiveData.value = EmptyBarrelsMatchStatus.MISSED
+            EmptyBarrelsMatchStatus.MISSED
 
     }
 
@@ -538,5 +540,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
         private const val RECORD_ID_KEY = "RECORD_ID"
         private const val OPERATION_KEY = "OPERATION"
         const val TAG = "TAG AddDelivery-----"
+
+        private const val CHECK_EMPTY_BARRELS = "check_empty_barrels"
     }
 }

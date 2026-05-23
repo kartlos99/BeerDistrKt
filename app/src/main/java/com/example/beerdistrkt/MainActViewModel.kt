@@ -2,6 +2,7 @@ package com.example.beerdistrkt
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.beerdistrkt.fragPages.homePage.domain.usecase.RefreshAppSettingsUseCase
 import com.example.beerdistrkt.models.ChangePassRequestModel
 import com.example.beerdistrkt.network.ApeniApiService
 import com.example.beerdistrkt.storage.SharedPreferenceDataSource
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActViewModel @Inject constructor(
+    private val refreshAppSettingsUseCase: RefreshAppSettingsUseCase,
     override var session: Session
 ) : BaseViewModel() {
 
@@ -22,6 +24,12 @@ class MainActViewModel @Inject constructor(
 
     private val _eventsFlow: MutableSharedFlow<ActUiEvent> = MutableSharedFlow()
     val eventsFlow: SharedFlow<ActUiEvent> = _eventsFlow.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            refreshAppSettingsUseCase()
+        }
+    }
 
     fun changePassword(oldPass: String, newPass: String, callback: (text: String?) -> Unit) {
         sendRequest(

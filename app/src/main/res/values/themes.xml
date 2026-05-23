@@ -35,6 +35,8 @@
         <item name="colorBeerPriceBkg">@color/beer_price_bkg</item>
         <item name="colorBottlePriceBkg">@color/bottle_price_bkg</item>
 
+        <item name="colorInactiveOrderBkg">#F85151</item>
+
         <item name="colorPayment">@color/green_600</item>
         <item name="colorPaymentIconBkg">@color/green_100</item>
         <item name="colorSale">@color/red_600</item>
