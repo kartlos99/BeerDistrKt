@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beerdistrkt.*
@@ -285,6 +286,9 @@ class OrdersFragment : BaseFragment<OrdersViewModel>(), SwipeRefreshLayout.OnRef
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menuGoBarrelOrders -> {
+                findNavController().navigate(R.id.action_ordersFragment_to_barrelOrdersFragment)
+            }
 //            R.id.topBarDelivery -> {
 //                vBinding.root.findNavController().navigate(
 //                    OrdersFragmentDirections.actionOrdersFragmentToObjListFragment(MITANA)

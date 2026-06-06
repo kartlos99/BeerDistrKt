@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <item
         android:id="@+id/orderSearch"
@@ -9,12 +10,14 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
 
-<!--    <item-->
-<!--        android:id="@+id/topBarDelivery"-->
-<!--        android:icon="@drawable/ic_delivery_white"-->
-<!--        android:title="@string/delivery"-->
-<!--        android:visible="false"-->
-<!--        app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/menuGoBarrelOrders"
+        android:icon="@drawable/barrel_24"
+        android:iconTint="?attr/backgroundColor"
+        android:title="@string/barrels"
+        app:showAsAction="ifRoom"
+        tools:targetApi="26" />
+
     <item
         android:id="@+id/appBarOrderSwitch"
         android:title="@string/switch_title"

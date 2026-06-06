@@ -11,7 +11,7 @@ class AppSettingMapper @Inject constructor() {
         return AppSetting(
             id = item.id,
             code = item.code,
-            boolValue = item.valueText?.toBooleanStrictOrNull(),
+            boolValue = item.valueText?.toBooleanStrictOrNull() ?: (item.valueText == "1"),
             stringValue = item.valueText,
         )
     }
