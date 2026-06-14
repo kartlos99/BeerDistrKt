@@ -501,7 +501,7 @@ class AddDeliveryViewModel @AssistedInject constructor(
                     emptyBarrelItem.barrelId == barrelOutItem.canTypeID
                 }
                 if (outItem != null) {
-                    outItem.count <= emptyBarrelItem.count
+                    outItem.count >= emptyBarrelItem.count
                 } else {
                     emptyBarrelItem.count == 0
                 }

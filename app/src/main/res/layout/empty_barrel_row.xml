@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/gr_size_8"
+    android:background="?attr/colorBackgroundFloating"
+    android:elevation="@dimen/gr_size_4"
+    android:paddingVertical="@dimen/gr_size_4">
+
+    <TextView
+        android:id="@+id/clientName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/gr_size_8"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="@dimen/sp24"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/orderStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="client" />
+
+    <TextView
+        android:id="@+id/orderStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/gr_size_8"
+        android:background="@drawable/rect_r12"
+        android:ellipsize="end"
+        android:padding="@dimen/gr_size_2"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="@dimen/sp18"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="active" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/expectedRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_8"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/application"
+        android:textSize="14sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/orderItemCan10"
+        app:layout_constraintStart_toStartOf="@id/clientName"
+        app:layout_constraintTop_toBottomOf="@id/clientName" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/orderItemCan10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/orderItemCan20"
+        app:layout_constraintTop_toTopOf="@id/expectedRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/orderItemCan20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/orderItemCan30"
+        app:layout_constraintTop_toTopOf="@id/expectedRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/orderItemCan30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/orderItemCan50"
+        app:layout_constraintTop_toTopOf="@id/expectedRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/orderItemCan50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/expectedRow" />
+
+    <View
+        android:id="@+id/middleLine"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/gr_size_1"
+        android:layout_marginHorizontal="@dimen/gr_size_4"
+        android:background="?attr/strokeColor"
+        app:layout_constraintBottom_toTopOf="@id/actualRow"
+        app:layout_constraintEnd_toEndOf="@id/expectedRow"
+        app:layout_constraintStart_toStartOf="@id/expectedRow"
+        app:layout_constraintTop_toBottomOf="@id/expectedRow" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/actualRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gr_size_8"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/returned_back"
+        android:textSize="14sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/actualItemCan10"
+        app:layout_constraintStart_toStartOf="@id/clientName"
+        app:layout_constraintTop_toBottomOf="@id/expectedRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/actualItemCan10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/actualItemCan20"
+        app:layout_constraintTop_toTopOf="@id/actualRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/actualItemCan20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/actualItemCan30"
+        app:layout_constraintTop_toTopOf="@id/actualRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/actualItemCan30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/actualItemCan50"
+        app:layout_constraintTop_toTopOf="@id/actualRow" />
+
+    <com.example.beerdistrkt.fragPages.orders.view.CounterLinearProgressView
+        android:id="@+id/actualItemCan50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gr_size_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/actualRow" />
+
+    <ImageView
+        android:id="@+id/outputStatusIndication"
+        android:layout_width="@dimen/gr_size_16"
+        android:layout_height="@dimen/gr_size_16"
+        android:contentDescription="@string/output_status_indication"
+        android:src="@drawable/white_circle"
+        app:layout_constraintBottom_toBottomOf="@id/middleLine"
+        app:layout_constraintEnd_toEndOf="@id/middleLine"
+        app:layout_constraintTop_toTopOf="@id/middleLine"
+        app:tint="@color/color_orderRed" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

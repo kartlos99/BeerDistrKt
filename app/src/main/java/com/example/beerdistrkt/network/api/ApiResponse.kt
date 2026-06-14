@@ -3,7 +3,7 @@ package com.example.beerdistrkt.network.api
 import com.example.beerdistrkt.network.model.ResultState
 
 sealed class ApiResponse<out T> {
-    data class Success<out T>(val data: T) : ApiResponse<T>()
+    data class Success<T>(val data: T) : ApiResponse<T>()
     data class Error(
         val statusCode: Int = 0,
         val message: String? = null,

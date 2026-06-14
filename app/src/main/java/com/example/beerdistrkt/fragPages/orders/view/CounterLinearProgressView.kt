@@ -54,21 +54,21 @@ class CounterLinearProgressView @JvmOverloads constructor(
         }
     }
 
-    fun setCount(count: Int) {
-        with(binding) {
-            countTv.text = count.toString()
-            countTv.setTextColor(context.getAttrColor(R.attr.mainTextColor))
-            updateBoldStyle(count)
-        }
+    fun setCount(
+        count: Int,
+        replaceZero: Boolean = false,
+        zeroReplacer: String? = null
+    ) = with(binding) {
+        countTv.text = if (count == 0 && replaceZero) zeroReplacer else count.toString()
+        countTv.setTextColor(context.getAttrColor(R.attr.mainTextColor))
+        updateBoldStyle(count)
     }
 
-    fun clearData() {
-        with(binding) {
-            countTv.text = ""
-            viewProgress.progress = 0
-            viewProgress.max = 1
-            viewProgress.setBackgroundResource(R.color.gray_light)
-        }
+    fun clearData() = with(binding) {
+        countTv.text = ""
+        viewProgress.progress = 0
+        viewProgress.max = 1
+        viewProgress.setBackgroundResource(R.color.gray_light)
     }
 
     private fun updateBoldStyle(number: Int) {

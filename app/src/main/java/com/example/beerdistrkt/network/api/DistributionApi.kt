@@ -1,6 +1,7 @@
 package com.example.beerdistrkt.network.api
 
 import com.example.beerdistrkt.common.model.SettingDto
+import com.example.beerdistrkt.fragPages.barrel.data.model.EmptyBarrelsDtoWrapper
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerDto
 import com.example.beerdistrkt.fragPages.beer.data.model.BeerOrderingUpdateDto
 import com.example.beerdistrkt.fragPages.bottle.data.model.BottleDto
@@ -156,4 +157,10 @@ interface DistributionApi {
         @Query("clientID") clientID: Int,
         @Query("offset") offset: String?,
     ): BarrelStatementDto
+
+    /* Orders */
+    @GET("order/getEmptyBarrelOrderByDate.php")
+    suspend fun getEmptyBarrelsInfoByDate(
+        @Query("date") date: String,
+    ): EmptyBarrelsDtoWrapper
 }

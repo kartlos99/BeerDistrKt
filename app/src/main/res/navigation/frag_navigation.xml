@@ -337,7 +337,7 @@
     </fragment>
     <fragment
         android:id="@+id/barrelOrdersFragment"
-        android:name="com.example.beerdistrkt.fragPages.barrel.BarrelOrdersFragment"
-        android:label="BarrelOrdersFragment"
+        android:name="com.example.beerdistrkt.fragPages.barrel.presentation.BarrelOrdersFragment"
+        android:label="@string/barrel_orders_label"
         tools:layout="@layout/barrel_orders_fragment" />
 </navigation>

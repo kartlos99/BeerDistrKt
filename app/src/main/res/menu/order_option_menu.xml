@@ -12,8 +12,7 @@
 
     <item
         android:id="@+id/menuGoBarrelOrders"
-        android:icon="@drawable/barrel_24"
-        android:iconTint="?attr/backgroundColor"
+        android:icon="@drawable/barrel_white_24"
         android:title="@string/barrels"
         app:showAsAction="ifRoom"
         tools:targetApi="26" />
