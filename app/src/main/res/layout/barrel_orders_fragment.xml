@@ -2,17 +2,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/viewBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/viewBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/setDateBtn"
         tools:itemCount="4"
         tools:listitem="@layout/empty_barrel_row" />
+
+    <TextView
+        android:id="@+id/setDateBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_8"
+        android:background="@drawable/bkg_rounded_white_r8"
+        android:backgroundTint="?attr/fieldBackground"
+        android:padding="@dimen/gr_size_4"
+        android:text="@string/text_tarigi"
+        android:textSize="@dimen/sp22"
+        app:drawableEndCompat="@drawable/calendar_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/infoMessage"
@@ -24,8 +41,24 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/setDateBtn"
         tools:text="message" />
+
+    <TextView
+        android:id="@+id/emptyStateMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gr_size_24"
+        android:text="@string/no_barrel_order_found"
+        android:textAlignment="center"
+        android:textColor="?attr/colorWarning"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/barrel_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infoMessage"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/loader"

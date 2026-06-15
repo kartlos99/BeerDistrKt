@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,18 +25,26 @@ class BarrelOrdersViewModel @Inject constructor(
     private val _stateFlow = MutableStateFlow(State())
     val stateFlow = _stateFlow.asStateFlow()
 
+    var orderDateCalendar: Calendar = Calendar.getInstance()
+
     init {
         loadBarrelOrders()
     }
 
     private fun loadBarrelOrders() {
         viewModelScope.launch {
-            _stateFlow.update { it.copy(isLoading = true) }
-            when (val result = getEmptyBarrelsInfoUseCase("2026-05-29")) {
+            _stateFlow.update {
+                it.copy(
+                    isLoading = true,
+                    dateLabel = dateFormatDash.format(orderDateCalendar.time)
+                )
+            }
+            when (val result = getEmptyBarrelsInfoUseCase(stateFlow.value.dateLabel)) {
                 is ApiResponse.Error -> _stateFlow.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "ჩამოტვირთვის ხარვეზი"
+                        errorMessage = result.message ?: "ჩამოტვირთვის ხარვეზი",
+                        items = null,
                     )
                 }
 
@@ -50,9 +59,15 @@ class BarrelOrdersViewModel @Inject constructor(
         }
     }
 
+    fun onDateSelected(year: Int, month: Int, day: Int) {
+        orderDateCalendar.set(year, month, day)
+        loadBarrelOrders()
+    }
+
     data class State(
         val isLoading: Boolean = true,
         val items: List<EmptyBarrelUiModel>? = null,
         val errorMessage: String? = null,
+        val dateLabel: String = "",
     )
 }

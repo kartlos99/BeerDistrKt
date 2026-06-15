@@ -1,5 +1,6 @@
 package com.example.beerdistrkt.fragPages.barrel.presentation
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -15,6 +16,7 @@ import com.example.beerdistrkt.databinding.EmptyBarrelRowBinding
 import com.example.beerdistrkt.fragPages.barrel.presentation.model.EmptyBarrelUiModel
 import com.example.beerdistrkt.orZero
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Calendar
 
 @AndroidEntryPoint
 class BarrelOrdersFragment : BaseFragment<BarrelOrdersViewModel>() {
@@ -29,6 +31,25 @@ class BarrelOrdersFragment : BaseFragment<BarrelOrdersViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         initRecycler()
+        initView()
+    }
+
+    private fun initView() = with(binding) {
+        setDateBtn.setOnClickListener { showDateDialog() }
+    }
+
+    private fun showDateDialog() {
+        val datePickerDialog = DatePickerDialog(
+            /* context = */ requireContext(),
+            /* listener = */ DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                viewModel.onDateSelected(year, month, day)
+            },
+            /* year = */ viewModel.orderDateCalendar.get(Calendar.YEAR),
+            /* month = */ viewModel.orderDateCalendar.get(Calendar.MONTH),
+            /* dayOfMonth = */ viewModel.orderDateCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.setCancelable(false)
+        datePickerDialog.show()
     }
 
     private fun initRecycler() = with(binding.list) {
@@ -46,12 +67,12 @@ class BarrelOrdersFragment : BaseFragment<BarrelOrdersViewModel>() {
         adapter = barrelAdapter
 
         viewModel.stateFlow.collectLatest(viewLifecycleOwner) { state: BarrelOrdersViewModel.State ->
+            barrelAdapter.submitList(state.items)
             binding.loader.isVisible = state.isLoading
-            state.items?.let {
-                barrelAdapter.submitList(state.items)
-            }
             binding.infoMessage.isVisible = state.errorMessage != null
             binding.infoMessage.text = state.errorMessage
+            binding.setDateBtn.text = state.dateLabel
+            binding.emptyStateMessage.isVisible = state.items.isNullOrEmpty()
         }
     }
 

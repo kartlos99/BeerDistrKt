@@ -338,4 +338,5 @@
     <string name="application">განაცხადი</string>
     <string name="returned_back">წამოღებული</string>
     <string name="barrel_orders_label">ცარიელი კასრები</string>
+    <string name="no_barrel_order_found">კასრის შეკვეთები არ მოიძებნა</string>
 </resources>
