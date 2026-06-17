@@ -72,7 +72,7 @@ class BarrelOrdersFragment : BaseFragment<BarrelOrdersViewModel>() {
             binding.infoMessage.isVisible = state.errorMessage != null
             binding.infoMessage.text = state.errorMessage
             binding.setDateBtn.text = state.dateLabel
-            binding.emptyStateMessage.isVisible = state.items.isNullOrEmpty()
+            binding.emptyStateMessage.isVisible = state.items.isNullOrEmpty() && !state.isLoading
         }
     }
 
